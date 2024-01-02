@@ -9,6 +9,7 @@
 # dev 0.0.9 (modular and maintainable code update)
 # dev 0.0.10 (order of play update)
 # dev 0.0.13 (bug patch) Current
+# dev 0.0.14 (version control)
 # ...
 # alpha 0.1.0 
 # ...
