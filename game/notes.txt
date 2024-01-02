@@ -1,0 +1,138 @@
+
+
+TODO: * = working on
+
+1: *Add in pygame's .mixer to have music play at certain points in the game 
+
+2: *Add sword skills (with cool down?) to make combat more dynamic
+    2a: make a class system using 1 of the following methods {
+        A. Make a class Class and which will be used in each Player instance (methods would call self.Class.<...>)
+        B. Add a string 'class' as an init perameter and use that in Player methods accordingly. 
+        C. A character class is a kind of player. Therefore use inheritance (class will inherit from player)
+}
+
+3: Write a .dysplay stats method of the player class. 
+
+4: Current monsters list is only for world 1, player can choose which world 
+to be in and which monsters to encounter. 
+
+5: *Add a calculate_damage(subject: player or enemy) function that uses acu 
+and atk to return a final damage value. 
+
+7: map: 
+    1 = kobold wood
+        kobolds
+        nepenths
+    2 = cow plains
+        cows
+        insects
+        lizards
+    3 = ruins
+        humanoids
+        constructs
+        ghosts
+    4 = faywild
+        fairies
+        hags
+        spirits
+    5 = mountains
+        goblinoids
+        giants
+        dwarves
+        lesser dragons
+    6 = desert
+        lizards
+        undead
+        humanoids
+    7 = underworld
+        ghosts
+        darks
+    8 = the great deep (ocean)
+        details:
+            The player will get a boat which they will use to travel and battle with. They will be able to 
+            upgrade it as well by purchasing new/more guns and crew members. This world should yeild a lot 
+            of treasure. 
+        monsters:
+            aberations
+            elementals
+    9 = the nowere
+        details: 
+            Consider the world of little nightmares combined with a sort of void scape. This is a world 
+            between worlds where bits and shadows of evrything else collide. 
+        monsters:
+            lycanthropes
+            dragons
+            fiends
+            titans
+            constructs
+            undead
+    10 = the void
+        Humanoids
+        bosses
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+0: Hakuho 
+1: Hoshoryu
+2: Terunofuji
+3: Kirishima (Top^)
+4: Ura
+5: Tamawashi
+6: Midorifuji
+8: Hokutofuji
+7: Takarafuji
+9: Asanoyama
+10: Endo
+11: Meisei
+12: Daieisho (great^)
+13: Atamifuji
+14: Takayasu
+15: Shodai
+16: Tobizaru (good^)
+17: Oho
+18: Kotoeko
+19: Mitakeumi
+20: Hiradoumi
+21: Onosho
+22: Takanosho (Fair^)
+23: Wakamotoharu
+24: Sadanoumi
+25: Myogiryu
+26: Nishikifuji
+27: Tsurugisho (meh^)
+28: Kotonowaka
+29: Nishikigi
+30: Gonoyama
+31: Roga
+33: Tohakuryu
+32: Kinbozan
+34: Hokuseiho (bad^)
+35: Shonannoumi
+36: Churanoumi
+37: Tomokaze
+38: Kitanowaka (awful^)
+39: Takakeisho
+40: Ryuden
+42: Ichyamamoto (worst^)
+41: Abi
+
+
