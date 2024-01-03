@@ -49,7 +49,7 @@ def battle(player, monster, xp_thresholds, monsters, type=0): # TODO add a list 
         dprint(f'you encounter a {monster.name}')
         round_num = 1
         seconds = 1
-        cooldown = 0 # for skill in player.skills if skill.cooldown: cooldown -- ;
+        cooldown = 0
         if player.mag != player.maxmag:
             player.mag += 1 + player.level
             if player.mag >= player.maxmag:
@@ -121,21 +121,169 @@ class Battle:
         self.active_teamates = []
         self.name = 'battle'
         self.battle_options = ['fight', 'skill', 'item', 'run']
-        self.seconds = 1
 
-    def regular(self):
-        self.init_parti()
+    def regular(self, mon_list):
+        # basically the same as the battle function defined above
+        # define the initial participants of this particular battle
+        self.init_parti(mon_list)
+        # set seconds to 1
+        seconds = 1
+        # set round num to 1
+        round_num = 1
+        # reset player skill cooldown
+        cooldown = 0
+        # set player mag val
+        if self.active_player.mag != self.active_player.maxmag:
+            self.active_player.mag += 1 + self.active_player.level
+            if self.active_player.mag >= self.active_player.maxmag:
+                self.active_player.mag = self.active_player.maxmag
+        # describe the encounter
+        dprint(f'you encounter a {self.active_monsters[-1].name}!')
+    
+        # begin battle
+        while self.active_player.is_alive() and len(self.active_monsters) != 0:
+            # handle the rounds
+            if seconds % 20 == 1:
+                dprint(f'Round {round_num}, FIGHT! ')
+                round_num += 1
+            # handle the player's turn
+            cooldown = self.handle_player_turn(seconds, cooldown)
+            # go through the allie's turns
+            self.handle_ally_turns(seconds)
+            # handle the monster's turns
+            self.handle_monster_turns(seconds)
+            if not self.active_player.is_alive():
+                return False # tell the game the player is dead
+            # add monsters to the battle if it lasts too long
+            self.handle_additional_monsters(seconds, mon_list)
+            # increment seconds
+            seconds += 1
+        
+        return True # tell the game the player is still alive
 
-    def boss(self):
-        self.init_parti()
+    def boss(self, mon_list):
+        self.init_parti(mon_list)
+    
+    def handle_player_turn(self, seconds, cooldown):
+        if seconds % self.active_player.agi == 0:
+            # reduce skill cooldown if applicable
+            if cooldown:
+                cooldown -= 1
+            # prompt for battle option
+            for i in range(4):
+                print(f'{i + 1}: {self.battle_options[i]}')    
+            option = input()
+
+            if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:
+                # define target
+                if len(self.active_monsters) == 1:
+                    target = self.active_monsters[-1]
+                else:
+                    dprint('target which monster')
+                    target = get_list_option(self.active_monsters)
+                # attack
+                self.active_player.attack(target, self.xp_thresholds)
+                # update active monsters
+                if not target.is_alive():
+                    self.active_monsters.remove(target)
+
+            elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL'] and (not cooldown):
+                # define the target
+                if len(self.active_monsters) == 1:
+                    target = self.active_monsters[-1]
+                else:
+                    dprint('target which monster')
+                    target = get_list_option(self.active_monsters)
+                # special attack
+                cooldown = self.active_player.special_attack(target, self.xp_thresholds)
+                # update active monsters
+                if not target.is_alive():
+                    self.active_monsters.remove(target)
+            
+            elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
+                # define the target
+                if len(self.active_monsters) == 1:
+                    target = self.active_monsters[-1]
+                else:
+                    dprint('target which monster')
+                    target = get_list_option(self.active_monsters)
+                # use item
+                self.active_player.use_item(target, self.xp_thresholds)
+                # update active monsters
+                if not target.is_alive():
+                    self.active_monsters.remove(target)
+            
+            else:
+                escape = 0
+                for i in range(len(self.active_monsters)):
+                    if self.active_player.run():
+                        escape += 1
+                if len(self.active_monsters) == 1 and escape == 1:
+                    dprint(f'{self.active_player.name} escaped!')
+                    self.active_monsters.clear()
+                elif len(self.active_monsters) == 2:
+                    if escape == 1:
+                        dprint(f'{self.active_player.name} made a narrow escape!')
+                        self.active_monsters.clear()
+                    elif escape == 2:
+                        dprint(f'{self.active_player.name} escaped!')
+                        self.active_monsters.clear()
+                elif len(self.active_monsters) == 3:
+                    if escape == 2:
+                        dprint(f'{self.active_player.name} made a narrow escape!')
+                        self.active_monsters.clear()
+                    elif escape == 3:
+                        dprint(f'{self.active_player.name} escaped!')
+                        self.active_monsters.clear()
+                elif len(self.active_monsters) == 4:
+                    if escape == 2:
+                        dprint(f'{self.active_player.name} barely escaped with their life!')
+                        self.active_monsters.clear()
+                    elif escape == 3:
+                        dprint(f'{self.active_player.name} made a narrow escape!')
+                        self.active_monsters.clear()
+                    elif escape == 4: 
+                        dprint(f'{self.active_player.name} escaped!')
+                        self.active_monsters.clear()
+                elif len(self.active_monsters) > 4:
+                    if escape >= 6:
+                        dprint(f'{self.active_player.name} escaped!')
+                        self.active_monsters.clear()
+                    elif escape == 5:
+                        dprint(f'{self.active_player.name} made a narrow escape!')
+                        self.active_monsters.clear()
+                    elif escape == 4:
+                        dprint(f'{self.active_player.name} barely escaped with their life!')
+                        self.active_monsters.clear()
+                    elif escape == 3:
+                        dprint('Wow... miracles really do happen!')
+                        self.active_monsters.clear()
+                else:
+                    dprint(f'{self.active_player.name} failed their escape attempt.')
+            return cooldown
+    
+    def handle_ally_turns(self, seconds):
+        for ally in self.active_teamates:
+            if seconds % ally.agi == 0:
+                target = ally.take_turn()
+                if not target.is_alive:
+                    self.active_monsters.remove(target)
+
+    def handle_monster_turns(self, seconds):
+        for monster in self.active_monsters:
+            if seconds % monster.agi == 0:
+                monster.attack(self.active_player)
+
+    def handle_additional_monsters(self, seconds, mon_list):
+        if seconds % 120 == 0:
+            self.active_monsters.append(choose_monster(self.active_player, mon_list))
+            dprint('The sound of battle and the smell of blood atracts')
+            dprint(f'a {self.active_monsters[-1].name} which joins the fight!')
 
     def init_parti(self, mon_list):
-        self.active_teamates.append(self.active_player)
         for ally in self.active_player.allies:
             self.active_teamates.append(ally)
         self.active_monsters.append(choose_monster(self.active_player,mon_list))
-        
-
 
 
 def check_user_input(type='l', list=[], dict={}):
@@ -214,7 +362,7 @@ def get_list_option(options):
     if ans == None:
         print('No options available.' )
         return
-    return options[ans]
+    return options[ans - 1]
 
 # Usage Example for Dictionary Options
 def get_dict_option(options):

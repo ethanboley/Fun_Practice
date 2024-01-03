@@ -240,6 +240,7 @@ class Mage(Player):
         self.spells = init_skills()
         self.known_spells.append(self.spells[83])
         self.inventory = Inventory()
+        self.allies = []
 
     def attack(self, enemy, xp_thresholds):
         if random.random() < self.accuracy:

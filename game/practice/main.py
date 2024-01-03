@@ -36,12 +36,13 @@ def main_game():
     dprint('What is your name: ')
     pname = input('')
     # base_p = Player(pname, 20, 4, 0, 1, .8, 0)
-    pc = Fighter(pname, 20, 4, 0, 1, .8, 0)
+    pc = Fighter(pname, 20, 4, 0, 1, .8, 2)
 
     # skills_list = init_skills()
 
     base_xp = 100
     xp_thresholds = []
+    # TODO come up with a function in things_stuff that will be much better. 
     for i in range(100):
         xp_thresholds.append(base_xp)
         thresh = round((base_xp * 1.1) + (100 + (i + 1)))
@@ -63,10 +64,11 @@ def main_game():
         action = input()
         
         if action in ['1', '0','','Absolutely!!!','fight','Fight','f','F','1: fight']:
-            
-            playing = battle(pc, choose_monster(pc, mon_list), xp_thresholds, mon_list)
+            current_battle = Battle(pc, xp_thresholds)
+            playing = current_battle.regular(mon_list)
 
         elif action in ['2','Hospital','hospital','h','H','HELP I\'M DYING!!!','heal']:
+
             hospital = Hospital('Greentown', pc.level)
             option = hospital.welcome()
             playing = hospital.resolve(pc, option, xp_thresholds)
