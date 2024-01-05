@@ -32,6 +32,11 @@ class Spell(Skill):
         self.nature = nature
 
 
+class Spall(Skill): # for pugilists (verb: to break into small peices)
+    def __init__(self, name, type, level, cost, cooldown, damage):
+        super().__init__(name, type, level, cost, cooldown, damage)
+
+
 class Item():
     def __init__(self, name, level, sell_price, rarity, sold, can_use) -> None:
         self.name = name

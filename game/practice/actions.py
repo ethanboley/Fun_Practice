@@ -130,8 +130,6 @@ class Battle:
         seconds = 1
         # set round num to 1
         round_num = 1
-        # reset player skill cooldown
-        cooldown = 0
         # set player mag val
         if self.active_player.mag != self.active_player.maxmag:
             self.active_player.mag += 1 + self.active_player.level
@@ -147,7 +145,7 @@ class Battle:
                 dprint(f'Round {round_num}, FIGHT! ')
                 round_num += 1
             # handle the player's turn
-            cooldown = self.handle_player_turn(seconds, cooldown)
+            self.handle_player_turn(seconds)
             # go through the allie's turns
             self.handle_ally_turns(seconds)
             # handle the monster's turns
@@ -164,11 +162,8 @@ class Battle:
     def boss(self, mon_list):
         self.init_parti(mon_list)
     
-    def handle_player_turn(self, seconds, cooldown):
+    def handle_player_turn(self, seconds):
         if seconds % self.active_player.agi == 0:
-            # reduce skill cooldown if applicable
-            if cooldown:
-                cooldown -= 1
             # prompt for battle option
             for i in range(4):
                 print(f'{i + 1}: {self.battle_options[i]}')    
@@ -181,13 +176,19 @@ class Battle:
                 else:
                     dprint('target which monster')
                     target = get_list_option(self.active_monsters)
+                
+                # adjust player skill cooldown ??? 
+                for skill in self.active_player.known_skills:
+                    if skill.downtime < skill.cooldown:
+                        skill.downtime += 1
+
                 # attack
                 self.active_player.attack(target, self.xp_thresholds)
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
 
-            elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL'] and (not cooldown):
+            elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL']:
                 # define the target
                 if len(self.active_monsters) == 1:
                     target = self.active_monsters[-1]
@@ -195,7 +196,7 @@ class Battle:
                     dprint('target which monster')
                     target = get_list_option(self.active_monsters)
                 # special attack
-                cooldown = self.active_player.special_attack(target, self.xp_thresholds)
+                self.active_player.special_attack(target, self.xp_thresholds)
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
@@ -260,7 +261,6 @@ class Battle:
                         self.active_monsters.clear()
                 else:
                     dprint(f'{self.active_player.name} failed their escape attempt.')
-            return cooldown
     
     def handle_ally_turns(self, seconds):
         for ally in self.active_teamates:
@@ -336,12 +336,13 @@ def check_user_input(type='l', list=[], dict={}):
 
 def get_validated_input(prompt, options):
     if not options:
+        dprint('No options to choose from. ')
         return None
     
     dprint(prompt)
     while True:
         for i, option in enumerate(options, start=1):
-            if isinstance(option, Skill):  # Assuming Skill is the class name for the skill type
+            if isinstance(option, Skill):
                 print(f'{i}: {option.name}; cost: {option.cost}, cooldown: {option.cooldown}, power: {option.damage}')
             else:
                 print(f'{i}: {option.name}')
@@ -358,7 +359,7 @@ def get_validated_input(prompt, options):
 
 # Usage Example for List of Options
 def get_list_option(options):
-    ans = get_validated_input('Choose an option:',options)
+    ans = get_validated_input('Choose an option:', options)
     if ans == None:
         print('No options available.' )
         return

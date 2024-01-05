@@ -97,6 +97,11 @@ class Fighter(Player):
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
+        # Update skill downtime
+        # for skill in self.known_skills:
+        #     if skill.downtime < skill.cooldown:
+        #         skill.downtime += 1
+
         if random.random() < self.accuracy:
             damage = self.atk - random.randint(0, self.atk // 5)
             enemy.hp -= damage
@@ -136,16 +141,31 @@ class Fighter(Player):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
             return 0
-        skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
         
-        if not skill.is_usable():
-            dprint('That skill is on cooldown. ')
+        # update skill downtime (this method requires that all action methods need these lines at the begining)
+        for skill in self.known_skills:
+            if skill.downtime < skill.cooldown: # if downtime is less than cooldown
+                skill.downtime += 1 # bring the 2 closer together
+
+        # that way when this line comes along the number of usable skills is accurate
+        skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
+        if skill == None:
+            dprint('No skills to use.')
+            for skill in self.known_skills:
+                print(f'Skill: {skill.name}, cooldown {skill.cooldown - skill.downtime} (turns remaining).')
+            self.attack(enemy, xp_thresholds)
+            return
+
+        while not skill.is_usable():
+            dprint('That skill is on cooldown.')
+            skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
         
         self.mag -= skill.cost
         strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
         if random.random() < self.accuracy + self.acu:
             enemy.hp -= strong_damage
+            skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
             dprint(f'{self.name} connects with the sword skill {skill.name}!')
             dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
             if enemy.is_alive():
@@ -157,6 +177,7 @@ class Fighter(Player):
                 enemy.drop(self)
         elif random.random() < self.accuracy:
             enemy.hp -= weak_damage
+            skill.set_downtime() # downtime
             dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
             dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
             if enemy.is_alive():
@@ -168,7 +189,7 @@ class Fighter(Player):
                 enemy.drop(self)
         else:
             dprint(f'{self.name} executed the skill {skill.name} but missed! ')
-        return skill.cooldown
+            skill.set_downtime() # even though it was a miss, its still a use. 
     
     def learn_skill(self):
         skills = init_skills()
@@ -190,23 +211,27 @@ class Fighter(Player):
                 break
     
     def remove_skill(self):
-        dprint('Replace which skill? ') # ask
-        skill_int = check_user_input('s',list=self.known_skills)
+        skill_int = get_validated_input('Replace which skill? ', self.known_skills)
         self.known_skills.remove(self.known_skills[skill_int - 1]) # remove the chosen skill at valid position
 
     def add_skill(self, learnables):
-        dprint('Add which skill? ') # ask
-        skill_int = check_user_input('s',list=learnables)
+        skill_int = get_validated_input('Add which skill', learnables)
         self.known_skills.append(learnables[skill_int - 1]) # append the selected choice to known skills
         dprint(f'{self.name} has learned the skill {self.known_skills[-1].name}!')
 
     def choose_skill(self, skills):
-        dprint('which skill do you want to use? ')
-        user = check_user_input('s',list=skills)
+        user = get_validated_input('Which skill do you want to use? ', skills)
+        if user == None:
+            return
         return skills[user - 1]
     
     def use_item(self, enemy, xp_thresholds):
-        useables = [item for item in self.inventory.contents if item.can_use]
+        # Update skill downtime
+        for skill in self.known_skills:
+            if skill.downtime < skill.cooldown:
+                skill.downtime += 1
+
+        useables = [item for item in self.inventory.contents if item.can_use()]
         if len(useables) != 0:
             list_int = check_user_input(list=useables)
             to_use = useables[list_int - 1]
@@ -219,6 +244,11 @@ class Fighter(Player):
             dprint('Your inventory is empty. ')
 
     def run(self):
+        # update skill downtime
+        for skill in self.known_skills: 
+            if skill.downtime < skill.cooldown:
+                skill.downtime += 1
+
         small = int((self.accuracy * 100) + (20 - self.agi))
         big = int(80 + self.agi)
         if random.randint(0, small) > random.randint(0, big):
