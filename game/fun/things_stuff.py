@@ -1,6 +1,41 @@
 
 # initialize_pygame()
 from actions import *
+    
+
+class Skill():
+    def __init__(self, name, type, level, cost, cooldown, damage):
+        self.name = name
+        self.type = type
+        self.level = level
+        self.cost = cost
+        self.cooldown = cooldown
+        self.downtime = cooldown
+        self.damage = damage
+
+    def tick(self):
+        if self.downtime <= self.cooldown:
+            self.downtime += 1
+
+    def set_downtime(self):
+        self.downtime -= self.cooldown
+
+    def is_usable(self):
+        if self.downtime >= self.cooldown:
+            return True
+        return False
+
+
+class Spell(Skill):
+    def __init__(self, name, type, level, cost, cooldown, damage, nature):
+        super().__init__(name, type, level, cost, cooldown, damage)
+        self.nature = nature
+
+
+class Spall(Skill): # for pugilists (verb: to break into small peices)
+    def __init__(self, name, type, level, cost, cooldown, damage):
+        super().__init__(name, type, level, cost, cooldown, damage)
+
 
 class Item():
     def __init__(self, name, level, sell_price, rarity, sold, can_use) -> None:
@@ -10,58 +45,6 @@ class Item():
         self.rarity = rarity
         self.sold = sold
         self.can_use = can_use
-    
-    def use_as_magic_glass():
-        pass
-
-    def use_as_glass_of_the_weave():
-        pass
-        
-    def use_as_life_potion():
-        pass
-    
-    def use_as_giga_life_potion():
-        pass
-    
-    def use_as_glass_bottle():
-        pass
-    
-    def use_as_kales_o_bottle():
-        pass
-    
-    def use_as_little_dagger():
-        pass
-    
-    def use_as_venom_glass():
-        pass
-    
-    def use_as_nepenth_fruit():
-        pass
-    
-    def use_as_nawsoth_fruit():
-        pass
-
-    def use_as_return_soul_stone():
-        pass
-
-    def use_as_ooze_jelly():
-        pass
-
-    def use_as_tremble_shortcake():
-        pass
-
-    def use_as_super_aja_stone():
-        pass
-
-
-class Skill():
-    def __init__(self, name, type, level, cost, cooldown, damage):
-        self.name = name
-        self.type = type
-        self.level = level
-        self.cost = cost
-        self.cooldown = cooldown
-        self.damage = damage
 
 
 class Inventory():
@@ -225,6 +208,24 @@ class SuperAjaStone(Item):
         pass # high damaging attack
         
 
+# ------------------------------------------ spells
+
+class SpellAttack(Spell):
+    def __init__(self, name, type, level, cost, cooldown, damage, nature):
+        super().__init__(name, type, level, cost, cooldown, damage, nature)
+    
+    def effect(self, enemy, strong_damage, xp_thresholds, caster):
+        enemy.hp -= strong_damage
+        self.set_downtime()
+        dprint(f'{caster.name} casts {self.name}!') # TODO define spells
+        dprint(f'The spell hits {enemy.name} for {strong_damage} damage!')
+        if enemy.is_alive():
+            dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        else:
+            dprint(f'{self.name} blasted {enemy.name} to bits!')
+            caster.gain_xp(enemy.xp, xp_thresholds)
+            caster.gain_col(enemy.col)
+            enemy.drop(caster)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -302,85 +303,82 @@ def init_skills(): # 0 is sword skills, 1 is spells (stands), 2 is martial arts 
     single_shot = Skill('single shot', 0, 2, 1, 2, 1)
     parallel_sting = Skill('parallel sting', 0, 2, 2, 2, 2) # cost 2 = 8 # (level + (cost * 3))
     streak = Skill('streak', 0, 3, 1, 3, 2)
-    uppercut = Skill('uppercut', 0, 3, 1, 4, 3) # cost 2 = 9
+    uppercut = Skill('uppercut', 0, 3, 1, 4, 3)
     back_rush = Skill('back rush', 0, 4, 1, 5, 4)
-    diagonal_sting = Skill('diagonal sting', 0, 4, 2, 2, 3) # 2 = 10
+    diagonal_sting = Skill('diagonal sting', 0, 4, 2, 2, 3)
     serration_wave = Skill('serration wave', 0, 5, 1, 2, 3)
-    triangular = Skill('triangular', 0, 5, 3, 3, 8) # 3 = 14
+    triangular = Skill('triangular', 0, 5, 3, 3, 8)
     avalanche = Skill('avalanche', 0, 6, 1, 6, 9)
-    horizontal_arc = Skill('horizontal arc', 0, 6, 2, 4, 9) # 3 = 15
+    horizontal_arc = Skill('horizontal arc', 0, 6, 2, 4, 9)
     double_cleave = Skill('double cleave', 0, 7, 2, 5, 11)
-    canine = Skill('canine', 0, 7, 3, 2, 8) # 3 = 16
+    canine = Skill('canine', 0, 7, 3, 2, 8)
     fade_edge = Skill('fade edge', 0, 8, 1, 2, 4)
-    vertical_arc = Skill('vertical arc', 0, 8, 2, 4, 11) # 3 = 17
+    vertical_arc = Skill('vertical arc', 0, 8, 2, 4, 11)
     savage_fulcrum = Skill('savage fulcrum', 0, 9, 3, 4, 13)
-    sonic_leap = Skill('sonic leap', 0, 9, 1, 3, 10) # 3 = 18
-    fell_cresent = Skill('fell cresent', 0, 10, 1, 3, 11) # 3 = 19
-    quad_pain = Skill('quad pain', 0, 11, 4, 2, 14) # 4 = 23
-    rapid_bite = Skill('rapid bite', 0, 12, 2, 2, 13) # 4 = 24
-    flashing_peirce = Skill('flashing peirce', 0, 13, 1, 2, 13) # 4 = 25
-    cascade = Skill('cascade', 0, 14, 1, 3, 15) # 4 = 26
-    treble_scythe = Skill('treble scythe', 0, 15, 3, 3, 20) # 4 = 27
-    rage_spike = Skill('rage spike', 0, 16, 1, 3, 17) # 4 = 28
-    horizontal_square = Skill('horizontal square', 0, 17, 4, 4, 25) # 4 = 29
-    vertical_square = Skill('vertical square', 0, 18, 4, 4, 26) # 4 = 30
-    water_surface_slash = Skill('water surface slash', 0, 19, 1, 3, 20) # 4 = 31
-    snake_bite = Skill('snake bite', 0, 20, 2, 3, 23) # 4 = 32
-    folium = Skill('folium', 0, 21, 1, 2, 21) # 4 = 33
-    water_wheel = Skill('water wheel', 0, 22, 2, 3, 25) # 4 = 34
-    phantom_moon = Skill('phantom moon', 0, 23, 1, 3, 24) # 4 = 35
-    slashing_ray = Skill('slashing ray', 0, 24, 2, 3, 27) # 4 = 36
-    flowing_dance = Skill('flowing dance', 0, 25, 3, 3, 30) # 4 = 37
-    silent_ruin = Skill('silent ruin', 0, 26, 1, 2, 26) # 4 = 38
-    thunderclap_flash = Skill('thuderclap flash', 0, 27, 1, 3, 28) # 5 = 42
-    double_circular = Skill('double circular', 0, 28, 2, 4, 32) # 5 = 43
-    striking_tide = Skill('striking tide', 0, 29, 1, 3, 30) # 5 = 44
-    reaver = Skill('reaver', 0, 30, 1, 3, 31) # 5 = 45
-    slice_n_dice = Skill('slice n dice', 0, 31, 6, 3, 42) # 6 = 49
-    oblique = Skill('oblique', 0, 32, 1, 3, 33) # 6 = 50
-    blessed_rain = Skill('blessed rain', 0, 33, 5, 3, 42) # 6 = 51
-    embu = Skill('embu', 0, 34, 1, 3, 35) # 6 = 52
-    vorpal_strike = Skill('vorpal strike', 0, 35, 1, 3, 37) # 6 = 53
-    absolute_void = Skill('absolute void', 0, 36, 1, 3, 37) # 7 = 57
-    whirlpool = Skill('whirlpool', 0, 37, 4, 3, 44) # 7 = 58
-    ukifune = Skill('ukifune', 0, 38, 1, 3, 39) # 7 = 59
-    dancing_flash = Skill('dancing flash', 0, 39, 3, 2, 40) # 7 = 60
-    star_splash = Skill('star splash', 0, 40, 8, 2, 43) # 8 = 64
-    waterfall_basin = Skill('waterfall basin', 0, 42, 1, 3, 42) # 8 = 66
-    scarlet_fan = Skill('scarlet fan', 0, 44, 3, 3, 48) # 8  = 68
-    deadly_sins = Skill('deadly sins', 0, 46, 7, 4, 59) # 9 = 73
-    constant_flux = Skill('constant flux', 0, 48, 2, 3, 51) # 9 = 75
-    clear_blue = Skill('clear blue', 0, 50, 3, 3, 55) #  10 = 80
-    cataract = Skill('cataract', 0, 52, 2, 2, 52) # 10 = 82
-    roar = Skill('roar', 0, 54, 2, 5, 58) # 11 = 87
-    meteor_break = Skill('meteor break', 0, 56, 7, 4, 71) # 11 =  89
-    dead_calm = Skill('dead calm', 0, 58, 12, 3, 83) # 12 = 94
-    howling_octave = Skill('howling octave', 0, 60, 8, 3, 75) # 12 = 96
-    raging_sun = Skill('raging sun', 0, 62, 6, 3, 74) # 13 = 101
-    neutron = Skill('neutron', 0, 64, 5, 2, 66) # 13 = 103
-    godspeed = Skill('godspeed', 0, 66, 3, 2, 67) # 14 = 108
-    tsujikaze = Skill('tsujikaze', 0, 68, 9, 3, 84) # 14 = 110
-    burning_bones = Skill('burning bones', 0, 70, 4, 3, 77) # 15 = 115
-    volcanic_blazer = Skill('volcanic blazer', 0, 72, 8, 5, 95) # 15 = 117
-    obscuring_clouds = Skill('burning bones', 0, 74, 10, 3, 93) # 16 = 122
-    crucifixion = Skill('crucifixion', 0, 76, 6, 2, 78) # 16 = 124
-    solar_heat_haze = Skill('solar heat haze', 0, 78, 9, 3, 96) # 17 =  129
-    nova_ascension = Skill('nova ascension', 0, 80, 10, 4, 105) # 17 = 131
-    beneficient_radiance = Skill('beneficient radiance', 0, 82, 4, 3, 89) # 18 = 136
-    dragon_halo = Skill('dragon halo', 0, 84, 6, 3, 95) # 18 = 138
-    Rengoku = Skill('Rengoku', 0, 86, 1, 3, 88) # (top tier)  19 = 144
-    Meteor_Fall = Skill('Meteor Fall', 0, 88, 2, 4, 96) # (top tier)  20 = 150
-    Hinokami_Kagura = Skill('Hinokami Kagura', 0, 90, 3, 3, 96) # (top tier)  21 = 158
-    Lai = Skill('Lai', 0, 92, 1, 3, 96) # (top tier)  22 = 162
-    Devine_Sword = Skill('Devine Sword', 0, 94, 1, 5, 101) # (top tier)  23 = 168
-    Hiogi = Skill('Hiogi', 0, 96, 3, 3, 105) # (top tier)  24 = 174
-    Zekku = Skill('Zekku', 0, 98, 1, 3, 102) # (top tier)  25 = 180
-    Mothers_Rosario = Skill('Mothers Rosario', 0, 100, 11, 1, 111) # (top tier)  26 = 186
-    The_Eclipse = Skill('The Eclipse', 0, 102, 27, 3, 164) # (top tier)  27 = 192
-    Starburst_Stream = Skill('Starburst Stream', 0, 104, 16, 3, 150) # (top tier) 28 = 200
-    # spells
-    magic_punch = Skill('magic punch', 1, 1, 1, 2, 1)
-    small_healing_word = Skill('small healing word', 1, 1, 1, 3, 2)
+    sonic_leap = Skill('sonic leap', 0, 9, 1, 3, 10)
+    fell_cresent = Skill('fell cresent', 0, 10, 1, 3, 11)
+    quad_pain = Skill('quad pain', 0, 11, 4, 2, 14)
+    rapid_bite = Skill('rapid bite', 0, 12, 2, 2, 13)
+    flashing_peirce = Skill('flashing peirce', 0, 13, 1, 2, 13)
+    cascade = Skill('cascade', 0, 14, 1, 3, 15)
+    treble_scythe = Skill('treble scythe', 0, 15, 3, 3, 20)
+    rage_spike = Skill('rage spike', 0, 16, 1, 3, 17)
+    horizontal_square = Skill('horizontal square', 0, 17, 4, 4, 25)
+    vertical_square = Skill('vertical square', 0, 18, 4, 4, 26)
+    water_surface_slash = Skill('water surface slash', 0, 19, 1, 3, 20)
+    snake_bite = Skill('snake bite', 0, 20, 2, 3, 23)
+    folium = Skill('folium', 0, 21, 1, 2, 21)
+    water_wheel = Skill('water wheel', 0, 22, 2, 3, 25)
+    phantom_moon = Skill('phantom moon', 0, 23, 1, 3, 24)
+    slashing_ray = Skill('slashing ray', 0, 24, 2, 3, 27)
+    flowing_dance = Skill('flowing dance', 0, 25, 3, 3, 30)
+    silent_ruin = Skill('silent ruin', 0, 26, 1, 2, 26)
+    thunderclap_flash = Skill('thuderclap flash', 0, 27, 1, 3, 28)
+    double_circular = Skill('double circular', 0, 28, 2, 4, 32)
+    striking_tide = Skill('striking tide', 0, 29, 1, 3, 30)
+    reaver = Skill('reaver', 0, 30, 1, 3, 31)
+    slice_n_dice = Skill('slice n dice', 0, 31, 6, 3, 42)
+    oblique = Skill('oblique', 0, 32, 1, 3, 33)
+    blessed_rain = Skill('blessed rain', 0, 33, 5, 3, 42)
+    embu = Skill('embu', 0, 34, 1, 3, 35)
+    vorpal_strike = Skill('vorpal strike', 0, 35, 1, 3, 37)
+    absolute_void = Skill('absolute void', 0, 36, 1, 3, 37)
+    whirlpool = Skill('whirlpool', 0, 37, 4, 3, 44)
+    ukifune = Skill('ukifune', 0, 38, 1, 3, 39)
+    dancing_flash = Skill('dancing flash', 0, 39, 3, 2, 40)
+    star_splash = Skill('star splash', 0, 40, 8, 2, 43)
+    waterfall_basin = Skill('waterfall basin', 0, 42, 1, 3, 42)
+    scarlet_fan = Skill('scarlet fan', 0, 44, 3, 3, 48) 
+    deadly_sins = Skill('deadly sins', 0, 46, 7, 4, 59)
+    constant_flux = Skill('constant flux', 0, 48, 2, 3, 51)
+    clear_blue = Skill('clear blue', 0, 50, 3, 3, 55) 
+    cataract = Skill('cataract', 0, 52, 2, 2, 52) 
+    roar = Skill('roar', 0, 54, 2, 5, 58) 
+    meteor_break = Skill('meteor break', 0, 56, 7, 4, 71) 
+    dead_calm = Skill('dead calm', 0, 58, 12, 3, 83) 
+    howling_octave = Skill('howling octave', 0, 60, 8, 3, 75) 
+    raging_sun = Skill('raging sun', 0, 62, 6, 3, 74) 
+    neutron = Skill('neutron', 0, 64, 5, 2, 66) 
+    godspeed = Skill('godspeed', 0, 66, 3, 2, 67) 
+    tsujikaze = Skill('tsujikaze', 0, 68, 9, 3, 84) 
+    burning_bones = Skill('burning bones', 0, 70, 4, 3, 77) 
+    volcanic_blazer = Skill('volcanic blazer', 0, 72, 8, 5, 95) 
+    obscuring_clouds = Skill('burning bones', 0, 74, 10, 3, 93) 
+    crucifixion = Skill('crucifixion', 0, 76, 6, 2, 78) 
+    solar_heat_haze = Skill('solar heat haze', 0, 78, 9, 3, 96) 
+    nova_ascension = Skill('nova ascension', 0, 80, 10, 4, 105) 
+    beneficient_radiance = Skill('beneficient radiance', 0, 82, 4, 3, 89) 
+    dragon_halo = Skill('dragon halo', 0, 84, 6, 3, 95) 
+    Rengoku = Skill('Rengoku', 0, 86, 1, 3, 88) # (top tier)
+    Meteor_Fall = Skill('Meteor Fall', 0, 88, 2, 4, 96) # (top tier)
+    Hinokami_Kagura = Skill('Hinokami Kagura', 0, 90, 3, 3, 96) # (top tier)
+    Lai = Skill('Lai', 0, 92, 1, 3, 96) # (top tier)
+    Devine_Sword = Skill('Devine Sword', 0, 94, 1, 5, 101) # (top tier)
+    Hiogi = Skill('Hiogi', 0, 96, 3, 3, 105) # (top tier)
+    Zekku = Skill('Zekku', 0, 98, 1, 3, 102) # (top tier)
+    Mothers_Rosario = Skill('Mothers Rosario', 0, 100, 11, 1, 111) # (top tier)
+    The_Eclipse = Skill('The Eclipse', 0, 102, 27, 3, 164) # (top tier)
+    Starburst_Stream = Skill('Starburst Stream', 0, 104, 16, 3, 150) # (top tier)
 
 
     skills = [horizontal, vertical, slant, linear, single_shot, parallel_sting, 
@@ -400,9 +398,93 @@ def init_skills(): # 0 is sword skills, 1 is spells (stands), 2 is martial arts 
               obscuring_clouds, crucifixion, solar_heat_haze, nova_ascension, 
               beneficient_radiance, dragon_halo, Rengoku, Meteor_Fall, 
               Hinokami_Kagura, Lai, Devine_Sword, Hiogi, Zekku, Mothers_Rosario, 
-              The_Eclipse, Starburst_Stream, magic_punch, small_healing_word]
+              The_Eclipse, Starburst_Stream]
 
     return skills
+
+
+def init_spells():
+    magic_punch = SpellAttack('magic punch', 1, 1, 1, 1, 1, 0)
+    small_healing_word = Spell('small healing word', 1, 1, 1, 1, 1, 1)
+    dissengage = Spell('dissengage', 1, 1, 1, 1, 0, 2)
+    magic_missile = SpellAttack('magic missile', 1, 1, 2, 1, 2, 0)
+    acid_splash = SpellAttack
+    fire_bolt = SpellAttack
+    expeditious_retreat = Spell
+    thunder_wave = SpellAttack
+    vicious_mockery = SpellAttack
+    magic_arrow = SpellAttack
+    cure_wounds = Spell
+    bane = SpellAttack
+    chromatic_orb = SpellAttack
+    shocking_grasp = SpellAttack
+    witch_bolt = SpellAttack
+    shatter = SpellAttack
+    emperor = Spell
+    light_healing = Spell
+    emerald_splash = SpellAttack
+    misty_step = Spell
+    magicians_red = SpellAttack
+    fireball = SpellAttack
+    fear = Spell
+    lightning = SpellAttack
+    hanged_man = Spell
+    dragon_pulse = SpellAttack
+    dream_eater = Spell
+    electroball = SpellAttack
+    explosion = SpellAttack
+    gravity = Spell
+    heal_pulse = Spell
+    hex = SpellAttack
+    hurricane = Spell
+    nightmare = Spell
+    remote_bomb = SpellAttack
+    recover = Spell
+    rock_tomb = Spell
+    water_pulse = SpellAttack
+    thunderlance = SpellAttack
+    electrosphere = SpellAttack
+    vermin_bane = SpellAttack
+    heal = Spell
+    generate_element = Spell
+
+    crazy_diamond = Spell
+    stone_free = Spell
+    gold_experience = Spell
+    flamethrower = SpellAttack
+    incinerate = SpellAttack
+    judgement = Spell
+    stasis = Spell
+    self_destruct = SpellAttack
+    synthesis = Spell
+    teleport = Spell
+    revalis_gale = Spell
+    invisibility = Spell
+    heavy_recover = Spell
+    grand_fireball = SpellAttack
+    dragon_lightning = SpellAttack
+    disintegrate = SpellAttack
+    chain_dragon_lightning = SpellAttack
+    blasphemy = SpellAttack
+    bless_of_titania = Spell
+    nuclear_blast = SpellAttack
+    black_hole = SpellAttack
+    reality_slash = SpellAttack
+    transfer_unit_durability = Spell
+
+    Power_Word_Kill = SpellAttack # top tier
+    Delayed_Strike_Lightning_Bolt = SpellAttack # top tier
+    Release_Recolection = Spell # top tier
+    Meteor_Swarm = SpellAttack # top tier
+    True_Death = SpellAttack # top tier
+    Grasp_Heart = SpellAttack # top tier
+    Greater_Teleportation = Spell # top tier
+    Urbosas_Fury = SpellAttack # top tier
+    Hyper_Beam = SpellAttack # top tier
+    Star_Platinum = Spell # top tier
+    Miphas_Grace = Spell # top tier
+    Fallen_Down = SpellAttack # top tier
+
 
 
 # # Define background music

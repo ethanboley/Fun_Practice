@@ -47,7 +47,7 @@ class Hospital:
                 doc = choose_monster(player, doctors)
                 dprint(f'your doctor will be {doc.name}')
                 round = 1
-                while player.hp != player.maxhp and doc.is_alive():
+                while doc.is_alive():
                     dprint(f'This is check number {round}.')
                     doc.attack(player)
                     if player.hp >= player.maxhp:

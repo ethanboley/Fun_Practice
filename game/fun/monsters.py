@@ -27,7 +27,7 @@ class Doctor:
 
 
 class Enemy:
-    def __init__(self, name, hp, atk, xp, level, accuracy, col, agi):
+    def __init__(self, name, hp, atk, xp, level, accuracy, col, agi, world):
         self.name = name
         self.hp = hp
         self.atk = atk
@@ -36,6 +36,7 @@ class Enemy:
         self.accuracy = accuracy
         self.col = col
         self.agi = agi
+        self.world = world
 
     def attack(self, player):
         if random.random() < self.accuracy:
@@ -56,7 +57,7 @@ class Enemy:
 
 
 class Boss:
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
         self.name = name
         self.hp = hp
         self.atk = atk
@@ -65,6 +66,7 @@ class Boss:
         self.acu = acu
         self.col = col
         self.agi = agi
+        self.world = world
     
     def attack(self, player):
         if random.random() < self.acu:
@@ -83,8 +85,8 @@ class Boss:
 
 
 class Kosaur(Boss):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi) -> None:
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world) -> None:
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.acu_mod = .02
         self.title = 'Scourge of the Kobold Wood'
 
@@ -114,8 +116,8 @@ class Kosaur(Boss):
 
 
 class Illfang(Boss):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi) -> None:
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world) -> None:
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.acu_mod = .03
         self.title = 'the Kobold Lord'
     
@@ -124,8 +126,8 @@ class Illfang(Boss):
 
 
 class Barran(Boss):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.acu_mod = .03
         self.title = 'the General Tarus'
 
@@ -134,8 +136,8 @@ class Barran(Boss):
 
 
 class Asterios(Boss):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.acu_mod = .04
         self.title = 'the Tarus King'
 
@@ -147,8 +149,8 @@ class Asterios(Boss):
 
 
 class Beastoid(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['col coin', 'mundane scrap metal',
                                 'glass bottle', 'onix stone', 'opal', 'grand col']]
@@ -178,8 +180,8 @@ class Beastoid(Enemy):
 
 
 class Koboldoid(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['col coin', 'glass bottle', 'little dagger', 'onix stone']]
         
@@ -204,8 +206,8 @@ class Koboldoid(Enemy):
 
 
 class Humanoid(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['col coin', 'glass bottle', 'simple fabric', 'venom glass', 
                                 'onix stone', 'life potion']]
@@ -235,8 +237,8 @@ class Humanoid(Enemy):
 
 
 class Plant(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['living wood', 'aged teak log', 'droplet of villi'
                                 'nawsoth fruit']]
@@ -263,8 +265,8 @@ class Plant(Enemy):
 
 
 class Nepenth(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['living wood', 'monster tooth', 'nepenth fruit',
                                 'nepenths ovule', 'droplet of villi', 'ooze jelly']]
@@ -295,8 +297,8 @@ class Nepenth(Enemy):
 
 
 class Beast(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['mundane organ', 'monster tooth', 'hide']]
         
@@ -320,8 +322,8 @@ class Beast(Enemy):
 
 
 class Worm(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['prostomium', 'ooze jelly']]
         
@@ -343,8 +345,8 @@ class Worm(Enemy):
 
 
 class Slime(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['slime jelly', 'slime membrane', 'ooze jelly', 
                                 'hyper slime jelly']]
@@ -371,8 +373,8 @@ class Slime(Enemy):
 
 
 class Insect(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['carapas', 'venom glass', 'acutite']]
         
@@ -396,8 +398,8 @@ class Insect(Enemy):
 
 
 class Construct(Enemy):
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in
                                ['mundane scrap metal', 'onix stone', 
                                 'simple fabric', 'glass bottle', 'magic glass', 
@@ -463,8 +465,8 @@ class Construct(Enemy):
 
 
 class Tarusoid(Enemy): # world 2 (cows)
-    def __init__(self, name, hp, atk, xp, level, acu, col, agi):
-        super().__init__(name, hp, atk, xp, level, acu, col, agi)
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world)
         self.possible_drops = [drop for drop in drops if drop.name in 
                                []]
         
@@ -486,7 +488,7 @@ class Tarusoid(Enemy): # world 2 (cows)
 def init_doctors():
     dr_ed_bmed = Doctor('Dr. Ed B.med.', 2, 2, 1, 1, .4)
     dr_doug_bmbs = Doctor('Dr. Doug BMBS', 3, 3, 2, 1, .55)
-    dr_steven_int = Doctor('Dr. Steven Intern', 3, 1, 2, 1, .35)
+    dr_steven_int = Doctor('Dr. Steven Intern', 3, 1, 1, 1, .35)
     dr_sye_bsrg = Doctor('Dr. Sye B.Srg.', 4, 4, 3, 1, .8)
     dr_tom_mbbs = Doctor('Dr. Tom MBBS', 5, 3, 3, 1, .5)
     dr_van_mph = Doctor('Dr. Van MPH', 6, 4, 4, 1, .5)
@@ -519,43 +521,43 @@ def init_doctors():
     return doc_list
 
 def init_enemies(): 
-    windworm = Worm('windworm', 2, 1, 2, 1, .2, 0, 31) # changed from 2 to 55 for debugging puroses
-    brown_worm = Worm('brown worm', 4, 1, 3, 1, .35, 0, 42)
-    slime = Slime('slime', 4, 1, 4, 1, .65, 0, 28)
-    refuse = Construct('refuse', 5, 1, 3, 1, .45, 1, 22)
-    cykloone = Insect('cykloone', 6, 1, 2, 1, .3, 0, 14)
-    frenzy_boar = Beast('frenzy boar', 9, 2, 5, 1, .55, 0, 18)
-    field_wolf = Beast('field wolf', 10, 2, 5, 1, .7, 0, 14)
-    greedy_badger = Beastoid('greedy badger', 11, 1, 4, 1, .7, 2, 13)
-    awakened_shrub = Plant('awakened shrub', 10, 2, 5, 1, .6, 0, 21)
-    small_kobold = Koboldoid('small kobold', 12, 3, 7, 1, .65, 1, 20)
-    barkling = Plant('barkling', 17, 1, 6, 1, .8, 0, 27)
-    little_nepenth = Nepenth('little nepenth', 21, 3, 9, 2, .8, 0, 12)
-    kobold_slave = Koboldoid('kobold slave', 17, 3, 8, 2, .7, 1, 19)
-    windwasp = Insect('windwasp', 15, 3, 6, 2, .6, 0, 10)
-    dire_wolf = Beast('dire wolf', 19, 2, 9, 2, .85, 0, 17)
-    green_worm = Worm('green worm', 31, 2, 6, 2, .4, 0, 30)
-    nepenth = Nepenth('nepenth', 31, 3, 10, 2, .8, 0, 14)
-    kobold_soldier = Koboldoid('kobold soldier', 30, 4, 9, 2, .75, 2, 18)
-    Kobold_guard = Koboldoid('kobold guard', 28, 5, 10, 2, .75, 3, 17)
-    shrubent = Plant('shrubent', 37, 3, 7, 3, .9, 0, 25)
-    pod_nepenth = Nepenth('pod nepenth', 38, 1, 7, 3, .8, 0, 16)
-    flower_nepenth = Nepenth('flower nepenth', 45, 4, 10, 3, .8, 0, 15)
-    red_worm = Worm('red worm', 49, 2, 8, 3, .45, 0, 29)
-    kosaur = Enemy('Kosaur (F-Boss)', 60, 5, 18, 3, .7, 3, 20)
-    big_nepenth = Nepenth('big nepenth', 50, 4, 11, 3, .8, 0, 18)
-    sappent = Plant('sappent', 54, 4, 11, 3, .95, 0, 24)
-    ruin_kobold = Koboldoid('ruin kobold', 53, 5, 12, 3, .8, 4, 17)
-    sly_srewman = Beastoid('sly shrewman', 39, 1, 8, 3, .99, 6, 5)
-    human_bandit = Humanoid('bandit (human)', 51, 6, 11, 4, .8, 3, 20)
-    kobold_chief = Koboldoid('kobold chief', 62, 5, 8, 4, .7, 5, 18)
-    black_worm = Worm('black worm', 78, 3, 9, 4, .5, 0, 28)
-    treent = Plant('treent', 70, 5, 12, 4, .8, 0, 32)
-    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 75, 6, 12, 4, .85, 5, 16)
-    bark_golem = Plant('bark_golem', 91, 4, 10, 4, .95, 1, 26)
-    flying_kobold = Koboldoid('flying kobold', 64, 7, 14, 4, .7, 4, 9)
-    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 85, 7, 13, 5, .85, 6, 15)
-    illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 9, 40, 5, .9, 15, 20)
+    windworm = Worm('windworm', 2, 1, 2, 1, .2, 0, 31, [1]) # changed from 2 to 55 for debugging puroses
+    brown_worm = Worm('brown worm', 4, 1, 3, 1, .35, 0, 42, [1])
+    slime = Slime('slime', 4, 1, 4, 1, .65, 0, 28, [1])
+    refuse = Construct('refuse', 5, 1, 3, 1, .45, 1, 22, [1,3,6,9])
+    cykloone = Insect('cykloone', 6, 1, 2, 1, .3, 0, 14, [1])
+    frenzy_boar = Beast('frenzy boar', 9, 2, 5, 1, .55, 0, 18, [1,2,3,4])
+    field_wolf = Beast('field wolf', 10, 2, 5, 1, .7, 0, 14, [1,2])
+    greedy_badger = Beastoid('greedy badger', 11, 1, 4, 1, .7, 2, 13, [1,2,3])
+    awakened_shrub = Plant('awakened shrub', 10, 2, 5, 1, .6, 0, 21, [1,4,5])
+    small_kobold = Koboldoid('small kobold', 12, 3, 7, 1, .65, 1, 20, [1])
+    barkling = Plant('barkling', 17, 1, 6, 1, .8, 0, 27, [1])
+    little_nepenth = Nepenth('little nepenth', 21, 3, 9, 2, .8, 0, 12, [1])
+    kobold_slave = Koboldoid('kobold slave', 17, 3, 8, 2, .7, 1, 19, [1])
+    windwasp = Insect('windwasp', 15, 3, 6, 2, .6, 0, 10, [1,2])
+    dire_wolf = Beast('dire wolf', 19, 2, 9, 2, .85, 0, 17, [1,3,4])
+    green_worm = Worm('green worm', 31, 2, 6, 2, .4, 0, 30, [1])
+    nepenth = Nepenth('nepenth', 31, 3, 10, 2, .8, 0, 14, [1])
+    kobold_soldier = Koboldoid('kobold soldier', 30, 4, 9, 2, .75, 2, 18, [1])
+    Kobold_guard = Koboldoid('kobold guard', 28, 5, 10, 2, .75, 3, 17, [1])
+    shrubent = Plant('shrubent', 37, 3, 7, 3, .9, 0, 25, [1])
+    pod_nepenth = Nepenth('pod nepenth', 38, 1, 7, 3, .8, 0, 16, [1])
+    flower_nepenth = Nepenth('flower nepenth', 45, 4, 10, 3, .8, 0, 15, [1])
+    red_worm = Worm('red worm', 49, 2, 8, 3, .45, 0, 29, [1])
+    kosaur = Enemy('Kosaur (F-Boss)', 60, 5, 20, 3, .7, 3, 20, [1])
+    big_nepenth = Nepenth('big nepenth', 50, 4, 11, 3, .8, 0, 18, [1])
+    sappent = Plant('sappent', 54, 4, 11, 3, .95, 0, 24, [1])
+    ruin_kobold = Koboldoid('ruin kobold', 53, 5, 12, 3, .8, 4, 17, [1,3])
+    sly_srewman = Beastoid('sly shrewman', 39, 1, 8, 3, .99, 6, 5, [1,2,3,5,9])
+    human_bandit = Humanoid('bandit (human)', 51, 6, 11, 4, .8, 3, 20, [1,2,3,6])
+    kobold_chief = Koboldoid('kobold chief', 62, 5, 8, 4, .7, 5, 18, [1])
+    black_worm = Worm('black worm', 78, 3, 9, 4, .5, 0, 28, [1,2])
+    treent = Plant('treent', 70, 5, 12, 4, .8, 0, 32, [1,4])
+    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 75, 6, 12, 4, .85, 5, 16, [1,3])
+    bark_golem = Plant('bark_golem', 91, 4, 10, 4, .95, 1, 26, [1])
+    flying_kobold = Koboldoid('flying kobold', 64, 7, 14, 4, .7, 4, 9, [1])
+    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 85, 7, 13, 5, .85, 6, 15, [1])
+    illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 9, 40, 5, .9, 15, 20, [1])
 
     mon_list = [windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
                 greedy_badger, awakened_shrub, small_kobold, barkling, little_nepenth, 
