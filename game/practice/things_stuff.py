@@ -208,6 +208,24 @@ class SuperAjaStone(Item):
         pass # high damaging attack
         
 
+# ------------------------------------------ spells
+
+class SpellAttack(Spell):
+    def __init__(self, name, type, level, cost, cooldown, damage, nature):
+        super().__init__(name, type, level, cost, cooldown, damage, nature)
+    
+    def effect(self, enemy, strong_damage, xp_thresholds, caster):
+        enemy.hp -= strong_damage
+        self.set_downtime()
+        dprint(f'{caster.name} casts {self.name}!') # TODO define spells
+        dprint(f'The spell hits {enemy.name} for {strong_damage} damage!')
+        if enemy.is_alive():
+            dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        else:
+            dprint(f'{self.name} blasted {enemy.name} to bits!')
+            caster.gain_xp(enemy.xp, xp_thresholds)
+            caster.gain_col(enemy.col)
+            enemy.drop(caster)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -386,86 +404,86 @@ def init_skills(): # 0 is sword skills, 1 is spells (stands), 2 is martial arts 
 
 
 def init_spells():
-    magic_punch = Spell('magic punch', 1, 1, 1, 1, 1, 0)
+    magic_punch = SpellAttack('magic punch', 1, 1, 1, 1, 1, 0)
     small_healing_word = Spell('small healing word', 1, 1, 1, 1, 1, 1)
     dissengage = Spell('dissengage', 1, 1, 1, 1, 0, 2)
-    magic_missile = Spell('magic missile', 1, 1, 2, 1, 2, 0)
-    acid_splash = Spell
-    fire_bolt = Spell
+    magic_missile = SpellAttack('magic missile', 1, 1, 2, 1, 2, 0)
+    acid_splash = SpellAttack
+    fire_bolt = SpellAttack
     expeditious_retreat = Spell
-    thunder_wave = Spell
-    vicious_mockery = Spell
-    magic_arrow = Spell
+    thunder_wave = SpellAttack
+    vicious_mockery = SpellAttack
+    magic_arrow = SpellAttack
     cure_wounds = Spell
-    bane = Spell
-    chromatic_orb = Spell
-    shocking_grasp = Spell
-    witch_bolt = Spell
-    shatter = Spell
+    bane = SpellAttack
+    chromatic_orb = SpellAttack
+    shocking_grasp = SpellAttack
+    witch_bolt = SpellAttack
+    shatter = SpellAttack
     emperor = Spell
     light_healing = Spell
-    emerald_splash = Spell
+    emerald_splash = SpellAttack
     misty_step = Spell
-    magicians_red = Spell
-    fireball = Spell
+    magicians_red = SpellAttack
+    fireball = SpellAttack
     fear = Spell
-    lightning = Spell
+    lightning = SpellAttack
     hanged_man = Spell
-    dragon_pulse = Spell
+    dragon_pulse = SpellAttack
     dream_eater = Spell
-    electroball = Spell
-    explosion = Spell
+    electroball = SpellAttack
+    explosion = SpellAttack
     gravity = Spell
     heal_pulse = Spell
-    hex = Spell
+    hex = SpellAttack
     hurricane = Spell
     nightmare = Spell
-    remote_bomb = Spell
+    remote_bomb = SpellAttack
     recover = Spell
     rock_tomb = Spell
-    water_pulse = Spell
-    thunderlance = Spell
-    electrosphere = Spell
-    vermin_bane = Spell
+    water_pulse = SpellAttack
+    thunderlance = SpellAttack
+    electrosphere = SpellAttack
+    vermin_bane = SpellAttack
     heal = Spell
     generate_element = Spell
 
     crazy_diamond = Spell
     stone_free = Spell
     gold_experience = Spell
-    flamethrower = Spell
-    incinerate = Spell
+    flamethrower = SpellAttack
+    incinerate = SpellAttack
     judgement = Spell
     stasis = Spell
-    self_destruct = Spell
+    self_destruct = SpellAttack
     synthesis = Spell
     teleport = Spell
     revalis_gale = Spell
     invisibility = Spell
     heavy_recover = Spell
-    grand_fireball = Spell
-    dragon_lightning = Spell
-    disintegrate = Spell
-    chain_dragon_lightning = Spell
-    blasphemy = Spell
+    grand_fireball = SpellAttack
+    dragon_lightning = SpellAttack
+    disintegrate = SpellAttack
+    chain_dragon_lightning = SpellAttack
+    blasphemy = SpellAttack
     bless_of_titania = Spell
-    nuclear_blast = Spell
-    black_hole = Spell
-    reality_slash = Spell
+    nuclear_blast = SpellAttack
+    black_hole = SpellAttack
+    reality_slash = SpellAttack
     transfer_unit_durability = Spell
 
-    Power_Word_Kill = Spell # top tier
+    Power_Word_Kill = SpellAttack # top tier
+    Delayed_Strike_Lightning_Bolt = SpellAttack # top tier
     Release_Recolection = Spell # top tier
-    Meteor_Swarm = Spell # top tier
-    True_Death = Spell # top tier
-    Grasp_Heart = Spell # top tier
+    Meteor_Swarm = SpellAttack # top tier
+    True_Death = SpellAttack # top tier
+    Grasp_Heart = SpellAttack # top tier
     Greater_Teleportation = Spell # top tier
-    Urbosas_Fury = Spell # top tier
-    Hyper_Beam = Spell # top tier
+    Urbosas_Fury = SpellAttack # top tier
+    Hyper_Beam = SpellAttack # top tier
     Star_Platinum = Spell # top tier
-    Delayed_Strike_Lightning_Bolt = Spell # top tier
     Miphas_Grace = Spell # top tier
-    Fallen_Down = Spell # top tier
+    Fallen_Down = SpellAttack # top tier
 
 
 

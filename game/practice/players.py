@@ -135,7 +135,7 @@ class Fighter(Player):
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return 0
+            return
         
         # update skill downtime (this method requires that all action methods need these lines at the begining)
         for skill in self.known_skills:
@@ -306,26 +306,31 @@ class Mage(Player):
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return 0
-        spell = self.choose_spell()
+            return
+        # update spell cooldown
+        for spell in self.known_spells:
+            if spell.downtime < spell.cooldown:
+                spell.downtime += 1
+
+        spell = self.choose_spell([spell for spell in self.known_spells if spell.is_usable()])
+        if spell == None:
+            dprint('No spells to use.')
+            for spell in self.known_spells:
+                print(f'Spell: {spell.name}, cooldown {spell.cooldown - spell.downtime} (turns remaining).')
+            self.attack(enemy, xp_thresholds)
+            return
+
         self.mag -= spell.cost
         strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + spell.damage
 
-        if spell.nature == 0:
-            enemy.hp -= strong_damage
-            dprint(f'{self.name} casts {spell.name}!') # TODO define spells
-            dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-            else:
-                dprint(f'{spell.name} blasted {enemy.name} to bits!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
-            return spell.cooldown
+        spell.effect(enemy, strong_damage, xp_thresholds, self)
+        if not enemy.is_alive():
+            self.gain_xp(enemy.xp, xp_thresholds)
+            self.gain_col(enemy.col)
+            enemy.drop(self)
         
-        elif spell.nature == 1: # healing
+        if spell.nature == 1: # healing
             dprint(f'A wave of healing energy surges through {self.name}')
             # dprint('Target\n1: Self\n2: ally')
             # user = input()
@@ -371,9 +376,10 @@ class Mage(Player):
         self.known_spells.append(learnables[spell_int - 1]) # append the selected choice to known spells
         dprint(f'{self.name} has learned the spell {self.known_spells[-1].name}!')
 
-    def choose_spell(self):
-        dprint('which spell do you want to use? ')
-        user = check_user_input('s',list=self.known_spells)
+    def choose_spell(self, spells):
+        user = get_validated_input('Which spell do you want to use? ', spells)
+        if user == None:
+            return
         return self.known_spells[user - 1]
     
     def use_item(self, enemy, xp_thresholds):
