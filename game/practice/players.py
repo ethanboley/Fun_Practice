@@ -15,15 +15,15 @@ class Player:
         self.level = level
         self.accuracy = accuracy
         self.col = col
-        self.asleep = False
-        self.poisoned = False
-        self.confused = False
-        self.frightened = False
-        self.enranged = False
-        self.blessed = False
-        self.defended = False
-        self.empowered = False
-        self.energized = False
+        self.asleep = False # skip turn
+        self.poisoned = False # -hp over time
+        self.confused = False # can't choose turn
+        self.frightened = False # run attempt each turn or nothing
+        self.enranged = False # +damage and -accuracy
+        self.blessed = False # +accuracy
+        self.defended = False # ???
+        self.empowered = False # +atk
+        self.energized = False # +mag
 
 
     def attack(self, enemy, xp_thresholds):
@@ -97,11 +97,6 @@ class Fighter(Player):
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
-        # Update skill downtime
-        # for skill in self.known_skills:
-        #     if skill.downtime < skill.cooldown:
-        #         skill.downtime += 1
-
         if random.random() < self.accuracy:
             damage = self.atk - random.randint(0, self.atk // 5)
             enemy.hp -= damage
@@ -231,7 +226,7 @@ class Fighter(Player):
             if skill.downtime < skill.cooldown:
                 skill.downtime += 1
 
-        useables = [item for item in self.inventory.contents if item.can_use()]
+        useables = [item for item in self.inventory.contents if item.can_use]
         if len(useables) != 0:
             list_int = check_user_input(list=useables)
             to_use = useables[list_int - 1]
@@ -416,6 +411,7 @@ class Pugilist(Player):
         self.skills = init_skills()
         self.known_skills.append(self.skills[83])
         self.inventory = Inventory()
+        self.allies = []
 
     def attack(self, enemy, xp_thresholds):
         if random.random() < self.accuracy:

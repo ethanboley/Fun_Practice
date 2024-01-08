@@ -7,6 +7,15 @@ from things_stuff import Skill
 # import pygame as pg
 
 
+def define_xp_thresholds():
+    base_xp = 100
+    xp_thresholds = []
+    for i in range(100):
+        xp_thresholds.append(base_xp)
+        thresh = round((base_xp * 1.25) + (100 + (i + 1))) # 100, 125 + 101, ...
+        base_xp = thresh
+    return xp_thresholds
+
 def choose_monster(player, monsters):
     one_worthy = [mon for mon in monsters if mon.level <= player.level]
     return random.choice(one_worthy)
@@ -39,77 +48,6 @@ def display_health(player):
         print(u'\u2588' * int(percent // 2) + u'\u258c', end='')
         print(' ' * int((50 - (percent // 2)) - 1) + u'\u258f', end='')
         print(f'{player.hp}/{player.maxhp}   {player.name}')
-
-def battle(player, monster, xp_thresholds, monsters, type=0): # TODO add a list of friends (teamates)
-    battle_options = ['fight', 'skill', 'item', 'run']
-    if type:
-        # play the boss music
-        pass
-    else:
-        dprint(f'you encounter a {monster.name}')
-        round_num = 1
-        seconds = 1
-        cooldown = 0
-        if player.mag != player.maxmag:
-            player.mag += 1 + player.level
-            if player.mag >= player.maxmag:
-                player.mag = player.maxmag
-        active_monsters = []
-        active_monsters.append(monster)
-
-        while player.is_alive() and len(active_monsters) != 0:
-
-            if seconds % 20 == 1:
-                dprint(f'Round {round_num}, FIGHT! ')
-                round_num += 1
-
-            if seconds % player.agi == 0:
-                if cooldown:
-                    cooldown -= 1
-                dprint('Target which monster?')
-                target = get_list_option(active_monsters)
-                for i in range(4):
-                    print(f'{i + 1}: {battle_options[i]}')
-                option = input()
-                if option in ['2', 'Skill', 'skill', 's', 'S'] and (not cooldown):
-                    cooldown = player.special_attack(target, xp_thresholds)
-                    if not target.is_alive():
-                        active_monsters.remove(target)
-                elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
-                    player.use_item(target, xp_thresholds)
-                    if not target.is_alive():
-                        active_monsters.remove(target)
-                elif option in ['4', 'Run', 'run', 'r', 'R', 'nigerundaio!', '5', 'flee']:
-                    if player.run():
-                        dprint(f'{player.name} made a narrow escape!')
-                        break
-                    else:
-                        dprint(f'{player.name} fails their escape attempt!')
-                else:
-                    player.attack(target, xp_thresholds)
-                    if not target.is_alive():
-                        active_monsters.remove(target)
-            
-            # for friend in friends:
-            #     if seconds % friend.agi == 0:
-            #         friend.attack(monster)
-            #         if not target.is_alive():
-            #             active_monsters.remove(target) # TODO see function def line
-
-            for monster in active_monsters:
-                if seconds % monster.agi == 0:
-                    monster.attack(player)
-                    if not player.is_alive():
-                        return False
-            
-            if seconds % 120 == 0:
-                active_monsters.append(choose_monster(player, monsters))
-                dprint('The sound of battle and the smell of blood atracts')
-                dprint(f'a {active_monsters[-1].name} which joins the fight!')
-
-            seconds += 1
-    
-    return True
 
 
 class Battle:

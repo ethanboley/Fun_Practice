@@ -1,25 +1,35 @@
 
+patch/update/commit/or whatever history
+
+dev 0.0.0 (base files and code creation)
+dev 0.0.1 (game base objects)
+dev 0.0.3 (modular code)
+dev 0.0.4 (music files)
+dev 0.0.7 (skills)
+dev 0.0.9 (modular and maintainable code)
+dev 0.0.10 (order of play)
+dev 0.0.13 (bug patch)
+dev 0.0.14 (version control)
+dev 0.0.15 (skill cooldown fix) Current
+...
+alpha 0.1.0 
+...
+beta 0.2.0
+...
+1.0.0 - 1.999.999
+
+
 
 TODO: * = working on
 
 1: *Add in pygame's .mixer to have music play at certain points in the game 
 
-2: *Add sword skills (with cool down?) to make combat more dynamic
-    2a: make a class system using 1 of the following methods {
-        A. Make a class Class and which will be used in each Player instance (methods would call self.Class.<...>)
-        B. Add a string 'class' as an init perameter and use that in Player methods accordingly. 
-        C. A character class is a kind of player. Therefore use inheritance (class will inherit from player)
-}
+2: Write a .dysplay stats method of the player class. 
 
-3: Write a .dysplay stats method of the player class. 
-
-4: Current monsters list is only for world 1, player can choose which world 
+3: Current monsters list is only for world 1, player can choose which world 
 to be in and which monsters to encounter. 
 
-5: *Add a calculate_damage(subject: player or enemy) function that uses acu 
-and atk to return a final damage value. 
-
-7: map: 
+4: map: 
     1 = kobold wood
         kobolds
         nepenths

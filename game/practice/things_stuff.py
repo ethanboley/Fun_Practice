@@ -1,7 +1,7 @@
 
 # initialize_pygame()
 from actions import *
-
+    
 
 class Skill():
     def __init__(self, name, type, level, cost, cooldown, damage):
