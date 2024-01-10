@@ -214,7 +214,7 @@ class SpellAttack(Spell):
     def __init__(self, name, type, level, cost, cooldown, damage, nature):
         super().__init__(name, type, level, cost, cooldown, damage, nature)
     
-    def effect(self, enemy, strong_damage, xp_thresholds, caster):
+    def effect(self, enemy, caster, weak_damage=0, strong_damage=0):
         enemy.hp -= strong_damage
         self.set_downtime()
         dprint(f'{caster.name} casts {self.name}!') # TODO define spells
@@ -223,9 +223,30 @@ class SpellAttack(Spell):
             dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
         else:
             dprint(f'{self.name} blasted {enemy.name} to bits!')
-            caster.gain_xp(enemy.xp, xp_thresholds)
-            caster.gain_col(enemy.col)
-            enemy.drop(caster)
+
+
+class Healing(Spell):
+    def __init__(self, name, type, level, cost, cooldown, damage, nature):
+        super().__init__(name, type, level, cost, cooldown, damage, nature)
+    
+    def effect(self, enemy, caster, weak_damage=0, strong_damage=0):
+        dprint(f'A wave of healing energy surges through {caster.name}')
+        targets = [caster]
+        for ally in caster.allies:
+            targets.append(ally)
+        target = get_list_option(targets)
+        target.hp += weak_damage
+        if target.hp > target.maxhp:
+            target.hp = (target.hp - target.maxhp) // 2 + target.hp
+        dprint(f'{self.name} feels vitality returning.')
+        display_health(target)
+
+class Escaping(Spell):
+    def __init__(self, name, type, level, cost, cooldown, damage, nature):
+        super().__init__(name, type, level, cost, cooldown, damage, nature)
+    
+    def effect(self, enemy, caster, weak_damage=0, strong_damage=0):
+        caster.run()
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -405,7 +426,7 @@ def init_skills(): # 0 is sword skills, 1 is spells (stands), 2 is martial arts 
 
 def init_spells():
     magic_punch = SpellAttack('magic punch', 1, 1, 1, 1, 1, 0)
-    small_healing_word = Spell('small healing word', 1, 1, 1, 1, 1, 1)
+    small_healing_word = Healing('small healing word', 1, 1, 1, 1, 1, 1)
     dissengage = Spell('dissengage', 1, 1, 1, 1, 0, 2)
     magic_missile = SpellAttack('magic missile', 1, 1, 2, 1, 2, 0)
     acid_splash = SpellAttack
@@ -414,14 +435,14 @@ def init_spells():
     thunder_wave = SpellAttack
     vicious_mockery = SpellAttack
     magic_arrow = SpellAttack
-    cure_wounds = Spell
+    cure_wounds = Healing
     bane = SpellAttack
     chromatic_orb = SpellAttack
     shocking_grasp = SpellAttack
     witch_bolt = SpellAttack
     shatter = SpellAttack
     emperor = Spell
-    light_healing = Spell
+    light_healing = Healing
     emerald_splash = SpellAttack
     misty_step = Spell
     magicians_red = SpellAttack
@@ -434,43 +455,43 @@ def init_spells():
     electroball = SpellAttack
     explosion = SpellAttack
     gravity = Spell
-    heal_pulse = Spell
+    heal_pulse = Healing
     hex = SpellAttack
     hurricane = Spell
     nightmare = Spell
     remote_bomb = SpellAttack
-    recover = Spell
+    recover = Healing
     rock_tomb = Spell
     water_pulse = SpellAttack
     thunderlance = SpellAttack
     electrosphere = SpellAttack
     vermin_bane = SpellAttack
-    heal = Spell
+    heal = Healing
     generate_element = Spell
 
-    crazy_diamond = Spell
+    crazy_diamond = Healing
     stone_free = Spell
-    gold_experience = Spell
+    gold_experience = Healing
     flamethrower = SpellAttack
     incinerate = SpellAttack
     judgement = Spell
     stasis = Spell
     self_destruct = SpellAttack
-    synthesis = Spell
+    synthesis = Healing
     teleport = Spell
     revalis_gale = Spell
     invisibility = Spell
-    heavy_recover = Spell
+    heavy_recover = Healing
     grand_fireball = SpellAttack
     dragon_lightning = SpellAttack
     disintegrate = SpellAttack
     chain_dragon_lightning = SpellAttack
     blasphemy = SpellAttack
-    bless_of_titania = Spell
+    bless_of_titania = Healing
     nuclear_blast = SpellAttack
     black_hole = SpellAttack
     reality_slash = SpellAttack
-    transfer_unit_durability = Spell
+    transfer_unit_durability = Healing
 
     Power_Word_Kill = SpellAttack # top tier
     Delayed_Strike_Lightning_Bolt = SpellAttack # top tier
@@ -482,7 +503,7 @@ def init_spells():
     Urbosas_Fury = SpellAttack # top tier
     Hyper_Beam = SpellAttack # top tier
     Star_Platinum = Spell # top tier
-    Miphas_Grace = Spell # top tier
+    Miphas_Grace = Healing # top tier
     Fallen_Down = SpellAttack # top tier
 
 

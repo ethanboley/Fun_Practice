@@ -65,7 +65,7 @@ class Hospital:
                         player.gain_xp(doc.xp, xp_thresholds)
                         break
 
-                    if round == 10:
+                    if round == 6:
                         dprint('It\'s closing time for the hospital.')
                         break
                     round += 1
@@ -263,25 +263,5 @@ class Marketplace():
             self.inventory.pop(item)
         else:
             self.inventory[item] -= 1
-
-    # def check_user_input(self, dictionary):
-    #     user_in = '' # set the while loop start case
-    #     while not str(user_in).isdigit(): # check if the user input can be converted into a number. 
-    #         i = 0 # set the index for the display loop
-    #         for key in dictionary: # print out the available values. <--+vvv
-    #             print(f'{i + 1}: item, {key.name}; count, {dictionary[key]}') # mind this will only work if the key of the dict has a .name property
-    #             i += 1 # increment the index
-    #         print('Enter the number') # prompt the user
-    #         user_in = input() # take in user input to be checked by the while condition. 
-    #     user_int = int(user_in) # set second loop start case
-    #     while user_int not in [x + 1 for x in range(len(dictionary))]: # once the user inputs a number, check if it's a good number
-    #         user_int = self.check_user_input(dictionary) # if it isn't, restart by recursively calling the function. 
-    #     else: # otherwise it is a good input
-    #         iteration = 1 # set index for loop
-    #         for key in dictionary: # loop through the keys in the dictionary again
-    #             if iteration == user_int: # check if the good user input is equal to the loop number which identifies the correct key 
-    #                 return key # return the user selected key
-    #             else: # if not
-    #                 iteration += 1 # increment
 
 

@@ -263,7 +263,7 @@ class Mage(Player):
         self.spell_slots = 1
         self.known_spells = []
         self.spells = init_skills()
-        self.known_spells.append(self.spells[83])
+        self.known_spells.append(self.spells[0])
         self.inventory = Inventory()
         self.allies = []
 
@@ -324,24 +324,11 @@ class Mage(Player):
         strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + spell.damage
 
-        spell.effect(enemy, strong_damage, xp_thresholds, self)
+        spell.effect(enemy, strong_damage, self)
         if not enemy.is_alive():
             self.gain_xp(enemy.xp, xp_thresholds)
             self.gain_col(enemy.col)
             enemy.drop(self)
-        
-        if spell.nature == 1: # healing
-            dprint(f'A wave of healing energy surges through {self.name}')
-            # dprint('Target\n1: Self\n2: ally')
-            # user = input()
-            # if user in ['2','a','A','Ally','ally','ALLY','friend']:
-            #     pass
-            # else
-            self.hp += weak_damage
-            if self.hp > self.maxhp:
-                self.hp = (self.hp - self.maxhp) // 2 + self.hp
-            dprint(f'{self.name} feels vitality returning.')
-            display_health(self)
 
         elif spell.nature == 3: # escaping
             pass
