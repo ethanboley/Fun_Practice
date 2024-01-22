@@ -198,7 +198,7 @@ class Fighter(Player):
             ans = input()
             if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
                 self.add_skill(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
+            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
                 self.remove_skill()
                 self.add_skill(learnables)
             else:
@@ -228,13 +228,10 @@ class Fighter(Player):
 
         useables = [item for item in self.inventory.contents if item.can_use]
         if len(useables) != 0:
-            list_int = check_user_input(list=useables)
+            list_int = get_validated_input('choose an item', useables)
             to_use = useables[list_int - 1]
             to_use.use(self, enemy, xp_thresholds)
-            if to_use == 0:
-                self.inventory.remove_item(to_use)
-            else:
-                self.inventory.contents[to_use] -= 1
+            self.inventory.remove_item(to_use)
         else:
             dprint('Your inventory is empty. ')
 
@@ -345,7 +342,7 @@ class Mage(Player):
             ans = input()
             if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
                 self.add_spell(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
+            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
                 self.remove_spell()
                 self.add_spell(learnables)
             else:

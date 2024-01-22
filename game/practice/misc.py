@@ -1,7 +1,7 @@
 
 from actions import *
 from monsters import init_doctors
-from things_stuff import init_items
+from stuffs_that_do import init_items
 
 items = init_items()
 
@@ -142,7 +142,7 @@ class Marketplace():
 
         elif choice_task in ['2','Buy','buy','B','b','what have you got?']:
             self.sell(player)
-            dprint('Would you like to stay in the market? ')
+            dprint('Would you like to stay in the market? \n1: Yes \n2: No')
             user = input()
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 for i in range(len(options)):
@@ -259,7 +259,7 @@ class Marketplace():
         pass
 
     def update_inventory(self, item):
-        if self.inventory[item] == 0:
+        if self.inventory[item] == 1:
             self.inventory.pop(item)
         else:
             self.inventory[item] -= 1

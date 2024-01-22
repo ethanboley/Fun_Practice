@@ -198,7 +198,7 @@ class Fighter(Player):
             ans = input()
             if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
                 self.add_skill(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
+            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
                 self.remove_skill()
                 self.add_skill(learnables)
             else:
@@ -228,13 +228,10 @@ class Fighter(Player):
 
         useables = [item for item in self.inventory.contents if item.can_use]
         if len(useables) != 0:
-            list_int = check_user_input(list=useables)
+            list_int = get_validated_input('choose an item', useables)
             to_use = useables[list_int - 1]
             to_use.use(self, enemy, xp_thresholds)
-            if to_use == 0:
-                self.inventory.remove_item(to_use)
-            else:
-                self.inventory.contents[to_use] -= 1
+            self.inventory.remove_item(to_use)
         else:
             dprint('Your inventory is empty. ')
 
@@ -263,7 +260,7 @@ class Mage(Player):
         self.spell_slots = 1
         self.known_spells = []
         self.spells = init_skills()
-        self.known_spells.append(self.spells[83])
+        self.known_spells.append(self.spells[0])
         self.inventory = Inventory()
         self.allies = []
 
@@ -324,24 +321,11 @@ class Mage(Player):
         strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + spell.damage
 
-        spell.effect(enemy, strong_damage, xp_thresholds, self)
+        spell.effect(enemy, strong_damage, self)
         if not enemy.is_alive():
             self.gain_xp(enemy.xp, xp_thresholds)
             self.gain_col(enemy.col)
             enemy.drop(self)
-        
-        if spell.nature == 1: # healing
-            dprint(f'A wave of healing energy surges through {self.name}')
-            # dprint('Target\n1: Self\n2: ally')
-            # user = input()
-            # if user in ['2','a','A','Ally','ally','ALLY','friend']:
-            #     pass
-            # else
-            self.hp += weak_damage
-            if self.hp > self.maxhp:
-                self.hp = (self.hp - self.maxhp) // 2 + self.hp
-            dprint(f'{self.name} feels vitality returning.')
-            display_health(self)
 
         elif spell.nature == 3: # escaping
             pass
@@ -358,7 +342,7 @@ class Mage(Player):
             ans = input()
             if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
                 self.add_spell(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
+            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
                 self.remove_spell()
                 self.add_spell(learnables)
             else:

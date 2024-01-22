@@ -1,7 +1,7 @@
 
 import random
 from actions import *
-from things_stuff import init_items
+from stuffs_that_do import init_items
 
 
 drops = init_items()
@@ -554,8 +554,8 @@ def init_enemies():
     black_worm = Worm('black worm', 78, 3, 9, 4, .5, 0, 28, [1,2])
     treent = Plant('treent', 70, 5, 12, 4, .8, 0, 32, [1,4])
     ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 75, 6, 12, 4, .85, 5, 16, [1,3])
-    bark_golem = Plant('bark_golem', 91, 4, 10, 4, .95, 1, 26, [1])
-    flying_kobold = Koboldoid('flying kobold', 64, 7, 14, 4, .7, 4, 9, [1])
+    bark_golem = Plant('bark golem', 91, 4, 11, 4, .95, 1, 26, [1])
+    flying_kobold = Koboldoid('flying kobold', 64, 5, 14, 4, .7, 4, 9, [1])
     ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 85, 7, 13, 5, .85, 6, 15, [1])
     illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 9, 40, 5, .9, 15, 20, [1])
 
