@@ -83,7 +83,20 @@ to be in and which monsters to encounter.
         Humanoids
         bosses
 
-personal record 2111 (and beat Illfang)
+personal record 4622+ (12, skill add at floor)
+79 hp, 30-40 dpr (skill), 20-25 dpr (non-skill), 250-650 col, 0-20 pot. 
+
+world 2 monsters scaled: 
+lv6: 150-250 hp, 20-30 dpr.
+lv7: 200-350 hp, 25-40 dpr. 
+lv8: 300-450 hp, 30-50 dpr.
+lv9: 400-600 hp, 40-60 dpr. 
+lv10: 550-800 hp, 60-75 dpr. 
+The above is a problem. Me thinks players heal far too easily, makes the game 
+to easy. 
+potential solution: reduce enemy xp to 1 (or maybe the world value) after the 
+boss is defeated (or if player.world == 2+ or something). That way gaining 
+levels by grinding on lower worlds will take much longer. 
 
 
 

@@ -125,7 +125,7 @@ class Fighter(Player):
     def level_up(self):
         self.maxhp += 4 + (self.level // 4)
         self.atk += 1 + (self.level // 5)
-        self.accuracy += .02 if self.accuracy <= 1 else self.accuracy == 1
+        self.accuracy += .02 if self.accuracy < 1 else self.accuracy == 1
         self.hp = self.maxhp
         self.skill_slots = 1 + int(math.log(self.level, 1.85))
         self.maxmag += 1 + (self.level // 40)
@@ -196,14 +196,16 @@ class Fighter(Player):
             for i in range(3):
                 print(f'{i + 1}: {lorp[i]}')
             ans = input()
-            if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
+            if ans in ['0', '1', 'l', 'L', 'Learn', 'learn','LEARN']: # if learn new
                 self.add_skill(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
+            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl','REPLACE','REPL']: # if replace known
                 self.remove_skill()
                 self.add_skill(learnables)
-            else:
+            elif ans in ['3','n','N','NO','no','No','nope','Nope','NOPE','4','absolutely not!']:
                 dprint('Ok maybe next time!')
                 break
+            else:
+                continue
     
     def remove_skill(self):
         skill_int = get_validated_input('Replace which skill? ', self.known_skills)
@@ -293,7 +295,7 @@ class Mage(Player):
     def level_up(self):
         self.maxhp += 3 + (self.level // 6)
         self.atk += (self.level // 5)
-        self.accuracy += .02 if self.accuracy <= 1 else self.accuracy == 1
+        self.accuracy += .02 if self.accuracy < 1 else self.accuracy == 1
         self.hp = self.maxhp
         self.spell_slots = 1 + int(math.log(self.level, 1.5))
         self.maxmag += 2 + (self.level // 8)
@@ -392,7 +394,7 @@ class Pugilist(Player):
         super().__init__(name, hp, atk, xp, level, accuracy, col)
         self.title = 'Pugilist'
         self.acu = .04 # attack acuracy modifier
-        self.agi = 16 # used for battle order like a speed stat (out of 20?)
+        self.agi = 18 # used for battle order like a speed stat (out of 20?)
         self.mag = 10 # used to calculate skill cost
         self.maxmag = self.mag
         self.mod = 1 + self.level // 4
@@ -432,7 +434,7 @@ class Pugilist(Player):
     def level_up(self):
         self.maxhp += 4 + (self.level // 5)
         self.atk += 1 + (self.level // 5)
-        self.accuracy += .03 if self.accuracy <= 1 else self.accuracy == 1
+        self.accuracy += .03 if self.accuracy < 1 else self.accuracy == 1
         self.hp = self.maxhp
         self.skill_slots = 1 + int(math.log(self.level, 1.7))
         self.maxmag += 1 + (self.level // 15)

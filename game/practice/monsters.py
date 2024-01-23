@@ -41,13 +41,13 @@ class Enemy:
     def attack(self, player):
         if random.random() < self.accuracy:
             player.hp -= self.atk
-            dprint(f"{self.name} attacks {player.name} for {self.atk} damage!")
+            dprint(f'{self.name} attacks {player.name} for {self.atk} damage!')
             if player.is_alive():
                 display_health(player)
             else:
                 dprint('You have died!')
         else:
-            dprint(f"{self.name} misses their attack!")
+            dprint(f'{self.name} misses their attack!')
 
     def is_alive(self):
         return self.hp > 0

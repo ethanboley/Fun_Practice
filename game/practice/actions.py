@@ -27,7 +27,7 @@ def dprint(text=''):
         if not skip_slow_display:
             sys.stdout.write(char)
             sys.stdout.flush()
-            time.sleep(0.05)  # lower value is faster
+            time.sleep(0.035) # lower value is faster
         else:
             sys.stdout.write(char) # really puts in perspective how fast .write() is
 

@@ -18,13 +18,13 @@ class WorldOne:
         pname = input()
         udomain = input('Choose your Domain \n1: Fighter \n2: Mage \n3: Pugilist\n')
         if udomain in ['','f','F','1','0','fighter','Fighter','FIGHTER','fight','Fight','FIGHT','1: Fighter ','idk']:
-            pc = Fighter(pname, 20, 4, 0, 1, .8, 2)
+            pc = Fighter(pname, 20, 4, 0, 1, .7, 2)
             return pc
         if udomain in ['2','m','M','mage','Mage','MAGE','w','magic','2: Mage ','yay, spells']:
-            pc = Mage(pname, 20, 3, 0, 1, .7, 2)
+            pc = Mage(pname, 20, 3, 0, 1, .6, 2)
             return pc
         if udomain in ['3','p','P','pugilist','Pugilist','PUGILIST','pug','punchy boy','Iskhan']:
-            pc = Pugilist(pname, 20, 3, 0, 1, .76, 2)
+            pc = Pugilist(pname, 20, 3, 0, 1, .66, 2)
 
     def world_loop(self, pc, xp_thresholds):
         while True:
@@ -47,7 +47,7 @@ class WorldOne:
             
                 hospital = Hospital('Greentown', pc.level)
                 option = hospital.welcome()
-                playing = hospital.resolve(pc, option, xp_thresholds)
+                playing = hospital.resolve(pc, option, xp_thresholds, self)
                 if not playing:
                     break
             
