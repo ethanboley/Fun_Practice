@@ -24,9 +24,7 @@ beta 0.2.0
 ...
 1.0.0 - 1.999.999
 
-
-Domain oriented battle, imporvements to misc, ballanced monster/player, added story, fixed spells/skills, added world map, improved flow and incorporated story.  
-
+Added battle.py, minor changes to dprint, fixed Battle.story, Ally class, finished chapter 1 and 2, adjusted life potion
 
 TODO: * = working on
 

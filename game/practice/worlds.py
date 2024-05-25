@@ -6,7 +6,6 @@ from misc import Hospital, Marketplace
 from story import *
 
 
-
 class WorldOne:
     def __init__(self, name):
         self.name = name
@@ -21,7 +20,7 @@ class WorldOne:
         dprint('What is your name: ')
         pname = input()
         udomain = input('Choose your Domain \n1: Fighter \n2: Mage \n3: Pugilist\n')
-        if udomain in ['','f','F','1','0','fighter','Fighter','FIGHTER','fight','Fight','FIGHT','1: Fighter ','idk']:
+        if udomain in ['','f','F','1','0','fighter','Fighter','FIGHTER','fight','Fight','FIGHT','1: Fighter','idk']:
             pc = Fighter(pname, 10, 2, 0, 1, .69, 3)
             return pc
         if udomain in ['2','m','M','mage','Mage','MAGE','w','magic','2: Mage ','yay, spells']:
@@ -35,6 +34,7 @@ class WorldOne:
             return pc
         else:
             pc = Fighter(pname, 6, 1, 0, 1, .4, 0)
+            return pc
     
     def introdction(self):
         self.pc = self.create_character()
@@ -68,7 +68,7 @@ class WorldOne:
         while True:
             print()
             dprint(f'{self.name} . . . ')
-            input(f'{self.pc.progress}/32')
+            input(f'{self.pc.progress}/32\n')
 
             self.update_world_options()
 
@@ -96,7 +96,7 @@ class WorldOne:
                     break
             
             elif action in ['4','5','m','M','marketplace','market','Market','Store','store','shop','Shop','SHOPPING!!!','s','S']:
-                marketplace = Marketplace('justastore', self.pc.level)
+                marketplace = Marketplace('justastore', self.pc.level, xp_thresholds, self)
                 playing = marketplace.resolve(self.pc)
                 if not playing:
                     break

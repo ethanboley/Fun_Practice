@@ -27,7 +27,7 @@ class LifePotion(Item):
         super().__init__(name, level, sell_price, rarity, sold, can_use)
     
     def use(self, player=None, enemy=None, xp_thresholds=None):
-        player.hp += 18 + player.level
+        player.hp += 9 + player.level
         display_health(player)
 
 
