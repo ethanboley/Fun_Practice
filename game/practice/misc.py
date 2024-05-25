@@ -20,7 +20,9 @@ class Hospital:
             print(f'{i + 1}: {options[i]}')
         return input()
 
-    def resolve(self, player, choice_task, xp_thresholds, world):
+    def resolve(self, player, xp_thresholds, world):
+        choice_task = self.welcome()
+
         if choice_task in ['healing','Healing','1','0','','h','H','reg']:
             self.heal(player, xp_thresholds)
             return True
@@ -156,12 +158,14 @@ class Hospital:
 
 
 class Marketplace():
-    def __init__(self, name, level):
+    def __init__(self, name, level, xp_thresholds, world):
         self.name = name
         self.level = level
         self.inventory = {}
         self.prices = {}
         self.salable = [item for item in items if item.sold]
+        self.xp_thresholds = xp_thresholds
+        self.world = world
 
     def stock_inventory(self):
         for item in self.salable:
@@ -179,48 +183,67 @@ class Marketplace():
             print(f'{i + 1}: {options[i]}')
         return input()
     
-    def resolve(self, player, choice_task):
+    def resolve(self, player, choice_task=''):
         options = ['sell','buy','information','black market']
+        choice_task = self.welcome()
+
         if choice_task in ['','sell','Sell','SELL','1','S','s','0','buy from me!']:
             self.buy(player)
             dprint('Would you like to stay in the market? ')
             user = input('1: Yes\n2: No\n')
+        
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 dprint('What would you like to do then? ')
                 for i in range(len(options)):
                     print(f'{i + 1}: {options[i]}')
                 user = input()
                 self.resolve(player, user)
+            else:
+                return True
 
         elif choice_task in ['2','Buy','buy','B','b','what have you got?']:
             self.sell(player)
             dprint('Would you like to stay in the market? \n1: Yes \n2: No')
             user = input()
+        
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 for i in range(len(options)):
                     print(f'{i + 1}: {options[i]}')
                 user = input()
                 self.resolve(player, user)
+            else:
+                return True
 
         elif choice_task in ['information','info','Information','Info','3','i','I']:
-            self.give_info(player)
+            self.give_info(player, self.xp_thresholds, self.world)
             dprint('Would you like to stay in the market? ')
             user = input()
+        
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 for i in range(len(options)):
                     print(f'{i + 1}: {options[i]}')
                 user = input()
                 self.resolve(player, user)
+            else:
+                return True
         
         elif choice_task in ['Black Market', 'black market', 'm', 'M', '4', 'black', 'Black', 'market', 'b market', 'black m', 'bm', 'm', '...', 'you know what.']:
-            self.black_market(player)
-            dprint('Would you like to stay in the market? ')
-            user = input()
-            if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                for i in range(len(options)):
-                    print(f'{i + 1}: {options[i]}')
+            survived = self.black_market(player)
+            if survived:
+                dprint('Would you like to stay in the market? ')
                 user = input()
-                self.resolve(player, user)
+
+                if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
+                    for i in range(len(options)):
+                        print(f'{i + 1}: {options[i]}')
+                    user = input()
+                    self.resolve(player, user)
+                else: 
+                    return True
+            else:
+                return False
+        else:
+            return True
 
 
     def buy(self, player): # in other words its the market place that's doing the buying
@@ -235,18 +258,18 @@ class Marketplace():
                     dprint('Oop, well, you don\'t actually have any more items!')
                     break
                 dprint(f'You have {player.col} col!')
-                to_sell_int = check_user_input('d',dict=player.inventory.contents) - 1
-                # print(f'to_sell_int {to_sell_int}') # debug
-                iteration = 0
-                # print(f'iteration {iteration}') # debug
-                # print(f'player.inventory.contents {player.inventory.contents}') # debug
-                for key in player.inventory.contents:
-                    # print(f'key {key}') # debug
-                    if to_sell_int == iteration:
-                        to_sell = key
-                        # print(f'key {key}') # debug
-                        break
-                    iteration += 1
+                to_sell = get_dict_option(dict=player.inventory.contents)
+                # # print(f'to_sell_int {to_sell_int}') # debug
+                # iteration = 0
+                # # print(f'iteration {iteration}') # debug
+                # # print(f'player.inventory.contents {player.inventory.contents}') # debug
+                # for key in player.inventory.contents:
+                #     # print(f'key {key}') # debug
+                #     if to_sell_int == iteration:
+                #         to_sell = key
+                #         # print(f'key {key}') # debug
+                #         break
+                #     iteration += 1
                     # print(f'iteration {iteration}') # debug
                 dprint(f'Let\'s see, this {to_sell.name} is worth {to_sell.sell_price} col.')
                 dprint('Would you like to sell it?')
@@ -277,12 +300,12 @@ class Marketplace():
                         dprint('Oop, well, you don\'t actually have any more money!')
                         break
                     dprint(f'You have {player.col} col!')
-                    to_buy_int = check_user_input('d',dict=self.inventory) - 1
-                    iteration = 0
-                    for key in self.inventory:
-                        if to_buy_int == iteration:
-                            to_buy = key
-                        iteration += 1
+                    to_buy = get_dict_option(self.inventory)
+                    # iteration = 0
+                    # for key in self.inventory:
+                    #     if to_buy_int == iteration:
+                    #         to_buy = key
+                    #     iteration += 1
                     if to_buy.sell_price > player.col:
                         dprint('That too expensive for you.')
                     else:
@@ -304,8 +327,49 @@ class Marketplace():
                     dprint('No huh? Strange...')
                     break
 
-    def give_info(self, player):
-        pass
+    def give_info(self, player, xp_thresholds, world):
+        next_thresh = 0
+        for thresh in xp_thresholds:
+            if player.xp < thresh:
+                next_thresh = thresh
+                break
+        low_atk = player.atk - player.atk // 5
+        lowest = player.atk - (player.atk // 5 + 1)
+        low_sptk = player.atk + 2 # 1 + skill damage (minimum)
+        high_sptk = player.atk + player.atk // 5 + 4
+        print()
+        dprint(f'{player.name} is in world {world.number}: {world.name}')
+        dprint(f'in the {self.name} central marketplace.')
+        dprint(f'{player.name} has the following stats:')
+        print(f'Level: {player.level}')
+        print(f'Experience Points: {player.xp}/{next_thresh}')
+        print(f'Domain: {player.title}')
+        print(f'Hit Points: {player.hp}/{player.maxhp}')
+        print(f'Attack power: {low_atk}-{player.atk}')
+        print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
+        print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
+        print(f'Speed: {20 - player.agi}')
+        print(f'Magic: {player.mag}/{player.maxmag}')
+        print(f'Col: {player.col}')
+        if isinstance(player, Fighter):
+            print('Skills: ')
+            for skill in player.known_skills:
+                print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
+        if isinstance(player, Mage):
+            print('Spells: ')
+            for spell in player.known_spells:
+                print(f'{spell.name.capitalize()} --> cost: {spell.cost}, cooldown: {spell.cooldown - spell.downtime}/{spell.cooldown}, power: {spell.damage}')
+        if isinstance(player, Pugilist):
+            print('Spalls: ')
+            for spall in player.known_spalls:
+                print(f'{spall.name.capitalize()} --> cost: {spall.cost}, cooldown: {spall.cooldown - spall.downtime}/{spall.cooldown}, power: {spall.damage}')
+        print('Inventory:')
+        for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
+            print(f'{i}: {item.name}')
+        if player.level >= 6:
+            print('Allies: ')
+            for ally in player.allies():
+                print(ally.name)
 
     def black_market(self, player):
         pass

@@ -2,7 +2,8 @@
 import random
 import math
 from actions import *
-from things_stuff import init_skills, Inventory
+from things_stuff import init_skills, init_spalls, Inventory
+from stuffs_that_do import init_spells
 
 
 class Player:
@@ -24,6 +25,8 @@ class Player:
         self.defended = False # ???
         self.empowered = False # +atk
         self.energized = False # +mag
+        self.location = '1-0'
+        self.progress = 0
 
 
     def attack(self, enemy, xp_thresholds):
@@ -123,13 +126,13 @@ class Fighter(Player):
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
-        self.maxhp += 4 + (self.level // 4)
-        self.atk += 1 + (self.level // 5)
-        self.accuracy += .02 if self.accuracy < 1 else self.accuracy == 1
-        self.hp = self.maxhp
+        self.maxhp += 5 + round(self.level * 1.025)
+        self.atk += (self.level // 8) if self.level > 20 else 1 + (self.level // 5)
+        self.accuracy += .0025 if self.accuracy < 1 else self.accuracy == 1
+        self.hp += 5 + round(self.level * 1.025)
         self.skill_slots = 1 + int(math.log(self.level, 1.85))
-        self.maxmag += 1 + (self.level // 40)
-        self.agi -= (self.level // 16)
+        self.maxmag += 1 + (self.level // 40) if self.level % 5 == 0 else (self.level // 40)
+        self.agi -= 1 if self.level % 12 == 0 else 0
         self.learn_skill()
 
     def special_attack(self, enemy, xp_thresholds):
@@ -156,8 +159,8 @@ class Fighter(Player):
             skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
         
         self.mag -= skill.cost
-        strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage
-        weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
+        strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
+        weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
         if random.random() < self.accuracy + self.acu:
             enemy.hp -= strong_damage
             skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
@@ -261,14 +264,14 @@ class Mage(Player):
         self.mod = 1 + self.level // 4
         self.spell_slots = 1
         self.known_spells = []
-        self.spells = init_skills()
+        self.spells = init_spells()
         self.known_spells.append(self.spells[0])
         self.inventory = Inventory()
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
         if random.random() < self.accuracy:
-            damage = self.atk - random.randint(1, self.atk // 4)
+            damage = self.atk - random.randint(0, self.atk // 4)
             enemy.hp -= damage
             dprint(f"{self.name} attacks {enemy.name} for {damage} damage!")
             if enemy.is_alive():
@@ -289,17 +292,17 @@ class Mage(Player):
                 self.level += 1
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
-                xp_thresholds.remove(threshold)  # Remove the threshold we just crossed
+                xp_thresholds.remove(threshold) # Remove the threshold we just crossed
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
         self.maxhp += 3 + (self.level // 6)
         self.atk += (self.level // 5)
-        self.accuracy += .02 if self.accuracy < 1 else self.accuracy == 1
+        self.accuracy += .0025 if self.accuracy < 1 else self.accuracy == 1
         self.hp = self.maxhp
-        self.spell_slots = 1 + int(math.log(self.level, 1.5))
-        self.maxmag += 2 + (self.level // 8)
-        self.agi -= (self.level // 20)
+        self.spell_slots = int(math.log(self.level + 6, 1.18) - 10)
+        self.maxmag += 3 + (self.level // 6)
+        self.agi -= ((self.level // 20) - 1)
         self.learn_spell()
 
     def special_attack(self, enemy, xp_thresholds):
@@ -323,7 +326,7 @@ class Mage(Player):
         strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + spell.damage
 
-        spell.effect(enemy, strong_damage, self)
+        spell.effect(enemy, self, weak_damage=weak_damage, strong_damage=strong_damage)
         if not enemy.is_alive():
             self.gain_xp(enemy.xp, xp_thresholds)
             self.gain_col(enemy.col)
@@ -333,7 +336,7 @@ class Mage(Player):
             pass
     
     def learn_spell(self):
-        spells = init_skills()
+        spells = init_spells()
         learnables = [spell for spell in spells if spell.level <= self.level and spell.type == 1]
         while len(self.known_spells) < self.spell_slots:
             dprint('You have an available spell slot')
@@ -342,7 +345,7 @@ class Mage(Player):
             for i in range(3):
                 print(f'{i + 1}: {lorp[i]}')
             ans = input()
-            if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
+            if ans in ['0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
                 self.add_spell(learnables)
             elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
                 self.remove_spell()
@@ -352,13 +355,13 @@ class Mage(Player):
                 break
     
     def remove_spell(self):
-        dprint('Replace which spell? ') # ask
-        spell_int = check_user_input('s',list=self.known_spells)
+        # dprint('Replace which spell? ') # ask
+        spell_int = get_validated_input('replace which spell?', self.known_spells)
         self.known_spells.remove(self.known_spells[spell_int - 1]) # remove the chosen spell at valid position
 
     def add_spell(self, learnables):
-        dprint('Add which spell? ') # ask
-        spell_int = check_user_input('s',list=learnables)
+        # dprint('Add which spell? ') # ask
+        spell_int = get_validated_input('Add which spell?', learnables)
         self.known_spells.append(learnables[spell_int - 1]) # append the selected choice to known spells
         dprint(f'{self.name} has learned the spell {self.known_spells[-1].name}!')
 
@@ -371,7 +374,7 @@ class Mage(Player):
     def use_item(self, enemy, xp_thresholds):
         useables = [item for item in self.inventory.contents if item.can_use]
         if len(useables) != 0:
-            list_int = check_user_input(list=useables)
+            list_int = get_validated_input('Which item?', list=useables)
             to_use = useables[list_int - 1]
             to_use.use(self, enemy, xp_thresholds)
             if to_use == 0:
@@ -398,18 +401,18 @@ class Pugilist(Player):
         self.mag = 10 # used to calculate skill cost
         self.maxmag = self.mag
         self.mod = 1 + self.level // 4
-        self.skill_slots = 1
-        self.known_skills = []
-        self.skills = init_skills()
-        self.known_skills.append(self.skills[83])
+        self.spall_slots = 1
+        self.known_spalls = []
+        self.spalls = init_spalls()
+        self.known_spalls.append(self.spalls[0])
         self.inventory = Inventory()
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
         if random.random() < self.accuracy:
-            damage = self.atk - random.randint(1, self.atk // 5)
+            damage = self.atk - random.randint(0, self.atk // 5)
             enemy.hp -= damage
-            dprint(f"{self.name} hits {enemy.name} dealing {damage} damage!")
+            dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
             if enemy.is_alive():
                 dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
             else:
@@ -434,61 +437,105 @@ class Pugilist(Player):
     def level_up(self):
         self.maxhp += 4 + (self.level // 5)
         self.atk += 1 + (self.level // 5)
-        self.accuracy += .03 if self.accuracy < 1 else self.accuracy == 1
+        self.accuracy += .004 if self.accuracy < 1 else self.accuracy == 1
         self.hp = self.maxhp
-        self.skill_slots = 1 + int(math.log(self.level, 1.7))
+        self.spall_slots = 1 + int(math.log(self.level, 1.7))
         self.maxmag += 1 + (self.level // 15)
-        self.agi -= (self.level // 8)
-        self.learn_skill()
+        self.agi -= ((self.level // 8) - 1)
+        self.learn_spall()
 
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return 0
-        skill = self.choose_skill()
-        self.mag -= skill.cost
-        strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + skill.damage
-        weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + skill.damage
+            return
+        
+        # update spall downtime (this method requires that all action methods need these lines at the begining)
+        for spall in self.known_spalls:
+            if spall.downtime < spall.cooldown: # if downtime is less than cooldown
+                spall.downtime += 1 # bring the 2 closer together
+
+        # that way when this line comes along the number of usable spalls is accurate
+        spall = self.choose_spall([spall for spall in self.known_spalls if spall.is_usable()])
+        if spall == None:
+            dprint('No spalls to use.')
+            for spall in self.known_spalls:
+                print(f'spall: {spall.name}, cooldown {spall.cooldown - spall.downtime} (turns remaining).')
+            self.attack(enemy, xp_thresholds)
+            return
+
+        while not spall.is_usable():
+            dprint('That spall is on cooldown.')
+            spall = self.choose_spall([spall for spall in self.known_spalls if spall.is_usable()])
+        
+        self.mag -= spall.cost
+        strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + spall.damage
+        weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
+        if random.random() < self.accuracy + self.acu:
+            enemy.hp -= strong_damage
+            spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
+            dprint(f'{self.name} connects with the sword spall {spall.name}!')
+            dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
+            if enemy.is_alive():
+                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+            else:
+                dprint(f'{spall.name} obliterated {enemy.name}!')
+                self.gain_xp(enemy.xp, xp_thresholds)
+                self.gain_col(enemy.col)
+                enemy.drop(self)
+        elif random.random() < self.accuracy:
+            enemy.hp -= weak_damage
+            spall.set_downtime() # downtime
+            dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
+            dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
+            if enemy.is_alive():
+                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+            else:
+                dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
+                self.gain_xp(enemy.xp, xp_thresholds)
+                self.gain_col(enemy.col)
+                enemy.drop(self)
+        else:
+            dprint(f'{self.name} executed the spall {spall.name} but missed! ')
+            spall.set_downtime() # even though it was a miss, its still a use. 
     
-    def learn_skill(self):
-        skills = init_skills()
-        learnables = [skill for skill in skills if skill.level <= self.level and skill.type == 1]
-        while len(self.known_skills) < self.skill_slots:
-            dprint('You have an available skill slot')
-            dprint('would you like to learn or replace a skill?')
+    def learn_spall(self):
+        spalls = init_spalls()
+        learnables = [spall for spall in spalls if spall.level <= self.level and spall.type == 1]
+        while len(self.known_spalls) < self.spall_slots:
+            dprint('You have an available spall slot')
+            dprint('would you like to learn or replace a spall?')
             lorp = ['learn', 'replace', 'nope'] # lorp: Learn or Replace
             for i in range(3):
                 print(f'{i + 1}: {lorp[i]}')
             ans = input()
-            if ans in ['', '0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
-                self.add_skill(learnables)
+            if ans in ['0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
+                self.add_spall(learnables)
             elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
-                self.remove_skill()
-                self.add_skill(learnables)
+                self.remove_spall()
+                self.add_spall(learnables)
             else:
                 dprint('Ok maybe next time!')
                 break
     
-    def remove_skill(self):
-        dprint('Replace which skill? ') # ask
-        skill_int = check_user_input('s',list=self.known_skills)
-        self.known_skills.remove(self.known_skills[skill_int - 1]) # remove the chosen skill at valid position
+    def remove_spall(self):
+        spall_int = get_validated_input('Replace which spall? ',self.known_spalls)
+        self.known_spalls.remove(self.known_spalls[spall_int - 1]) # remove the chosen spall at valid position
 
-    def add_skill(self, learnables):
-        dprint('Add which skill? ') # ask
-        skill_int = check_user_input('s',list=learnables)
-        self.known_skills.append(learnables[skill_int - 1]) # append the selected choice to known skills
-        dprint(f'{self.name} has learned the skill {self.known_skills[-1].name}!')
+    def add_spall(self, learnables):
+        spall_int = get_validated_input('Add which spall? ',learnables)
+        self.known_spalls.append(learnables[spall_int - 1]) # append the selected choice to known spalls
+        dprint(f'{self.name} has learned the spall {self.known_spalls[-1].name}!')
 
-    def choose_skill(self):
-        dprint('which skill do you want to use? ')
-        user = check_user_input('s',list=self.known_skills)
-        return self.known_skills[user - 1]
+    def choose_spall(self, spalls):
+        user = get_validated_input('Which spall do you want to use? ', spalls)
+        if user == None:
+            return
+        return spalls[user - 1]
     
     def use_item(self, enemy, xp_thresholds):
         useables = [item for item in self.inventory.contents if item.can_use]
         if len(useables) != 0:
-            list_int = check_user_input(list=useables)
+            list_int = get_validated_input('',useables)
             to_use = useables[list_int - 1]
             to_use.use(self, enemy, xp_thresholds)
             if to_use == 0:

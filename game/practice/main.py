@@ -17,8 +17,8 @@ def main_game():
     input('Press enter to start . . . ')
 
     world_1 = WorldOne('The Kobold Wood')
-    pc = world_1.create_character()
-    world_1.world_loop(pc, xp_thresholds)
+    world_1.introdction()
+    world_1.world_loop(xp_thresholds)
 
 
 if __name__ == "__main__":

@@ -244,95 +244,91 @@ class Healing(Spell):
         dprint(f'{self.name} feels vitality returning.')
         display_health(target)
 
-class Escaping(Spell):
-    def __init__(self, name, type, level, cost, cooldown, damage, nature):
-        super().__init__(name, type, level, cost, cooldown, damage, nature)
-    
-    def effect(self, enemy, caster, weak_damage=0, strong_damage=0):
-        caster.run()
-
 # --- #
 
-def init_spells():
-    magic_punch = SpellAttack('magic punch', 1, 1, 1, 1, 1, 0)
-    small_healing_word = Healing('small healing word', 1, 1, 1, 1, 1, 1)
-    dissengage = Spell('dissengage', 1, 1, 1, 1, 0, 2)
-    magic_missile = SpellAttack('magic missile', 1, 1, 2, 1, 2, 0)
-    acid_splash = SpellAttack
-    fire_bolt = SpellAttack
-    expeditious_retreat = Spell
-    thunder_wave = SpellAttack
-    vicious_mockery = SpellAttack
-    magic_arrow = SpellAttack
-    cure_wounds = Healing
-    bane = SpellAttack
-    chromatic_orb = SpellAttack
-    shocking_grasp = SpellAttack
-    witch_bolt = SpellAttack
-    shatter = SpellAttack
-    emperor = Spell
-    light_healing = Healing
-    emerald_splash = SpellAttack
-    misty_step = Spell
-    magicians_red = SpellAttack
-    fireball = SpellAttack
-    fear = Spell
-    lightning = SpellAttack
-    hanged_man = Spell
-    dragon_pulse = SpellAttack
-    dream_eater = Spell
-    electroball = SpellAttack
-    explosion = SpellAttack
-    gravity = Spell
-    heal_pulse = Healing
-    hex = SpellAttack
-    hurricane = Spell
-    nightmare = Spell
-    remote_bomb = SpellAttack
-    recover = Healing
-    rock_tomb = Spell
-    water_pulse = SpellAttack
-    thunderlance = SpellAttack
-    electrosphere = SpellAttack
-    vermin_bane = SpellAttack
-    heal = Healing
-    generate_element = Spell
+def init_spells(): # name, type, level, cost, cooldown, damage, 
+    magic_punch = SpellAttack('magic punch', 1, 1, 1, 1, 1, 0) 
+    small_healing_word = Healing('small healing word', 1, 2, 1, 1, 1, 1) 
+    magic_missile = SpellAttack('magic missile', 1, 2, 3, 1, 2, 0)
+    acid_splash = SpellAttack('acid splash', 1, 2, 3, 2, 2, 0)
+    fire_bolt = SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0)
+    thunder_wave = SpellAttack('thunder wave', 1, 3, 4, 4, 2, 0)
+    vicious_mockery = SpellAttack('vicious mockery', 1, 4, 6, 4, 3, 0)
+    magic_arrow = SpellAttack('magic arrow', 1, 4, 6, 5, 3, 0) 
+    cure_wounds = Healing('cure wounds', 1, 5, 11, 5, 4, 1)
+    bane = SpellAttack('bane', 1, 5, 8, 5, 4, 0)
+    chromatic_orb = SpellAttack('chromatic orb', 1, 6, 9, 4, 5, 0)
+    shocking_grasp = SpellAttack('shocking grasp', 1, 6, 8, 4, 5, 0)
+    witch_bolt = SpellAttack('witch bolt', 1, 7, 10, 5, 9, 0)
+    shatter = SpellAttack('shatter', 1, 7, 10, 4, 7, 0)
+    emperor = SpellAttack('emperor', 1, 8, 9, 6, 5, 0)
+    light_healing = Healing('light healing', 1, 8, 13, 5, 6, 1)
+    emerald_splash = SpellAttack('emerald splash', 1, 9, 9, 5, 6, 0)
+    fireball = SpellAttack('fireball', 1, 9, 11, 4, 11, 0)
+    magicians_red = SpellAttack('magicians red', 1, 10, 10, 7, 7, 0)
+    healing_word = Healing('healing word', 1, 10, 14, 4, 7, 1)
+    fear = SpellAttack('fear', 1, 11, 12, 6, 7, 0)
+    lightning = SpellAttack('lightning', 1, 12, 12, 6, 8, 0)
+    dragon_pulse = SpellAttack('dragon pulse', 1, 13, 15, 4, 10, 0)
+    dream_eater = SpellAttack('dream eater', 1, 14, 14, 7, 9, 0)
+    electroball = SpellAttack('electroball', 1, 15, 18, 5, 10, 0)
+    explosion = SpellAttack('explosion', 1, 16, 16, 6, 11, 0)
+    gravity = SpellAttack('gravity', 1, 17, 20, 5, 9, 0)
+    heal_pulse = Healing('heal pulse', 1, 18, 23, 6, 16, 1)
+    hex = SpellAttack('hex', 1, 19, 20, 6, 11, 0)
+    hurricane = SpellAttack('hurricane', 1, 20, 21, 7, 19, 0)
+    recover = Healing('recover', 1, 21, 24, 7, 20, 1)
+    remote_bomb = SpellAttack('remote bomb', 1, 22, 18, 10, 17, 0)
+    nightmare = SpellAttack('nightmare', 1, 23, 24, 10, 16, 0)
+    rock_tomb = SpellAttack('rock tomb', 1, 24, 26, 8, 23, 0)
+    water_pulse = SpellAttack('water pulse', 1, 25, 27, 8, 25, 0)
+    thunderlance = SpellAttack('thunderlance', 1, 26, 26, 9, 34, 0)
+    electrosphere = SpellAttack('electrophere', 1, 27, 29, 7, 25, 0)
+    vermin_bane = SpellAttack('vermin bane', 1, 28, 28, 11, 26, 0)
+    heal = Healing('heal', 1, 29, 34, 8, 30, 1)
 
-    crazy_diamond = Healing
-    stone_free = Spell
-    gold_experience = Healing
-    flamethrower = SpellAttack
-    incinerate = SpellAttack
-    judgement = Spell
-    stasis = Spell
-    self_destruct = SpellAttack
-    synthesis = Healing
-    teleport = Spell
-    revalis_gale = Spell
-    invisibility = Spell
-    heavy_recover = Healing
-    grand_fireball = SpellAttack
-    dragon_lightning = SpellAttack
-    disintegrate = SpellAttack
-    chain_dragon_lightning = SpellAttack
-    blasphemy = SpellAttack
-    bless_of_titania = Healing
-    nuclear_blast = SpellAttack
-    black_hole = SpellAttack
-    reality_slash = SpellAttack
-    transfer_unit_durability = Healing
+    stone_free = SpellAttack('stone free', 1, 30, 28, 11, 1, 0)
+    gold_experience = Healing('gold experience', 1, 32, 33, 12, 1, 1)
+    flamethrower = SpellAttack('flamethrower', 1, 34, 35, 8, 1, 0)
+    incinerate = SpellAttack('incinerate', 1, 36, 37, 9, 1, 0)
+    crazy_diamond = Healing('crazy diamond', 1, 38, 40, 13, 1, 1)
+    stasis = SpellAttack('stasis', 1, 40, 31, 12, 1, 0)
+    self_destruct = SpellAttack('self destruct', 1, 42, 43, 9, 1, 0)
+    grand_fireball = SpellAttack('grand fireball', 1, 44, 41, 13, 1, 0)
+    synthesis = Healing('synthesis', 1, 46, 48, 11, 1, 1)
+    dragon_lightning = SpellAttack('dragon lightning', 1, 48, 45, 12, 1, 0)
+    disintegrate = SpellAttack('disintegrate', 1, 50, 49, 11, 1, 1)
+    chain_dragon_lightning = SpellAttack('chain dragon lightning', 1, 52, 51, 11, 1, 1)
+    blasphemy = SpellAttack('blasphemy', 1, 54, 50, 12, 1, 1)
+    heavy_recover = Healing('heavy recover', 1, 56, 60, 15, 1, 1)
+    nuclear_blast = SpellAttack('nuclear blast', 1, 58, 56, 13, 1, 1)
+    blessing_of_titania = Healing('blessing of titania', 1, 60, 59, 15, 1, 1)
+    domain_expansion = SpellAttack('domain expansion', 1, 64, 60, 15, 1, 1)
 
-    Power_Word_Kill = SpellAttack # top tier
-    Delayed_Strike_Lightning_Bolt = SpellAttack # top tier
-    Release_Recolection = Spell # top tier
-    Meteor_Swarm = SpellAttack # top tier
-    True_Death = SpellAttack # top tier
-    Grasp_Heart = SpellAttack # top tier
-    Greater_Teleportation = Spell # top tier
-    Urbosas_Fury = SpellAttack # top tier
-    Hyper_Beam = SpellAttack # top tier
-    Star_Platinum = Spell # top tier
-    Miphas_Grace = Healing # top tier
-    Fallen_Down = SpellAttack # top tier
+    black_hole = SpellAttack('black hole', 1, 68, 63, 12, 1, 1)
+    reality_slash = SpellAttack('reality slash', 1, 72, 65, 14, 1, 1)
+    transfer_unit_durability = Healing('transfer unit durability', 1, 76, 79, 16, 1, 1)
+
+    Slash_Kill = SpellAttack('/kill @e[type=enemy]', 1, 80, 71, 15, 1, 1) # top tier
+    Power_Word_Heal = Healing('Power Word Heal', 1, 82, 88, 16, 1, 1) # top tier
+    Delayed_Strike_Lightning_Bolt = SpellAttack('Delayed Strike Lightning Bolt', 1, 84, 80, 13, 1, 1) # top tier
+    Release_Recolection = SpellAttack('Release Recolection', 1, 86, 76, 15, 1, 1) # top tier
+    Kamehameha = SpellAttack('Kamehameha', 1, 88, 79, 15, 1, 1) # top tier
+    Meteor_Swarm = SpellAttack('Meteor Swarm', 1, 90, 84, 13, 1, 1) # top tier
+    True_Death = SpellAttack('True Death', 1, 92, 82, 16, 1, 1) # top tier
+    Grasp_Heart = SpellAttack('Grasp Heart', 1, 94, 85, 15, 1, 1) # top tier
+    Urbosas_Fury = SpellAttack('Urbosa\'s Fury', 1, 96, 92, 17, 1, 1) # top tier
+    Hyper_Beam = SpellAttack('Hyper Beam', 1, 98, 93, 16, 1, 1) # top tier
+    Star_Platinum = SpellAttack('Star Platinum', 1, 100, 87, 17, 1, 1) # top tier
+    Miphas_Grace = Healing('Mipha\'s Grace', 1, 102, 94, 21, 1, 1) # top tier
+    Fallen_Down = SpellAttack('Fallen Down', 1, 104, 94, 16, 1, 1) # top tier
+
+    spells = [magic_punch, small_healing_word, magic_missile, acid_splash, 
+              fire_bolt, thunder_wave, vicious_mockery, vicious_mockery, 
+              magic_arrow, cure_wounds, bane, chromatic_orb, shocking_grasp, 
+              witch_bolt, shatter, emperor, light_healing, emerald_splash, 
+              magicians_red, fireball, healing_word, fear, lightning]
+    
+    return spells
 
 
