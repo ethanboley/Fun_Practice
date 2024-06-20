@@ -38,22 +38,91 @@ class Enemy:
         self.agi = agi
         self.world = world
 
-    def attack(self, player):
-        if random.random() < self.accuracy:
-            player.hp -= self.atk
-            dprint(f'{self.name} attacks {player.name} for {self.atk} damage!')
-            if player.is_alive():
-                display_health(player)
+    def attack(self, target):
+        if target == None:
+            pass
+        elif random.random() < self.accuracy:
+            target.hp -= self.atk
+            dprint(f'{self.name} attacks {target.name} for {self.atk} damage!')
+            if target.is_alive():
+                display_health(target)
             else:
-                dprint('You have died!')
+                if isinstance(target, Ally):
+                    dprint(f'{target.name} has been mortally wounded!')
+                else:
+                    dprint(f'{target.name} has died!')
         else:
             dprint(f'{self.name} misses their attack!')
+    
+    def choose_target(self, targets:list):
+        if targets:
+            return random.choice(targets)
+        else:
+            return None
 
     def is_alive(self):
         return self.hp > 0
     
     def drop(self, player):
         pass
+
+
+class Ally:
+    def __init__(self, name, level, hp, atk, agi, acu, skill) -> None:
+        self.name = name
+        self.level = level
+        self.maxhp = hp
+        self.hp = hp
+        self.atk = atk
+        self.agi = agi
+        self.acu = acu
+        self.cooldown = 0
+        self.skill = skill
+
+    def choose_target(self, targets:list):
+        return random.choice(targets)
+    
+    def take_turn(self, target):
+        if self.cooldown > 0:
+            available_options = ['attack']
+        else:
+            available_options = ['attack','special attack','special attack']
+
+        op = random.choice(available_options)
+        if op == 'attack':
+            self.attack(target)
+        elif op == 'special attack':
+            self.special_attack(target)
+
+    def attack(self, target):
+        if random.random() < self.acu:
+            damage = self.atk - random.randint(0, self.atk // (self.level + 15))
+            target.hp -= damage
+            dprint(f'{self.name} attacks {target.name} for {damage} damage!')
+            if target.is_alive():
+                dprint(f'{target.name} has {target.hp} hp remaining.')
+            else:
+                dprint(f'{self.name} has defeated {target.name}!')
+
+        else:
+            dprint(f"{self.name} misses their attack!")
+        self.cooldown -= 1
+
+    def special_attack(self, target):
+        damage = self.atk + random.randint(0, self.atk // (self.level + 15)) + self.skill.damage
+        if self.cooldown <= 0:
+            active_damage = damage if random.random() < self.acu else (damage // 5) + 1
+            target.hp -= active_damage
+            dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
+            if target.is_alive():
+                dprint(f'{target.name} has {target.hp} hp remaining.')
+            else:
+                dprint(f'{self.name} has defeated {target.name}!')
+        self.cooldown += 4
+            
+
+    def is_alive(self):
+        return self.hp > 0
 
 
 class Boss:
@@ -569,4 +638,18 @@ def init_enemies():
 
     return mon_list
 
+
+def init_allies():
+    robin_0 = Ally('Robin', 1, 14, 1, 22, .7, Skill('slant', 0, 1, 1, 2, 1))
+    henry = Ally('Henry', 2, 11, 3, 19, .65, Skill('reverse pull', 0, 2, 5, 4, 3))
+    liliyah = Ally('Liliyah', 2, 15, 5, 18, .78, Skill('parallel sting', 0, 2, 2, 2, 2))
+    tiffey = Ally('Tiffey', 2, 19, 1, 20, .7, Skill('cross hatch', 0, 3, 2, 4, 3))
+    kajlo_sohler = Ally('Kajlo Sohler', 2, 17, 3, 19, .76, Skill('cork screw', 0, 1, 1, 3, 1))
+    officer_jerrimathyus = Ally('Officer Jerrimathyus', 3, 26, 5, 26, .75, Skill('uppercut', 0, 3, 1, 4, 3))
+
+
+    allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus
+              ]
+
+    return allies
 

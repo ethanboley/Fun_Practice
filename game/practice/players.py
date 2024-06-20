@@ -82,23 +82,6 @@ class Player:
     def special_attack():
         pass
 
-class Ally:
-    def __init__(self, name, hp, atk, level) -> None:
-        self.name = name
-        self.maxhp = hp
-        self.hp = hp
-        self.atk = atk
-        self.level = level
-
-    def attack(self):
-        pass
-
-    def special_attack(self):
-        pass
-
-    def is_alive():
-        pass
-
 
 class Fighter(Player):
     def __init__(self, name, hp, atk, xp, level, accuracy, col):
@@ -127,7 +110,7 @@ class Fighter(Player):
                 dprint(f'{self.name} has defeated {enemy.name}!')
                 self.gain_xp(enemy.xp, xp_thresholds)
                 self.gain_col(enemy.col)
-                enemy.drop(self)                
+                enemy.drop(self)
         else:
             dprint(f"{self.name} misses their attack!")
     
@@ -568,3 +551,4 @@ class Pugilist(Player):
         if random.randint(0, small) > random.randint(0, big):
             return True
         return False
+

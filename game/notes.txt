@@ -16,7 +16,9 @@ dev 0.0.17 (continue mage)
 dev 0.0.18 (improved items)
 dev 0.0.20 (domain oriented battle)
 dev 0.0.21 (improved flow)
-dev 0.0.24 (story) Current
+dev 0.0.24 (story)
+dev 0.0.25 (more story)
+dev 0.0.27 (allies) current
 ...
 alpha 0.1.0 
 ...
@@ -24,7 +26,7 @@ beta 0.2.0
 ...
 1.0.0 - 1.999.999
 
-Added battle.py, minor changes to dprint, fixed Battle.story, Ally class, finished chapter 1 and 2, adjusted life potion
+adjustments to story battle, fixed teamates and ally adding bug, added allies adjusted monster attack, added adjust_team story_reward and ch3 through 5, lots of story notes. 
 
 TODO: * = working on
 
@@ -35,7 +37,9 @@ TODO: * = working on
 3: Current monsters list is only for world 1, player can choose which world 
 to be in and which monsters to encounter. 
 
-4: map: 
+
+world ideas: 
+map: 
     1 = kobold wood
         kobolds
         nepenths
@@ -207,3 +211,376 @@ lv --> xp
 100 --> 1,632,569,825,846
 101 --> 2,040,712,282,506
 final level difference of 408,142,456,660
+
+
+story notes: 
+A letter to the content assistent: 
+A game I'm developing has 20 worlds each with 33 chapters to play through (so 
+far I've only created about 8 chapters in the first book). The player starts 
+after being woken by their younger brother from a mysterious and sudden 
+collapse. Upon waking, the player realizes that their memories are temporarily 
+blocked and they have notably better fighting capability. As book 1 progresses 
+this continues to go unexplained but a new problem arises in the form of 
+increased kobold violence and activity. By chapter 8, where I'm at currently, 
+the player has joined an investigation task force, survived an ambush and is 
+heading back to the beginning town to request aid and report findings. From 
+there I have planned that the player will be sent on another mission alone 
+because of personnel shortage where they will find misleading clues. upon 
+returning home the player will enjoy a day of so of peace before waking to a 
+hometown in flames due to a large scale kobold attack. In the fight, the 
+player's younger brother Robin will be abducted. The next several chapters 
+involve the player chasing and tracking down Robin and includes the book's mid-
+boss. After finally finding the camp with the hostage Robin, the player 
+infiltrates the camp and has a run in with the real Kobold Boss still unnamed. 
+The player fails and retreats back to the recovering town to warn of the Boss' 
+plans. Plans are made to attack the kobolds first and the player and a small 
+but capable army marches out with speed to the kobold's lair where the Kobold 
+Boss Illfang is encountered, fought and beaten. That is where book one will 
+end. I have very few plans for future books but I want each world and 
+corresponding book to have different themes, locations and monsters each 
+playing roles in the stories progression. For book 2 I do have a cow/minotaur/
+bull sort of theme for monsters; this drastic change in monster type will be 
+dure to a change in location obviously; and, the overall theme/mood/threat 
+level for book 2 as well as (I'm thinking) the next few books up to 4 or 5 will
+be basically the same. After that point though there will be one particular 
+chapter in one of those later books that totally takes the player off guard as 
+something much bigger than their current problem cuts in and causes some 
+serious problems and derailments of the player's plans. The signs and build up 
+to this moment will exist in the previous chapters but will be extremely subtle 
+and should still leave the player reeling because of the sudden change of pace. 
+I'm not sure what this will specifically entail but I have some plot points in 
+my head and ideas that I would like to weave into this story. Is that the 
+player character's blood is unique somehow resulting in powerful entities 
+targeting his family in various ways for their own gain. 2 examples are the 
+player's inexplicable collapse at the opening moments of the game being due to 
+one of these entities and another being the players long lost oldest brother 
+who vanished over a decade before. This brother has been semi raised by one of 
+these power seeking entities to do their will. I'm thinking this older brother 
+will serve as a boss for a later book. another plot point I want included in 
+the story is the concept of cheating death in the form of traversing the 
+planes. I also want a book or a few to be the sort of villain arc for the 
+player character as they wrestle with contradicting truths and moral 
+standards. These will eventually culminate in a final 2 part book 19 and 20 in 
+which the player chases down and confronts the one who has been pulling the 
+strings over the entire story and emerges victorious.
+
+There are at least 2 kinds of betrayal fast and slow: first, X suddenly betrays Y 
+resulting in questions and heartbreak; second, Y observes X make choices and 
+decisions that eventually lead them to a betrayal moment, arguably more sad 
+because Y watches the slippery decent of X. For fast, think Six, it happens so 
+suddenly and unexpectedly that it leaves Mono and no doubt the player wondering 
+why. For slow, think Lucifer, he was the light bringer, a son of the morning in 
+the presence of Elohim himself. It must have been unimaginably heartbreaking to 
+see such a beloves spirit fall into devilhood. I suppose we don't know the 
+details of how long it took him to get from licifer to full fledged Satan but I 
+think it works. I think Both should be implemented in the story.
+
+Framing through missunderstandings and coincidental terror attacks. sinister 
+experiments on children. Find someone before 'they' do. Saving the last of 
+humanity (or another race). Kill something, then realize you definitely 
+shouldn't have done that. Ideal happens to be already on the hunt for Rulid
+but doesn't know that player is bro so is friendly, but when Ideal realizes
+that player and Rulid are bro, he turn on player. 
+NieR: Automata, Life Is Strange 2, Horrizon Forbidden West, Soma, Mass Effect 2, 
+
+
+plot layer 1: 
+pass
+
+plot layer 2:
+book1: Robin is stolen by kobolds player rescues him. 
+book2: player goes to the capital facing a rediculous number of trials along 
+    the way. 
+book3: player, at the capital is intruduced to the deuteragonists of the rest
+    of the story including Milo, Theo, Toby, Outh, Rosalind, Ideal, Nori, 
+    Chloe and Callybon. Otherwise least consequential arc. 
+book4: player goes after a scetchy guy group leader lead crap hits the fan as
+    a few scetchy guys pass by in a chase and its Rulid now Kairon. 
+book5: a new world
+
+
+plot layer 3: 
+(important plot points are included not specific fights (with some exceptions))
+book 1: 
+0: player wakes up with increased power and memory loss
+1: player and Robin fight their way backto town
+2: player is 3rd of 5 children born to a wholesome family, something odd about 
+    missing oldest son Rulid (24 now). They are attacked by kobolds. 
+3: Robin and player go out to fight and are attacked by kobolds again. 
+4: player proves his worth and joins a kobold counter measure task force. 
+5: player and team is ambushed by kobolds and a teamate is mortally wounded. 
+6: player makes it back to town, obtains aid and is assigned another mission. 
+7: player ventures into a cave, fights a cave bear and finds the burnt carcass 
+    of a kobold as well as a charred note explaining that the kobold was killed 
+    for disloyalty to the new Kobold Boss. 
+8: exploring deeper, player finds an exit and an abandoned kobold camp. Inside 
+    he finds an order given by a kobold called Luxkhanna to kidnap certain 
+    unnamed humans from Greentown.
+9: player ventures home encountering no kobolds on the way. 
+10: in the middle of the night, a large force of kobolds attack Greentown. 
+    Parts of the town are burned and Robin as well as many others are abducted. 
+11: player and 3 others begin pursuit and watch wth each fight as their quary 
+    grows farther and farther. 
+12: player finds himself alone in the southern woods. 
+13: player finds the name Luxkhanna prefixed by the title capper and a map of 
+    kobold camps. 
+14: player goes to the location which is abandoned but finds more current place. 
+15: place is far but player heads out far south-west into the woods. 
+16: player finds treasure but has to fight for it. 
+17: player is led near the mouth of a canyon. fowl stench signals a bunch of 
+    nepenths to attack.
+18: player enters the canyon and finds the Kosaur asleep. no way around. 
+19: player confronts the Kosaur. 
+20: the lack of a Kosaur causes a surge of small monsters through the canyon. 
+21: monsters that make it through signal kobold scouts who send investigative 
+    kobold parties
+22: finally player breaks through and continued to follow trail leading them 
+    to the camp at last. 
+23: spying out the camp, player spots Capper Luxkhanna. careful maneuvering and 
+    stealth reveals several captives and at last, Robin. 
+24: night comes and player moves in *controlled dprint() for tense situations*
+    player spots Luxkhanna again roaming around in the night and player follows. 
+    Luxkhanna kneels before a large enshrowded Kobold.
+25: the Luxkhanna and Illfang converse about secret plans to attack from a 
+    norther base in several days. player is discovered and chased out without 
+    Robin.
+26: player breaks through the canyon again kobolds still in hot pursuit. After a 
+    while they leave and player continues in haste to Greentown. 
+27: near the town player finds several kobolds scouting the town for information
+    player gives them a pounding. 
+28: In town, player speaks wth the mayor and the captain informing them of 
+    Illfang's plans. Deliberation and planning. 
+29: Forces are requested and gathered including several familiar faces. Force 
+    heads north to the base. 
+30: Base is in a hilly place, force penetrates and begins forced entry. 
+31: inside a large stone keep, many final guards await. Robin is found and 
+    freed.
+32: player and company confront Illfang. Illfang says some cryptic words before 
+    death of one who led him to his actions. Upon returning home, the body of
+    the Boss scares the other attacking Kobold force away. *a rather long 
+    thirty_two_victory_0() detailing victory and also transitioning into book2*
+
+book 2:
+33(0): Player is sent to the capital with the captain to report on the small 
+    kobold war in Greentown. Rulid is to go with the trade caravan Rulid sr and
+    Elond work for resulting in a joyous reunion. 
+35(1): The journey is long and the fields along the way crawl with cow flavored
+    monsters.
+36(2): Elond, the captain and others prove their combat skill in figts with
+    these monsters. 
+37(3): player and co are attacked in the night. 
+38(4): bandits attack too. 
+39(5): Elond and dad have a chat about poor missing Rulid. Clues say he's still
+    alive. They've been on a low key hunt this whole time. 
+40(6): casual battles as well as these chats and lore drops happen spread 
+    across the previous and next few chapters. also descriptive scenery. 
+41(7): same ol, also the rule of the safety wagon is mentioned (ya have a 
+    dissagreement you go think it out on the wagon).
+42(8): another bandit run in. 
+43(9): The caravan stops at the midpoint, a savanna outpost called Farthe 
+    Outpost. Elond and later player participates in a pit fight.
+44(10): player sees a sketchy guy in the tavern. That night, player sees
+    sketchy guy stealing goods from the caravan. Guy gets away with nothing 
+    but the caravan headcount list. 
+45(11): next morning, caravan leaves again. Quick fight in the plains. 
+46(12): in the middle of no where, a giant skorpion attacks the caravan 
+    leaving one dead and several badly injured. *field boss fight*
+47(13): many suggest heading back to Farthe Outpost for better medical aid but
+    the outpost is quite far away now and the majority decide on continuing 
+    on. One, Kuretch, the second mate seems particularly peeved by this. 
+48(14): The next day, Kuretch asks for a revote, is denied, told to go into the 
+    safety wagon, refues. This is a sign of open hostility. he is told to stand 
+    down, he refuses, others draw weapons, he is told to leave, he says not 
+    without the caravan, etc. eventually a fight breaks out and the caravan is 
+    split. *4 part battle*
+49(15): Lack of supplies and increased injured cause a crisis in the greater 
+    caravan. player is taksed with a few others to go out and find food/get help. 
+50(16): player and team head into the woods. 
+51(17): Midnight assasination. player recognizes same clothes as scetchy guy. 
+52(18): quick solo chase, assassins get away. 
+53(19): woodland fights back to camp under siege by more scetchy guys. 
+54(20): emergency retreat back to the caravan also under attack by Tauruses in
+    sketchy guy ish garb. 
+55(21): death/injured count rising, the caravan decides to go back to the 
+    Farthe Outpost anyway. 
+56(22): Elond reports and dad concurs, he has never had a trip nearly this bad.
+57(23): a few bitter fights. 
+58(24): Finally make it back to the outpost, Kuretch and others not there. 
+    inhabitants explain their arrival being in perfect peace and order, their
+    problems solved quickly and they left again that morning. 
+59(25): That night Tarus attack on the outpost. 
+60(26): caravan sent away attributing bad luck or omen. 
+61(27): that night player takes Elond and captain stealthing after scetchy guys. 
+    They are led to a small hilly alcove where a tarus is reported to. team
+    player lays in wait for scetchy guys puts on their clothing and follows 
+    tauruses. 
+62(28): led to a larger taurus and scetchy guy group who head out. miles and 
+    miles they travel into the day with little to no issue, reach a structure 
+    carved into a cliffside, meet with others and are adressed by a giga 
+    sketchy guy. Cult leader cuts his adress short and anounces that there are 
+    unwanted guests in the crowd. 
+63(29): distraction, missdirection, blindsighting, stealth and lastly combat 
+    lead to a narrow escape and pursuit. 
+64(30): team player, kites the pursuers, who narrow down to just a few taruses 
+    and their military leaders, all the way back to the caravan. 
+65(31): caravan battles with the taurus force. 
+66(32): caravan battles Baran and Asterios Boss. After victory, Asterios says
+    "filthy feet-walkers and your dead Gods! No Minotaur should have to die for 
+    your cause!" caravan spends a day or so recovering, heads out again, and 
+    finally reaches the capital, Kedren Main, with strangely little issue.
+
+book 3:
+67(1): Inside the city of Kedren Main, player needs are met imediately and well.
+    player finally gives report. player is taken to the east barracks. meet and 
+    spar with Milo. 
+68(2): charming Milo asks future plans suggests a trial run for a city guard 
+    position. 
+69(3): trial run = gladiatorial turnament where top finalists get inducted 
+    for a trial run, even non-citizens. Milo provides training dummy construct. 
+70(4): first 3 trails: 1 monster, 10 weaker monsters, 1 duel. 
+71(5): second 3 trials: 1 duel, 1 duel, 3 monsters. 
+72(6): final 2 trials: second one is called off because the first one, 1 
+    monster, was basically drugged by an unknown hand to be about 5 times more 
+    dificult. Several official guards join the fight. 
+73(7): captain notes that someone may be out to get player. player is permitted 
+    to participate in the final trial anyway which player does making them a 
+    top finalist. 
+74(8): trial run begins, first task patroll the walls, pretty boring. 
+75(9): player accidentally catches a theif and is recognized. 
+76(10): second task, escort a prospecter to a new dig site. 
+77(11): third task, wall patroll night shift. Guard, then player, spots a dark 
+    figure who vanishes. Short investigation. 
+78(12): fourth task never happens, player is extracted from wall duty again by 
+    captain who takes player kobold investigating. 
+79(13): kobold investigating. 
+80(14): kobold investigating, run in with goblins. No luck with Kobolds. 
+81(15): walking through the streets board out of mind, player sees 3 figures 
+    standing in the sky but vanish. 
+82(16): fifth task, policing duty in the scetchy part of town. Overhear, some 
+    folk doing shady business *Vecna mentioned: "What in the name of Vecna's 
+    blackest eye" or something* also the briefest glimse of floating figures. 
+83(17): this time Toby spots the floaters, all 3 give chase. listening from 
+    around the corner, they hear not the declaration of war but a date. 
+    Summer 1st, 3044, 6th age at dawn. 
+84(18): next morning, player is given a formal invitation to join full time
+    guard, policing or military forces of the city at least for the rest of the 
+    year. 
+85(19): player accepts and is given a 'new' induction challenge to spar with 
+    guard golem prototype. *Field Boss*
+86(20): 3 days of silence. 
+87(21):
+88(22):
+89(23):
+90(24):
+91(25):
+92(26):
+93(27):
+94(28):
+95(29):
+96(30):
+97(31):
+98(32):
+
+book 4:
+99(0):
+100(1):
+101(2):
+102(3):
+103(4):
+104(5):
+105(6):
+106(7):
+107(8):
+108(9):
+109(10):
+110(11):
+111(12):
+112(13):
+113(14):
+114(15):
+115(16):
+116(17):
+117(18):
+118(19):
+119(20):
+120(21):
+121(22):
+122(23):
+123(24):
+124(25):
+125(26):
+126(27):
+127(28):
+128(29):
+129(30):
+130(31):
+131(32):
+
+book 5:
+132(0):
+
+
+
+epilogueueue:
+. . . 
+. . . 19 Spring, 85, 7th age . . . 
+. . .
+Retreat!!!
+Retreat, to the hilltop! 
+Eldorie, I don't know how were going to escape them. There's just too many and
+they have every advantage. 
+Just keep pulling back, Theo, that's all we can do for now. Any amount of time we can
+give to the inocent to escape, we'll give them, come what may. 
+Yes sir...
+It was the last stand of the people of Milus. Their defending forces had been 
+fending off the bandit king for over 3 years and now it looked like the end head
+come at last. 
+Theo, the captain of this force, named after his legendary grandfather, turned
+his back on General Eldorie and continued his command issuing a full retreat. 
+Things couldn't look more bleak, just then, a bead of light appeared next to 
+The general's head. before the general could so much as start the bead of light
+bloomed into a brilliant sphere of radiance out of which stepped a figure. 
+if fighter:
+    The figure was clothed in shimmering white armor from head to toe. It carried a 
+    sword that seemed to shine like the sun. 
+if Mage: 
+    The figure was covered in a brilliant robe and held an ornate silver staff aloft. 
+if pugilist: 
+    The figure was tall and fit covered in light armor and wraps that gave off a 
+    dazzling light.
+if tamer: 
+    The figure was riding a beautiful white mount like an elk with 2 pairs of 
+    eagle's wings. Both rider and mount gave off a bright glow.
+As the figure emerged completely, the ball of light from which they came faded
+into nothingness, and as it did so all watched in wonder and Theo's eyes filled
+with tears as realization washed over him. 
+General! Its {player.name}! They've returned!
+{player.name} smiles and steps forward once again, looked to Eldrie, to Theo, the 
+retreating, and finally to the attacking and with that, all knew the fight was 
+over then and there.
+{player.name}, the legendary hero, was here to fulfill their promise to protect
+their decendants and friends. 
+
+credits: 
+print(organized by: Ethan Boley)
+print(co-organizer: RulidSynthesis34)
+print(patch/update/commit/edit/or whatever history [i]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+1]: Ethan Boley)
+print(content assistant: Gemini)
+print(patch/update/commit/edit/or whatever history [i+2]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+3]: RulidSynthesis34)
+print(patch/update/commit/edit/or whatever history [i+4]: Ethan Boley)
+print(music: various (please don't copyright me))
+print(patch/update/commit/edit/or whatever history [i+5]: RulidSynthesis34)
+print(patch/update/commit/edit/or whatever history [i+6]: RulidSynthesis34)
+print(character and other names: not Ethan Boley, RulidSinthesis34, various, etc.)
+print(patch/update/commit/edit/or whatever history [i+7]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+8]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+9]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+10]: RulidSynthesis34)
+print(patch/update/commit/edit/or whatever history [i+11]: Ethan Boley)
+print(patch/update/commit/edit/or whatever history [i+12]: RulidSynthesis34)
+etc. . . 
+
+
+

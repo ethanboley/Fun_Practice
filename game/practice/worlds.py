@@ -59,6 +59,7 @@ class WorldOne:
         if self.pc.progress > 1 and 'fight' not in self.world_options:
             self.world_options.append('fight')
             self.story_prompt = 'continue?'
+            self.world_options[0] = self.story_prompt
         if self.pc.progress > 2 and 'hospital' not in self.world_options:
             self.world_options.append('hospital')
         if self.pc.progress > 5 and 'market' not in self.world_options:
