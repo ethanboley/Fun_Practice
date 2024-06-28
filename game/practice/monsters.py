@@ -1,7 +1,7 @@
 
 import random
 from actions import *
-from stuffs_that_do import init_items
+from stuffs_that_do import init_items, SpellAttack, Healing
 
 
 drops = init_items()
@@ -68,7 +68,7 @@ class Enemy:
 
 
 class Ally:
-    def __init__(self, name, level, hp, atk, agi, acu, skill) -> None:
+    def __init__(self, name, level, hp, atk, agi, acu, skill, designation=None) -> None:
         self.name = name
         self.level = level
         self.maxhp = hp
@@ -76,13 +76,17 @@ class Ally:
         self.atk = atk
         self.agi = agi
         self.acu = acu
-        self.cooldown = 0
         self.skill = skill
+        self.cooldown = 0
+        if designation == None:
+            self.designation = self.name
+        else:
+            self.designation = designation
 
     def choose_target(self, targets:list):
         return random.choice(targets)
     
-    def take_turn(self, target):
+    def take_turn(self, target, player):
         if self.cooldown > 0:
             available_options = ['attack']
         else:
@@ -92,7 +96,7 @@ class Ally:
         if op == 'attack':
             self.attack(target)
         elif op == 'special attack':
-            self.special_attack(target)
+            self.special_attack(target, player)
 
     def attack(self, target):
         if random.random() < self.acu:
@@ -108,16 +112,39 @@ class Ally:
             dprint(f"{self.name} misses their attack!")
         self.cooldown -= 1
 
-    def special_attack(self, target):
-        damage = self.atk + random.randint(0, self.atk // (self.level + 15)) + self.skill.damage
-        if self.cooldown <= 0:
-            active_damage = damage if random.random() < self.acu else (damage // 5) + 1
-            target.hp -= active_damage
-            dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
-            if target.is_alive():
-                dprint(f'{target.name} has {target.hp} hp remaining.')
-            else:
-                dprint(f'{self.name} has defeated {target.name}!')
+    def special_attack(self, target, player):
+        if self.skill.type == 0: # if its a skill
+            damage = self.atk + random.randint(0, self.atk // (self.level + 15)) + self.skill.damage
+            if self.cooldown <= 0:
+                active_damage = damage if random.random() < self.acu else (damage // 5) + 1
+                target.hp -= active_damage
+                dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
+                if target.is_alive():
+                    dprint(f'{target.name} has {target.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {target.name}!')
+        
+        elif self.skill.type == 1: # if its a spell
+            damage = self.atk + random.randint(0, self.atk // (self.level + 15)) + self.skill.damage
+            if self.skill.nature == 0: # if its a spellattack
+                pass # keep target the same
+                if self.cooldown <= 0:
+                    active_damage = damage if random.random() < self.acu else (damage // 5) + 1
+                    target.hp -= active_damage
+                    dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
+                    if target.is_alive():
+                        dprint(f'{target.name} has {target.hp} hp remaining.')
+                    else:
+                        dprint(f'{self.name} has defeated {target.name}!')
+
+            elif self.skill.nature == 1: # if its a healing spell
+                target = random.choice(player.allies)
+                if self.cooldown <= 0:
+                    active_damage = damage if random.random() < self.acu else (damage // 5) + 1
+                    target.hp += active_damage
+                    dprint(f'{self.name} healed {target.name}!')
+                
+
         self.cooldown += 4
             
 
@@ -601,16 +628,20 @@ def init_enemies():
     awakened_shrub = Plant('awakened shrub', 5, 1, 5, 1, .6, 0, 22, [1,4,5])
     small_kobold = Koboldoid('small kobold', 6, 2, 8, 1, .45, 1, 21, [1])
     barkling = Plant('barkling', 8, 1, 7, 1, .4, 0, 27, [1])
+    swarm_of_bats = Beast('swarm of bats', 8, 1, 9, 1, .9, 0, 16, [1,2,3,4,5])
     little_nepenth = Nepenth('little nepenth', 14, 2, 13, 2, .6, 0, 13, [1])
     kobold_slave = Koboldoid('kobold slave', 13, 1, 12, 2, .75, 1, 19, [1])
     windwasp = Insect('windwasp', 12, 2, 10, 2, .55, 0, 11, [1,2])
     dire_wolf = Beast('dire wolf', 15, 1, 13, 2, .85, 0, 19, [1,3,4])
     green_worm = Worm('green worm', 21, 1, 10, 2, .35, 0, 30, [1])
     nepenth = Nepenth('nepenth', 20, 2, 14, 2, .6, 0, 14, [1])
+    cave_slime = Slime('cave slime', 13, 3, 11, 2, .55, 0, 29, [1])
     kobold_soldier = Koboldoid('kobold soldier', 21, 2, 13, 2, .75, 2, 19, [1])
     Kobold_guard = Koboldoid('kobold guard', 20, 2, 14, 2, .8, 3, 17, [1])
     shrubent = Plant('shrubent', 27, 1, 14, 3, .9, 0, 24, [1])
-    pod_nepenth = Nepenth('pod nepenth', 28, 1, 14, 3, .5, 0, 17, [1])
+    cave_bear = Beast('cave bear', 20, 3, 15, 3, .45, 1, 17, [1])
+    pre_pod_nepenth = Nepenth('pod nepenth', 7, 1, 14, 3, .5, 0, 17, [1])
+    post_pod_nepenth = Nepenth('Pod Nepenth', 21, 1, 14, 3, .5, 0, 17, [1])
     flower_nepenth = Nepenth('flower nepenth', 32, 2, 18, 3, .75, 0, 14, [1])
     red_worm = Worm('red worm', 35, 1, 14, 3, .40, 0, 28, [1])
     kosaur = Enemy('Kosaur (F-Boss)', 60, 5, 30, 3, .7, 3, 20, [1])
@@ -629,27 +660,38 @@ def init_enemies():
     illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 9, 60, 5, .9, 15, 20, [1])
 
     mon_list = [windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
-                greedy_badger, awakened_shrub, small_kobold, barkling, little_nepenth, 
-                kobold_slave, windwasp, dire_wolf, green_worm, nepenth, 
-                kobold_soldier, Kobold_guard, shrubent, pod_nepenth, flower_nepenth, 
-                red_worm, kosaur, big_nepenth, sappent, ruin_kobold, sly_srewman, 
-                human_bandit, kobold_chief, black_worm, treent, ruin_kobold_trooper, 
-                bark_golem, flying_kobold, ruin_kobold_sentinel, illfang]
+                greedy_badger, awakened_shrub, small_kobold, barkling, swarm_of_bats,
+                little_nepenth, kobold_slave, windwasp, dire_wolf, green_worm, nepenth, 
+                cave_slime, kobold_soldier, Kobold_guard, shrubent, cave_bear, pre_pod_nepenth,
+                post_pod_nepenth, flower_nepenth, red_worm, kosaur, big_nepenth, sappent, 
+                ruin_kobold, sly_srewman, human_bandit, kobold_chief, black_worm, 
+                treent, ruin_kobold_trooper, bark_golem, flying_kobold, ruin_kobold_sentinel, 
+                illfang]
 
     return mon_list
 
 
 def init_allies():
-    robin_0 = Ally('Robin', 1, 14, 1, 22, .7, Skill('slant', 0, 1, 1, 2, 1))
+    robin_0 = Ally('Robin', 1, 14, 1, 22, .7, Skill('slant', 0, 1, 1, 2, 1), 'Robin 0')
     henry = Ally('Henry', 2, 11, 3, 19, .65, Skill('reverse pull', 0, 2, 5, 4, 3))
     liliyah = Ally('Liliyah', 2, 15, 5, 18, .78, Skill('parallel sting', 0, 2, 2, 2, 2))
     tiffey = Ally('Tiffey', 2, 19, 1, 20, .7, Skill('cross hatch', 0, 3, 2, 4, 3))
     kajlo_sohler = Ally('Kajlo Sohler', 2, 17, 3, 19, .76, Skill('cork screw', 0, 1, 1, 3, 1))
     officer_jerrimathyus = Ally('Officer Jerrimathyus', 3, 26, 5, 26, .75, Skill('uppercut', 0, 3, 1, 4, 3))
+    bulli = Ally('Bulli', 2, 18, 2, 20, .76, Skill('mega poke', 0, 1, 2, 2, 1))
+    milo_0 = Ally('Milo', 2, 15, 3, 19, .82, Skill('linear', 0, 2, 1, 3, 3), 'Milo 0')
+    gaffer = Ally('Gaffer', 1, 9, 1, 20, .6, Skill('pitch fork', 0, 1, 2, 4, 1))
+    holt = Ally('Holt', 3, 27, 2, 23, .72, Skill('back rush', 0, 4, 1, 5, 4))
+    hesh = Ally('Hesh', 3, 24, 2, 19, .76, SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0))
+    # suphia = Ally('Suphia')
+    # coef = Ally('Coef')
+    # deg = Ally('Deg')
+    # virabela  = Ally('Virabela')
+    # Polly = Ally('Polly')
 
 
-    allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus
-              ]
+    allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus,
+              bulli,milo_0,gaffer,holt,hesh]
 
     return allies
 

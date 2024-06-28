@@ -84,7 +84,10 @@ class Battle:
 
         dialog
 
-        dprint(f'A {self.active_monsters[-1].name} moves in to attack!')
+        if collective:
+            dprint('Enemies move in to attack!')
+        else:
+            dprint(f'A {self.active_monsters[-1].name} moves in to attack!')
 
         while True:
             # handle the rounds
@@ -523,7 +526,7 @@ class Battle:
         for ally in self.active_player.allies:
             if seconds % ally.agi == 0 and len(self.active_monsters):
                 target = ally.choose_target(self.active_monsters)
-                ally.take_turn(target)
+                ally.take_turn(target, self.active_player)
                 if not target.is_alive():
                     if target in self.active_monsters:
                         self.active_monsters.remove(target)

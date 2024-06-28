@@ -27,7 +27,7 @@ class LifePotion(Item):
         super().__init__(name, level, sell_price, rarity, sold, can_use)
     
     def use(self, player=None, enemy=None, xp_thresholds=None):
-        player.hp += 9 + player.level
+        player.hp += 8 + (player.level * self.rarity) + self.level
         display_health(player)
 
 
@@ -154,6 +154,17 @@ def init_items():
     magic_glass = MagicGlass('magic glass', 1, 4, 1, True, True)
     glass_of_the_weave = GlassOfTheWeave('glass of the weave', 20, 20, 4, True, True)
     life_potion = LifePotion('life potion', 1, 7, 2, True, True)
+    vermilion_life_potion = LifePotion('vermilion life potion', 2, 10, 3, True, True)
+    rose_life_potion = LifePotion('rose life potion', 3, 15, 4, True, True)
+    magenta_life_potion = LifePotion('magenta life potion', 5, 21, 5, True, True)
+    fuchsia_life_potion = LifePotion('fuchsia life potion', 8, 28, 6, True, True)
+    purple_life_potion = LifePotion('purple life potion', 12, 40, 7, True, True)
+    lavender_life_potion = LifePotion('lavender life potion', 18, 64, 8, True, True)
+    azure_life_potion = LifePotion('azure life potion', 28, 100, 9, True, True)
+    indigo_life_potion = LifePotion('indigo life potion', 42, 180, 10, False, True)
+    blue_life_potion = LifePotion('blue life potion', 64, 240, 11, False, True)
+    navy_life_potion = LifePotion('navy life potion', 96, 365, 12, False, True)
+    deoxidized_blood_of_life_god = LifePotion('bottled deoxidized blood of the life potion deity', 120, 1000, 15, False, True)
     giga_life_potion = GigaLifePotion('giga life potion', 16, 20, 4, True, True)
     glass_bottle = GlassBottle('glass bottle', 1, 0, 1, True, True)
     kales_o_bottle = KalesOBottle('kales o bottle', 5, 11, 5, False, True)
@@ -198,14 +209,16 @@ def init_items():
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, onix_stone, 
              monster_tooth, glass_bottle, magic_glass, living_wood, simple_fabric,
              aged_teak_log, opal, nepenth_fruit, argiros_sheet, nepenths_ovule, 
-             nawsoth_fruit, life_potion, emarald, hide, 
-             acutite, grand_col, kales_o_bottle, crystalite, 
-             return_soul_stone, ruby, droplet_of_villi, 
+             nawsoth_fruit, life_potion, vermilion_life_potion, emarald, hide, 
+             rose_life_potion, magenta_life_potion, fuchsia_life_potion, 
+             purple_life_potion, lavender_life_potion, azure_life_potion, 
+             indigo_life_potion, blue_life_potion, navy_life_potion, 
+             deoxidized_blood_of_life_god, acutite, grand_col, kales_o_bottle, 
+             crystalite, return_soul_stone, ruby, droplet_of_villi, 
              lizard_hide, sapphire, thicc_tendon, 
              noblewood, blue_blood_diamond, ooze_jelly, living_stone,
-             solidite, slime_membrane, carapas, 
-             diamond, tremble_shortcake, venom_glass, 
-             hyper_slime_jelly, super_aja_stone, giga_life_potion, 
+             solidite, slime_membrane, carapas, diamond, tremble_shortcake, 
+             venom_glass, hyper_slime_jelly, super_aja_stone, giga_life_potion, 
              glass_of_the_weave, colossal_col]
 
     return items
@@ -232,7 +245,7 @@ class Healing(Spell):
     def __init__(self, name, type, level, cost, cooldown, damage, nature):
         super().__init__(name, type, level, cost, cooldown, damage, nature)
     
-    def effect(self, enemy, caster, weak_damage=0, strong_damage=0):
+    def effect(self, enemy, caster, weak_damage=0, strong_damage=0): 
         dprint(f'A wave of healing energy surges through {caster.name}')
         targets = [caster]
         for ally in caster.allies:

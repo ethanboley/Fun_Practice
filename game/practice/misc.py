@@ -153,7 +153,7 @@ class Hospital:
             print(f'{i}: {item.name}')
         if player.level >= 6:
             print('Allies: ')
-            for ally in player.allies():
+            for ally in player.allies:
                 print(ally.name)
 
 
@@ -368,7 +368,7 @@ class Marketplace():
             print(f'{i}: {item.name}')
         if player.level >= 6:
             print('Allies: ')
-            for ally in player.allies():
+            for ally in player.allies:
                 print(ally.name)
 
     def black_market(self, player):

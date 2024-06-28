@@ -3,7 +3,7 @@ import random
 import time
 import sys
 import msvcrt
-from things_stuff import Skill
+from things_stuff import Skill, Spell, Spall
 # import pygame as pg
 
 

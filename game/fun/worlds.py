@@ -19,21 +19,33 @@ class WorldOne:
     def create_character(self):
         dprint('What is your name: ')
         pname = input()
+        dprint(f'Is {pname} male or female?')
+        ugender = input()
+        if ugender in ['2','f','F','3','female','Female','FEMALE','fEMALE','Fe','iron','not male','girl','GIRL','Girl','g','G',f'{pname} is a female. ']:
+            pgender = 'Female'
+        else:
+            pgender = 'Male'
         udomain = input('Choose your Domain \n1: Fighter \n2: Mage \n3: Pugilist\n')
+        # dbugp = 7 # For debugging purposes. Adjust to test certain story points with varying accuracy (value matches stpry progress). 
+
         if udomain in ['','f','F','1','0','fighter','Fighter','FIGHTER','fight','Fight','FIGHT','1: Fighter','idk']:
-            pc = Fighter(pname, 10, 2, 0, 1, .69, 3)
+            pc = Fighter(pname, pgender, 10, 2, 0, 1, .69, 3)
             return pc
         if udomain in ['2','m','M','mage','Mage','MAGE','w','magic','2: Mage ','yay, spells']:
-            pc = Mage(pname, 10, 1, 0, 1, .59, 4)
+            pc = Mage(pname, pgender, 10, 1, 0, 1, .59, 4)
             return pc
         if udomain in ['3','p','P','pugilist','Pugilist','PUGILIST','pug','3: Pugilist','punchy boy','Iskhan']:
-            pc = Pugilist(pname, 10, 2, 0, 1, .65, 2)
+            pc = Pugilist(pname, pgender, 10, 2, 0, 1, .65, 2)
             return pc
         if udomain == 'admin': 
-            pc = Mage(pname, 5000, 600, 0, 100, .96, 10000)
+            pc = Mage(pname, pgender, 5000, 600, 0, 100, .96, 10000)
+            return pc
+        if udomain == 'debug':
+            # pc = Fighter(pname, pgender, 10 + (2 * dbugp), 1 + dbugp, 95 + round(1.16 ** dbugp) + (200 // dbugp + 1), dbugp // 2, .88, 3 * dbugp, dbugp)
+            pc = Fighter(pname, pgender, 23, 4, 300, 3, .755, 30, 7) # adjust according to stats by level in experiments
             return pc
         else:
-            pc = Fighter(pname, 6, 1, 0, 1, .4, 0)
+            pc = Fighter(pname, pgender, 6, 1, 0, 1, .4, 0)
             return pc
     
     def introdction(self):

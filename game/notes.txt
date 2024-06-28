@@ -18,7 +18,8 @@ dev 0.0.20 (domain oriented battle)
 dev 0.0.21 (improved flow)
 dev 0.0.24 (story)
 dev 0.0.25 (more story)
-dev 0.0.27 (allies) current
+dev 0.0.27 (allies)
+dev 0.0.28 (versatility and debug) current
 ...
 alpha 0.1.0 
 ...
@@ -26,16 +27,9 @@ beta 0.2.0
 ...
 1.0.0 - 1.999.999
 
-adjustments to story battle, fixed teamates and ally adding bug, added allies adjusted monster attack, added adjust_team story_reward and ch3 through 5, lots of story notes. 
+commit notes: 
+adjustments to story battle, allies can have spells, story edits, added ch_6-11, added monsters and allies, added a debugger character, more life potions. 
 
-TODO: * = working on
-
-1: *Add in pygame's .mixer to have music play at certain points in the game 
-
-2: Write a .dysplay stats method of the player class. 
-
-3: Current monsters list is only for world 1, player can choose which world 
-to be in and which monsters to encounter. 
 
 
 world ideas: 
@@ -281,7 +275,9 @@ humanity (or another race). Kill something, then realize you definitely
 shouldn't have done that. Ideal happens to be already on the hunt for Rulid
 but doesn't know that player is bro so is friendly, but when Ideal realizes
 that player and Rulid are bro, he turn on player. 
-NieR: Automata, Life Is Strange 2, Horrizon Forbidden West, Soma, Mass Effect 2, 
+
+So a big question is surrounding the strange innate magic that flows through 
+the veins of the Rulid family but where did this magic come from? 
 
 
 plot layer 1: 
@@ -296,7 +292,7 @@ book3: player, at the capital is intruduced to the deuteragonists of the rest
     Chloe and Callybon. Otherwise least consequential arc. 
 book4: player goes after a scetchy guy group leader lead crap hits the fan as
     a few scetchy guys pass by in a chase and its Rulid now Kairon. 
-book5: a new world
+book5: 
 
 
 plot layer 3: 
@@ -319,7 +315,7 @@ book 1:
 9: player ventures home encountering no kobolds on the way. 
 10: in the middle of the night, a large force of kobolds attack Greentown. 
     Parts of the town are burned and Robin as well as many others are abducted. 
-11: player and 3 others begin pursuit and watch wth each fight as their quary 
+11: player and 3 others begin pursuit and watch with each fight as their quary 
     grows farther and farther. 
 12: player finds himself alone in the southern woods. 
 13: player finds the name Luxkhanna prefixed by the title capper and a map of 
@@ -327,7 +323,7 @@ book 1:
 14: player goes to the location which is abandoned but finds more current place. 
 15: place is far but player heads out far south-west into the woods. 
 16: player finds treasure but has to fight for it. 
-17: player is led near the mouth of a canyon. fowl stench signals a bunch of 
+17: player is led near the mouth of a canyon. Fowl stench signals a bunch of 
     nepenths to attack.
 18: player enters the canyon and finds the Kosaur asleep. no way around. 
 19: player confronts the Kosaur. 
@@ -467,8 +463,10 @@ book 3:
     year. 
 85(19): player accepts and is given a 'new' induction challenge to spar with 
     guard golem prototype. *Field Boss*
-86(20): 3 days of silence. 
-87(21):
+86(20): 3 days of silence. Stalking around at night when a boy in a sketchy guy
+    out fit surrenders to Rulid and other guard present, Ideal, ready to repent and 
+    leave the cult. Boy is Theo. 
+87(21): Theo, in custody, confesses and gives unheard info during interrogation. 
 88(22):
 89(23):
 90(24):
@@ -494,10 +492,12 @@ book 4:
 108(9):
 109(10):
 110(11):
-111(12):
-112(13):
+111(12): Player goes to reported disturbance downtown. Passes Rulid fleeing the 
+    scene. Give chase. 
+112(13): 
 113(14):
-114(15):
+114(15): No one but Elond in family really believes your story. Only main 
+    characters are willing to go though. 
 115(16):
 116(17):
 117(18):

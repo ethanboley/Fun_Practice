@@ -7,8 +7,9 @@ from stuffs_that_do import init_spells
 
 
 class Player:
-    def __init__(self, name, hp, atk, xp, level, accuracy, col):
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col, progress=0):
         self.name = name
+        self.gender = gender
         self.maxhp = hp
         self.hp = hp
         self.atk = atk
@@ -18,6 +19,7 @@ class Player:
         self.col = col
         self.asleep = False # skip turn
         self.poisoned = False # -hp over time
+        self.embalmed = False # +hp over time
         self.confused = False # can't choose turn
         self.frightened = False # run attempt each turn or nothing
         self.enranged = False # +damage and -accuracy
@@ -26,7 +28,11 @@ class Player:
         self.empowered = False # +atk
         self.energized = False # +mag
         self.location = '1-0'
-        self.progress = 0
+        self.progress = progress
+        if self.gender == 'Female':
+            self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself'}
+        else: 
+            self.grammer = {'subjective':'he', 'objective':'him', 'possessive':'his', 'reflexive':'himself'}
 
 
     def attack(self, enemy, xp_thresholds):
@@ -84,8 +90,8 @@ class Player:
 
 
 class Fighter(Player):
-    def __init__(self, name, hp, atk, xp, level, accuracy, col):
-        super().__init__(name, hp, atk, xp, level, accuracy, col)
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col, progress=0):
+        super().__init__(name, gender, hp, atk, xp, level, accuracy, col, progress)
         self.title = 'Fighter'
         self.acu = .06 # attack acuracy modifier
         self.agi = 19 # used for battle order like a speed stat (out of 20?)
@@ -254,8 +260,8 @@ class Fighter(Player):
 
 
 class Mage(Player):
-    def __init__(self, name, hp, atk, xp, level, accuracy, col):
-        super().__init__(name, hp, atk, xp, level, accuracy, col)
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col):
+        super().__init__(name, gender, hp, atk, xp, level, accuracy, col)
         self.title = 'Mage'
         self.acu = .05 # attack acuracy modifier
         self.agi = 20 # used for battle order like a speed stat (out of 20?)
@@ -393,8 +399,8 @@ class Mage(Player):
     
 
 class Pugilist(Player):
-    def __init__(self, name, hp, atk, xp, level, accuracy, col):
-        super().__init__(name, hp, atk, xp, level, accuracy, col)
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col):
+        super().__init__(name, gender, hp, atk, xp, level, accuracy, col)
         self.title = 'Pugilist'
         self.acu = .04 # attack acuracy modifier
         self.agi = 18 # used for battle order like a speed stat (out of 20?)
