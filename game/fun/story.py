@@ -75,7 +75,7 @@ class BookOne:
         self.player.gain_xp((self.player.level * 2) + (self.player.progress * 2) + 1, self.xp_thresholds)
 
 
-    def adjust_team(self, to_modify, add_or_remove='add'):
+    def adjust_team(self, to_modify:str, add_or_remove='add'):
         """
         Modifies the player's team by adding or removing allies based on their desigantion.
         Also removes duplicate allies with the same desigantion.
@@ -85,28 +85,50 @@ class BookOne:
             add_or_remove (str, optional): 'add' to add an ally, 'remove' to remove. Defaults to 'add'.
         """
 
+        # print(f'to_modify: {to_modify}, add_or_remove: {add_or_remove}')
+        # print(f'0 __ player.allies: {self.player.allies}')
         ally_designations = set()
-        for ally in self.player.allies: # empty the allies list completely
-            ally_designations.add(ally.designation) # but before that record the unique designations of all that were in it
-            self.player.allies.remove(ally) # allies list should be empty now
+        # print(f'initial ally_designations: {ally_designations}')
+        for i in range(len(self.player.allies)): # This performs the remove operation but records the unique names of
+            ally_designations.add(self.player.allies[i].designation) # all that were in it the list of allies before
+        # if len(ally_designations) != len(self.player.allies):
+            # print(f'OH NO! THE FIRST LOOP DIDN\'T WORK {len(ally_designations)} != {len(self.player.allies)}')
+        self.player.allies.clear() # allies list should be empty now
+        # print(f'0 -- ally_designations set: {ally_designations}')
+        # print(f'1 __ player.allies (which has now been emptied): {self.player.allies}')
 
         for ally in self.all_allies: # iterate through all allies in existence
+            # print(f'ally.designation: {ally.designation}, to_modify: {to_modify}, add_or_remove: {add_or_remove}')
             if ally.designation == to_modify: # find the ally matching the desired ally
+                # print(f'1 -- ally_designations set: {ally_designations}')
 
                 if add_or_remove == 'add': # if the ally is to be added
 
                     ally_designations.add(ally.designation)
 
                 else:
-                    try:
-                        ally_designations.remove(ally.designation)
-                    except KeyError as key_error:
-                        ally_designations.add(ally.designation)
-                        ally_designations.remove(ally.designation)
-            
+                    # print(f'Else (remove): {ally.designation}')
+                    # print(f'2 __ player.allies: {self.player.allies}')
+                    # print(f'2 -- ally_designations set: {ally_designations}')
+                    ally_designations.discard(ally.designation)
+
+                    # try:
+                    #     ally_designations.remove(ally.designation)
+                    # except KeyError as key_error:
+                    #     ally_designations.add(ally.designation)
+                    #     ally_designations.remove(ally.designation)
+        
+        # print(f'3 __ player.allies: {self.player.allies}')
+        # print(f'3 -- ally_designations set: {ally_designations}')
         for ally in self.all_allies: # iterate through all allies in existence
+            # print(f'{ally.designation} is being checked to be in ally_designations set')
             if ally.designation in ally_designations: # find only the names that are to be in the new team
+                # print(f'4 -- ally_designations set: {ally_designations}, current ally: {ally.designation}')
+                # print(f'4 __ player.allies before: {self.player.allies}')
                 self.player.allies.append(ally) # add all those guys
+                # print(f'5 __ player.allies after: {self.player.allies}')
+                # print(f'5 -- ally_designations set: {ally_designations}')
+        # print(f'Final results: ally_designations set: {ally_designations} player.allies: {self.player.allies}')
 
 
 
@@ -1107,7 +1129,7 @@ barracks and onto the road back home to see your family. . .
         self.adjust_team('Gaffer', 'add')
         self.adjust_team('Holt', 'add')
         self.ten_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.ten_encounter0(), collective=False)
+        player_lives = self.battle.story(mon_list=mon_list, dialog=self.ten_encounter0(), collective=True)
         if player_lives:
             self.ten_victory0()
             self.story_reward()
@@ -1146,21 +1168,21 @@ out of sight. The pair of Kobolds who smashed in your window appear to have
 just ended a fit of cackling having not expected something to exit the window 
 they just destroyed. 
 ''', .05)
-        if self.player.title == 'fighter':
+        if self.player.title == 'Fighter':
             dprint(
                 f'''
 Without more than a second hesitation while you take all this in, you execute 
 the skill, {self.player.known_skills[-1].name} with power somehow far above 
 your normal standard. 
 ''', .05)
-        elif self.player.title == 'mage':
+        elif self.player.title == 'Mage':
             dprint(
                 f'''
 Without more than a second hessitation while you take all this in, you cast
 {self.player.known_spells[-1].name} with power somehow far above your normal 
 standard. 
 ''', .5)
-        elif self.player.title == 'pugilist':
+        elif self.player.title == 'Pugilist':
             dprint(
                 f'''
 Without more than a second hessitation while you take all this in, you use
@@ -1200,7 +1222,7 @@ was suddenly appled, all goes dark again.
             f'''
 Instantly, you find yourself back in reality, and on the ground. Jumping to 
 your feet, you're startled mother backs away briefly. You share a meaningful
-glance after which she mouths, "{self.player.name}, plese come back." to 
+glance after which she mouths, "{self.player.name}, please come back." to 
 which you nod and promise to return with Robin and Rosie, more to yourself,
 than anything before begining the chase.
 '''
@@ -1211,7 +1233,7 @@ than anything before begining the chase.
         dprint(
             f'''
 Sprinting in the direction of the chaos, you review what has transpired thus 
-far, you woke up, jusped through you smashed window to help your mother and saw 
+far, you woke up, jumped through your smashed window to help your mother, and saw
 a small figure of what you now realize was likely one of your younger siblings 
 being dragged away! 
 At that thought, you put as much strength into your stride as you can and dart 
@@ -1235,33 +1257,39 @@ distant voice call again, but not to you this time.
 "You two, follow {self.player.grammer['objective']} and help {self.player.grammer['objective']} out! You three stay here!" came the voice of 
 Captian Gurenge. 
 Another minute later, just moments after you pursue the kobolds outside the 
-crumbling Town gates, 2 figures appear dashing astride you, Milo and a woman 
-you've seen but never really met before. A member of the guard. As the 3 of you 
-continue to run neither says a word but just keep running . . . 
+crumbling Town gates, 2 figures appear dashing astride you, Milo the boy you 
+met with the Captian and a woman you've seen but never really met before. A 
+member of the guard. As the 3 of you continue to run none speaks a word you all 
+just keep running . . . 
 '''
         )
 
 
     def ch_11(self): # the hunt begins
-        mon_list0 = self.config_monsters({'nepenth':1})
-        mon_list1 = self.config_monsters({'awakened shrub':10})
-        mon_list2 = self.config_monsters({'cave bear':1})
+        mon_list0 = self.config_monsters({'small kobold':1, 'kobold slave':1, 'kobold soldier':2, 'kobold guard':1})
+        mon_list1 = self.config_monsters({'small kobold':4, 'kobold slave':2, 'kobold soldier':1})
+        mon_list2 = self.config_monsters({'kobold soldier':2, 'kobold slave':1, 'kobold soldier':1, 'small kobold':1, 'kobold soldier':1})
         mon_list3 = self.config_monsters({})
         self.adjust_team('Milo 0', 'add')
-        self.adjust_team('','')
+        self.adjust_team('Suphia', 'add')
         self.eleven_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.eleven_encounter0(), collective=True)
+        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.eleven_encounter0(), collective=False)
         if player_lives:
             self.eleven_victory0()
+            self.adjust_team('Electo', 'add')
             player_lives = self.battle.story(mon_list=mon_list1, dialog=self.eleven_encounter1(), collective=True)
             if player_lives:
                 self.eleven_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.eleven_encounter2(), collective=True)
+                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.eleven_encounter2(), collective=False)
                 if player_lives:
                     self.eleven_victory2()
-                    player_lives = self.battle.story(mon_list=mon_list2, dialog=self.eleven_encounter2(), collective=True)
+                    self.adjust_team('Milo 0', 'remove')
+                    player_lives = self.battle.story(mon_list=mon_list3, dialog=self.eleven_encounter3(), collective=True)
                     if player_lives:
                         self.eleven_victory3()
+                        self.adjust_team('Suphia', 'remove')
+                        self.adjust_team('Milo 0', 'remove')
+                        self.adjust_team('Electo', 'remove')
                         self.story_reward()
                         return True
                     else:
@@ -1272,6 +1300,114 @@ continue to run neither says a word but just keep running . . .
                 return False
         else:
             return False
+        
+    def eleven_intro(self): # oo
+        dprint(
+            f'''
+Very, soon into pursuit, the 3 of you begin finding it very dificult to make
+any real ground on these nimble, hot-footed kobold kidnappers. It becomes even 
+more so as you have to avoid fights resulting in a serpentine path through 
+kobold forces. 
+'''
+        )
+
+    def eleven_encounter0(self):
+        dprint(
+            f'''
+Some fights, however, are unavoidable. 
+'''
+        )
+
+    def eleven_victory0(self): #
+        dprint(
+            f'''
+Bursting through your final foe and narrowly evading others bent on lengthening 
+the confrontation, you look ahead and see your quary much farther ahead than 
+before having gained a lot of ground during the fight. On the upside, a new 
+fighter appears at Suphia's side. A man with the same straight black hair as 
+Suphia. 
+"Brother! Captain sent you?"
+The man nods.
+"{self.player.name}, this is my brother Electo, he's not in the guard but he 
+was in town for the weekend from Pompon!"
+The man nodds again.
+'''
+        )
+
+    def eleven_encounter1(self):
+        dprint(
+            f'''
+Electo quickly turns out to be a big help both in power and tactics, though he 
+doesn't speak very much, he is fast enough to lead the group and he does so to
+great effect, leading you through groups of kobolds which you wouldn't have 
+dared to before. All this leads to you gaining on the kobold with Robin and 
+Rosie. 
+This again doesn't last forever as several kobolds surround you trapping you 
+and leaving no alternative to a fight. 
+'''
+        )
+        dprint('Enemies move in to attack!')
+        print('Round 1, FIGHT!')
+        print('1: attack\n2: special\n3: item\n4: run\n')
+        input()
+        dprint(
+            f'''
+Before anything can happen, Electo blasts a hole in the surrounding kobolds with 
+a thunder wave spell and keeps running with you and the rest following closely 
+behind. 
+You keep running narrowly avoiding a few more fights and gaining ground before 
+finally you find yourself cornered by sheer numbers. 
+'''
+        )
+
+
+    def eleven_victory1(self): # lol actually empty
+        dprint(
+            f'''
+'''
+        )
+
+    def eleven_encounter2(self):
+        dprint(
+            f'''
+You clear the first group but more just keep coming in to fight! 
+'''
+        )
+
+    def eleven_victory2(self): #
+        dprint(
+            f'''
+"{self.player.name} just go, I can keep them off your tail!"
+Milo turns his back on you keeping the continuous stream of kobolds at bay. 
+You thank him and he briefly looks back grinning and sending you a thumbs up 
+before returning to the fight. 
+'''
+        )
+
+    def eleven_encounter3(self):
+        dprint(
+            f'''
+Quite distantly and only through by the flickering light of torches, you spot 
+your quary still fleeing at top speed and gaining still more distance by the 
+second. 
+But as if to laugh in your increasingly frustrated face, the forces of the 
+enemy corner you yet again soon after. 
+'''
+        )
+
+    def eleven_victory3(self): #
+        dprint(
+            f'''
+This time Electo stays behind blasting the remaining and approaching kobolds
+into each other opening up a window you are silently ordered to take. Suphia
+hesitates for a moment but Electo gives both of you a look that seems to
+magically compel both of you to turn and run. 
+As you do so you see why it was made so urgent. Right on the outside of this 
+fight the sporadic crowds of kobolds seems to break leaving you open and abel 
+to continue mostly unresisted towards the retreating kobolds. 
+'''
+        )
+
 
     def ch_12(self):
         pass # alone in the woods

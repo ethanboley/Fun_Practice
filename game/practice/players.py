@@ -120,15 +120,21 @@ class Fighter(Player):
         else:
             dprint(f"{self.name} misses their attack!")
     
-    def gain_xp(self, xp, xp_thresholds):
+    def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
-        for threshold in xp_thresholds:
+        # level_key_to_remove = None
+        for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level += 1
+                self.level = level_key + 1
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
-                xp_thresholds.remove(threshold)  # Remove the threshold we just crossed
+                level_key_to_remove = level_key
+        try:
+            xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
+        except UnboundLocalError as err:
+            # print(f'it works to do nothing here : {err}')
+            pass
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
@@ -290,15 +296,16 @@ class Mage(Player):
         else:
             dprint(f"{self.name} misses their attack!")
     
-    def gain_xp(self, xp, xp_thresholds):
+    def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
-        for threshold in xp_thresholds:
+        for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level += 1
+                self.level = level_key
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
-                xp_thresholds.remove(threshold) # Remove the threshold we just crossed
+                level_key_to_remove = level_key
+        xp_thresholds.pop(level_key_to_remove)  # Remove the threshold we just crossed
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
@@ -429,15 +436,16 @@ class Pugilist(Player):
         else:
             dprint(f"{self.name} misses their attack!")
     
-    def gain_xp(self, xp, xp_thresholds):
+    def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
-        for threshold in xp_thresholds:
+        for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level += 1
+                self.level = level_key
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
-                xp_thresholds.remove(threshold)  # Remove the threshold we just crossed
+                level_key_to_remove = level_key
+        xp_thresholds.pop(level_key_to_remove)  # Remove the threshold we just crossed
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):

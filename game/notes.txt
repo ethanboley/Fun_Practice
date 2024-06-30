@@ -19,7 +19,8 @@ dev 0.0.21 (improved flow)
 dev 0.0.24 (story)
 dev 0.0.25 (more story)
 dev 0.0.27 (allies)
-dev 0.0.28 (versatility and debug) current
+dev 0.0.28 (versatility and debug)
+dev 0.0.29 (actions teamates) current
 ...
 alpha 0.1.0 
 ...
@@ -28,8 +29,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 commit notes: 
-adjustments to story battle, allies can have spells, story edits, added ch_6-11, added monsters and allies, added a debugger character, more life potions. 
-
+Oops edited the wrong folder, oh well; colored hp bars; xp_list is dict{level:threshold} now; fixed gain_xp accordingly; fixed adjust_team. 
 
 
 world ideas: 
@@ -83,6 +83,55 @@ map:
     10 = the void
         Humanoids
         bosses
+
+-----------------------------------------------------------------------------------------------
+|
+|       x3
+|
+|
+|
+|
+|
+|                     x4
+|
+|
+|
+|
+|
+|
+|
+|                  x2
+|                 x
+|
+|                               x1
+|             x0
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+|
+_______________________________________________________________________________________________
+
+Scale:
+| = 20 miles
+__ = 20 miles
+
+Legend:
+x: Greentown
+x0: Pompon
+x1: small town A
+x2: high speed delivery outpost
+x3: Kedren Main
+x4: Farthe Outpost
+
 
 personal record 4622+ (12, skill add at floor)
 79 hp, 30-40 dpr (skill), 20-25 dpr (non-skill), 250-650 col, 0-20 pot. 

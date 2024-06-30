@@ -13,7 +13,7 @@ from worlds import *
 
 # Main game logic
 def main_game():
-    xp_thresholds = define_xp_thresholds()
+    xp_thresholds:dict = define_xp_thresholds()
     input('Press enter to start . . . ')
 
     world_1 = WorldOne('The Kobold Wood')

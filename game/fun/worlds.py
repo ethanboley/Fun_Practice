@@ -42,7 +42,7 @@ class WorldOne:
             return pc
         if udomain == 'debug':
             # pc = Fighter(pname, pgender, 10 + (2 * dbugp), 1 + dbugp, 95 + round(1.16 ** dbugp) + (200 // dbugp + 1), dbugp // 2, .88, 3 * dbugp, dbugp)
-            pc = Fighter(pname, pgender, 23, 4, 300, 3, .755, 30, 7) # adjust according to stats by level in experiments
+            pc = Fighter(pname, pgender, 31, 5, 400, 4, .705, 30, 11) # adjust according to stats by level in experiments
             return pc
         else:
             pc = Fighter(pname, pgender, 6, 1, 0, 1, .4, 0)

@@ -55,7 +55,7 @@ class Enemy:
             dprint(f'{self.name} misses their attack!')
     
     def choose_target(self, targets:list):
-        if targets:
+        if len(targets):
             return random.choice(targets)
         else:
             return None
@@ -84,7 +84,10 @@ class Ally:
             self.designation = designation
 
     def choose_target(self, targets:list):
-        return random.choice(targets)
+        if len(targets):
+            return random.choice(targets)
+        else: 
+            return None
     
     def take_turn(self, target, player):
         if self.cooldown > 0:
@@ -682,16 +685,17 @@ def init_allies():
     milo_0 = Ally('Milo', 2, 15, 3, 19, .82, Skill('linear', 0, 2, 1, 3, 3), 'Milo 0')
     gaffer = Ally('Gaffer', 1, 9, 1, 20, .6, Skill('pitch fork', 0, 1, 2, 4, 1))
     holt = Ally('Holt', 3, 27, 2, 23, .72, Skill('back rush', 0, 4, 1, 5, 4))
+    suphia = Ally('Suphia', 4, 28, 3, 19, .7, Healing('quick tonic', 1, 3, 4, 4, 2, 1))
+    electo = Ally('Electo', 4, 27, 3, 19, .72, SpellAttack('thunder wave', 1, 3, 4, 4, 2, 0))
     hesh = Ally('Hesh', 3, 24, 2, 19, .76, SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0))
-    # suphia = Ally('Suphia')
     # coef = Ally('Coef')
     # deg = Ally('Deg')
     # virabela  = Ally('Virabela')
-    # Polly = Ally('Polly')
+    # polly = Ally('Polly')
 
 
     allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus,
-              bulli,milo_0,gaffer,holt,hesh]
+              bulli,milo_0,gaffer,holt,suphia,electo,hesh]
 
     return allies
 
