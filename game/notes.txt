@@ -20,7 +20,8 @@ dev 0.0.24 (story)
 dev 0.0.25 (more story)
 dev 0.0.27 (allies)
 dev 0.0.28 (versatility and debug)
-dev 0.0.29 (actions teamates) current
+dev 0.0.29 (actions teamates)
+dev 0.0.30 (action timing meter) current
 ...
 alpha 0.1.0 
 ...
@@ -29,8 +30,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 commit notes: 
-Oops edited the wrong folder, oh well; colored hp bars; xp_list is dict{level:threshold} now; fixed gain_xp accordingly; fixed adjust_team. 
-
+formatted the rest of book1, introducing the action timing meter
 
 world ideas: 
 map: 
@@ -432,7 +432,7 @@ book 2:
     leaving one dead and several badly injured. *field boss fight*
 47(13): many suggest heading back to Farthe Outpost for better medical aid but
     the outpost is quite far away now and the majority decide on continuing 
-    on. One, Kuretch, the second mate seems particularly peeved by this. 
+    on. One, Kuretch, the second mate, seems particularly peeved by this. 
 48(14): The next day, Kuretch asks for a revote, is denied, told to go into the 
     safety wagon, refues. This is a sign of open hostility. he is told to stand 
     down, he refuses, others draw weapons, he is told to leave, he says not 

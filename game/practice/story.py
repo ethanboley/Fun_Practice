@@ -1269,7 +1269,7 @@ just keep running . . .
         mon_list0 = self.config_monsters({'small kobold':1, 'kobold slave':1, 'kobold soldier':2, 'kobold guard':1})
         mon_list1 = self.config_monsters({'small kobold':4, 'kobold slave':2, 'kobold soldier':1})
         mon_list2 = self.config_monsters({'kobold soldier':2, 'kobold slave':1, 'kobold soldier':1, 'small kobold':1, 'kobold soldier':1})
-        mon_list3 = self.config_monsters({})
+        mon_list3 = self.config_monsters({'kobold soldier':4, 'small kobold':2})
         self.adjust_team('Milo 0', 'add')
         self.adjust_team('Suphia', 'add')
         self.eleven_intro()
@@ -1301,7 +1301,7 @@ just keep running . . .
         else:
             return False
         
-    def eleven_intro(self): # oo
+    def eleven_intro(self): # not gaining much ground
         dprint(
             f'''
 Very, soon into pursuit, the 3 of you begin finding it very dificult to make
@@ -1311,14 +1311,14 @@ kobold forces.
 '''
         )
 
-    def eleven_encounter0(self):
+    def eleven_encounter0(self): # "some fights ... are unavoidable"
         dprint(
             f'''
 Some fights, however, are unavoidable. 
 '''
         )
 
-    def eleven_victory0(self): #
+    def eleven_victory0(self): # Electo-Suphia not to be confused with Electrosphere
         dprint(
             f'''
 Bursting through your final foe and narrowly evading others bent on lengthening 
@@ -1334,7 +1334,7 @@ The man nodds again.
 '''
         )
 
-    def eleven_encounter1(self):
+    def eleven_encounter1(self): # oh boy, another fight ... PSYCHE! lol! Nope!
         dprint(
             f'''
 Electo quickly turns out to be a big help both in power and tactics, though he 
@@ -1360,21 +1360,20 @@ finally you find yourself cornered by sheer numbers.
 '''
         )
 
-
     def eleven_victory1(self): # lol actually empty
         dprint(
             f'''
 '''
         )
 
-    def eleven_encounter2(self):
+    def eleven_encounter2(self): # "You win but more just keep coming"
         dprint(
             f'''
 You clear the first group but more just keep coming in to fight! 
 '''
         )
 
-    def eleven_victory2(self): #
+    def eleven_victory2(self): # Milo's sacrifice. 
         dprint(
             f'''
 "{self.player.name} just go, I can keep them off your tail!"
@@ -1384,7 +1383,7 @@ before returning to the fight.
 '''
         )
 
-    def eleven_encounter3(self):
+    def eleven_encounter3(self): # Oh gosh theres more!?
         dprint(
             f'''
 Quite distantly and only through by the flickering light of torches, you spot 
@@ -1395,34 +1394,256 @@ enemy corner you yet again soon after.
 '''
         )
 
-    def eleven_victory3(self): #
+    def eleven_victory3(self): # Electo's turn to hold them off
         dprint(
             f'''
-This time Electo stays behind blasting the remaining and approaching kobolds
+This time, Electo stays behind, blasting the remaining and approaching kobolds
 into each other opening up a window you are silently ordered to take. Suphia
 hesitates for a moment but Electo gives both of you a look that seems to
 magically compel both of you to turn and run. 
 As you do so you see why it was made so urgent. Right on the outside of this 
-fight the sporadic crowds of kobolds seems to break leaving you open and abel 
+fight the sporadic crowds of kobolds seems to break leaving you open and able 
 to continue mostly unresisted towards the retreating kobolds. 
+... But where are the retreating kobolds? 
+As you and Suphia hurry through the night, you strain your senses to detect the
+signature movement of kobold captures, but try as you might, neither of you 
+have any idea without the light you had before of where your quary might be. 
+The kobold forces you have now left behind, seem to care very little about a 
+few escaped victims and pay you little heed. This grants you the ability to 
+slow down and put more energy into scanning the landscape. But no, neither of 
+your eyes can spot them, they must have gotten mere feet too far. 
+Your frustration is apparently written on your face as Suphia tells you that 
+even if they were sure to be lost at this point, she would not abandon the 
+mission because of her brother's sacrifice to help them make it this far. 
+Agreeing with your newest teammate, you both reason about the most likely 
+direction they were heading in and resume full speed. 
+Let the hunt begin. . . 
 '''
         )
 
 
-    def ch_12(self):
-        pass # alone in the woods
+    def ch_12(self): # alone int he woods pt 1
+        mon_list1 = self.config_monsters({'cave slime':2,'swarm of bats':1})
+        mon_list2 = self.config_monsters({'refuse':3})
+        self.twelve_intro()
+        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twelve_encounter0(), collective=True)
+        if player_lives:
+            self.twelve_victory0()
+            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twelve_encounter1(), collective=True)
+            if player_lives:
+                self.twelve_victory1()
+                self.story_reward()
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    def ch_13(self):
-        pass # alone in the woods pt 2
+    def twelve_intro(self): # 
+        dprint(
+            f'''
+A mild glow from the soon to be rising sun casts a red to blue gradiant above 
+you to your left. The freezing early wind ruffles your clothing, made more so 
+as your run. Your companion Suphia, continues head of you about 50 feet with 
+long quick strides. The smell of smoke and terror still lingers in both of your 
+minds among far to many things to verbalize. 
+In your mind you go over the things you heard and discovered about the kobolds
+and their plans, that could have led prevention of this terrible catastrophy. 
+You heard from the Captain that kobolds had been increasing in activity for 
+weeks before you and Robin even encountered them. Even as far back as the late 
+Winter.
+You and Robin were ambushed by a group of kobolds which initiated increased 
+action against the kobolds by the Greentown guard resulting in your recruitment.
+Each team discovered some ominous news about the kobolds and their recent 
+increase in activity the most concerning of which was the report of an entire 
+missing team. 
+Upon further investigation, you discovered possibly erroneus inteligence that 
+the enemy was planning an attack of some sort on nearby human settlments, 
+possibly including greentown, Pompon, Farthe Outpost or maybe villages in the 
+farther east like Kyoma or Uten. This combined with the lack of concrete 
+evidence and the discovery of contradicting intel at about the same time 
+resulted in indecision and crucial time spent strategising and reasoning about
+next steps. 
+Whether it was a well orcestrated attack strategy, which Suphia pointed out 
+was incongruent with the usual kobold nature; or, the work of some human 
+traitor or mole, it had worked and the kobolds had, counter to their normal 
+behavior, orchestrated a combined attack on Greentown and more than likely, 
+several other towns in the area.
+There was one other important piece of inteligence that you and at least one 
+other source discovered. The kobold called Luxkhanna. That kobold was 
+supposedly the leader who orchestrated all this. 
+If, and you hated even giving this idea any ground in your mind, but if you 
+were never able to find and rescue Rosie and Robin, you did atleast have an 
+alternative goal: Find that monster and destroy him. . . 
+'''
+        )
 
-    def ch_14(self):
-        pass # alone in the woods pt 3 found a clue
+    def twelve_encounter0(self): # 
+        dprint(
+            f'''
+Your thought as you run turn to grattitude for Kajlo Sohler who taught you to 
+use magic to inprove your stamina. You can help but be impressed at Suphia, 
+however, as she looks to hardly have broken a sweat. 
+'''
+        )
+
+    def twelve_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twelve_encounter1(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twelve_victory1(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
+    def ch_13(self): # alone int he woods pt 2
+        mon_list = self.config_monsters({'frenzy boar':7})
+        self.thirteen_intro()
+        player_lives = self.battle.story(mon_list=mon_list, dialog=self.thirteen_encounter0(), collective=False)
+        if player_lives:
+            self.thirteen_victory0()
+            self.story_reward()
+            return True
+        else:
+            return False
+
+    def thirteen_intro(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
+    def ch_14(self): # alone in the woods pt 3 (found a clue)
+        mon_list1 = self.config_monsters({'cave slime':2,'swarm of bats':1})
+        mon_list2 = self.config_monsters({'refuse':3})
+        self.fourteen_intro()
+        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fourteen_encounter0(), collective=True)
+        if player_lives:
+            self.fourteen_victory0()
+            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.fourteen_encounter1(), collective=True)
+            if player_lives:
+                self.fourteen_victory1()
+                self.story_reward()
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def fourteen_intro(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fourteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fourteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fourteen_encounter1(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fourteen_victory1(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_15(self):
         pass # following the trail
 
+    def fifteen_intro(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fifteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def fifteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_16(self):
         pass # following the trail pt 2
+
+    def sixteen_intro(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def sixteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def sixteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_17(self): # surrounded by nepenths (pre-boss)
         mon_list0 = self.config_monsters({'little nepenth':1, 'barkling':1, 'windwasp':1, 'little nepenth':1})
@@ -1459,6 +1680,84 @@ to continue mostly unresisted towards the retreating kobolds.
         else:
             return False
 
+    def seventeen_intro(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_encounter1(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_victory1(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_encounter2(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_victory2(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_encounter3(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_victory3(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_encounter4(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def seventeen_victory4(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_18(self): # scouting the Kosaur's lair
         mon_list = self.config_monsters({'red worm':1, 'shrubent':1})
         self.six_intro()
@@ -1469,6 +1768,28 @@ to continue mostly unresisted towards the retreating kobolds.
             return True
         else:
             return False
+
+    def eighteen_intro(self): # no
+        dprint(
+            f'''
+
+'''
+        )
+
+    def eighteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def eighteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_19(self): # Kosaur boss fight
         mon_list = self.config_monsters({'Kosaur (F-Boss)':1})
@@ -1481,42 +1802,349 @@ to continue mostly unresisted towards the retreating kobolds.
         else:
             return False
 
+    def nineteen_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def nineteen_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def nineteen_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_20(self):
         pass # kosaur boss recovery
+
+    def twenty_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_21(self):
         pass # following the trail pt 3
 
+    def twenty_one_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_one_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_one_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_22(self):
         pass # following the trail pt 4
+
+    def twenty_two_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_two_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_two_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_23(self):
         pass # found the kobold camp and spot Robin
 
+    def twenty_three_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_three_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_three_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_24(self):
         pass # infiltrate, encounter with Illfang
+
+    def twenty_four_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_four_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_four_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_25(self):
         pass # the kobold plans
 
+    def twenty_five_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_five_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_five_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_26(self):
         pass # rush back to warn the town
+
+    def twenty_six_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_six_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_six_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_27(self):
         pass # rush back to warn the town pt 2
 
+    def twenty_seven_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_seven_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_seven_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_28(self):
         pass # plan is to attack first
+
+    def twenty_eight_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_eight_encounter0(self): # 
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_eight_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_29(self):
         pass # heading out
 
+    def twenty_nine_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_nine_encounter0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def twenty_nine_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_30(self):
         pass # the boss' lair
+
+    def thirty_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_encounter0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
 
     def ch_31(self):
         pass # the boss' lair pt 2
 
+    def thirty_one_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_one_encounter0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_one_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+
     def ch_32(self):
         pass # Illfang boss fight
+
+    def thirty_two_intro(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_two_encounter0(self): #
+        dprint(
+            f'''
+
+'''
+        )
+
+    def thirty_two_victory0(self): #
+        dprint(
+            f'''
+
+'''
+        )
 

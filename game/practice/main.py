@@ -8,13 +8,12 @@ from players import *
 from worlds import *
 
 
-# # Initialize Pygame
-# initialize_pygame()
 
 # Main game logic
 def main_game():
     xp_thresholds:dict = define_xp_thresholds()
-    input('Press enter to start . . . ')
+
+    initialize_pygame()
 
     world_1 = WorldOne('The Kobold Wood')
     world_1.introdction()

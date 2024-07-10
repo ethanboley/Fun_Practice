@@ -169,11 +169,15 @@ class Fighter(Player):
         while not skill.is_usable():
             dprint('That skill is on cooldown.')
             skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
-        
+
+        # TODO attack_timer_score_thingy = 0.0
+        # TODO if attack_mode is set to auto just do the current implementation otherwise:
+        # TODO attack_timer_score_thingy = attack_timing_window(*enemy_ac)
+
         self.mag -= skill.cost
         strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
         weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
-        if random.random() < self.accuracy + self.acu:
+        if random.random() < self.accuracy + self.acu: # TODO or 1 - attack_timer_score_thingy < self.accuracy + self.acu
             enemy.hp -= strong_damage
             skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
             dprint(f'{self.name} connects with the sword skill {skill.name}!')
@@ -185,7 +189,7 @@ class Fighter(Player):
                 self.gain_xp(enemy.xp, xp_thresholds)
                 self.gain_col(enemy.col)
                 enemy.drop(self)
-        elif random.random() < self.accuracy:
+        elif random.random() < self.accuracy: # TODO or 1 - attack_timer_score_thingy < self.accuracy
             enemy.hp -= weak_damage
             skill.set_downtime() # downtime
             dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
@@ -299,13 +303,18 @@ class Mage(Player):
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
+        # level_key_to_remove = None
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level = level_key
+                self.level = level_key + 1
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
                 level_key_to_remove = level_key
-        xp_thresholds.pop(level_key_to_remove)  # Remove the threshold we just crossed
+        try:
+            xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
+        except UnboundLocalError as err:
+            # print(f'it works to do nothing here : {err}')
+            pass
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
@@ -439,13 +448,18 @@ class Pugilist(Player):
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
+        # level_key_to_remove = None
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level = level_key
+                self.level = level_key + 1
                 dprint(f"{self.name} has leveled up to level {self.level}!")
                 self.level_up()
                 level_key_to_remove = level_key
-        xp_thresholds.pop(level_key_to_remove)  # Remove the threshold we just crossed
+        try:
+            xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
+        except UnboundLocalError as err:
+            # print(f'it works to do nothing here : {err}')
+            pass
         dprint(f'{self.name} now has {self.xp} xp. ')
 
     def level_up(self):
@@ -487,12 +501,12 @@ class Pugilist(Player):
         if random.random() < self.accuracy + self.acu:
             enemy.hp -= strong_damage
             spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
-            dprint(f'{self.name} connects with the sword spall {spall.name}!')
+            dprint(f'{self.name} delivers a powerful spall {spall.name}!')
             dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
             if enemy.is_alive():
                 dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
             else:
-                dprint(f'{spall.name} obliterated {enemy.name}!')
+                dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
                 self.gain_xp(enemy.xp, xp_thresholds)
                 self.gain_col(enemy.col)
                 enemy.drop(self)
