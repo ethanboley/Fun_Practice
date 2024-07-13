@@ -21,7 +21,8 @@ dev 0.0.25 (more story)
 dev 0.0.27 (allies)
 dev 0.0.28 (versatility and debug)
 dev 0.0.29 (actions teamates)
-dev 0.0.30 (action timing meter) current
+dev 0.0.30 (action timing meter)
+dev 0.0.31 (meter implementation) current
 ...
 alpha 0.1.0 
 ...
@@ -30,7 +31,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 commit notes: 
-formatted the rest of book1, introducing the action timing meter
+Fixed and implemented the action timing meter into gameplay 
 
 world ideas: 
 map: 
@@ -307,8 +308,8 @@ standards. These will eventually culminate in a final 2 part book 19 and 20 in
 which the player chases down and confronts the one who has been pulling the 
 strings over the entire story and emerges victorious.
 
-There are at least 2 kinds of betrayal fast and slow: first, X suddenly betrays Y 
-resulting in questions and heartbreak; second, Y observes X make choices and 
+There are at least 2 kinds of betrayal fast and slow: first, X suddenly betrays 
+Y resulting in questions and heartbreak; second, Y observes X make choices and 
 decisions that eventually lead them to a betrayal moment, arguably more sad 
 because Y watches the slippery decent of X. For fast, think Six, it happens so 
 suddenly and unexpectedly that it leaves Mono and no doubt the player wondering 
@@ -327,6 +328,9 @@ that player and Rulid are bro, he turn on player.
 
 So a big question is surrounding the strange innate magic that flows through 
 the veins of the Rulid family but where did this magic come from? 
+
+How about a chapter where the player character steps into a setting outside the
+genre like the maw of aperture science or the Inside or something.
 
 
 plot layer 1: 

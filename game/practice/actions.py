@@ -5,9 +5,10 @@ import sys
 import msvcrt
 from math import ceil
 import pygame as pg
+import win32gui as wg
+import win32com.client as wcc
 
 from things_stuff import Skill, Spell, Spall
-# import pygame as pg
 
 
 def define_xp_thresholds():
@@ -132,13 +133,18 @@ def get_dict_option(options):
 def initialize_pygame():
     pg.init()
     pg.mixer.init()
-    opening_screen = '-' * 80
+    opening_screen = '#' * 80 + '\n'
     for _ in range(20):
         sys.stdout.write(opening_screen)
+    
+    sys.stdout.write('\n' * 2)
+    sys.stdout.write('_' * 80 + '\n')
+
+    
     input('Press enter to start . . . ')
 
 
-def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 30, speed:int | None=480, chances:int | None = 10, acu:float | None = 0.65) -> float:
+def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, speed:int | None=480, chances:int | None = 10, acu:float | None = 0.65) -> float:
     '''
     Creates a Pygame window that simulates an attack timing challenge. Closes
     and returns with enter key or after closing the window.
@@ -191,6 +197,16 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 30, spe
     # Create the window
     window = pg.display.set_mode((window_width, window_height))
     pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
+
+    # window control 
+    # Find the window handle
+    hwnd = pg.display.get_wm_info()['window']
+    chwnd = wg.GetForegroundWindow()
+    
+    # Bring the window to the foreground using some janky butt scripting found on stackoverflow
+    shell = wcc.Dispatch("WScript.Shell") 
+    shell.SendKeys(' ') # I have actually non idea why this works but it does
+    wg.SetForegroundWindow(hwnd)
 
     # Define colors
     BLACK = (80, 80, 80) # value to be used for testing
@@ -274,8 +290,13 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 30, spe
                         running = False
                         break
 
-        # result found, so don't draw again, exit the window and return result.
+        # result found, 
+        # therefore don't draw again, 
+        # in other words set the focus back to the console, 
+        # kill the window and return result.
         if not running:
+            wg.SetForegroundWindow(chwnd)
+            pg.quit()
             return hit_v
 
         # Move the slider

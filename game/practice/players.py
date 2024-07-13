@@ -27,6 +27,7 @@ class Player:
         self.defended = False # ???
         self.empowered = False # +atk
         self.energized = False # +mag
+        self.auto_battle = False
         self.location = '1-0'
         self.progress = progress
         if self.gender == 'Female':
@@ -36,19 +37,37 @@ class Player:
 
 
     def attack(self, enemy, xp_thresholds):
-        if random.random() < self.accuracy:
-            enemy.hp -= self.atk - random.randint(0, self.atk // 5)
-            dprint(f"{self.name} attacks {enemy.name} for {self.atk} damage!")
-            if enemy.hp > 0:
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+
+            if random.random() < self.accuracy:
+                enemy.hp -= self.atk - random.randint(0, self.atk // 5)
+                dprint(f'{self.name} attacks {enemy.name} for {self.atk} damage!')
+                if enemy.hp > 0:
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+
             else:
-                dprint(f'{self.name} has defeated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
+                dprint(f'{self.name} misses their attack!')
 
         else:
-            dprint(f"{self.name} misses their attack!")
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            if attack_value > self.accuracy:
+                enemy.hp -= self.atk - random.randint(0, self.atk // 5)
+                dprint(f'{self.name} attacks {enemy.name} for {self.atk} damage!')
+                if enemy.hp > 0:
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+
+            else:
+                dprint(f'{self.name} misses their attack!')
 
     def gain_xp(self, xp, xp_thresholds):
         dprint(f'{self.name} gained {xp} experience points, ')
@@ -56,7 +75,7 @@ class Player:
         for threshold in xp_thresholds:
             if self.xp >= threshold:
                 self.level += 1
-                dprint(f"{self.name} has leveled up to level {self.level}!")
+                dprint(f'{self.name} has leveled up to level {self.level}!')
                 self.level_up()
                 xp_thresholds.remove(threshold)  # Remove the threshold we just crossed
         dprint(f'{self.name} now has {self.xp} xp. ')
@@ -80,10 +99,10 @@ class Player:
     def hattack(self, enemy):
         if random.random() < self.accuracy:
             enemy.hp -= self.atk
-            if enemy.hp > 0:
-                dprint(f'{enemy.name} is willing to keep going. ')
+            if enemy.is_alive():
+                dprint(f'{enemy.name} is willing to keep going.')
             else:
-                dprint(f'{enemy.name} is fed up with all these issues. ')
+                dprint(f'{enemy.name} is fed up with all these issues.')
     
     def special_attack():
         pass
@@ -106,20 +125,39 @@ class Fighter(Player):
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
-        if random.random() < self.accuracy:
-            damage = self.atk - random.randint(0, self.atk // 5)
-            enemy.hp -= damage
-            dprint(f"{self.name} attacks {enemy.name} for {damage} damage!")
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+            if random.random() < self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 5)
+                enemy.hp -= damage
+                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
             else:
-                dprint(f'{self.name} has defeated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
+                dprint(f'{self.name} misses their attack!')
         else:
-            dprint(f"{self.name} misses their attack!")
-    
+            dprint('Ready?', .05)
+            time.sleep(.75)
+            input()
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            if attack_value > self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 5)
+                enemy.hp -= damage
+                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            else:
+                dprint(f'{self.name} misses their attack!')
+
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
@@ -127,7 +165,7 @@ class Fighter(Player):
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
                 self.level = level_key + 1
-                dprint(f"{self.name} has leveled up to level {self.level}!")
+                dprint(f'{self.name} has leveled up to level {self.level}!')
                 self.level_up()
                 level_key_to_remove = level_key
         try:
@@ -150,7 +188,7 @@ class Fighter(Player):
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return
+            return self.attack(enemy, xp_thresholds)
         
         # update skill downtime (this method requires that all action methods need these lines at the begining)
         for skill in self.known_skills:
@@ -163,48 +201,79 @@ class Fighter(Player):
             dprint('No skills to use.')
             for skill in self.known_skills:
                 print(f'Skill: {skill.name}, cooldown {skill.cooldown - skill.downtime} (turns remaining).')
-            self.attack(enemy, xp_thresholds)
-            return
+            return self.attack(enemy, xp_thresholds)
 
         while not skill.is_usable():
             dprint('That skill is on cooldown.')
             skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
 
-        # TODO attack_timer_score_thingy = 0.0
-        # TODO if attack_mode is set to auto just do the current implementation otherwise:
-        # TODO attack_timer_score_thingy = attack_timing_window(*enemy_ac)
+        attack_value = 0.0
 
-        self.mag -= skill.cost
         strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
         weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
-        if random.random() < self.accuracy + self.acu: # TODO or 1 - attack_timer_score_thingy < self.accuracy + self.acu
-            enemy.hp -= strong_damage
-            skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
-            dprint(f'{self.name} connects with the sword skill {skill.name}!')
-            dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+            self.mag -= skill.cost
+            if random.random() < self.accuracy + self.acu:
+                enemy.hp -= strong_damage
+                skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
+                dprint(f'{self.name} connects with the sword skill {skill.name}!')
+                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{skill.name} obliterated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            elif random.random() < self.accuracy:
+                enemy.hp -= weak_damage
+                skill.set_downtime() # downtime
+                dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
+                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'Despite the weak hit with {skill.name}, {enemy.name} has died!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
             else:
-                dprint(f'{skill.name} obliterated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
-        elif random.random() < self.accuracy: # TODO or 1 - attack_timer_score_thingy < self.accuracy
-            enemy.hp -= weak_damage
-            skill.set_downtime() # downtime
-            dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
-            dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-            else:
-                dprint(f'Despite the weak hit with {skill.name}, {enemy.name} has died!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
+                dprint(f'{self.name} executed the skill {skill.name} but missed! ')
+                skill.set_downtime() # even though it was a miss, its still a use.
+
         else:
-            dprint(f'{self.name} executed the skill {skill.name} but missed! ')
-            skill.set_downtime() # even though it was a miss, its still a use. 
-    
+            dprint('ready?', .05)
+            time.sleep(.75)
+            input()
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy + self.acu)
+            if attack_value > self.accuracy + self.acu: # TODO or 1 - attack_timer_score_thingy < self.accuracy + self.acu
+                enemy.hp -= strong_damage
+                skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
+                dprint(f'{self.name} connects with the sword skill {skill.name}!')
+                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{skill.name} obliterated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            elif attack_value > self.accuracy:
+                enemy.hp -= weak_damage
+                skill.set_downtime() # downtime
+                dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
+                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'Despite the weak hit with {skill.name}, {enemy.name} has died!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            else:
+                dprint(f'{self.name} executed the skill {skill.name} but missed! ')
+                skill.set_downtime() # even though it was a miss, its still a use.
+
     def learn_skill(self):
         skills = init_skills()
         learnables = [skill for skill in skills if skill.level <= self.level and skill.type == 0]
@@ -286,20 +355,39 @@ class Mage(Player):
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
-        if random.random() < self.accuracy:
-            damage = self.atk - random.randint(0, self.atk // 4)
-            enemy.hp -= damage
-            dprint(f"{self.name} attacks {enemy.name} for {damage} damage!")
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+            if random.random() < self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 4)
+                enemy.hp -= damage
+                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)                
             else:
-                dprint(f'{self.name} has defeated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)                
+                dprint(f'{self.name} misses their attack!')
         else:
-            dprint(f"{self.name} misses their attack!")
-    
+            dprint('Ready?', .05)
+            time.sleep(.75)
+            input()
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            if attack_value > self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 4)
+                enemy.hp -= damage
+                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)                
+            else:
+                dprint(f'{self.name} misses their attack!')
+
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
@@ -307,7 +395,7 @@ class Mage(Player):
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
                 self.level = level_key + 1
-                dprint(f"{self.name} has leveled up to level {self.level}!")
+                dprint(f'{self.name} has leveled up to level {self.level}!')
                 self.level_up()
                 level_key_to_remove = level_key
         try:
@@ -330,7 +418,8 @@ class Mage(Player):
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return
+            return self.attack(enemy, xp_thresholds)
+        
         # update spell cooldown
         for spell in self.known_spells:
             if spell.downtime < spell.cooldown:
@@ -341,8 +430,7 @@ class Mage(Player):
             dprint('No spells to use.')
             for spell in self.known_spells:
                 print(f'Spell: {spell.name}, cooldown {spell.cooldown - spell.downtime} (turns remaining).')
-            self.attack(enemy, xp_thresholds)
-            return
+            return self.attack(enemy, xp_thresholds)
 
         self.mag -= spell.cost
         strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
@@ -356,7 +444,7 @@ class Mage(Player):
 
         elif spell.nature == 3: # escaping
             pass
-    
+
     def learn_spell(self):
         spells = init_spells()
         learnables = [spell for spell in spells if spell.level <= self.level and spell.type == 1]
@@ -431,20 +519,39 @@ class Pugilist(Player):
         self.allies = []
 
     def attack(self, enemy, xp_thresholds):
-        if random.random() < self.accuracy:
-            damage = self.atk - random.randint(0, self.atk // 5)
-            enemy.hp -= damage
-            dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+            if random.random() < self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 5)
+                enemy.hp -= damage
+                dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
             else:
-                dprint(f'{self.name} has defeated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
+                dprint(f'{self.name} misses their attack!')
         else:
-            dprint(f"{self.name} misses their attack!")
-    
+            dprint('Ready?', .05)
+            time.sleep(.75)
+            input()
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            if attack_value > self.accuracy:
+                damage = self.atk - random.randint(0, self.atk // 5)
+                enemy.hp -= damage
+                dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{self.name} has defeated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            else:
+                dprint(f'{self.name} misses their attack!')
+
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
@@ -452,7 +559,7 @@ class Pugilist(Player):
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
                 self.level = level_key + 1
-                dprint(f"{self.name} has leveled up to level {self.level}!")
+                dprint(f'{self.name} has leveled up to level {self.level}!')
                 self.level_up()
                 level_key_to_remove = level_key
         try:
@@ -475,7 +582,7 @@ class Pugilist(Player):
     def special_attack(self, enemy, xp_thresholds):
         if self.mag <= 0:
             dprint('You\'re out of magic!')
-            return
+            return self.attack(enemy, xp_thresholds)
         
         # update spall downtime (this method requires that all action methods need these lines at the begining)
         for spall in self.known_spalls:
@@ -488,44 +595,79 @@ class Pugilist(Player):
             dprint('No spalls to use.')
             for spall in self.known_spalls:
                 print(f'spall: {spall.name}, cooldown {spall.cooldown - spall.downtime} (turns remaining).')
-            self.attack(enemy, xp_thresholds)
-            return
+            return self.attack(enemy, xp_thresholds)
 
         while not spall.is_usable():
             dprint('That spall is on cooldown.')
             spall = self.choose_spall([spall for spall in self.known_spalls if spall.is_usable()])
-        
-        self.mag -= spall.cost
+
+        attack_value = 0.0
+
         strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + spall.damage
         weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
-        if random.random() < self.accuracy + self.acu:
-            enemy.hp -= strong_damage
-            spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
-            dprint(f'{self.name} delivers a powerful spall {spall.name}!')
-            dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        if self.auto_battle:
+            self.mag -= spall.cost
+            if random.random() < self.accuracy + self.acu:
+                enemy.hp -= strong_damage
+                spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
+                dprint(f'{self.name} delivers a powerful spall {spall.name}!')
+                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            elif random.random() < self.accuracy:
+                enemy.hp -= weak_damage
+                spall.set_downtime() # downtime
+                dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
+                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
             else:
-                dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
-        elif random.random() < self.accuracy:
-            enemy.hp -= weak_damage
-            spall.set_downtime() # downtime
-            dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
-            dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-            else:
-                dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
-                self.gain_xp(enemy.xp, xp_thresholds)
-                self.gain_col(enemy.col)
-                enemy.drop(self)
+                dprint(f'{self.name} executed the spall {spall.name} but missed! ')
+                spall.set_downtime() # even though it was a miss, its still a use. 
+
         else:
-            dprint(f'{self.name} executed the spall {spall.name} but missed! ')
-            spall.set_downtime() # even though it was a miss, its still a use. 
-    
+            dprint('Ready?', .05)
+            time.sleep(.75)
+            input()
+            attack_value = attack_timing_window(*enemy.ac, self.accuracy + self.acu)
+            if attack_value > self.accuracy + self.acu:
+                enemy.hp -= strong_damage
+                spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
+                dprint(f'{self.name} delivers a powerful spall {spall.name}!')
+                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            elif attack_value > self.accuracy:
+                enemy.hp -= weak_damage
+                spall.set_downtime() # downtime
+                dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
+                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
+                if enemy.is_alive():
+                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                else:
+                    dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
+                    self.gain_xp(enemy.xp, xp_thresholds)
+                    self.gain_col(enemy.col)
+                    enemy.drop(self)
+            else:
+                dprint(f'{self.name} executed the spall {spall.name} but missed! ')
+                spall.set_downtime() # even though it was a miss, its still a use. 
+
     def learn_spall(self):
         spalls = init_spalls()
         learnables = [spall for spall in spalls if spall.level <= self.level and spall.type == 1]

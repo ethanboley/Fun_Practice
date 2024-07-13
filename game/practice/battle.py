@@ -11,7 +11,7 @@ class Battle:
         self.active_monsters = []
         self.active_teamates = [self.active_player]
         self.name = 'battle'
-        self.battle_options = ['attack', 'special', 'item', 'run']
+        self.battle_options = ['attack', 'special', 'item', 'run', 'auto/controlled']
         self.all_monsters = init_enemies()
 
     def regular(self, mon_list):
@@ -125,7 +125,7 @@ class Battle:
     def handle_fighter_turn(self, seconds):
         if seconds % self.active_player.agi == 0:
             # prompt for battle option
-            for i in range(4):
+            for i in range(len(self.battle_options)):
                 print(f'{i + 1}: {self.battle_options[i]}')
             option = input()
 
@@ -174,7 +174,7 @@ class Battle:
                 if not target.is_alive():
                     self.active_monsters.remove(target)
             
-            else:
+            elif option in ['4','run','Run','RUN','rUN','r','R','4: run','four','nigero','flee']:
                 escape = 0
                 for i in range(len(self.active_monsters)):
                     if self.active_player.run():
@@ -221,11 +221,14 @@ class Battle:
                         self.active_monsters.clear()
                 else:
                     dprint(f'{self.active_player.name} failed their escape attempt.')
+                
+            else:
+                self.active_player.auto_battle = not self.active_player.auto_battle
 
     def handle_mage_turn(self, seconds):
         if seconds % self.active_player.agi == 0:
             # prompt for battle option
-            for i in range(4):
+            for i in range(len(self.battle_options)):
                 print(f'{i + 1}: {self.battle_options[i]}')    
             option = input()
 
@@ -325,7 +328,7 @@ class Battle:
     def handle_pugilist_turn(self, seconds):
         if seconds % self.active_player.agi == 0:
             # prompt for battle option
-            for i in range(4):
+            for i in range(len(self.battle_options)):
                 print(f'{i + 1}: {self.battle_options[i]}')    
             option = input()
 
@@ -425,7 +428,7 @@ class Battle:
     def handle_tamer_turn(self, seconds):
         if seconds % self.active_player.agi == 0:
             # prompt for battle option
-            for i in range(4):
+            for i in range(len(self.battle_options)):
                 print(f'{i + 1}: {self.battle_options[i]}')    
             option = input()
 
