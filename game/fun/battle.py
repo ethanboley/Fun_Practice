@@ -13,6 +13,9 @@ class Battle:
         self.name = 'battle'
         self.battle_options = ['attack', 'special', 'item', 'run', 'auto/controlled']
         self.all_monsters = init_enemies()
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.regular([monster for monster in self.all_monsters if world.number in monster.world])
 
     def regular(self, mon_list):
         # define the initial participants of this particular battle
@@ -49,17 +52,76 @@ class Battle:
             # handle the monster's turns
             self.handle_monster_turns(seconds)
             if not self.active_player.is_alive():
+                self.active_teamates.clear()
                 return False # tell the game the player is dead
             # add monsters to the battle if it lasts too long
             self.handle_additional_monsters(seconds, mon_list)
             # increment seconds
             seconds += 1
         
+        self.active_teamates.clear()
         return True # tell the game the player is still alive
 
-    def boss(self, mon_list):
-        self.init_parti(mon_list)
-    
+    def boss(self, mon_list:list, dialog=None, collective=True):
+        for mon in mon_list:
+            self.active_monsters.append(mon)
+        
+        for ally in self.active_player.allies:
+            if ally not in self.active_teamates:
+                self.active_teamates.append(ally)
+
+        seconds = 1
+        round_num = 0
+        if self.active_player.mag != self.active_player.maxmag:
+            self.active_player.mag += 1 + self.active_player.level
+            if self.active_player.mag > self.active_player.maxmag:
+                self.active_player.mag = self.active_player.maxmag
+        
+        dialog
+        input('Ready?')
+
+        if len(self.active_monsters) > 1:
+            dprint(f'The {self.active_monsters[-1].name} {self.active_monsters[-1].title} and its minions attack!')
+        else:
+            dprint(f'The {self.active_monsters[-1].name} {self.active_monsters[-1].title} attacks!')
+
+        while True:
+            # handle the rounds
+            if seconds % 20 == 1:
+                round_num += 1
+                dprint(f'Round {round_num}, FIGHT! ')
+                # for i in range(len(to_use_mons)):
+                #     dprint(to_use_mons[i].name)
+            # handle the player's turn
+
+            if self.active_player.title == 'Fighter':
+                self.handle_fighter_turn(seconds)
+            elif self.active_player.title == 'Mage':
+                self.handle_mage_turn(seconds)
+            elif self.active_player.title == 'Pugilist':
+                self.handle_pugilist_turn(seconds)
+            elif self.active_player.title == 'tamer':
+                self.handle_tamer_turn(seconds)
+
+            if len(self.active_monsters) == 0:
+                self.active_teamates.clear()
+                return True
+
+            # go through the ally's turns
+            self.handle_ally_turns(seconds) # gain_xp
+            
+            if len(self.active_monsters) == 0:
+                self.active_teamates.clear()
+                return True
+
+            # handle the boss's and minions' turns
+            self.handle_monster_turns(seconds)
+            if not self.active_player.is_alive():
+                self.active_teamates.clear()
+                return False # tell the game the player is dead
+            
+            seconds += 1
+
     def story(self, mon_list:list, dialog=None, collective=False):
         to_use_mons = []
         for mon in mon_list:
@@ -79,7 +141,7 @@ class Battle:
         round_num = 0
         if self.active_player.mag != self.active_player.maxmag:
             self.active_player.mag += 1 + self.active_player.level
-            if self.active_player.mag >= self.active_player.maxmag:
+            if self.active_player.mag > self.active_player.maxmag:
                 self.active_player.mag = self.active_player.maxmag
 
         dialog
@@ -110,6 +172,7 @@ class Battle:
             self.handle_ally_turns(seconds)
 
             if len(to_use_mons) == 0 and len(self.active_monsters) == 0:
+                self.active_teamates.clear()
                 return True
             if len(self.active_monsters) == 0:
                 self.active_monsters.append(to_use_mons.pop())
@@ -118,6 +181,7 @@ class Battle:
             # handle the monster's turns
             self.handle_monster_turns(seconds)
             if not self.active_player.is_alive():
+                self.active_teamates.clear()
                 return False # tell the game the player is dead
             
             seconds += 1
@@ -533,7 +597,7 @@ class Battle:
                 if not target.is_alive():
                     if target in self.active_monsters:
                         self.active_monsters.remove(target)
-                    self.active_player.gain_xp(target.xp // (len(self.active_teamates) + 1), self.xp_thresholds)
+                    self.active_player.gain_xp(target.xp // (len(self.active_teamates)), self.xp_thresholds)
 
     def handle_monster_turns(self, seconds):
         for monster in self.active_monsters:

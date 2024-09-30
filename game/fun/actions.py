@@ -11,6 +11,7 @@ import win32com.client as wcc
 from things_stuff import Skill, Spell, Spall
 
 
+
 def define_xp_thresholds():
     """
     Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
@@ -23,15 +24,17 @@ def define_xp_thresholds():
     xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
 
     for i in range(1, 104):  # Iterate from 1 to 104 (inclusive) for 104 levels
-      thresh = round((base_xp * 1.25) + (100 + i))
-      xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
-      base_xp = thresh
+        thresh = round((base_xp * 1.25) + (100 + i))
+        xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
+        base_xp = thresh
 
     return xp_thresholds
+
 
 def choose_monster(player, monsters):
     one_worthy = [mon for mon in monsters if mon.level <= player.level]
     return random.choice(one_worthy)
+
 
 def dprint(text='',speed=0.035):
     skip_slow_display = False
@@ -84,10 +87,10 @@ def display_health(player):
         else: # odd and above 100
             fitting_end = u'\u258c'
 
-    numeric_representation = f'{player.hp}/{player.maxhp}'
+    num_rep = f'{player.hp}/{player.maxhp}' # get the numeric representation of what is displayed
     
     print(ansi_code + bars_to_print + fitting_end + ansi_end, end='')
-    print(f'{numeric_representation:>10}   {player.name}')
+    print(f'{num_rep:>10}   {player.name}')
 
 
 def get_validated_input(prompt, options):
@@ -122,12 +125,12 @@ def get_list_option(options):
     return options[ans - 1]
 
 # Usage Example for Dictionary Options
-def get_dict_option(options):
+def get_dict_option(options:dict):
     ans = get_list_option(list(options.keys()))
     if ans == None:
         return
     key = ans
-    return options[key]
+    return key
 
 
 def initialize_pygame():
@@ -140,7 +143,6 @@ def initialize_pygame():
     sys.stdout.write('\n' * 2)
     sys.stdout.write('_' * 80 + '\n')
 
-    
     input('Press enter to start . . . ')
 
 
@@ -345,4 +347,53 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, spe
         clock.tick(fps)
 
 
+def play_BGM():
+    pg.mixer.music.load('game\_music\mus_date_fight.mp3')
+
+
+def basic_player_prompt(*prompts):
+    '''
+    
+    '''
+    input()
+
+    while True:
+        
+        dprint('Select response: ')
+
+        for i in range(len(prompts)):
+            dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
+
+        user_in = input("Enter the number: ").strip()
+
+        if user_in == '':
+            user_in = '1'  # Default to the first option
+
+        if user_in.isdigit():
+            user_int = int(user_in)
+            if 1 <= user_int <= len(prompts):
+                return user_int
+
+
+def ascci_fireworks():
+    dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!')
+    dprint(
+        '''
+                                                                        *,                  _`Y,           
+           _Y                 `  \ | *                             *  `* .  ` *              >2``           
+            7``                _`_^___`   BOOM!                  ` `* ,* .* `*  `*            2      CRACK! 
+            2      CRACK!     *   /\ `        / |             * *`* *  * ** *, -` `,           2     ` v _  
+             2     ` v _       `\  \   ` \ ` |`// /   ,      * *  * ,*   *`, ** ** *,*_ ` ~      2     7 `  
+    _ ` ~      2     7 `  3~, \     \_` -\ \ |,/ /-  _   /   _ * *`, **` # * ``  **  * =*_ -      2   4   3 
+     =*_ -      2   4   3       ----  \ - \ | | / =/ --/----  /  *  , ,`  .  x  *  .  / | \_    *  2 /   3  
+    / | \_       2 /   3      --_--- \  ----\ /BANG!/ -------- *` `, *  * *   * ,*          \     \|    3   
+          \      1    3       -----*---`-----X-------_--------  ,- * `,.*, * `. * .          \     1    3   
+           \     1    3     = ---/-_--/ -/ / | \_\- \---_-----     ` /``  * `           SCREE!\    1    3   
+      SCREE!\    1    3         ----  / -- -|||- --` \  ---- _     /        #  POW!           |     `\ 3    
+            |     `\ 3       /      ``--/- /| |\ -\--``   \       /        /                   \   * |3     
+             \      3      POP!    /   /   ||_  `  ' \           `        |             >\V/<   \  |/      
+              \    /                      //     `                                        /`      \V
+'''
+    ,.0005)
+    dprint('           YAAAAAAAAAAAAY!!!')
 

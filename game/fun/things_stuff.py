@@ -151,7 +151,10 @@ class Inventory():
 
     def add_item(self, item):
         if item in self.contents.keys():
-            self.contents[item] += 1
+            if self.contents[item] >= 10:
+                print('your pockets are full')
+            else:
+                self.contents[item] += 1
         else:
             self.contents[item] = 1
 

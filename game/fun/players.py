@@ -19,16 +19,16 @@ class Player:
         self.col = col
         self.asleep = False # skip turn
         self.poisoned = False # -hp over time
-        self.embalmed = False # +hp over time
+        self.blessed = False # +hp over time
         self.confused = False # can't choose turn
         self.frightened = False # run attempt each turn or nothing
         self.enranged = False # +damage and -accuracy
-        self.blessed = False # +accuracy
+        self.focussed = False # +accuracy
         self.defended = False # ???
         self.empowered = False # +atk
         self.energized = False # +mag
         self.auto_battle = False
-        self.location = '1-0'
+        self.location = '1-0' # see location dictionary in notes
         self.progress = progress
         if self.gender == 'Female':
             self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself'}
@@ -42,13 +42,16 @@ class Player:
             if random.random() < self.accuracy:
                 enemy.hp -= self.atk - random.randint(0, self.atk // 5)
                 dprint(f'{self.name} attacks {enemy.name} for {self.atk} damage!')
-                if enemy.hp > 0:
+                if enemy.is_alive():
                     dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
+                    if enemy.has_phases:
+                        enemy.next_phase(self)
+                    else:
+                        dprint(f'{self.name} has defeated {enemy.name}!')
+                        self.gain_xp(enemy.xp, xp_thresholds)
+                        self.gain_col(enemy.col)
+                        enemy.drop(self)
 
             else:
                 dprint(f'{self.name} misses their attack!')
@@ -58,7 +61,7 @@ class Player:
             if attack_value > self.accuracy:
                 enemy.hp -= self.atk - random.randint(0, self.atk // 5)
                 dprint(f'{self.name} attacks {enemy.name} for {self.atk} damage!')
-                if enemy.hp > 0:
+                if enemy.is_alive():
                     dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     dprint(f'{self.name} has defeated {enemy.name}!')
@@ -127,7 +130,10 @@ class Fighter(Player):
     def attack(self, enemy, xp_thresholds):
         if self.auto_battle:
             if random.random() < self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 5)
+                if self.empowered:
+                    damage = self.atk + random.randint(0, self.atk // 5)
+                else:
+                    damage = self.atk - random.randint(0, self.atk // 5)
                 enemy.hp -= damage
                 dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
                 if enemy.is_alive():
@@ -145,16 +151,22 @@ class Fighter(Player):
             input()
             attack_value = attack_timing_window(*enemy.ac, self.accuracy)
             if attack_value > self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 5)
+                if self.empowered:
+                    damage = self.atk + random.randint(0, self.atk // 5)
+                else:
+                    damage = self.atk - random.randint(0, self.atk // 5)
                 enemy.hp -= damage
                 dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
                 if enemy.is_alive():
                     dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
+                    if enemy.has_phases:
+                        enemy.next_phase(self)
+                    else:
+                        dprint(f'{self.name} has defeated {enemy.name}!')
+                        self.gain_xp(enemy.xp, xp_thresholds)
+                        self.gain_col(enemy.col)
+                        enemy.drop(self)
             else:
                 dprint(f'{self.name} misses their attack!')
 
@@ -209,8 +221,12 @@ class Fighter(Player):
 
         attack_value = 0.0
 
-        strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
-        weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
+        if self.empowered:
+            strong_damage = self.atk + (self.atk // 5) + skill.damage
+            weak_damage = self.atk
+        else:
+            strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
+            weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
         if self.auto_battle:
             self.mag -= skill.cost
             if random.random() < self.accuracy + self.acu:
@@ -277,8 +293,8 @@ class Fighter(Player):
     def learn_skill(self):
         skills = init_skills()
         learnables = [skill for skill in skills if skill.level <= self.level and skill.type == 0]
+        dprint('You have an available skill slot')
         while len(self.known_skills) < self.skill_slots: 
-            dprint('You have an available skill slot')
             dprint('would you like to learn or replace a skill?')
             lorp = ['learn', 'replace', 'nope'] # lorp: Learn or Replace
             for i in range(3):

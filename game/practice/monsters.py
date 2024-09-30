@@ -38,6 +38,7 @@ class Enemy:
         self.agi = agi
         self.world = world
         self.ac = ac
+        self.has_phases = False
 
     def attack(self, target):
         if target == None:
@@ -159,6 +160,7 @@ class Ally:
 class Boss:
     def __init__(self, name, hp, atk, xp, level, acu, col, agi, world, ac):
         self.name = name
+        self.maxhp = hp
         self.hp = hp
         self.atk = atk
         self.xp = xp
@@ -168,6 +170,8 @@ class Boss:
         self.agi = agi
         self.world = world
         self.ac = ac
+        self.has_phases = True
+        self.phases = 0
     
     def attack(self, player):
         if random.random() < self.acu:
@@ -180,19 +184,115 @@ class Boss:
                 dprint(f'{player.name} was slain at the hand of {self.name}!')
         else:
             dprint(f"{self.name} attacks but misses {player.name}!")
+    
+    def choose_target(self, targets:list):
+        if len(targets):
+            return random.choice(targets)
+        else:
+            return None
+        
+    def is_alive(self):
+        return self.hp > 0 and self.phases > 0
 
 
 # ----------- Bosses
+
+class BossTest(Boss):
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world, ac):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world, ac)
+        self.acu_mod = .02
+        self.title = 'Bane of the Programmer'
+        self.phases = 2
+    
+    def fight(self, player):
+        if self.phases == 2:
+            if random.randint(0,2):
+                self.attack(player)
+        elif self.phases == 1:
+            if random.randint(0,1):
+                self.big_attack(player)
+        
+    def big_attack(self, player):
+        can_use = random.randint(1,2) in [1]
+        if can_use:
+            strong_damage = self.atk + random.randint(-2, (self.atk // 3)) + 6
+            weak_damage = self.atk
+            if random.random() < self.acu + self.acu_mod:
+                player.hp -= strong_damage
+                dprint(f'{self.name} {self.title} big attack {player.name} with big attackness!')
+                dprint(f'the attack hits {player.name} for {strong_damage} damage!')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'The big attack kilt {player.name}!')
+            elif random.random() < self.acu:
+                player.hp -= weak_damage
+                dprint(f'{self.name} just grazed {player.name}!')
+                dprint(f'the big attack dealt {weak_damage} damage to {player.name}.')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'It was still too much for {player.name}')
+            else:
+                dprint(f'{self.name} missed!')
+        else:
+            dprint(f'{self.name} looks a little tired after its last attack.')
+
+    def next_phase(self, player):
+        if self.phases > 0:
+            self.phases -= 1
+            self.hp = self.maxhp
+        else:
+            dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
 
 
 class Kosaur(Boss):
     def __init__(self, name, hp, atk, xp, level, acu, col, agi, world, ac) -> None:
         super().__init__(name, hp, atk, xp, level, acu, col, agi, world, ac)
         self.acu_mod = .02
-        self.title = 'Scourge of the Kobold Wood'
+        self.title = 'Scourge of the Kobold Canyon'
+        self.phases = 2
+    
+    def fight(self, player):
+        if self.phases == 2:
+            if random.randint(0,2):
+                self.attack(player)
+            else:
+                self.bite(player)
+        elif self.phases == 1:
+            if random.randint(0,1):
+                self.attack(player)
+            else:
+                self.bite(player)
+    
+    def claw(self, player):
+        can_use = random.randint(1,5) in [3, 4, 5]
+        if can_use:
+            strong_damage = self.atk + random.randint(-2, (self.atk // 3)) + 6
+            weak_damage = self.atk
+            if random.random() < self.acu + self.acu_mod:
+                player.hp -= strong_damage
+                dprint(f'{self.name} {self.title} slashes {player.name} with it\'s steel claws!')
+                dprint(f'the attack hits {player.name} for {strong_damage} damage!')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'The claws split {player.name} in two!')
+            elif random.random() < self.acu:
+                player.hp -= weak_damage
+                dprint(f'{self.name} just grazed {player.name}!')
+                dprint(f'the swipe dealt {weak_damage} damage to {player.name}.')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'It was still too much for {player.name}')
+            else:
+                dprint(f'{self.name} took a swing at {player.name} but missed!')
+        else:
+            dprint(f'{self.name} looks a little tired after its last attack.')
 
     def bite(self, player):
-        can_use = random.randint(1,6) in [5, 6]
+        can_use = random.randint(1,3) in [2, 3]
         if can_use:
             strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + 2
             weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
@@ -204,16 +304,25 @@ class Kosaur(Boss):
                     display_health(player)
                 else:
                     dprint(f'{player.name} was eaten alive!')
-        elif random.random() < self.acu:
-            player.hp -= weak_damage
-            dprint(f'{self.name} just got a bit of {player.name}')
-            dprint(f'the attack dealt {weak_damage} damage to {player.name}.')
-            if player.is_alive():
-                display_health(player)
+            elif random.random() < self.acu:
+                player.hp -= weak_damage
+                dprint(f'{self.name} just got a bit of {player.name}')
+                dprint(f'the attack dealt {weak_damage} damage to {player.name}.')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'but that was all {player.name} could take!')
             else:
-                dprint(f'but that was all {player.name} could take!')
+                dprint(f'{self.name} tried to eat {player.name} but missed!')
         else:
-            dprint(f'{self.name} tried to eat {player.name} but missed! ')
+            dprint(f'{self.name} looks a little tired after its last attack.')
+        
+    def next_phase(self, player):
+        if self.phases > 0:
+            self.phases -= 1
+            self.hp = self.maxhp
+        else:
+            dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
 
 
 class Illfang(Boss):
@@ -568,6 +677,41 @@ class Construct(Enemy):
                 player.inventory.add_item(drop)
 
 
+class Undead(Enemy):
+    def __init__(self, name, hp, atk, xp, level, acu, col, agi, world, ac):
+        super().__init__(name, hp, atk, xp, level, acu, col, agi, world, ac)
+        self.possible_drops = [drop for drop in drops if drop.name in
+                               ['glass bottle', 'venom glass', 'onix stone', 
+                                'simple fabric','dagger', 'grand col', 
+                                'rose life potion']]
+        
+    def create_loot_table(self):
+        drop_list = [] # define returnable list
+        if self.level > 0 and random.randint(0, 10) > self.possible_drops[0].rarity:
+            drop_list.append(self.possible_drops[0])
+            if self.level > 3 and random.randint(0, 10) > self.possible_drops[1].rarity:
+                drop_list.append(self.possible_drops[1])
+                if self.level > 9 and random.randint(0, 10) > self.possible_drops[2].rarity:
+                    drop_list.append(self.possible_drops[2])
+                    if self.level > 18 and random.randint(0, 10) > self.possible_drops[3].rarity:
+                        drop_list.append(self.possible_drops[3])
+                        if self.level > 31 and random.randint(0, 10) > self.possible_drops[4].rarity:
+                            drop_list.append(self.possible_drops[4])
+                    elif self.level > 23 and random.randint(0, 10) > self.possible_drops[5].rarity:
+                        drop_list.append(self.possible_drops[5])
+                        if self.level > 37 and random.randint(0, 10) > self.possible_drops[6].rarity:
+                            drop_list.append(self.possible_drops[6])
+        return drop_list
+  
+    def drop(self, player):
+        dropses = self.create_loot_table()
+        if not len(dropses) == 0:
+            dprint(f'{player.name} got the following items')
+            for drop in dropses:
+                print(drop.name)
+                player.inventory.add_item(drop)
+
+
 class Tarusoid(Enemy): # world 2 (cows)
     def __init__(self, name, hp, atk, xp, level, acu, col, agi, world, ac):
         super().__init__(name, hp, atk, xp, level, acu, col, agi, world, ac)
@@ -624,7 +768,8 @@ def init_doctors():
 
     return doc_list
 
-def init_enemies(): 
+def init_enemies():
+    test_boss = BossTest('test_boss', 12, 2, 600, 1, .6, 20, 24, [1], (750, 50, 120, 5))
     windworm = Worm('windworm', 1, 1, 3, 1, .15, 0, 33, [1], (500, 26, 180, 8)) 
     brown_worm = Worm('brown worm', 2, 1, 4, 1, .2, 0, 44, [1], (450, 3, 60, 20)) # limit ratio 450:95
     slime = Slime('slime', 2, 1, 5, 1, .35, 0, 31, [1], (600, 8, 200, 10))
@@ -643,25 +788,27 @@ def init_enemies():
     dire_wolf = Beast('dire wolf', 15, 1, 13, 2, .85, 0, 19, [1,3,4], (300, 9, 400, 10))
     green_worm = Worm('green worm', 21, 1, 10, 2, .35, 0, 30, [1], (300, 4, 65, 19))
     nepenth = Nepenth('nepenth', 20, 2, 14, 2, .6, 0, 14, [1], (400, 10, 300, 2))
+    onikuma = Beast('onikuma', 17, 3, 14, 2, .7, 0, 25, [1], (760, 32, 760, 4))
     cave_slime = Slime('cave slime', 13, 3, 11, 2, .55, 0, 29, [1], (600, 8, 200, 10))
     kobold_soldier = Koboldoid('kobold soldier', 21, 2, 13, 2, .75, 2, 19, [1], (800, 12, 500, 4))
     Kobold_guard = Koboldoid('kobold guard', 20, 2, 14, 2, .8, 3, 17, [1], (800, 12, 560, 4))
     shrubent = Plant('shrubent', 27, 1, 14, 3, .9, 0, 24, [1], (600, 11, 400, 10))
-    cave_bear = Beast('cave bear', 20, 3, 15, 3, .45, 1, 17, [1], (900, 96, 1000, 6))
+    cave_bear = Beast('cave bear', 25, 4, 15, 3, .55, 1, 21, [1], (900, 48, 1000, 6))
     pre_pod_nepenth = Nepenth('pod nepenth', 7, 1, 14, 3, .5, 0, 17, [1], (400, 80, 300, 2))
     post_pod_nepenth = Nepenth('Pod Nepenth', 21, 1, 14, 3, .5, 0, 17, [1], (400, 11, 300, 2))
     flower_nepenth = Nepenth('flower nepenth', 32, 2, 18, 3, .75, 0, 14, [1], (400, 11, 300, 2))
     red_worm = Worm('red worm', 35, 1, 14, 3, .40, 0, 28, [1], (250, 3, 70, 18))
-    kosaur = Enemy('Kosaur (F-Boss)', 60, 5, 30, 3, .7, 3, 20, [1], (900, 80, 1200, 5))
+    kosaur = Kosaur('Kosaur', 60, 5, 300, 3, .7, 3, 20, [1], (900, 80, 1200, 5))
     big_nepenth = Nepenth('big nepenth', 35, 2, 19, 3, .7, 0, 19, [1], (350, 12, 300, 2))
     sappent = Plant('sappent', 37, 2, 19, 3, .95, 0, 25, [1], (600, 14, 360, 10))
-    ruin_kobold = Koboldoid('ruin kobold', 38, 3, 20, 3, .7, 4, 18, [1,3], (600, 10, 600, 4))
+    ruin_kobold = Koboldoid('ruin kobold', 38, 3, 20, 3, .7, 4, 20, [1,3], (600, 10, 600, 4))
     sly_srewman = Beastoid('sly shrewman', 39, 1, 17, 3, .99, 6, 4, [1,2,3,5,9], (200, 6, 480, 2))
-    human_bandit = Humanoid('bandit (human)', 39, 3, 21, 4, .8, 3, 20, [1,2,3,6], (600, 10, 500, 4))
+    human_bandit = Humanoid('bandit', 21, 7, 20, 4, .8, 3, 20, [1,2,3,6], (600, 10, 500, 4))
     kobold_chief = Koboldoid('kobold chief', 40, 2, 18, 4, .75, 5, 18, [1], (750, 12, 620, 4))
-    blue_worm = Worm('blue worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (225, 12, 80, 17))
-    treent = Plant('treent', 50, 3, 22, 4, .65, 0, 30, [1,4], (600, 20, 300, 5))
+    blue_worm = Worm('blue worm', 54, 2, 19, 4, .55, 0, 27, [1,2], (225, 12, 80, 17))
+    treent = Plant('treent', 66, 4, 22, 4, .65, 0, 30, [1,4], (600, 20, 300, 5))
     ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 52, 3, 22, 4, .85, 5, 15, [1,3], (600, 10, 640, 3))
+    skeleton = Undead('skeleton', 38, 9, 26, 4, .7, 1, 19, [1,2,3,4,5,6,7,8,9,10], (500, 10, 300, 6))
     bark_golem = Plant('bark golem', 61, 2, 21, 4, .90, 1, 27, [1], (500, 8, 360, 10))
     flying_kobold = Koboldoid('flying kobold', 47, 3, 25, 4, .5, 4, 9, [1], (850, 14, 480, 2))
     ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 67, 4, 26, 5, .75, 6, 14, [1], (600, 10, 720, 3))
@@ -691,32 +838,32 @@ def init_enemies():
     giant_blood_worm = Worm('giant blood worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (560, 24, 600, 3))
     giant_midnight_worm = Worm('giant midnight worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (580, 25, 620, 2))
     giant_purple_worm = Worm('giant purple worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (600, 26, 640, 2))
-    giant_wyrm_wyrm = Enemy('giant wyrm worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (990, 24, 720, 2)) # side boss
+    giant_wyrm_worm = Enemy('giant wyrm worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (990, 24, 720, 2)) # side boss
     
     
 
 
-    mon_list = [windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
+    mon_list = [test_boss, windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
                 greedy_badger, awakened_shrub, small_kobold, barkling, swarm_of_bats,
-                little_nepenth, kobold_slave, windwasp, dire_wolf, green_worm, nepenth, 
+                little_nepenth, kobold_slave, windwasp, dire_wolf, green_worm, nepenth, onikuma,
                 cave_slime, kobold_soldier, Kobold_guard, shrubent, cave_bear, pre_pod_nepenth,
                 post_pod_nepenth, flower_nepenth, red_worm, kosaur, big_nepenth, sappent, 
-                ruin_kobold, sly_srewman, human_bandit, kobold_chief, black_worm, 
-                treent, ruin_kobold_trooper, bark_golem, flying_kobold, ruin_kobold_sentinel, 
-                illfang]
+                ruin_kobold, sly_srewman, human_bandit, kobold_chief, blue_worm, black_worm, 
+                treent, ruin_kobold_trooper, bark_golem, skeleton, flying_kobold, 
+                ruin_kobold_sentinel, illfang]
 
     return mon_list
 
 
-def init_allies():
-    robin_0 = Ally('Robin', 1, 14, 1, 22, .7, Skill('slant', 0, 1, 1, 2, 1), 'Robin 0')
+def init_allies(): # designations use snake case and numerals
+    robin_0 = Ally('Robin', 1, 14, 1, 22, .7, Skill('slant', 0, 1, 1, 2, 1), 'robin_0')
     henry = Ally('Henry', 2, 11, 3, 19, .65, Skill('reverse pull', 0, 2, 5, 4, 3))
     liliyah = Ally('Liliyah', 2, 15, 5, 18, .78, Skill('parallel sting', 0, 2, 2, 2, 2))
     tiffey = Ally('Tiffey', 2, 19, 1, 20, .7, Skill('cross hatch', 0, 3, 2, 4, 3))
     kajlo_sohler = Ally('Kajlo Sohler', 2, 17, 3, 19, .76, Skill('cork screw', 0, 1, 1, 3, 1))
     officer_jerrimathyus = Ally('Officer Jerrimathyus', 3, 26, 5, 26, .75, Skill('uppercut', 0, 3, 1, 4, 3))
     bulli = Ally('Bulli', 2, 18, 2, 20, .76, Skill('mega poke', 0, 1, 2, 2, 1))
-    milo_0 = Ally('Milo', 2, 15, 3, 19, .82, Skill('linear', 0, 2, 1, 3, 3), 'Milo 0')
+    milo_0 = Ally('Milo', 2, 15, 3, 19, .82, Skill('linear', 0, 2, 1, 3, 3), 'milo_0')
     gaffer = Ally('Gaffer', 1, 9, 1, 20, .6, Skill('pitch fork', 0, 1, 2, 4, 1))
     holt = Ally('Holt', 3, 27, 2, 23, .72, Skill('back rush', 0, 4, 1, 5, 4))
     suphia = Ally('Suphia', 4, 28, 3, 19, .7, Healing('quick tonic', 1, 3, 4, 4, 2, 1))

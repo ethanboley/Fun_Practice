@@ -62,7 +62,10 @@ class LittleDagger(Item):
 
     def use(self, player=None, enemy=None, xp_thresholds=None):
         if random.random() < player.accuracy:
-            enemy.hp -= 1
+            if player.empowered:
+                enemy.hp -= player.atk + 1
+            else:
+                enemy.hp -= 1
             dprint(f"{player.name} throws {self.name} at {enemy.name} dealing 1 damage!")
             if enemy.is_alive():
                 dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
@@ -172,6 +175,7 @@ def init_items():
     slime_jelly = Item('slime jelly', 1, 1, 0, False, False)
     mundane_scrap_metal = Item('mundane scrap metal', 1, 1, 0, False, False)
     little_dagger = LittleDagger('little dagger', 1, 1, 0, False, True)
+    dagger = LittleDagger('dagger', 2, 2, 1, False, True)
     onix_stone = Item('onix stone', 4, 5, 3, True, False)
     monster_tooth = Item('monster tooth', 1, 2, 1, False, False)
     venom_glass = VenomGlass('venom glass', 2, 5, 2, False, True)

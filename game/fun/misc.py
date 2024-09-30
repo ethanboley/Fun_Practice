@@ -3,6 +3,7 @@ from actions import *
 from monsters import init_doctors
 from stuffs_that_do import init_items
 from players import Fighter, Mage, Pugilist
+from things_stuff import init_skills
 
 items = init_items()
 
@@ -10,6 +11,9 @@ class Hospital:
     def __init__(self, name, quality):
         self.name = name
         self.quality = quality
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.resolve(player,xp_thresholds, world)
 
     def welcome(self):
         options = ['healing', 'superheal', 'information', 'nothing']
@@ -112,12 +116,8 @@ class Hospital:
                         dprint('You have died!')
                         return False
 
-    def give_info(self, player, xp_thresholds, world):
-        next_thresh = 0
-        for thresh in xp_thresholds:
-            if player.xp < thresh:
-                next_thresh = thresh
-                break
+    def give_info(self, player, xp_thresholds:dict, world):
+        next_thresh = xp_thresholds[player.level]
         low_atk = player.atk - player.atk // 5
         lowest = player.atk - (player.atk // 5 + 1)
         low_sptk = player.atk + 2 # 1 + skill damage (minimum)
@@ -166,6 +166,9 @@ class Marketplace():
         self.salable = [item for item in items if item.sold]
         self.xp_thresholds = xp_thresholds
         self.world = world
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.resolve(player)
 
     def stock_inventory(self):
         for item in self.salable:
@@ -183,7 +186,7 @@ class Marketplace():
             print(f'{i + 1}: {options[i]}')
         return input()
     
-    def resolve(self, player, choice_task=''):
+    def resolve(self, player):
         options = ['sell','buy','information','black market']
         choice_task = self.welcome()
 
@@ -258,19 +261,8 @@ class Marketplace():
                     dprint('Oop, well, you don\'t actually have any more items!')
                     break
                 dprint(f'You have {player.col} col!')
-                to_sell = get_dict_option(dict=player.inventory.contents)
-                # # print(f'to_sell_int {to_sell_int}') # debug
-                # iteration = 0
-                # # print(f'iteration {iteration}') # debug
-                # # print(f'player.inventory.contents {player.inventory.contents}') # debug
-                # for key in player.inventory.contents:
-                #     # print(f'key {key}') # debug
-                #     if to_sell_int == iteration:
-                #         to_sell = key
-                #         # print(f'key {key}') # debug
-                #         break
-                #     iteration += 1
-                    # print(f'iteration {iteration}') # debug
+                to_sell = get_dict_option(player.inventory.contents)
+
                 dprint(f'Let\'s see, this {to_sell.name} is worth {to_sell.sell_price} col.')
                 dprint('Would you like to sell it?')
                 choice = input('1: Yes \n2: No \n')
@@ -286,7 +278,7 @@ class Marketplace():
                     print('not sellin\' huh, maybe something else?')
 
 
-    def sell(self, player): # also here the player is buying from the market place
+    def sell(self, player): # also here the player is buying from the market place get_dict
         dprint(f'Welcome! What would you like to buy?')
         if player.col == 0:
             dprint('Actually, you don\'t have any money!')
@@ -301,11 +293,7 @@ class Marketplace():
                         break
                     dprint(f'You have {player.col} col!')
                     to_buy = get_dict_option(self.inventory)
-                    # iteration = 0
-                    # for key in self.inventory:
-                    #     if to_buy_int == iteration:
-                    #         to_buy = key
-                    #     iteration += 1
+
                     if to_buy.sell_price > player.col:
                         dprint('That too expensive for you.')
                     else:
@@ -328,11 +316,7 @@ class Marketplace():
                     break
 
     def give_info(self, player, xp_thresholds, world):
-        next_thresh = 0
-        for thresh in xp_thresholds:
-            if player.xp < thresh:
-                next_thresh = thresh
-                break
+        next_thresh = xp_thresholds[player.level]
         low_atk = player.atk - player.atk // 5
         lowest = player.atk - (player.atk // 5 + 1)
         low_sptk = player.atk + 2 # 1 + skill damage (minimum)
@@ -381,3 +365,62 @@ class Marketplace():
             self.inventory[item] -= 1
 
 
+class Gym():
+    def __init__(self, player):
+        self.name = 'Training'
+        self.level = player.level
+        self.player = player
+        self.skills = init_skills()
+        self.learnables = [[skill for skill in self.skills if skill.level <= self.level and skill.type == 0]]
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.skill_learning()
+
+    def skill_learning(self):
+        dprint('Welcome to the skill gym, here you can learn new skills or')
+        dprint('change the ones you know!')
+
+        while True:
+            if  len(self.player.known_skills) < self.player.skill_slots:
+                dprint('You appear to have an available skill slot.')
+                dprint('would you like to learn or replace a skill?')
+                lorp = ['learn', 'replace', 'nevermind'] # lorp: Learn or Replace
+                for i in range(3):
+                    print(f'{i + 1}: {lorp[i]}')
+                ans = input()
+            
+                if ans in ['0','1','l','L','Learn','learn','LEARN']: # if learn new
+                    self.player.add_skill(self.learnables)
+                if ans in ['2','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
+                    self.player.remove_skill()
+                    self.player.add_skill(self.learnables)
+                elif ans in ['3','n','N','NO','no','No','nope','Nope','NOPE','4','absolutely not!']:
+                    dprint('Ok, you have a wonderful day!')
+                    break
+                else:
+                    continue
+
+            else:
+                dprint('You don\'t seem content with your current skill set.')
+                dprint('would you like to replace a skill you know?')
+                print('1: replace a skill\n2: Nevermind\n')
+
+                if ans in ['1', '0','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
+                    self.player.remove_skill()
+                    self.player.add_skill(self.learnables)
+                elif ans in ['2','n','N','NO','no','No','nope','Nope','NOPE','3','absolutely not!']:
+                    dprint('Alrighty then, have a magnifacent day!')
+                    break
+                else:
+                    continue
+
+class Quit:
+    def __init__(self) -> None:
+        self.name = 'quit'
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        print('keep playing? \n1: N \n2: Y')
+        sure = input()
+        if sure.strip() in ['2','3','y','Y','yes','Yes','YES','sure','definitely','p','P','2: Y','yep!']:
+            return True
+        return False

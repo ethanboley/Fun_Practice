@@ -22,7 +22,8 @@ dev 0.0.27 (allies)
 dev 0.0.28 (versatility and debug)
 dev 0.0.29 (actions teamates)
 dev 0.0.30 (action timing meter)
-dev 0.0.31 (meter implementation) current
+dev 0.0.31 (meter implementation)
+dev 0.0.35 (little bit o everything) current
 ...
 alpha 0.1.0 
 ...
@@ -30,8 +31,15 @@ beta 0.2.0
 ...
 1.0.0 - 1.999.999
 
+
 commit notes: 
-Fixed and implemented the action timing meter into gameplay 
+More actions, fixed battle, implemented boss, streamlined code entry, implemented Gym and Quit, added run methods, added monsters, changed allies, added phases for bosses, fixed attack, implemented empowered state, FINALLY fixed adjust_team, implemented ch12-19, added/edited items, ballanced inventory, streamlined world loop, fixed world options, lots of various and sundry notes.
+
+
+
+
+
+
 
 world ideas: 
 map: 
@@ -85,54 +93,22 @@ map:
         Humanoids
         bosses
 
------------------------------------------------------------------------------------------------
-|
-|       x3
-|
-|
-|
-|
-|
-|                     x4
-|
-|
-|
-|
-|
-|
-|
-|                  x2
-|                 x
-|
-|                               x1
-|             x0
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-|
-_______________________________________________________________________________________________
+LOCATION DICTIONARY:
+1-0: Just outside Greentown
+1-1: Greentown pre raid
+1-2: Greentown eastern woods
+1-3: Greentown post raid
+1-4: Greentown south woods
+1-5: old stone tower
+1-6: Nepenth woods
+1-7: Kosaur's canyon
 
-Scale:
-| = 20 miles
-__ = 20 miles
-
-Legend:
-x: Greentown
-x0: Pompon
-x1: small town A
-x2: high speed delivery outpost
-x3: Kedren Main
-x4: Farthe Outpost
-
+: Greentown
+0: Pompon
+1: Tolbantha
+2: high speed delivery outpost
+3: Kedren Main
+4: Farthe Outpost
 
 personal record 4622+ (12, skill add at floor)
 79 hp, 30-40 dpr (skill), 20-25 dpr (non-skill), 250-650 col, 0-20 pot. 
@@ -149,6 +125,52 @@ potential solution: reduce enemy xp to 1 (or maybe the world value) after the
 boss is defeated (or if player.world == 2+ or something). That way gaining 
 levels by grinding on lower worlds will take much longer. 
 
+Level: 3
+Experience Points: 240/0
+Domain: Fighter
+Hit Points: 19/25
+Attack power: 4-4
+Skill attack power: 3-6~8
+Accuracy: 75.5%
+Speed: 1
+Magic: 10/10
+Col: 17
+
+ch9
+Level: 4
+Experience Points: 484/0
+Domain: Fighter
+Hit Points: 28/34
+Attack power: 4-5
+Skill attack power: 3-7~10
+Accuracy: 75.75%
+Speed: 1
+Magic: 10/10
+Col: 16
+
+ch11
+Level: 5
+Experience Points: 602/0
+Domain: Fighter
+Hit Points: 41/44
+Attack power: 6-7
+Skill attack power: 5-9~12
+Accuracy: 76.0%
+Speed: 1
+Magic: 10/11
+Col: 18
+
+ch13
+Level: 6
+Experience Points: 999/0
+Domain: Fighter
+Hit Points: 42/55
+Attack power: 8-9
+Skill attack power: 7-11~14
+Accuracy: 76.25%
+Speed: 1
+Magic: 11/11
+Col: 47
 
 xp thresholds
 to get to --> you must have
@@ -270,7 +292,7 @@ the player has joined an investigation task force, survived an ambush and is
 heading back to the beginning town to request aid and report findings. From 
 there I have planned that the player will be sent on another mission alone 
 because of personnel shortage where they will find misleading clues. upon 
-returning home the player will enjoy a day of so of peace before waking to a 
+returning home the player will enjoy a day or so of peace before waking to a 
 hometown in flames due to a large scale kobold attack. In the fight, the 
 player's younger brother Robin will be abducted. The next several chapters 
 involve the player chasing and tracking down Robin and includes the book's mid-
@@ -284,7 +306,7 @@ end. I have very few plans for future books but I want each world and
 corresponding book to have different themes, locations and monsters each 
 playing roles in the stories progression. For book 2 I do have a cow/minotaur/
 bull sort of theme for monsters; this drastic change in monster type will be 
-dure to a change in location obviously; and, the overall theme/mood/threat 
+due to a change in location obviously; and, the overall theme/mood/threat 
 level for book 2 as well as (I'm thinking) the next few books up to 4 or 5 will
 be basically the same. After that point though there will be one particular 
 chapter in one of those later books that totally takes the player off guard as 
@@ -332,6 +354,194 @@ the veins of the Rulid family but where did this magic come from?
 How about a chapter where the player character steps into a setting outside the
 genre like the maw of aperture science or the Inside or something.
 
+While the player is among the planes, they will meet a pair who seem like a
+young maried couple who are actually on an eons long quest to kill each other. 
+The are immortal to each others attacks, tricks and traps that would cause them
+harm but they are not invulnerable to the attacks of outside sources. They
+don't necessarily hate each other but each has certain outside motivations to
+kill the other. They have been together for many years and they travel the
+planes in search of an object, location, condition or a combination of those
+things that would allow one to kill the other. Over the course of the player
+knowing them, the two grow closer for realsies, not just pretend. Near the end
+of the book, the conditions are met and a moment very similar to the ending of
+little nightmares 2 takes place but with a lit more regret involved, resulting
+in one of their deaths. The survivor, sticks around for a bit seeming utterly
+destroyed emotionally and mentally before finally either parting ways or
+killing themselves out of grief or regret or something. 
+
+
+Species: Humans, Elves, Dwarves, Kobolds, Goblins, Orks, Meanderthralls, Gremlins, Minions, Gargoyles, Chupacabra, Colossi, Hodag, 
+Indrid Colds, Mothmen, Irrwartzi, Letiche, Melonheads, Brineies, Piazas, Rowgarous,
+Simbi, Snallygaster, Snipes, Tailypos, Wendigos, Basilisks, Dragons, Centaurs,
+Chimeras, Vampires, Dwarves, Coacatrices, Lycanthropes, Ghouls, Griffin, Goblins,
+Hydras, Golems, Manticores, Cypactli, Sprites, Hags, Melusines, Grims, Satyrs,
+Scrats, Tarands, Yuxa, Elementals, Gnomes, Nymphs, Sylphs, Pygmies, Salamanders, 
+Undines, Trolls, Giants, Ogres, Ents, Kelpies, Akalikas, Cairngorms, Banshees, Phantoms,
+Biroks, Bluecaps, Redcaps, Boggarts, Bugganes, Cait-shith, Cu-shith, Changeling, Pixie,
+Dullahani, Whisps, Wil O Wisps, Broonies, Nine-tailed Fox, Fuaithes, Gwyllions,
+Hobs, Ly-Ergan, Merrows, Ollipheists, Philliwiggins, Pucas, Dryads, Seelies, Selkies,
+Sluaghs, Incubi, Succubi, Revenants, Zombies, Unicorns, Bicorns, Tricorns, Alerions,
+Dipsas, Pegasi, Jakali, Jackals, Monoceros, Nonoceros, Biceros, Triceros, Monocerotops,
+Nonocerotops, Bicerotops, Tricerotops, Woodwose, Fauns, Pegacorns, psudodragons,
+Wyverns, Ypotrills, Hinkypunks, Pumpkin heads, Ekans, Sandshrews, Clefairies, Vulpixes,
+Polywags, Doduos, Dotrios, Cloysters, Laprases, Eevees, Omanites, Kabutos, Xatus,
+Sudowoodos, Vaporeons, Jolteons, Flareons, Espeons, Umbreons, Leafeons, Glaceons,
+Sylveons, Drakeons, Terreons, Buldeons, Galveons, Brawleons, Entomeons, Toxeons,
+Whispeons, Eveons, Lumeons, Soneons, Chroneons, Serapheons, Shuckleses, Ursarings,
+Donphans, Mudkips, Wurmples, Arons, Raltses, Tyranosaurus Rexes, Tricerotopses,
+Veloceraptors, Quetzalcoatli, Ankylosauri, Postosuchi, Stegosauri, Diplodoci, Archaeopteryxs,
+Compsognathi, Dromaeosaurs, Blood Wolves, Bullbous Bows, Dark Dwarves, Drunk Apes,
+Glancers, Feathered Little Dragons, Feral Warders, Ruthless Warders, Garish Gerberas, Geocrawlers,
+Giantics, Guardian Knights, Killer Mantises, Land Anemones, Lesser Tarus Strikers, Lesser Tarus Breakers,
+Lesser Tarus Casters, Lesser Taruses, Greater Tarus Strikers, Greater Tarus Breakers,
+Greater Tarus Casters, Greater Taruss, Tarus Strikers, Tarus Breakers, Tarus Casters,
+Taruses, Lizardmen, Magnatheriums, Nephilias, Roaring Wolves, Scavenge Toad, Scuttle Crab,
+Four Armed Giants, Lake Kings, Skull Reapers, Thicket Spiders, Trembling Oxen, Marble Golems,
+Granite Golems, Limestone Golems, Basalt Golems, Sandstone Golems, Slate Golems, Talc Golems,
+Obsidian Golems, Amythest Golems, Diamond Golems, Coal Golems, Quartz Golems, Alluminum Golems,
+Tin Golems, Copper Golems, Black Iron Golems, Pig Iron Golems, Cast Iron Golems,
+White Iron Golems, Steel Golems, Brass Golems, Bronze Golems, Sodium Golems, Tungsten Golems,
+Titanium Golems, Platinum Golems, Silver Golems, Gold Golems, Electrum Golems, Mithril Golems,
+Alabastine Golems, Beryl Golems, Iridium Golems, Orichalcum Golems, Samite Golems, Vibranium Golems,
+Adamantite Golems, Carbonite Golems, Unobtainum Golems, Beskar Steel Golems, Dimetrium Golems,
+True Silver Golems, True Gold Golems, Duranium Golems, Necrodermis Golems, Dragonite Golems,
+Netherite Golems, Enderite Golems, Snow Golems, Ice Golems, Flower Golems, Dirt Golems,
+Clay Golems, Silt Golems, Gravel Golems, Mushroom Golems, Bone Golems, Ice golems,
+Glass Golems, Paper Golems, Bark Golems, Aromatic Golems, Zonaite Golems, Oak Golems,
+Teak Golems, Balsa Golems, Basswood Golems, Chestnut Golems, Sycamore Golems, Birch Golems,
+Maple Golems, Cherry Golems, Walnut Golems, Beech Golems, Ash Golems, Cypress Golems,
+Bamboo Golems, Hornbeam Golems, Blackwood Golems, Purpleheart Golems, Mahogany Golems,
+Ebony Golems, Ironwood Golems, Moabi Golems, Ipe Golems, Lignum Vitae Golems, Hay Golems,
+Brick Golems, Concrete Golems, Wool Golems, Slime Golems, Honey Golems, Flesh Golems,
+Rubber Golems, Plastic Golems, Water Golems, Fire Golems, Porcelain Golems, Leather Golems,
+Moss Golems, Asphault Golems, Tar Golems, Lava Golems, Wax Golems, Plush Golems,
+Coin Golems, Linen Golems, Foam Golems, Trash Golems, Lightning Golems, Wind Golems,
+Harpies, Octorocks, Keese, Fire Keese, Electric Keese, Ice Keese, Gloom Keese, 
+Wizzrobes, Blizzarobes, Thrunderobes, Meteorobes, Dodongos, Aquamentus, 
+Bokoblins, Moblins, Lizalfos, Chuchus, Armos, Ghomas, Lynels, Darknuts, Stalfos,
+Beamos, Bubles, Gibdos, Lanmolas, Likelikes, Peahats, River Zora, Ocean Zora, Lake Zora,
+Vires, Wallmasters, Zols, Magos, Bone Cuccos, Eyegores, Gorya, Hemasaurs, Hinoxen,
+Hokboks, Octoballoon, Pikit, Poes, Snap Dragon, Tektites, Goombas, Thwamps, Big Poes,
+Grand Poes, Business Scrubs, Deku Scrubs, Deku Babas, ReDeads, Mad Scrubs, Bombchus,
+Cheep-cheeps, Pokeys, Bob-ombs, Kargaroks, Helmaroks, Lakitus, Latikus, Bulblins,
+Gyorgs, Froaks, Decayed Guardian Scouts, Decayed Guardian Stalkers, Decayed Guardian Skywatchers, 
+Decayed Guardian Turrets, Decayed Guardian Sentries, Guardian Scout Mk1, Guardian Scout Mk2, 
+Guardian Scout Mk3, Guardian Scout Mk4, Guardian Scout Mk5, Guardian Scout Mk6, Guardian Scout Mkx, 
+Guardian Stalkers, Guardian Skywatchers, Guardian Turrets, Guardian Sentries, Ice-Breath Lizalfos, 
+Fire-Breath Lizalfos, Peblits, Soldier Constructs, Captain Constructs, Commander Constructs, 
+Moth Gibdos, Horriblins, Armored Gloom Lynels, Evermeans, Froxlets, Froxen, Gloomspawn,
+Taluses, Moldugas, Gleeoks, King Gleeoks, Flux Constructs, Molgeras, Colgeras, Moragias, 
+Seized Constructs, Gohdans, Divine Dragons, Chain Chomp, Piranha Plant, Blooper, Koopa Troopa, 
+Koopa Paratroopa, Dry Koopa, Boos, Teresas, Shyguys, Kinopios, Paragoomba, Wattle Dee,
+Wattle Doo, Bronto Burt, Metroids, E.M.M.I.s, Creepers, Endermen, Piglins, Blazes, Magma Cubes, 
+Shulkers, Silverfish, Withers, Wither Skeletons, Acromantuli, Blast-ended Screwt, 
+Bowtruckle, Doxies, Giant Squids, Wyrms, Drakes, Dragons, Leviathans, Kazuryus, Oroboros, 
+Giant Jellyfish, Graphorns, Grindylows, Hippocampi, Hippogriffs, Jackelopes, Jabberwokies, 
+Knolls, Kappas, Murtlaps, Nifflers, Nargles, Oni, Phoenixes, Plimpies, Pigmypuffs, 
+Pigmy Krakens, Sphinxen, Cerberi, Thestrals, Yetis, Animagi, blibbering humdingers, 
+Capricorns, Crumple-horned Snorkack, Hydras, Bugbears, Gorgons, Mummies, Mumphs, Wraxpurts, 
+Dragon Turtle Preemies, Dragon Turtle Bairns, Dragon Turtle Juveniles, Young Dragon Turtle, 
+Adult Dragon Turtle, Elder Dragon Turtle, Ancient Dragon Turtle, Lion Turtle, Beholders, 
+Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials, Animated Armor, Flying Carpets,
+Cyclops, Death Knights, Balrogs, Wargs, Nazgul, Wraiths, Great Eagles, Maneses, Lemures,
+Dopplegangers, Shadowdragons, Air Elementals, Earth Elementals, Fire Elementals, Water Elementals,
+Plant Elementals, Thunder Elementals, Ettins, Fairy Dragons, Green Hags, Black Hags, Wood Hags, 
+Night Hags, Sea Hags, Annis Hags, Bheur Hags, Hel Hounds, Homunculi, Dust Mephits, 
+Ice Mephits, Magma Mephits, Mud Mephits, Smoke Mephits, Steam Mephits, Swamp Mephits,
+Chaos Mephits, Pete Mephits, Robo Mephits, Charcoal Mephits, Plasma Mephits, Pollen Mephits, 
+Storm Mephits, Mimics, Ilithids, Modrons, Modrones, Owlbears, Scarecrows, Slaadi, Spectres,
+Tarrasques, Troglodytes, Wights, Phase Spiders, Juggernaughts, Dreadnaughts,
+Elder Tempests, Zaratans, Inevetables, Oblexes, Wood Woads, Moamwraths, Bryllygs, Slythy Toves,
+Borogoves, Marzeedotes, Doezeedotes, Little Amzedivies, Amzidivies, Great Amzedivies, 
+Kiddleydivies, Woodenchews. 
+Inteligent races (humanoidish): Humans, Elves, Dwarves, Goblins, Halflings, Orks, Gnomes, Goliaths, 
+Firbolds, Kobolds, Giants, Taruses, Hylians, Gerudo, Gorons, Rito, Zora, Kokiri,
+Pikori, Zonai, Koroks, Hobgoblins.
+Named Side Entities: Warforged Collossus (Collossus), Marut (Inevetable), Jack (Pumpkin Head), 
+Straad (Vampire), Rudy (Tyranosaurus Rex), Pina (Feathered Little Dragon), Tonkii
+(Lake King), Arceus, The Netherite Golem (Netherite Golem), The True Gold Golem (True Gold Golem), 
+The Spirit Golem (Golem), King Dodongo (Dodongo), Queen Gibdo (variant moth gibdo), 
+Dorephan (Ocean Zora), The Eldest Kin (Hinox), Guardian Scout Prototype (Guardian Scout Mk 1),
+Flux Pavilion (Flux Construct), King Boo (Boo), Perfect EMMI (E.M.M.I.), The Whither (Wither),
+The Ender Dragon (Ancient Shadowdragon), Ungoliant (Acromantula), Shelob (Acromantula),
+Aragog (Acromantula), Mimim (Acromantula), Fire (Lion Turtle), Air (Lion Turtle),
+Water (Lion Turtle), Earth (Lion Turtle), Lightning (Lion Turtle), Life (Lion Turtle),
+The Kraken (Kraken), Xanathar (Beholder), Balor (Balrog), The Nine (Wraith(s)),
+Torterra (Zaratan). 
+Ancient Dragons: Mushussu, Apep, Vrtra, Gragoule, Ladon, Kulshedra, Unchegila, Jormungrander,
+Nithhoger, Fafnir, Azazi, Zahhak, Usumgal, Orochi, 
+Chinese dragon, Japanese Dragons, 
+Named Main Entities (-): Kil (Corrupted Seraph), Vecna (Human>Lich), The Raven Queen (Dragon/Elder Oblex), 
+Eboros (Goliath), Illfang The Kobold Lord (Ruin Kobold), Asterios The Tarus King (Greater Tarus),
+The Hand (Elf lich), The Eye (Human lich), Kairon (variant Human), Dakamos (variant Human),
+Mozkith (variant Human), Tae-Thomin The Portal King (variant Elf), Ali N'Soun (Human/Death Slaad),
+Vlig 'O Wilv (variant Black Hag), Scatha (Ancient Dragon), Kas The bloody Handed (Vampire),
+Acerak (Vampire), Raven Jasper (?), Raven Kxixi (?), Zephyr (Giant).
+Named Main Entities (+): Player Character (Human), Rulid Sr. (Human), Elond (Human),
+Robin (Human), Rosie (Human), Rulid* (variant Human), Milo (Human), Theo (Human),
+Toby (Human), Outh (Human), Rosalind (Human>variant Human), Ideal (Hobgoblin), Nora (Dwarf), 
+Chloe (Hylian), Wendy (Human), Callybon (Gnome), Suphia (Human), ...
+
+
+Dragons & Angels:
+Wyrms: 4 legs, No wings, Fire Breath, Magic, Inteligence (Speech at young+).
+Wyrms are the oldest and most ancient variety of dragons along side Oroboros
+and the concept of Kazuryus. As such, they are typically the most powerful and
+inteligent with a few exceptions. From a mere decade or so after hatching, they
+can comprehend speach and apply logic and reason to situations. Their fire
+breath comes out conically from their mouth. They are typically neutral in
+allignment but can be very protective.
+Drakes: 2 legs, 2 clawed Wings, Fire Breath, No Magic, Inteligence (Speech at ancient).
+Drakes are often seen as lesser dragons as they usually come by means of cross
+breeding dragons. They can be territorial and dangerous if disturbed or
+offended. They grow to understand the universe at a much slower rate than most
+other dragons but usually can manage speech after several thousand years of
+life. Their fire comes out in powerful and destructive orbs. They are almost
+exclusively evil in nature. 
+Dragons: 4 legs, 2 wings, Fire Breath, Magic, Inteligence (Speech at adult+).
+Dragons, named for their superrace due to their commonality are nearly as
+ancient in existence as Wyrms coming into existence due to magical and natural
+evolution. Their power, magic and ability to understand and reason out their
+universe grows quickly but dispite this, their ability of speech usually only
+comes somewhere in their adulthood (about 1,000-1,500 years of life). Dragon's
+fire breath takes the form of a strong, far flying, linear stream of flame from
+their mouths or nostrils. Dragons are typically either Evil or Good, never much
+of a middle ground.
+Leviathans: No legs, No wings, No breath, Long body, water dwelling, Magic, growing inteligence.
+Leviathans orriginated anciently as an experiment conducted by a pair of
+primordials. They are only technically dragons due to their serpentine nature
+and compatibility with other species. They are typically the largest of the
+dragons beating out Wyrms by quite a bit as they age, though, Wyrms Eggs are
+often larger than Leviathan eggs. Their inteligence grows slowly throughout
+their lives but have never been knows to speak. Leviathans sleep in large
+bodies of (usually) salt water and attack anything that disturbes that slumber
+making them almost exclusively evil in allignment.
+Kazuryus: Many legs, No wings, Elemental breath, Long body, Magic, growing inteligence from adult+.
+Kazuryus are dragons that came into being due to a powerful and usually
+forbidden ritual cast upon an individual willing to sacrifice their mind, body,
+and everything to forever roam the skies of the universe. As such their "birth"
+results in a fully grown dragon which never ages phisically. Their inteligence,
+however, does grow from that point throughout their lives usually gaining the
+ability of more than simple animal instinct and to reason and logic around
+their adulthood. They are often unaligned or nutral until that point. 
+Oroboros: No legs, Many wings, Elemental breath, Long body, Magic, growing inteligence from young+.
+Oroboros are just as ancient as Wyrms and typically take on the role of
+guardian spirits or lesser deities throughout the universe. They are capable of
+cohesive thought and speach by their adulthood but simply lack the pyisiology
+to do so and so use their magic to convey ideas. Oroboros are very often Good
+in allignment but some have become corrupted and Evil. 
+All types of dragons, if they have magical capability usually only weild
+illusory magic but gain the ability to shapeshift into cretures whose language
+they have learned to speak. Dragons thay have achieved this are usually
+considered the pinacle of draconic life and power some even being considered
+lesser deities. 
+
+Angels: Luminous skin, white eyes, 2 wings.
+Archangels: Bright skin, glowing white eyes, 2 wings. 
+Kokaubim: Dazzling skin, shining white eyes, 2 wings, halo.
+Cherubim: Blinding skin, 4 brilliantly shining eyes, 4 wings, halo.
+Seraphim: surrounded by blinding light, 6 brilliantly shining eyes, 6 wings, crowned halo. 
+Primordials: true form ???, 
 
 plot layer 1: 
 pass
@@ -383,7 +593,7 @@ book 1:
 20: the lack of a Kosaur causes a surge of small monsters through the canyon. 
 21: monsters that make it through signal kobold scouts who send investigative 
     kobold parties
-22: finally player breaks through and continued to follow trail leading them 
+22: finally player breaks through and continues to follow trail leading them 
     to the camp at last. 
 23: spying out the camp, player spots Capper Luxkhanna. careful maneuvering and 
     stealth reveals several captives and at last, Robin. 
@@ -552,7 +762,7 @@ book 4:
 114(15): No one but Elond in family really believes your story. Only main 
     characters are willing to go though. 
 115(16):
-116(17):
+116(17): Entire City Explodes (or similar)
 117(18):
 118(19):
 119(20):
@@ -619,7 +829,7 @@ print(organized by: Ethan Boley)
 print(co-organizer: RulidSynthesis34)
 print(patch/update/commit/edit/or whatever history [i]: Ethan Boley)
 print(patch/update/commit/edit/or whatever history [i+1]: Ethan Boley)
-print(content assistant: Gemini)
+print(content assistant(s): Gemini, Chat)
 print(patch/update/commit/edit/or whatever history [i+2]: Ethan Boley)
 print(patch/update/commit/edit/or whatever history [i+3]: RulidSynthesis34)
 print(patch/update/commit/edit/or whatever history [i+4]: Ethan Boley)
