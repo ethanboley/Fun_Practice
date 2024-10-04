@@ -39,14 +39,7 @@ class Battle:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
             # handle the player's turn
-            if self.active_player.title == 'Fighter':
-                self.handle_fighter_turn(seconds)
-            elif self.active_player.title == 'Mage':
-                self.handle_mage_turn(seconds)
-            elif self.active_player.title == 'Pugilist':
-                self.handle_pugilist_turn(seconds)
-            elif self.active_player.title == 'tamer':
-                self.handle_tamer_turn(seconds)
+            self.handle_fighter_turn(seconds)
             # go through the ally's turns
             self.handle_ally_turns(seconds)
             # handle the monster's turns
@@ -66,6 +59,7 @@ class Battle:
         for mon in mon_list:
             self.active_monsters.append(mon)
         
+        self.active_teamates.append(self.active_player)
         for ally in self.active_player.allies:
             if ally not in self.active_teamates:
                 self.active_teamates.append(ally)
@@ -90,25 +84,15 @@ class Battle:
             if seconds % 20 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
-                # for i in range(len(to_use_mons)):
-                #     dprint(to_use_mons[i].name)
-            # handle the player's turn
 
-            if self.active_player.title == 'Fighter':
-                self.handle_fighter_turn(seconds)
-            elif self.active_player.title == 'Mage':
-                self.handle_mage_turn(seconds)
-            elif self.active_player.title == 'Pugilist':
-                self.handle_pugilist_turn(seconds)
-            elif self.active_player.title == 'tamer':
-                self.handle_tamer_turn(seconds)
+            # handle the player's turn
+            self.handle_fighter_turn(seconds)
+            # go through the ally's turns
+            self.handle_ally_turns(seconds)
 
             if len(self.active_monsters) == 0:
                 self.active_teamates.clear()
                 return True
-
-            # go through the ally's turns
-            self.handle_ally_turns(seconds) # gain_xp
             
             if len(self.active_monsters) == 0:
                 self.active_teamates.clear()
@@ -133,6 +117,7 @@ class Battle:
         else:
             self.active_monsters.append(to_use_mons.pop())
         
+        self.active_teamates.append(self.active_player)
         for ally in self.active_player.allies:
             if ally not in self.active_teamates:
                 self.active_teamates.append(ally)
@@ -156,18 +141,9 @@ class Battle:
             if seconds % 20 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
-                # for i in range(len(to_use_mons)):
-                #     dprint(to_use_mons[i].name)
-            # handle the player's turn
 
-            if self.active_player.title == 'Fighter':
-                self.handle_fighter_turn(seconds)
-            elif self.active_player.title == 'Mage':
-                self.handle_mage_turn(seconds)
-            elif self.active_player.title == 'Pugilist':
-                self.handle_pugilist_turn(seconds)
-            elif self.active_player.title == 'tamer':
-                self.handle_tamer_turn(seconds)
+            # handle the player's turn
+            self.handle_fighter_turn(seconds)
             # go through the ally's turns
             self.handle_ally_turns(seconds)
 
@@ -239,355 +215,26 @@ class Battle:
                     self.active_monsters.remove(target)
             
             elif option in ['4','run','Run','RUN','rUN','r','R','4: run','four','nigero','flee']:
-                escape = 0
-                for i in range(len(self.active_monsters)):
-                    if self.active_player.run():
-                        escape += 1
-                if len(self.active_monsters) == 1 and escape == 1:
-                    dprint(f'{self.active_player.name} escaped!')
-                    self.active_monsters.clear()
-                elif len(self.active_monsters) == 2:
-                    if escape == 1:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 2:
+                escape = sum(1 for _ in self.active_monsters if self.active_player.run())
+                monster_count = len(self.active_monsters)
+                match (monster_count, escape):
+                    case (m, e) if e == m:
                         dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 3:
-                    if escape == 2:
+                    case (m, e) if e == m - 1:
                         dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 4:
-                    if escape == 2:
+                    case (m, e) if m >= 4 and e == m - 2:
                         dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4: 
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) > 4:
-                    if escape >= 6:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                    elif escape == 5:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
+                    case (m, e) if m >= 4 and e == m - 3:
                         dprint('Wow... miracles really do happen!')
-                        self.active_monsters.clear()
-                else:
-                    dprint(f'{self.active_player.name} failed their escape attempt.')
+                    case _:
+                        dprint(f'{self.active_player.name} failed their escape attempt.')
+                
+                if escape > 0:
+                    self.active_monsters.clear()
+
                 
             else:
                 self.active_player.auto_battle = not self.active_player.auto_battle
-
-    def handle_mage_turn(self, seconds):
-        if seconds % self.active_player.agi == 0:
-            # prompt for battle option
-            for i in range(len(self.battle_options)):
-                print(f'{i + 1}: {self.battle_options[i]}')    
-            option = input()
-
-            if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:
-                # define target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                
-                # adjust mage spell cooldown ??? 
-                for spell in self.active_player.known_spells:
-                    if spell.downtime < spell.cooldown:
-                        spell.downtime += 1
-
-                # attack
-                self.active_player.attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-
-            elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # special attack
-                self.active_player.special_attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # use item
-                self.active_player.use_item(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            else:
-                escape = 0
-                for i in range(len(self.active_monsters)):
-                    if self.active_player.run():
-                        escape += 1
-                if len(self.active_monsters) == 1 and escape == 1:
-                    dprint(f'{self.active_player.name} escaped!')
-                    self.active_monsters.clear()
-                elif len(self.active_monsters) == 2:
-                    if escape == 1:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 2:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 3:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 4:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4: 
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) > 4:
-                    if escape >= 6:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                    elif escape == 5:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint('Wow... miracles really do happen!')
-                        self.active_monsters.clear()
-                else:
-                    dprint(f'{self.active_player.name} failed their escape attempt.')
-
-    def handle_pugilist_turn(self, seconds):
-        if seconds % self.active_player.agi == 0:
-            # prompt for battle option
-            for i in range(len(self.battle_options)):
-                print(f'{i + 1}: {self.battle_options[i]}')    
-            option = input()
-
-            if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:
-                # define target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                
-                # adjust pugilist spall cooldown ??? 
-                for spall in self.active_player.known_spalls:
-                    if spall.downtime < spall.cooldown:
-                        spall.downtime += 1
-
-                # attack
-                self.active_player.attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-
-            elif option in ['2','Skill','skill','s','S','spall','Spall','SKILL','SPALL','spell']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # special attack
-                self.active_player.special_attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # use item
-                self.active_player.use_item(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            else:
-                escape = 0
-                for i in range(len(self.active_monsters)):
-                    if self.active_player.run():
-                        escape += 1
-                if len(self.active_monsters) == 1 and escape == 1:
-                    dprint(f'{self.active_player.name} escaped!')
-                    self.active_monsters.clear()
-                elif len(self.active_monsters) == 2:
-                    if escape == 1:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 2:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 3:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 4:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4: 
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) > 4:
-                    if escape >= 6:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                    elif escape == 5:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint('Wow... miracles really do happen!')
-                        self.active_monsters.clear()
-                else:
-                    dprint(f'{self.active_player.name} failed their escape attempt.')
-
-    def handle_tamer_turn(self, seconds):
-        if seconds % self.active_player.agi == 0:
-            # prompt for battle option
-            for i in range(len(self.battle_options)):
-                print(f'{i + 1}: {self.battle_options[i]}')    
-            option = input()
-
-            if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:
-                # define target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                
-                # adjust player skill cooldown ??? 
-                for skill in self.active_player.known_skills:
-                    if skill.downtime < skill.cooldown:
-                        skill.downtime += 1
-
-                # attack
-                self.active_player.attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-
-            elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # special attack
-                self.active_player.special_attack(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
-                # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
-                # use item
-                self.active_player.use_item(target, self.xp_thresholds)
-                # update active monsters
-                if not target.is_alive():
-                    self.active_monsters.remove(target)
-            
-            else:
-                escape = 0
-                for i in range(len(self.active_monsters)):
-                    if self.active_player.run():
-                        escape += 1
-                if len(self.active_monsters) == 1 and escape == 1:
-                    dprint(f'{self.active_player.name} escaped!')
-                    self.active_monsters.clear()
-                elif len(self.active_monsters) == 2:
-                    if escape == 1:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 2:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 3:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) == 4:
-                    if escape == 2:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4: 
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                elif len(self.active_monsters) > 4:
-                    if escape >= 6:
-                        dprint(f'{self.active_player.name} escaped!')
-                        self.active_monsters.clear()
-                    elif escape == 5:
-                        dprint(f'{self.active_player.name} made a narrow escape!')
-                        self.active_monsters.clear()
-                    elif escape == 4:
-                        dprint(f'{self.active_player.name} barely escaped with their life!')
-                        self.active_monsters.clear()
-                    elif escape == 3:
-                        dprint('Wow... miracles really do happen!')
-                        self.active_monsters.clear()
-                else:
-                    dprint(f'{self.active_player.name} failed their escape attempt.')
 
     def handle_ally_turns(self, seconds):
         for ally in self.active_player.allies:
@@ -604,20 +251,14 @@ class Battle:
             if seconds % monster.agi == 0:
                 target = monster.choose_target(self.active_teamates)
                 monster.attack(target)
-                # print(f'1 -- allies: {self.active_player.allies}, target: {target}, {target.hp}, teamates: {self.active_teamates}')
                 if not target.is_alive():
                     if target in self.active_teamates:
                         self.active_teamates.remove(target)
-                        # print(f'2 -- allies: {self.active_player.allies}, target: {target}, {target.hp}, teamates: {self.active_teamates}')
                     try:
                         self.active_player.allies.remove(target)
                     except ValueError as value_error:
-                        # print(f'tried: {value_error}')
-                        # print(f'3 -- allies: {self.active_player.allies}, target: {target}, {target.hp}, teamates: {self.active_teamates}')
                         self.active_player.allies.append(target) # do nothing
-                        self.active_player.allies.remove(target) # '
-                        # print(f'4 -- allies: {self.active_player.allies}, target: {target}, {target.hp}, teamates: {self.active_teamates}')
-
+                        self.active_player.allies.remove(target)
 
     def handle_additional_monsters(self, seconds, mon_list):
         if seconds % 120 == 0:
@@ -626,7 +267,9 @@ class Battle:
             dprint(f'a {self.active_monsters[-1].name} which joins the fight!')
 
     def init_parti(self, mon_list):
+        self.active_teamates.append(self.active_player)
         for ally in self.active_player.allies:
-            self.active_teamates.append(ally)
+            if ally not in self.active_teamates:
+                self.active_teamates.append(ally)
         self.active_monsters.append(choose_monster(self.active_player,mon_list))
 

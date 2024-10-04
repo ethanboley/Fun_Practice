@@ -7,6 +7,7 @@ from math import ceil
 import pygame as pg
 import win32gui as wg
 import win32com.client as wcc
+import os
 
 from things_stuff import Skill, Spell, Spall
 
@@ -32,11 +33,21 @@ def define_xp_thresholds():
 
 
 def choose_monster(player, monsters):
-    one_worthy = [mon for mon in monsters if mon.level <= player.level]
-    return random.choice(one_worthy)
+    worthies = [mon for mon in monsters if mon.level <= player.level]
+    return random.choice(worthies)
 
 
-def dprint(text='',speed=0.035):
+def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\n') -> None:
+    """
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+
+    Returns: None
+    """
     skip_slow_display = False
 
     for char in text:
@@ -52,7 +63,7 @@ def dprint(text='',speed=0.035):
             if key == '\r':  # Press Enter to skip
                 skip_slow_display = True
 
-    sys.stdout.write('\n')  # Add a newline when done
+    sys.stdout.write(end)  # Add the correct end when done
 
 
 def display_health(player):
@@ -136,43 +147,28 @@ def get_dict_option(options:dict):
 def initialize_pygame():
     pg.init()
     pg.mixer.init()
-    opening_screen = '#' * 80 + '\n'
-    for _ in range(20):
-        sys.stdout.write(opening_screen)
-    
-    sys.stdout.write('\n' * 2)
-    sys.stdout.write('_' * 80 + '\n')
+    os.system('cls')
 
     input('Press enter to start . . . ')
 
 
-def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, speed:int | None=480, chances:int | None = 10, acu:float | None = 0.65) -> float:
+def attack_timing_window(monster, player, acu) -> float:
     '''
     Creates a Pygame window that simulates an attack timing challenge. Closes
     and returns with enter key or after closing the window.
 
     Args:
-        rail_size (int, optional): width of the bar inside the window.
-            Defaults to 600. Must be less than the window width (1000) 
-            otherwise the default is used.
-        hit_dc (int, optional): The width of the target area.
-            The slider needs to be within to register a successful attack and 
-            return 1.
-            Defaults to 30. Should be less than about 1/5 rail_size and greater 
-            than 1. 
-        speed (int, optional): General speed of the slider including fps and slider speed.
-            Defaults to 480. Very high values combined with low hit_dc may
-            result in default values being used.
-        chances (int, optional): number of passes before a default miss (0).
-            Defaults to 10.
-        acu (float, optional): An accuracy value to be used in game. 
-            Used to calculate the distance from the target.
-            Defaults to .65.
+        monster: an Enemy or other object with ac and level attributes
+        player: a Player object with acu and level attributes
     
     Returns:
         hit_v (float, between 0 and 1 inclusive): A hit value representing how
         close the user came to hitting the target. 
     '''
+
+    # initialize starting values
+    rail_size, hit_dc, speed, chances = monster.ac
+    difficulty_mod = abs(player.level - monster.level) * 2
 
     # initialize fps to the passed speed value and the slider speed to 1
     fps = speed
@@ -205,8 +201,8 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, spe
     hwnd = pg.display.get_wm_info()['window']
     chwnd = wg.GetForegroundWindow()
     
-    # Bring the window to the foreground using some janky butt scripting found on stackoverflow
-    shell = wcc.Dispatch("WScript.Shell") 
+    # Bring the window to the foreground using some butt janky scripting found on stackoverflow
+    shell = wcc.Dispatch("WScript.Shell")
     shell.SendKeys(' ') # I have actually non idea why this works but it does
     wg.SetForegroundWindow(hwnd)
 
@@ -229,7 +225,7 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, spe
     bar_y = (window_height - bar_height) // 2
 
     # Target area properties
-    target_width = hit_dc
+    target_width = hit_dc + difficulty_mod
     if target_width + (ceil(target_width * 1.85) * 2) > window_width:
         target_width = 30
     target_x = bar_x + (bar_length - target_width) // 2
@@ -292,10 +288,7 @@ def attack_timing_window(rail_size:int | None = 600, hit_dc:int | None = 10, spe
                         running = False
                         break
 
-        # result found, 
-        # therefore don't draw again, 
-        # in other words set the focus back to the console, 
-        # kill the window and return result.
+        # result found; set focus back to console, kill window, return result, do not draw again, do not pass go, do not collect $200.
         if not running:
             wg.SetForegroundWindow(chwnd)
             pg.quit()

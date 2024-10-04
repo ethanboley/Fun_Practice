@@ -2,7 +2,7 @@
 from actions import *
 from monsters import init_doctors
 from stuffs_that_do import init_items
-from players import Fighter, Mage, Pugilist
+from players import Fighter
 from things_stuff import init_skills
 
 items = init_items()
@@ -136,18 +136,9 @@ class Hospital:
         print(f'Speed: {20 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        if isinstance(player, Fighter):
-            print('Skills: ')
-            for skill in player.known_skills:
-                print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
-        if isinstance(player, Mage):
-            print('Spells: ')
-            for spell in player.known_spells:
-                print(f'{spell.name.capitalize()} --> cost: {spell.cost}, cooldown: {spell.cooldown - spell.downtime}/{spell.cooldown}, power: {spell.damage}')
-        if isinstance(player, Pugilist):
-            print('Spalls: ')
-            for spall in player.known_spalls:
-                print(f'{spall.name.capitalize()} --> cost: {spall.cost}, cooldown: {spall.cooldown - spall.downtime}/{spall.cooldown}, power: {spall.damage}')
+        print('Skills: ')
+        for skill in player.known_skills:
+            print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
         for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
             print(f'{i}: {item.name}')
@@ -335,18 +326,9 @@ class Marketplace():
         print(f'Speed: {20 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        if isinstance(player, Fighter):
-            print('Skills: ')
-            for skill in player.known_skills:
-                print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
-        if isinstance(player, Mage):
-            print('Spells: ')
-            for spell in player.known_spells:
-                print(f'{spell.name.capitalize()} --> cost: {spell.cost}, cooldown: {spell.cooldown - spell.downtime}/{spell.cooldown}, power: {spell.damage}')
-        if isinstance(player, Pugilist):
-            print('Spalls: ')
-            for spall in player.known_spalls:
-                print(f'{spall.name.capitalize()} --> cost: {spall.cost}, cooldown: {spall.cooldown - spall.downtime}/{spall.cooldown}, power: {spall.damage}')
+        print('Skills: ')
+        for skill in player.known_skills:
+            print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
         for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
             print(f'{i}: {item.name}')

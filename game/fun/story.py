@@ -2301,7 +2301,7 @@ the briefest emotionless smile before leading the way.
     def ch_17(self): # surrounded by nepenths (pre-boss), Spring 31st-32nd, 3044, 6th age
         mon_list0 = self.config_monsters({'little nepenth':1, 'barkling':1, 'windwasp':1, 'little nepenth':1})
         mon_list1 = self.config_monsters({'little nepenth':2, 'nepenth':1, 'pod nepenth':1})
-        mon_list2 = self.config_monsters({'Pod Nepenth':1, 'flower nepenth':2, 'big nepenth':2, 'nepenth':3, 'little nepenth':4})
+        mon_list2 = self.config_monsters({'Pod Nepenth':1, 'flower nepenth':2, 'big nepenth':1, 'nepenth':4, 'little nepenth':3})
         mon_list3 = self.config_monsters({'flower nepenth':1, 'nepenth':1,'little nepenth':3})
         mon_list4 = self.config_monsters({'flower nepenth':1, 'big nepenth':1, 'nepenth':2, 'little nepenth':1})
         self.seventeen_intro()

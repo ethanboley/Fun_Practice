@@ -57,7 +57,7 @@ class Player:
                 dprint(f'{self.name} misses their attack!')
 
         else:
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            attack_value = attack_timing_window(enemy, self, self.accuracy)
             if attack_value > self.accuracy:
                 enemy.hp -= self.atk - random.randint(0, self.atk // 5)
                 dprint(f'{self.name} attacks {enemy.name} for {self.atk} damage!')
@@ -149,7 +149,7 @@ class Fighter(Player):
             dprint('Ready?', .05)
             time.sleep(.75)
             input()
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
+            attack_value = attack_timing_window(enemy, self, self.accuracy)
             if attack_value > self.accuracy:
                 if self.empowered:
                     damage = self.atk + random.randint(0, self.atk // 5)
@@ -177,6 +177,7 @@ class Fighter(Player):
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
                 self.level = level_key + 1
+                ascci_fireworks()
                 dprint(f'{self.name} has leveled up to level {self.level}!')
                 self.level_up()
                 level_key_to_remove = level_key
@@ -212,12 +213,8 @@ class Fighter(Player):
         if skill == None:
             dprint('No skills to use.')
             for skill in self.known_skills:
-                print(f'Skill: {skill.name}, cooldown {skill.cooldown - skill.downtime} (turns remaining).')
+                print(f'Skill: {skill.name}, cooldown: {skill.cooldown - skill.downtime} (turns remaining).')
             return self.attack(enemy, xp_thresholds)
-
-        while not skill.is_usable():
-            dprint('That skill is on cooldown.')
-            skill = self.choose_skill([skill for skill in self.known_skills if skill.is_usable()])
 
         attack_value = 0.0
 
@@ -261,7 +258,7 @@ class Fighter(Player):
             dprint('ready?', .05)
             time.sleep(.75)
             input()
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy + self.acu)
+            attack_value = attack_timing_window(enemy, self, self.accuracy + self.acu)
             if attack_value > self.accuracy + self.acu: # TODO or 1 - attack_timer_score_thingy < self.accuracy + self.acu
                 enemy.hp -= strong_damage
                 skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
@@ -321,6 +318,8 @@ class Fighter(Player):
         dprint(f'{self.name} has learned the skill {self.known_skills[-1].name}!')
 
     def choose_skill(self, skills):
+        if skills == []:
+            return
         user = get_validated_input('Which skill do you want to use? ', skills)
         if user == None:
             return
@@ -352,389 +351,3 @@ class Fighter(Player):
         if random.randint(0, small) > random.randint(0, big):
             return True
         return False
-
-
-class Mage(Player):
-    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col):
-        super().__init__(name, gender, hp, atk, xp, level, accuracy, col)
-        self.title = 'Mage'
-        self.acu = .05 # attack acuracy modifier
-        self.agi = 20 # used for battle order like a speed stat (out of 20?)
-        self.mag = 25 # used to calculate skill cost
-        self.maxmag = self.mag
-        self.mod = 1 + self.level // 4
-        self.spell_slots = 1
-        self.known_spells = []
-        self.spells = init_spells()
-        self.known_spells.append(self.spells[0])
-        self.inventory = Inventory()
-        self.allies = []
-
-    def attack(self, enemy, xp_thresholds):
-        if self.auto_battle:
-            if random.random() < self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 4)
-                enemy.hp -= damage
-                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)                
-            else:
-                dprint(f'{self.name} misses their attack!')
-        else:
-            dprint('Ready?', .05)
-            time.sleep(.75)
-            input()
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
-            if attack_value > self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 4)
-                enemy.hp -= damage
-                dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)                
-            else:
-                dprint(f'{self.name} misses their attack!')
-
-    def gain_xp(self, xp, xp_thresholds:dict):
-        dprint(f'{self.name} gained {xp} experience points, ')
-        self.xp += xp
-        # level_key_to_remove = None
-        for level_key, threshold in xp_thresholds.items():
-            if self.xp >= threshold:
-                self.level = level_key + 1
-                dprint(f'{self.name} has leveled up to level {self.level}!')
-                self.level_up()
-                level_key_to_remove = level_key
-        try:
-            xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
-        except UnboundLocalError as err:
-            # print(f'it works to do nothing here : {err}')
-            pass
-        dprint(f'{self.name} now has {self.xp} xp. ')
-
-    def level_up(self):
-        self.maxhp += 3 + (self.level // 6)
-        self.atk += (self.level // 5)
-        self.accuracy += .0025 if self.accuracy < 1 else self.accuracy == 1
-        self.hp = self.maxhp
-        self.spell_slots = int(math.log(self.level + 6, 1.18) - 10)
-        self.maxmag += 3 + (self.level // 6)
-        self.agi -= ((self.level // 20) - 1)
-        self.learn_spell()
-
-    def special_attack(self, enemy, xp_thresholds):
-        if self.mag <= 0:
-            dprint('You\'re out of magic!')
-            return self.attack(enemy, xp_thresholds)
-        
-        # update spell cooldown
-        for spell in self.known_spells:
-            if spell.downtime < spell.cooldown:
-                spell.downtime += 1
-
-        spell = self.choose_spell([spell for spell in self.known_spells if spell.is_usable()])
-        if spell == None:
-            dprint('No spells to use.')
-            for spell in self.known_spells:
-                print(f'Spell: {spell.name}, cooldown {spell.cooldown - spell.downtime} (turns remaining).')
-            return self.attack(enemy, xp_thresholds)
-
-        self.mag -= spell.cost
-        strong_damage = self.atk + random.randint(1, (self.atk // 4) + 1) + spell.damage
-        weak_damage = self.atk - random.randint(1, (self.atk // 4) + 1) + spell.damage
-
-        spell.effect(enemy, self, weak_damage=weak_damage, strong_damage=strong_damage)
-        if not enemy.is_alive():
-            self.gain_xp(enemy.xp, xp_thresholds)
-            self.gain_col(enemy.col)
-            enemy.drop(self)
-
-        elif spell.nature == 3: # escaping
-            pass
-
-    def learn_spell(self):
-        spells = init_spells()
-        learnables = [spell for spell in spells if spell.level <= self.level and spell.type == 1]
-        while len(self.known_spells) < self.spell_slots:
-            dprint('You have an available spell slot')
-            dprint('would you like to learn or replace a spell?')
-            lorp = ['learn', 'replace', 'nope'] # lorp: Learn or Replace
-            for i in range(3):
-                print(f'{i + 1}: {lorp[i]}')
-            ans = input()
-            if ans in ['0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
-                self.add_spell(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl']: # if replace known
-                self.remove_spell()
-                self.add_spell(learnables)
-            else:
-                dprint('Ok maybe next time!')
-                break
-    
-    def remove_spell(self):
-        # dprint('Replace which spell? ') # ask
-        spell_int = get_validated_input('replace which spell?', self.known_spells)
-        self.known_spells.remove(self.known_spells[spell_int - 1]) # remove the chosen spell at valid position
-
-    def add_spell(self, learnables):
-        # dprint('Add which spell? ') # ask
-        spell_int = get_validated_input('Add which spell?', learnables)
-        self.known_spells.append(learnables[spell_int - 1]) # append the selected choice to known spells
-        dprint(f'{self.name} has learned the spell {self.known_spells[-1].name}!')
-
-    def choose_spell(self, spells):
-        user = get_validated_input('Which spell do you want to use? ', spells)
-        if user == None:
-            return
-        return self.known_spells[user - 1]
-    
-    def use_item(self, enemy, xp_thresholds):
-        useables = [item for item in self.inventory.contents if item.can_use]
-        if len(useables) != 0:
-            list_int = get_validated_input('Which item?', list=useables)
-            to_use = useables[list_int - 1]
-            to_use.use(self, enemy, xp_thresholds)
-            if to_use == 0:
-                self.inventory.remove_item(to_use)
-            else:
-                self.inventory.contents[to_use] -= 1
-        else:
-            dprint('Your inventory is empty. ')
-
-    def run(self):
-        small = int((self.accuracy * 100) + (20 - self.agi))
-        big = int(80 + self.agi)
-        if random.randint(0, small) > random.randint(0, big):
-            return True
-        return False
-    
-
-class Pugilist(Player):
-    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col):
-        super().__init__(name, gender, hp, atk, xp, level, accuracy, col)
-        self.title = 'Pugilist'
-        self.acu = .04 # attack acuracy modifier
-        self.agi = 18 # used for battle order like a speed stat (out of 20?)
-        self.mag = 10 # used to calculate skill cost
-        self.maxmag = self.mag
-        self.mod = 1 + self.level // 4
-        self.spall_slots = 1
-        self.known_spalls = []
-        self.spalls = init_spalls()
-        self.known_spalls.append(self.spalls[0])
-        self.inventory = Inventory()
-        self.allies = []
-
-    def attack(self, enemy, xp_thresholds):
-        if self.auto_battle:
-            if random.random() < self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 5)
-                enemy.hp -= damage
-                dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            else:
-                dprint(f'{self.name} misses their attack!')
-        else:
-            dprint('Ready?', .05)
-            time.sleep(.75)
-            input()
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy)
-            if attack_value > self.accuracy:
-                damage = self.atk - random.randint(0, self.atk // 5)
-                enemy.hp -= damage
-                dprint(f'{self.name} hits {enemy.name} dealing {damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{self.name} has defeated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            else:
-                dprint(f'{self.name} misses their attack!')
-
-    def gain_xp(self, xp, xp_thresholds:dict):
-        dprint(f'{self.name} gained {xp} experience points, ')
-        self.xp += xp
-        # level_key_to_remove = None
-        for level_key, threshold in xp_thresholds.items():
-            if self.xp >= threshold:
-                self.level = level_key + 1
-                dprint(f'{self.name} has leveled up to level {self.level}!')
-                self.level_up()
-                level_key_to_remove = level_key
-        try:
-            xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
-        except UnboundLocalError as err:
-            # print(f'it works to do nothing here : {err}')
-            pass
-        dprint(f'{self.name} now has {self.xp} xp. ')
-
-    def level_up(self):
-        self.maxhp += 4 + (self.level // 5)
-        self.atk += 1 + (self.level // 5)
-        self.accuracy += .004 if self.accuracy < 1 else self.accuracy == 1
-        self.hp = self.maxhp
-        self.spall_slots = 1 + int(math.log(self.level, 1.7))
-        self.maxmag += 1 + (self.level // 15)
-        self.agi -= ((self.level // 8) - 1)
-        self.learn_spall()
-
-    def special_attack(self, enemy, xp_thresholds):
-        if self.mag <= 0:
-            dprint('You\'re out of magic!')
-            return self.attack(enemy, xp_thresholds)
-        
-        # update spall downtime (this method requires that all action methods need these lines at the begining)
-        for spall in self.known_spalls:
-            if spall.downtime < spall.cooldown: # if downtime is less than cooldown
-                spall.downtime += 1 # bring the 2 closer together
-
-        # that way when this line comes along the number of usable spalls is accurate
-        spall = self.choose_spall([spall for spall in self.known_spalls if spall.is_usable()])
-        if spall == None:
-            dprint('No spalls to use.')
-            for spall in self.known_spalls:
-                print(f'spall: {spall.name}, cooldown {spall.cooldown - spall.downtime} (turns remaining).')
-            return self.attack(enemy, xp_thresholds)
-
-        while not spall.is_usable():
-            dprint('That spall is on cooldown.')
-            spall = self.choose_spall([spall for spall in self.known_spalls if spall.is_usable()])
-
-        attack_value = 0.0
-
-        strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + spall.damage
-        weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
-        if self.auto_battle:
-            self.mag -= spall.cost
-            if random.random() < self.accuracy + self.acu:
-                enemy.hp -= strong_damage
-                spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
-                dprint(f'{self.name} delivers a powerful spall {spall.name}!')
-                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            elif random.random() < self.accuracy:
-                enemy.hp -= weak_damage
-                spall.set_downtime() # downtime
-                dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
-                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            else:
-                dprint(f'{self.name} executed the spall {spall.name} but missed! ')
-                spall.set_downtime() # even though it was a miss, its still a use. 
-
-        else:
-            dprint('Ready?', .05)
-            time.sleep(.75)
-            input()
-            attack_value = attack_timing_window(*enemy.ac, self.accuracy + self.acu)
-            if attack_value > self.accuracy + self.acu:
-                enemy.hp -= strong_damage
-                spall.set_downtime() # downtime, to make sure the spalls aren't used too fast. 
-                dprint(f'{self.name} delivers a powerful spall {spall.name}!')
-                dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'{spall.name} absolutely annihilated {enemy.name}!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            elif attack_value > self.accuracy:
-                enemy.hp -= weak_damage
-                spall.set_downtime() # downtime
-                dprint(f'{self.name} dealt a weak hit of the spall {spall.name}.')
-                dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
-                if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
-                else:
-                    dprint(f'Despite the weak hit with {spall.name}, {enemy.name} has died!')
-                    self.gain_xp(enemy.xp, xp_thresholds)
-                    self.gain_col(enemy.col)
-                    enemy.drop(self)
-            else:
-                dprint(f'{self.name} executed the spall {spall.name} but missed! ')
-                spall.set_downtime() # even though it was a miss, its still a use. 
-
-    def learn_spall(self):
-        spalls = init_spalls()
-        learnables = [spall for spall in spalls if spall.level <= self.level and spall.type == 1]
-        while len(self.known_spalls) < self.spall_slots:
-            dprint('You have an available spall slot')
-            dprint('would you like to learn or replace a spall?')
-            lorp = ['learn', 'replace', 'nope'] # lorp: Learn or Replace
-            for i in range(3):
-                print(f'{i + 1}: {lorp[i]}')
-            ans = input()
-            if ans in ['0', '1', 'l', 'L', 'Learn', 'learn']: # if learn new
-                self.add_spall(learnables)
-            elif ans in ['2', 'r', 'R', 'replace', 'Replace', 'repl', 'Repl', '3']: # if replace known
-                self.remove_spall()
-                self.add_spall(learnables)
-            else:
-                dprint('Ok maybe next time!')
-                break
-    
-    def remove_spall(self):
-        spall_int = get_validated_input('Replace which spall? ',self.known_spalls)
-        self.known_spalls.remove(self.known_spalls[spall_int - 1]) # remove the chosen spall at valid position
-
-    def add_spall(self, learnables):
-        spall_int = get_validated_input('Add which spall? ',learnables)
-        self.known_spalls.append(learnables[spall_int - 1]) # append the selected choice to known spalls
-        dprint(f'{self.name} has learned the spall {self.known_spalls[-1].name}!')
-
-    def choose_spall(self, spalls):
-        user = get_validated_input('Which spall do you want to use? ', spalls)
-        if user == None:
-            return
-        return spalls[user - 1]
-    
-    def use_item(self, enemy, xp_thresholds):
-        useables = [item for item in self.inventory.contents if item.can_use]
-        if len(useables) != 0:
-            list_int = get_validated_input('',useables)
-            to_use = useables[list_int - 1]
-            to_use.use(self, enemy, xp_thresholds)
-            if to_use == 0:
-                self.inventory.remove_item(to_use)
-            else:
-                self.inventory.contents[to_use] -= 1
-        else:
-            dprint('Your inventory is empty. ')
-
-    def run(self):
-        small = int((self.accuracy * 100) + (20 - self.agi))
-        big = int(60 + self.agi)
-        if random.randint(0, small) > random.randint(0, big):
-            return True
-        return False
-

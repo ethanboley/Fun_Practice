@@ -210,7 +210,7 @@ def init_items():
     super_aja_stone = SuperAjaStone('super aja stone', 9, 110, 9, False, True)
 
     items = [col_coin, 
-             prostomium, slime_jelly, mundane_scrap_metal, little_dagger, onix_stone, 
+             prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
              monster_tooth, glass_bottle, magic_glass, living_wood, simple_fabric,
              aged_teak_log, opal, nepenth_fruit, argiros_sheet, nepenths_ovule, 
              nawsoth_fruit, life_potion, vermilion_life_potion, emarald, hide, 

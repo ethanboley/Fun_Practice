@@ -23,7 +23,8 @@ dev 0.0.28 (versatility and debug)
 dev 0.0.29 (actions teamates)
 dev 0.0.30 (action timing meter)
 dev 0.0.31 (meter implementation)
-dev 0.0.35 (little bit o everything) current
+dev 0.0.35 (little bit o everything)
+dev 0.0.36 (little big changes) current
 ...
 alpha 0.1.0 
 ...
@@ -33,8 +34,7 @@ beta 0.2.0
 
 
 commit notes: 
-More actions, fixed battle, implemented boss, streamlined code entry, implemented Gym and Quit, added run methods, added monsters, changed allies, added phases for bosses, fixed attack, implemented empowered state, FINALLY fixed adjust_team, implemented ch12-19, added/edited items, ballanced inventory, streamlined world loop, fixed world options, lots of various and sundry notes.
-
+edits to several key actions.py functions, completely removed domains, removed redundant logic, minor changes to ch17, fixed monster turns, added archived_features.txt
 
 
 
