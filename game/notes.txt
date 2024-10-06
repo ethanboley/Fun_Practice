@@ -34,8 +34,7 @@ beta 0.2.0
 
 
 commit notes: 
-edits to several key actions.py functions, completely removed domains, removed redundant logic, minor changes to ch17, fixed monster turns, added archived_features.txt
-
+fixed boss and boss battle, finished ch19, minor lore adjustments. 
 
 
 
@@ -369,6 +368,11 @@ in one of their deaths. The survivor, sticks around for a bit seeming utterly
 destroyed emotionally and mentally before finally either parting ways or
 killing themselves out of grief or regret or something. 
 
+Vecna knows his curse is breaking and knows of Rulid's treachery, but the curse
+is still in effect. So when the player and his brother finally confront each
+it is only by the commandment of Vecna that they fight. "My plan will be all
+for nothing if I come out on top in this fight!"
+
 
 Species: Humans, Elves, Dwarves, Kobolds, Goblins, Orks, Meanderthralls, Gremlins, Minions, Gargoyles, Chupacabra, Colossi, Hodag, 
 Indrid Colds, Mothmen, Irrwartzi, Letiche, Melonheads, Brineies, Piazas, Rowgarous,
@@ -442,7 +446,8 @@ Pigmy Krakens, Sphinxen, Cerberi, Thestrals, Yetis, Animagi, blibbering humdinge
 Capricorns, Crumple-horned Snorkack, Hydras, Bugbears, Gorgons, Mummies, Mumphs, Wraxpurts, 
 Dragon Turtle Preemies, Dragon Turtle Bairns, Dragon Turtle Juveniles, Young Dragon Turtle, 
 Adult Dragon Turtle, Elder Dragon Turtle, Ancient Dragon Turtle, Lion Turtle, Beholders, 
-Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials, Animated Armor, Flying Carpets,
+Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials,
+Maiar, Valar, Ainur, Animated Armor, Flying Carpets,
 Cyclops, Death Knights, Balrogs, Wargs, Nazgul, Wraiths, Great Eagles, Maneses, Lemures,
 Dopplegangers, Shadowdragons, Air Elementals, Earth Elementals, Fire Elementals, Water Elementals,
 Plant Elementals, Thunder Elementals, Ettins, Fairy Dragons, Green Hags, Black Hags, Wood Hags, 
@@ -529,19 +534,22 @@ Oroboros are just as ancient as Wyrms and typically take on the role of
 guardian spirits or lesser deities throughout the universe. They are capable of
 cohesive thought and speach by their adulthood but simply lack the pyisiology
 to do so and so use their magic to convey ideas. Oroboros are very often Good
-in allignment but some have become corrupted and Evil. 
+in allignment but some have become corrupted and Evil.
 All types of dragons, if they have magical capability usually only weild
 illusory magic but gain the ability to shapeshift into cretures whose language
 they have learned to speak. Dragons thay have achieved this are usually
 considered the pinacle of draconic life and power some even being considered
-lesser deities. 
+lesser deities.
 
+Maiar: White skin, Brightly colored eyes, no wings.
 Angels: Luminous skin, white eyes, 2 wings.
-Archangels: Bright skin, glowing white eyes, 2 wings. 
+Archangels: Bright skin, glowing white eyes, 2 wings.
 Kokaubim: Dazzling skin, shining white eyes, 2 wings, halo.
 Cherubim: Blinding skin, 4 brilliantly shining eyes, 4 wings, halo.
-Seraphim: surrounded by blinding light, 6 brilliantly shining eyes, 6 wings, crowned halo. 
-Primordials: true form ???, 
+Seraphim: surrounded by blinding light, 6 brilliantly shining eyes, 6 wings, crowned halo.
+Ainur: transparent skin, faint white eyes, 0-10 wings.
+Valar: corporial Ainur.
+Primordials: true form ???. 
 
 plot layer 1: 
 pass

@@ -190,9 +190,9 @@ class Boss:
             return random.choice(targets)
         else:
             return None
-        
+
     def is_alive(self):
-        return self.hp > 0 and self.phases > 0
+        return self.hp > 0 or self.phases > 0
 
 
 # ----------- Bosses
@@ -238,10 +238,11 @@ class BossTest(Boss):
         else:
             dprint(f'{self.name} looks a little tired after its last attack.')
 
-    def next_phase(self, player):
+    def next_phase(self, player, dialogues:list):
         if self.phases > 0:
             self.phases -= 1
             self.hp = self.maxhp
+            dialogues.pop()
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
 
@@ -294,8 +295,8 @@ class Kosaur(Boss):
     def bite(self, player):
         can_use = random.randint(1,3) in [2, 3]
         if can_use:
-            strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + 2
-            weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1)
+            strong_damage = self.atk + random.randint(1, self.atk + 1) + 2
+            weak_damage = self.atk - random.randint(0, 1)
             if random.random() < self.acu + self.acu_mod:
                 player.hp -= strong_damage
                 dprint(f'{self.title} attacks with it\'s massive jaws!')
@@ -317,10 +318,11 @@ class Kosaur(Boss):
         else:
             dprint(f'{self.name} looks a little tired after its last attack.')
         
-    def next_phase(self, player):
+    def next_phase(self, player, dialogues:list):
         if self.phases > 0:
             self.phases -= 1
             self.hp = self.maxhp
+            dialogues.pop()
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
 
@@ -798,7 +800,7 @@ def init_enemies():
     post_pod_nepenth = Nepenth('Pod Nepenth', 21, 1, 14, 3, .5, 0, 17, [1], (400, 11, 300, 2))
     flower_nepenth = Nepenth('flower nepenth', 32, 2, 18, 3, .75, 0, 14, [1], (400, 11, 300, 2))
     red_worm = Worm('red worm', 35, 1, 14, 3, .40, 0, 28, [1], (250, 3, 70, 18))
-    kosaur = Kosaur('Kosaur', 60, 5, 300, 3, .7, 3, 20, [1], (900, 80, 1200, 5))
+    kosaur = Kosaur('Kosaur', 144, 6, 300, 3, .75, 3, 21, [1], (900, 80, 1200, 5))
     big_nepenth = Nepenth('big nepenth', 35, 2, 19, 3, .7, 0, 19, [1], (350, 12, 300, 2))
     sappent = Plant('sappent', 37, 2, 19, 3, .95, 0, 25, [1], (600, 14, 360, 10))
     ruin_kobold = Koboldoid('ruin kobold', 38, 3, 20, 3, .7, 4, 20, [1,3], (600, 10, 600, 4))
@@ -813,7 +815,7 @@ def init_enemies():
     flying_kobold = Koboldoid('flying kobold', 47, 3, 25, 4, .5, 4, 9, [1], (850, 14, 480, 2))
     ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 67, 4, 26, 5, .75, 6, 14, [1], (600, 10, 720, 3))
     # ac: (dist or def, size ratio, actual speed, balance)    (rail_size600px, hit_dc10px, speed480fps, chances10i)
-    illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 9, 60, 5, .9, 15, 20, [1], (900, 18, 840, 6))
+    illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 11, 1000, 5, .9, 15, 20, [1], (980, 18, 840, 6))
 
     black_worm = Worm('black worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (210, 5, 90, 16))
     bronze_worm = Worm('bronze worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (200, 6, 100, 15))

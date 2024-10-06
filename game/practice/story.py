@@ -2768,7 +2768,7 @@ the king of the canyon.
     def ch_19(self): # Kosaur boss fight, Spring 35th, 3044, 6th age
         mon_list = self.config_monsters({'Kosaur':1})
         self.six_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.six_encounter0())
+        player_lives = self.battle.boss(mon_list=mon_list, dialog=self.six_encounter0(), boss_dialog=[self.nineteen_boss0()])
         if player_lives:
             self.six_victory0()
             self.story_reward()
@@ -2776,7 +2776,7 @@ the king of the canyon.
         else:
             return False
 
-    def nineteen_intro(self): # 
+    def nineteen_intro(self): # Approach
         dprint(
             f'''
 You wake, fully rested and ready to go now for the first time since before the
@@ -2797,7 +2797,7 @@ wall, crouched low, both eyes fixed on the collosal creature digging and
 scratching at the dirt fewer than a hundred steps away, steps for you anyway,
 maybe three or four steps for it. 
 You edge closer and closer farther and farther along the wall, hoping beyond
-hope that it just never spots you, knowing that those odds are very slim. There
+hope that it just never spots you, knowing that those odds were very slim. There
 are no trees in this part of the canyon, little undergrowth or large rocks to
 hide behind, just you and the wall you hope you can blend into enough. That and
 a river you hope can continue to mask your careful steps. 
@@ -2806,7 +2806,7 @@ air and apparently imediately notices something.
 '''
         )
 
-    def nineteen_encounter0(self): # 
+    def nineteen_encounter0(self): # first boss intro! we have to defeat it!
         dprint(
             f'''
 Just the act of it turning directly towards you made it seem twice its normally
@@ -2819,16 +2819,82 @@ You draw your sword, and you both spring into action!
 '''
         , .045)
 
-    def nineteen_victory0(self): #
+    def nineteen_boss0(self): # boss dialog test
         dprint(
             f'''
+The towering monster reels back in pain, deep wounds from your blade etched
+into its stony hide forever. But it isn't over. As it regains its composure,
+you see a new flame ignite in its forward facing eyes. You are no longer prey.
+Now it just wants you dead. Thinking this is your chance to make your escape,
+you dart back along the wall of the canyon, but a deranged look flashes across
+the Monster's eyes and it launches after you again!
+'''
+        )
 
+    def nineteen_victory0(self): # Thanks editor
+        dprint(
+            f'''
+You stagger back, gasping for air, your heart pounding in your chest like a war
+drum. The canyon walls loom around you, trapping the sound of your labored
+breaths. Before you, the Monster a hulking, dinosaur that seemed indomitable—
+collapses to the ground like a toppeling of a great stone tower. Its massive,
+reptilian body lies still on the canyon floor and across the river, large
+enough to dam the river running through it. You can hardly believe it.
+For what feels like an eternity, you just stand there, blood-soaked and
+trembling, the sword in your hand hanging by the last thread of strength you
+didn't know you still had. Your arms ache from the weight of every swing,
+every desperate attempt to fend off its crushing jaws. You didn't come here to
+fight this thing, you didn't want to, but it left you no choice.
+You were trying to escape, to just get past it, but this monster, this...
+Kosaur, as you call it because of its crossed apearance of a Kobold and a
+dinosaur, was relentless. No matter how fast you ran, how cleverly you dodged,
+it was always there, forcing you back into battle. Every roar, every lunge,
+made you feel like you were one mistake away from death. And yet, against the
+odds, here you were, standing over its broken form.
+In the stillness that follows the battle, the canyon seems eerily quiet, as
+though even the wind itself is holding its breath. You can hear the faint echo
+of your ragged breathing, but nothing else. No more monstrous growls. No more
+thundering footsteps.
+With what little strength you have left, you drag yourself back to the rocky
+walls, pressing your back against them for support. Your legs feel like they
+might give out at any moment, but for now, you have a chance to catch your
+breath. The path ahead lies open now, clear of the terror that stood in your
+way. The thought of your siblings, of Luxkhanna's camp just beyond the next
+ridge, flickers in your mind.
+You aren't done yet.
+For now, for this brief moment, you allow yourself to breathe. You allow
+yourself to feel the small, hollow victory of survival. Because despite
+everything that's been taken from you, despite the loss of Suphia, your abducted
+siblings and doubtlessly countless others, despite the exhaustion clawing at
+your bones—you're still here.
+With a job still to do.
 '''
         )
 
 
-    def ch_20(self):
-        pass # kosaur boss recovery
+    def ch_20(self): # kosaur boss recovery; Spring 35th-4Xth, 3044, 6th age
+        mon_list0 = self.config_monsters({'small kobold':3})
+        mon_list1 = self.config_monsters({'ruin kobold':1})
+        mon_list2 = self.config_monsters({'treent':1, 'ruin kobold':1, 'kobold soldier':3, 'small kobold':1})
+        self.fifteen_intro()
+        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.fifteen_encounter0(), collective=True)
+        if player_lives:
+            self.fifteen_victory0()
+            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fifteen_encounter1(), collective=False)
+            if player_lives:
+                self.fifteen_victory1()
+                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.fifteen_encounter2(), collective=False)
+                if player_lives:
+                    self.fifteen_victory2()
+                    self.story_reward()
+                    self.story_prep(location='1-4')
+                    return True
+                else: 
+                    return False
+            else:
+                return False
+        else:
+            return False
 
     def twenty_intro(self): #
         dprint(
@@ -2927,8 +2993,8 @@ You draw your sword, and you both spring into action!
         )
 
 
-    def ch_24(self):
-        pass # infiltrate, encounter with Illfang
+    def ch_24(self): # infiltrate, encounter with Illfang, (overtook bandit stronghold, attacked )
+        pass
 
     def twenty_four_intro(self): #
         dprint(
