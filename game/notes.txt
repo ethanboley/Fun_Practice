@@ -35,7 +35,6 @@ beta 0.2.0
 
 
 commit notes: 
-implemented save and load feature, minor battle adjustments, market fixes, added monstrosity goblinoid and astral, added monsters, revamped player init, ch20-25, adjusted world loop.
 
 
 
