@@ -149,6 +149,11 @@ class Inventory():
     def __init__(self):
         self.contents = {} # {item:count}
 
+    def get_count(self, item):
+        for i, c in self.contents.items():
+            if item == i:
+                return c
+
     def add_item(self, item):
         if item in self.contents.keys():
             if self.contents[item] >= 10:
@@ -164,6 +169,13 @@ class Inventory():
                 self.contents.pop(item)
             else:
                 self.contents[item] -= 1
+    
+    def add_item_by_name(self, items, i_name, count=1):
+        for i in items:
+            if i.name == i_name:
+                while count != 0:
+                    self.add_item(i)
+                    count -= 1
 
 
 # 0 is sword skills, 1 is spells (stands), 2 is martial arts (sumo, hamon, sao ma skills)
@@ -277,8 +289,9 @@ def init_skills():
 
 def init_spalls():
     punch = Spall('punch', 2, 1, 1, 1, 1)
+    flurry_of_blows = Spall()
 
-    spalls = [punch]
+    spalls = [punch, flurry_of_blows]
 
     return spalls
 

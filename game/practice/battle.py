@@ -110,7 +110,7 @@ class Battle:
             
             seconds += 1
 
-    def story(self, mon_list:list, dialog=None, collective=False):
+    def story(self, mon_list:list, dialog=None, collective=False, surprise=False):
         to_use_mons = []
         for mon in mon_list:
             to_use_mons.append(mon)
@@ -144,7 +144,12 @@ class Battle:
             # handle the rounds
             if seconds % 20 == 1:
                 round_num += 1
-                dprint(f'Round {round_num}, FIGHT! ')
+                dprint(f'Round {round_num}, FIGHT!')
+
+            if surprise:
+                dprint('Surprise attack!')
+                self.handle_fighter_turn(self.active_player.agi)
+                surprise = False
 
             # handle the player's turn
             self.handle_fighter_turn(seconds)
@@ -173,9 +178,11 @@ class Battle:
                 if mon.has_phases:
                     for i in range(len(self.battle_options) - 1):
                         print(f'{i + 1}: {self.battle_options[i]}')
+                    break
                 else:
                     for i in range(len(self.battle_options)):
                         print(f'{i + 1}: {self.battle_options[i]}')
+                    break
             option = input()
 
             if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:

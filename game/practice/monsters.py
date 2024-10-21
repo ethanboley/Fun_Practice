@@ -731,6 +731,98 @@ class Tarusoid(Enemy): # world 2 (cows)
                 print(drop.name)
                 player.inventory.add_item(drop)
 
+class Monstrosity(Enemy):
+    def __init__(self, name, hp, atk, xp, level, accuracy, col, agi, world, ac):
+        super().__init__(name, hp, atk, xp, level, accuracy, col, agi, world, ac)
+        self.possible_drops = [drop for drop in drops if drop.name in
+                               ['scale hide', 'animal hide', 'carapas', 
+                                'thicc tendon','monster tooth', 'impish wings', 
+                                'return soul stone']]
+    
+    def create_loot_table(self):
+        drop_list = [] # define returnable list
+        if self.level > 0 and random.randint(0, 10) > self.possible_drops[0].rarity:
+            drop_list.append(self.possible_drops[0])
+            drop_list.append(self.possible_drops[1])
+            drop_list.append(self.possible_drops[2])
+            if self.level > 3 and random.randint(0, 10) > self.possible_drops[3].rarity:
+                drop_list.append(self.possible_drops[3])
+                if self.level > 20 and random.randint(0, 10) > self.possible_drops[4].rarity:
+                    drop_list.append(self.possible_drops[4])
+                    if self.level > 30 and random.randint(0, 10) > self.possible_drops[5].rarity:
+                        drop_list.append(self.possible_drops[5])
+                        if self.level > 95 and random.randint(0, 10) > self.possible_drops[6].rarity:
+                            drop_list.append(self.possible_drops[6])
+        return drop_list
+    
+    def drop(self, player):
+        dropses = self.create_loot_table()
+        if not len(dropses) == 0:
+            dprint(f'{player.name} got the following items')
+            for drop in dropses:
+                print(drop.name)
+                player.inventory.add_item(drop)
+
+
+class Goblinoid(Enemy):
+    def __init__(self, name, hp, atk, xp, level, accuracy, col, agi, world, ac):
+        super().__init__(name, hp, atk, xp, level, accuracy, col, agi, world, ac)
+        self.possible_drops = [drop for drop in drops if drop.name in
+                               ['dagger', 'goblin coin', 'onix stone', 
+                                'emerald','ruby', 'crystalite', 
+                                'life potion']]
+    
+    def create_loot_table(self):
+        drop_list = [] # define returnable list
+        if self.level > 0 and random.randint(0, 10) > self.possible_drops[0].rarity:
+            drop_list.append(self.possible_drops[0])
+            if self.level > 12 and random.randint(0, 10) > self.possible_drops[1].rarity:
+                drop_list.append(self.possible_drops[1])
+                drop_list.append(self.possible_drops[2])
+                if self.level > 16 and random.randint(0, 10) > self.possible_drops[4].rarity:
+                    drop_list.append(self.possible_drops[3])
+                    drop_list.append(self.possible_drops[4])
+                    if self.level > 21 and random.randint(0, 10) > self.possible_drops[5].rarity:
+                        drop_list.append(self.possible_drops[5])
+                        if self.level > 28 and random.randint(0, 10) > self.possible_drops[6].rarity:
+                            drop_list.append(self.possible_drops[6])
+        return drop_list
+    
+    def drop(self, player):
+        dropses = self.create_loot_table()
+        if not len(dropses) == 0:
+            dprint(f'{player.name} got the following items')
+            for drop in dropses:
+                print(drop.name)
+                player.inventory.add_item(drop)
+
+
+class Astral(Enemy):
+    def __init__(self, name, hp, atk, xp, level, accuracy, col, agi, world, ac):
+        super().__init__(name, hp, atk, xp, level, accuracy, col, agi, world, ac)
+        self.possible_drops = [drop for drop in drops if drop.name in
+                               ['droplet of villi', 'ectoplasm', 'astral shroud', 
+                                'spirit lantern']]
+    
+    def create_loot_table(self):
+        drop_list = [] # define returnable list
+        if self.level > 4 and random.randint(0, 10) > self.possible_drops[1].rarity:
+            drop_list.append(self.possible_drops[1])
+            if self.level > 92 and random.randint(0, 10) > self.possible_drops[2].rarity:
+                drop_list.append(self.possible_drops[2])
+                drop_list.append(self.possible_drops[3])
+        elif self.level > 4 and random.randint(0,7) > self.possible_drops[0].rarity:
+            drop_list.append(self.possible_drops[0])
+        return drop_list
+    
+    def drop(self, player):
+        dropses = self.create_loot_table()
+        if not len(dropses) == 0:
+            dprint(f'{player.name} got the following items')
+            for drop in dropses:
+                print(drop.name)
+                player.inventory.add_item(drop)
+
 
 # ---------------------------------------------------------------------------------------
 
@@ -769,6 +861,104 @@ def init_doctors():
                 dr_jerry_do, dr_dan_md, dr_russ, dr_the]
 
     return doc_list
+
+'''
+A note on monster initialization:
+Enemies of all kinds vary in stats but follow a few consistent themes.
+According to the lore, the line between monsters and creatures is rather fine.
+Monsterism is a sort of essence that imbues itself within either creatures or
+raw matterial.
+Technically, anything with any amount of this essence is classified as a
+monster but the more one has the more monsterous it becomes. What monsterism
+does to a creature or a substance is that it grants it with or increases its
+intelligence. This is not universal intelligence, only the necessary
+intelligence that would make the monster more evil. For example, Slimes are
+purely monsters formed out of liquid embued with monster essence, they are
+litterally animated liquids that desire nothing but death and destruction
+(granted they're not very good at it).
+Nepenths and other plant monsters are ordinary plants embued with monster
+essence making them nothing more than animated plants that desire death and
+distruction. Creature monsters are a little different because they have, asside
+from monster essence increasing their evilness, they also have their own
+intelligence, their own desire and their own physical needs (until those needs
+are not met and they become an animated corpse, an undead monster). This makes
+them a little more capable of retreat from a fight they know they cannot win.
+Lore asside, the point is that there is a scale of monsterism inside each
+enemy that ranges from 0 to 100 percent monsterism concentration. This scale is
+the main determiner for their general stats. The closer the enemy is to 100
+percent the greater the ratio between attack and hit point max is upon
+initialization. Take this hypothetical example given below:
+example100 = Enemy('example 100%', 100, 5, ...)
+example0 = Enemy('example 0%', 50, 10, ...)
+As you can see above, the enemy with 0% monster essence flowing through them
+has an Hp:Atk ratio of about 5:1 while the enemy with the full 100%
+concentration has a Hp:Atk ratio of around 20:1. This is because of a
+blessing/curse granted upon all those with monster essence within them.
+The more they have the more Hit points they have but the less attack power they
+have per level.
+There are two other main determiners of monster stats. Enemy level and the
+build/shape/size of the mosnter. The level is actually calculated last after
+everything else while the build/shape/size of the mosnter is calculated after
+the monster essence bit to tweak those values. Here are a few more examples to
+help demonstrate these effects:
+stock100 = Enemy('regular monster with 100%', 100, 5, xp, lv, acu=.7, agi=20, ...)
+fast100 = Enemy('regular but fast with 100%', 100, 4, xp, lv, acu=.65, agi=16, ...)
+hardy100 = Enemy('regular but tanky with 100%', 150, 6, xp, lv, acu=.6, agi=24, ...)
+sharp100 = Enemy('reg but sharp shot with 100%', 100, 4, xp, lv, acu=.9, agi=20, ...)
+maxdps100 = Enemy('reg but high dps with 100%', 100, 3, xp, lv, acu=.65, agi=10, ...)
+As you can see the enemies above are all about the same strength but have their
+base stats modified by certain factors like the monster's actual speed, actual
+accuracy, the actual hardness of their body's exterior, etc.
+Lastly, the final level is calculated based on their stats after all those
+things have been done. However, level is also used to initallize the base stats
+as well. The examples where the hp was 100 and the attack was 5 represented an
+average level 5 monster with 100% monster essence concentration.
+The initial values passed to it are the monster essence and the desired level,
+if during the later stat tweaks, the stats push the monster to what would
+resemble a higher leveled monster than desired, then, all stats, prioritizing
+hp and attack are increased or decreased until again, the monster resembles that
+of the desired level.
+Case:
+We want a giant beatle insect type monster. First we pass in the desired
+level (we will say level 4 for this case) and also the number from 1 to 100
+representing the ammount of monsterism concentrated within said monster in this
+case we know that the beatle is also a kind of creature with inteligence of its
+own so we will say it has a middle ground concentration of 50% and a ratio of
+about 10:1.
+These initial calculations bring us to a monster with the following stats:
+giant_rhino_beatle = Insect('giant rhino beatle', hp=60, atk=6, xp, lv=4, acu=.7, agi=20, ...)
+Now we will adjust the monster stats based on what we know about the creature.
+We know that an insect is typically quick but a beatle is more tanky than
+quick. Furthermore, we know that beatles can be clumsy in their attacks. We can
+take this information and adjust the stats like so:
+giant_rhino_beatle = Insect('giant rhino beatle', hp=80, atk=4, xp, lv=?, acu=.55, agi=18, ...)
+these adjustments seem to have slightly reduced the monster's over all power
+level to nearly below the desired level of 4; therefore, we will increase hp
+and/or attack to meet the required level with more accuracy as follows:
+giant_rhino_beatle = Insect('giant rhino beatle', hp=86, atk=5, xp, lv=4, acu=.55, agi=18, ...)
+This monster now reflects the desired level in its stats accomplished by
+increasing the onster's hp and significaltly increasing its attack power.
+The final step is to calculate the ammount of xp the player will recieve upon
+defeating this monster. To do this we will look at the power level again and
+estimate a value within a given range per level, that will be a fitting reward.
+Higher powered level 4 monsters will grant more xp than lower powered level 4
+monsters.
+The first few ranges are calculated below but they are typically slightly
+overlapping and increasing range sizes. We can see from our example monster
+that the adjusted values left the final monster slightly more powerful within
+the level 4 range giving us an xp value above the median value of 25, maybe
+something like 29. Now that we have all stats accounted for, we can initailize
+the monster as follows:
+giant_rhino_beatle = Insect('giant rhino beatle', 86, 5, 29, 4, .55, 18, ...)
+note: The two remaining stats after the agi value (18) that are dotted out are
+unimportant to these calculations and represent the worlds this particular
+enemy appears in and the values to use for the attack minigame when
+initiallized during a battle.
+Xp ranges per level:
+1:{1x10}, 2:{6x16}, 3:{12x24}, 4:{18x32}, 5:{25x40}, 6:{35x50}, 7{48x64},
+8:{62x80}, 9:{76x96}, 10:{95x120}, 11:{118x144}, 12:{142x170}, 13:{164x196}, 
+14:{195x230}, 15:{228x272}, 16:{270x320}, ...
+'''
 
 def init_enemies():
     test_boss = BossTest('test_boss', 12, 2, 600, 1, .6, 20, 24, [1], (750, 50, 120, 5))
@@ -817,9 +1007,29 @@ def init_enemies():
     # ac: (dist or def, size ratio, actual speed, balance)    (rail_size600px, hit_dc10px, speed480fps, chances10i)
     illfang = Enemy('Illfang the Kobold Lord (Boss)', 140, 11, 1000, 5, .9, 15, 20, [1], (980, 18, 840, 6))
 
+    jackelope = Beast('jackelope', 9, 1, 8, 2, .8, 0, 12, [1], (600, 7, 200, 10))
+    borogrove = Beast('borogrove', 30, 3, 20, 3, .7, 1, 22, [1,2,3], (600, 16, 255, 10))
+    silver_fish = Insect('silverfish', 8, 2, 5, 1, .6, 0, 20, [1,3,4,9], (500, 5, 180, 16))
+    moamwrath = Monstrosity('moamwrath', 99, 7, 34, 6, .666, 0, 17, [1,2,3,5], (720, 22, 720, 22))
+    bryllyg = Monstrosity('bryllyg', 37, 5, 22, 4, .9, 1, 20, [1], (600, 18, 200, 10))
+    slythy_tove = Monstrosity('slythy tove', 66, 4, 26, 5, .7, 0, 20, [1], (600, 14, 190, 10))
+    borogove = Monstrosity('borogove', 41, 4, 26, 4, .62, 0, 17, [1], (800, 14, 118, 10))
+    marzeedote = Beast('marzeedote', 40, 3, 20, 4, .75, 0, 20, [1], (600, 14, 200, 6))
+    doezeedote = Beast('doezeedote', 80, 9, 55, 6, .81, 0, 19, [1], (500, 18, 210, 8))
+    little_amzedivie = Monstrosity('little amzedivie', 164, 24, 119, 9, .675, 0, 20, [1], (600, 9, 125, 11))
+    kiddleydivie = Monstrosity('kiddleydivie', 70, 5, 30, 5, .7, 0, 20, [1], (100, 8, 100, 8))
+    woodenchew = Construct('woodenchew', 12, 12, 12, 3, .65, 1, 12, [1,2], (300, 5, 70, 9))
+    condemned_goblin = Goblinoid('condemned goblin', 50, 6, 23, 5, .74, 0, 17, [1], (700, 9, 194, 4))
+    goblin = Goblinoid('goblin', 50, 4, 19, 5, .7, 8, 20, [1,2,3], (600, 12, 160, 10))
+    goblin_king = Goblinoid('goblin king', 100, 8, 32, 7, .88, 0, 26, [1], (500, 13, 180, 5))
+    shinigami = Astral('shinigami', 44, 3, 17, 4, .595, 0, 14, [1,6,8,9,10], (995, 10, 205, 2))
+    large_cave_slime = Slime('large cave slime', 26, 6, 26, 4, .775, 0, 25, [1,2], (800, 16, 400, 20))
+    owlbear = Beast('owlbear', 32, 3, 16, 4, .685, 1, 18, [1,2], (750, 20, 300, 12))
+    irrawrtzus = Beastoid('irrawrtzus', 55, 4, 35, 6, .89, 5, 20, [2,3,4,6], (800, 12, 700, 6))
+
     black_worm = Worm('black worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (210, 5, 90, 16))
     bronze_worm = Worm('bronze worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (200, 6, 100, 15))
-    white_worm = Worm('white worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (185, 6, 120, 14))
+    white_worm = Worm('snow worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (185, 6, 120, 14))
     yellow_worm = Worm('yellow worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (175, 7, 145, 13))
     fall_worm = Worm('fall worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (160, 7, 160, 12))
     blood_worm = Worm('blood worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (145, 8, 180, 11))
@@ -834,7 +1044,7 @@ def init_enemies():
     giant_blue_worm = Worm('giant blue worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (445, 18, 480, 5))
     giant_black_worm = Worm('giant black worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (460, 19, 500, 4))
     giant_bronze_worm = Worm('giant bronze worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (480, 20, 520, 4))
-    giant_white_worm = Worm('giant white worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (500, 21, 540, 4))
+    giant_white_worm = Worm('giant snow worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (500, 21, 540, 4))
     giant_yellow_worm = Worm('giant yellow worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (520, 22, 560, 3))
     giant_fall_worm = Worm('giant fall worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (540, 23, 580, 3))
     giant_blood_worm = Worm('giant blood worm', 54, 1, 19, 4, .55, 0, 28, [1,2], (560, 24, 600, 3))
@@ -852,7 +1062,7 @@ def init_enemies():
                 post_pod_nepenth, flower_nepenth, red_worm, kosaur, big_nepenth, sappent, 
                 ruin_kobold, sly_srewman, human_bandit, kobold_chief, blue_worm, black_worm, 
                 treent, ruin_kobold_trooper, bark_golem, skeleton, flying_kobold, 
-                ruin_kobold_sentinel, illfang]
+                ruin_kobold_sentinel, illfang, jackelope, borogrove, silver_fish]
 
     return mon_list
 

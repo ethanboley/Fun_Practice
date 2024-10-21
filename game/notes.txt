@@ -24,7 +24,8 @@ dev 0.0.29 (actions teamates)
 dev 0.0.30 (action timing meter)
 dev 0.0.31 (meter implementation)
 dev 0.0.35 (little bit o everything)
-dev 0.0.36 (little big changes) current
+dev 0.0.36 (little big changes)
+dev 0.0.37 (save) current
 ...
 alpha 0.1.0 
 ...
@@ -34,7 +35,7 @@ beta 0.2.0
 
 
 commit notes: 
-fixed boss and boss battle, finished ch19, minor lore adjustments. 
+implemented save and load feature, minor battle adjustments, market fixes, added monstrosity goblinoid and astral, added monsters, revamped player init, ch20-25, adjusted world loop.
 
 
 
@@ -101,6 +102,9 @@ LOCATION DICTIONARY:
 1-5: old stone tower
 1-6: Nepenth woods
 1-7: Kosaur's canyon
+1-8: under the Amn mountains
+1-9: south kobold territory
+1.10: south kobold stronghold
 
 : Greentown
 0: Pompon
@@ -279,7 +283,7 @@ final level difference of 408,142,456,660
 
 
 story notes: 
-A letter to the content assistent: 
+A letter to the content assistant:
 A game I'm developing has 20 worlds each with 33 chapters to play through (so 
 far I've only created about 8 chapters in the first book). The player starts 
 after being woken by their younger brother from a mysterious and sudden 
@@ -354,14 +358,14 @@ How about a chapter where the player character steps into a setting outside the
 genre like the maw of aperture science or the Inside or something.
 
 While the player is among the planes, they will meet a pair who seem like a
-young maried couple who are actually on an eons long quest to kill each other. 
+young married couple who are actually on an eons long quest to kill each other. 
 The are immortal to each others attacks, tricks and traps that would cause them
 harm but they are not invulnerable to the attacks of outside sources. They
 don't necessarily hate each other but each has certain outside motivations to
 kill the other. They have been together for many years and they travel the
 planes in search of an object, location, condition or a combination of those
 things that would allow one to kill the other. Over the course of the player
-knowing them, the two grow closer for realsies, not just pretend. Near the end
+knowing them, the two grow closer for realizes, not just pretend. Near the end
 of the book, the conditions are met and a moment very similar to the ending of
 little nightmares 2 takes place but with a lit more regret involved, resulting
 in one of their deaths. The survivor, sticks around for a bit seeming utterly
@@ -373,10 +377,165 @@ is still in effect. So when the player and his brother finally confront each
 it is only by the commandment of Vecna that they fight. "My plan will be all
 for nothing if I come out on top in this fight!"
 
+In the beginning there was the god of the worlds, he, using the two elements of
+all existence, created his spirit children, called by the first born the
+Archlhos, many of which would one day become the primordials. The Archlhos and
+their father conversed together, discussing the ideas, the plans, the potential
+future that the all father had in store for what would become, his creation.
+One of the Archlhos, the first born of the all father, agreed to all of his
+father's plans eagerly and volunteered to oversee the developement, course, an
+fullfillment of all the creations of his father. The second born, however,
+dissagreed with the plans the all father had in store for his creation. Due to
+the second born's ignorance, he proposed plans for the worlds that seemed much
+simpler in the eyes of an Archlho like himself. Plans that would accomplish his
+father's designs much faster than his own all knowing father's original plan
+would have been. Due to the other children and their similarly limited
+knowledge, these plans were accepted by many, while all others chose to trust
+their father's original plans.
+The second born seeing that he had amassed a following amongst his siblings
+similar in size to that of his own father, grew proud and overconfident,
+boasting that he would rise to be greater even than his own father and creator.
+This open rebellion resulted in himself, as well as all those that followed him
+rather than trust the plans of their father, to be stripped of their power and
+thrust with the dust into Lho, the void where the dust of creation resided.
+The second born is cast into Lho or the void to be mixed and mingled, scrambled
+and organized with the rest of the dust. He thus baceme lower than the lowest
+Archlho. Having risen so high and fallen suddenly so low, his whole being was
+filled from that moment with hatred and spite.
+Meanwhile, the greatest sixteen of the Archlhos came with the second born not
+to be as lowly as the dust but to take dust to their forms, reborn as the
+first primordails. The greatest of these, being the first born of the all
+father became know as the Elder Primordial, chosen to oversee all that would
+befall the creation.
+So, under the direction of their father and following his remembered plans for
+the creation, the original primordials, known later as the origins, began to
+spin and weave their father's universe into being. As their initial creations
+began to clash, new worlds were created until finally, all things were finished
+and set into motion with the organization of the race of the firstborn. These
+firstborn quickly began to weave creations of their own and so the primordials
+began steadily to take back seats to view the glorious unfoldings of their
+father's worlds. But an unforseen darkness began to spread among the firstborn
+and more especially among the living species created by the firstborn.
+During this creation period, the second born of the all father, who had not
+been completely destroyed, hanging onto life through pure hatred and spite,
+began with what little power he had, to weave for himself a form, desiring that
+he could be himself like a primordial.
+By the time this strange unbidden evil began to manifest among the firstborn,
+his form was complete, but it was dark and corrupt reflecting perfectly the
+corrupt spirit within. This new form he had assumed, combined with the absorbed
+spirits of many of his followers (who were similarly cast into Lho), allowed
+the second born to gain great power, enough even to exceed that of his original
+strength, power and influence which he had as an Archlhos. But in his time
+wollowing, he had also grown subtle and cunning. Rather than come out again in
+open rebellion, he secretly planted his own spite and malice into the hearts of
+many of the firstborn, who, over time began to spread it to their creations,
+and, like a plague, evil of unknown origin began to surge throughout all of
+creation. 
+It was at this time, and with that background info, that {player} is granted a
+sacred vision wherein the all father himself came down, and, with the Elder
+Primordial, confronted the second born. The vision is short and broken but
+consists of the conversation between the all father an his second born son. 
+"What have you been doing in this world?"
+"I have been doing that which you forced me to do."
+"And, what would that be, my son?"
+"Do not call me that! You cast me here to be as low as the very dust your
+children formed! I have been granting wisdom to the inteligences of the worlds.
+Wisdom regarding the foolishness of your creations, and their need to be
+destroyed! I and my followers, your so called children, will continue to do
+this thing as long as this Lho will stand to bear the stain of your creation!"
+"From hense, I will place an inate draw to good and the preservaition of these
+created worlds into all the inteligences of the worlds. Those who you do not
+have power over will be given strength and a desire to oppose you."
+"This makes little difference! With that very desire for strength, I and those
+who follow me will take the treasures of your worlds, and with gold and with
+silver we will buy up armies and navies, tyrants who opress and
+monsters who destroy! 
+AND I WILL REIGN WITH BLOOD AND HORROR UPON ALL CREATION!!!"
+"Depart."
+". . . My son, be at peace, let these things be so. You, your fallen brother,
+and all will see that my works cannot be done away or altered in the least
+degree. . ."
+A this moment the vision blurrs, fades and closes.
+Just in case {player} didn't understand, the vision is elaborated upon and
+explained revealing that {final boss guy} is infact the rebellious second born
+son of the god of the worlds. His motivation is that same ancient spite and
+hatred that spawned because of ignorance and misplaced pride which seeded
+rebellion.
+
+The shape of the universe:
+Picture the worlds in a vertical list like so: 
+[
+    the astral veil,
+    Elysium,
+    elemental chaos,
+    water/ice,
+    air/mist,
+    the ethereal veil,
+    the feywild,
+    material veil,
+    the material world (Idumea, Orth, Rth, Earth, the world) including the {underdark, deepdark, depths, down-under, deep},
+    material veil,
+    the shadowfell,
+    the ethereal veil,
+    earth/dust,
+    fire/volcanic,
+    elemental chaos,
+    Avernus,
+    The astral veil, 
+]
+Now bend the top of the list downwards and the bottom of the list upwards until
+they nearly meet in the middle with only room for one more world. At the
+connection point of the ring of worlds lies the nowhere. Now that this ring is
+completed, strech the worlds of elemental chaos and further inwards towards the
+mateial plane into layered rings aroung the material plane. Next, add two
+further worlds, Primus and Pandemonium to the outside of the ring around the
+material plane. These two worlds also loop around and connect to the world of
+the nowhere. The nowhere is very similar to the material plane in almost every
+way accept that it is exactly its opposite in every way. The reflects the
+mechanical clockwork order of it's neighboring world of Primus while holding
+fast to the utter chaos of its other closest neighbor Pandemonium. The strong
+hold of the astral veil protects it mostly from the effects of heavenly Elysium
+and hellish Avernus but as a side effect, the deathly astral energy of that
+same protection leaks into the world instead. One final feature of this worlds
+is that it and the material plane are the only places which can transport you
+to the non-world void of Lho. Lho is the space in between the structure of the
+worlds. It is a place of yet unorganized dust. This world is where the final
+boss fight will take place inside teh heretofore unaccessed void palace of
+{final boss guy}.
+If you were to picture this world mapping on the globe; The material world
+would lie right on the north pole. A ring of only a few miles surrounding the
+pole would be the material veil. Subsequent rings representing the feywild
+(towards Russia) and the shadowfell (towards Canada); the ethereal world
+(surrounding both again); the elemental planes (from east to west) water,
+earth, fire, air, would extend nearly into alaska and siberia; and finally
+elemental chaos the would extend all the way to the edge of the arctic circle.
+From there, 4 thin bands would extend. First, connecting to elemental chaos at
+about mid finland where air and water had connected in the phudo elemental
+planes of both mist and ice, would be Elysium. Second, extending exactly one
+quarter of the way westward across the globe starting at about the ocean
+between sothern greenland and northeastern canada, where also the elemental
+planes of water and earth met forming the psudo elemental planes of both clay
+and mud, would be Pandemonium. Third, beginning exactly on the other side of
+the globe as Elysium at about mid-central alaska, where the elemental worlds of
+earth and fire met to form the psudo elemental worlds of dust and magma, would
+be the world of Avernus. Fourth and lastly, continuing exactly one quarter of
+the way eastward around the globe from the world of Elysium at about mid to
+eastern Russia where also farther north, the elemental planes of air and fire
+met to form the psudo elemental worlds of lightning and ash, would be the world
+of Primus. 
+These four bands would extend all the way down to the deep continental
+Antarctica, where they would all connect to a thick several hundred mile wide
+ring where the astral world would be. Finally, at the south pole, would be the
+world of the nowhere.
+The space occupying the mantle and core of the globe would be where Lho would
+be, and, if we wanted to be really technical and nitty, outer space would be
+where the beginning happened, where all father organized the Archlhos and the
+war in heaven occured.
+
 
 Species: Humans, Elves, Dwarves, Kobolds, Goblins, Orks, Meanderthralls, Gremlins, Minions, Gargoyles, Chupacabra, Colossi, Hodag, 
 Indrid Colds, Mothmen, Irrwartzi, Letiche, Melonheads, Brineies, Piazas, Rowgarous,
-Simbi, Snallygaster, Snipes, Tailypos, Wendigos, Basilisks, Dragons, Centaurs,
+Simbi, Snallygaster, Snipes, Tailypos, Wendigos, Basilisks, Dragons, Centaurs, shinigami,
 Chimeras, Vampires, Dwarves, Coacatrices, Lycanthropes, Ghouls, Griffin, Goblins,
 Hydras, Golems, Manticores, Cypactli, Sprites, Hags, Melusines, Grims, Satyrs,
 Scrats, Tarands, Yuxa, Elementals, Gnomes, Nymphs, Sylphs, Pygmies, Salamanders, 
@@ -447,7 +606,7 @@ Capricorns, Crumple-horned Snorkack, Hydras, Bugbears, Gorgons, Mummies, Mumphs,
 Dragon Turtle Preemies, Dragon Turtle Bairns, Dragon Turtle Juveniles, Young Dragon Turtle, 
 Adult Dragon Turtle, Elder Dragon Turtle, Ancient Dragon Turtle, Lion Turtle, Beholders, 
 Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials,
-Maiar, Valar, Ainur, Animated Armor, Flying Carpets,
+Maiar, Valar, Ainur, Animated Armor, Flying Carpets, Lemon Heads, 
 Cyclops, Death Knights, Balrogs, Wargs, Nazgul, Wraiths, Great Eagles, Maneses, Lemures,
 Dopplegangers, Shadowdragons, Air Elementals, Earth Elementals, Fire Elementals, Water Elementals,
 Plant Elementals, Thunder Elementals, Ettins, Fairy Dragons, Green Hags, Black Hags, Wood Hags, 
@@ -609,7 +768,7 @@ book 1:
     player spots Luxkhanna again roaming around in the night and player follows. 
     Luxkhanna kneels before a large enshrowded Kobold.
 25: the Luxkhanna and Illfang converse about secret plans to attack from a 
-    norther base in several days. player is discovered and chased out without 
+    northern base in several days. player is discovered and chased out without
     Robin.
 26: player breaks through the canyon again kobolds still in hot pursuit. After a 
     while they leave and player continues in haste to Greentown. 

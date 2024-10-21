@@ -165,7 +165,7 @@ class BookOne:
         if player_lives:
             self.zero_victory()
             self.story_reward()
-            self.story_prep(location='1-0')
+            self.story_prep(location='1-1')
             return True
         else:
             return False
@@ -358,7 +358,7 @@ class BookOne:
         dprint('ware, but you drink the remaining life potions your mother left')
         dprint('for you and you feel much better heading home. You have a few')
         dprint('close encounters with an awakened shrub or two but nothing to')
-        dprint('bad and soon enough the sun sets completely and just in time')
+        dprint('bad and soon enough the sun sets completely. Just in time')
         dprint('you cross the gate into town. Another minute later you catch a')
         dprint('glimpse of your mother Annabell, pacing up and down on the')
         dprint('darkened porch of your home. After a warm embrace and a quick')
@@ -2010,7 +2010,7 @@ treent with you to face the kobolds instead.
             if player_lives:
                 self.sixteen_victory1()
                 self.story_reward()
-                self.story_prep(location='1-5', name='To the wall')
+                self.story_prep(location='1-4', name='To the wall')
                 return True
             else:
                 return False
@@ -2633,12 +2633,12 @@ knowing full well what will most definitely befall them should they do so.
 
     def ch_18(self): # scouting the Kosaur's lair, Spring 32nd-34rd, 3044, 6th age
         mon_list = self.config_monsters({'bandit':1})
-        self.six_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.six_encounter0())
+        self.eighteen_intro()
+        player_lives = self.battle.story(mon_list=mon_list, dialog=self.eighteen_encounter0())
         if player_lives:
-            self.six_victory0()
+            self.eighteen_victory0()
             self.story_reward()
-            self.story_prep(location='1-6', name='Into the canyon')
+            self.story_prep(location='1-7', name='Into the canyon')
             return True
         else:
             return False
@@ -2767,11 +2767,12 @@ the king of the canyon.
 
     def ch_19(self): # Kosaur boss fight, Spring 35th, 3044, 6th age
         mon_list = self.config_monsters({'Kosaur':1})
-        self.six_intro()
-        player_lives = self.battle.boss(mon_list=mon_list, dialog=self.six_encounter0(), boss_dialog=[self.nineteen_boss0()])
+        self.nineteen_intro()
+        player_lives = self.battle.boss(mon_list=mon_list, dialog=self.nineteen_encounter0(), boss_dialog=[self.nineteen_boss0()])
         if player_lives:
-            self.six_victory0()
+            self.nineteen_victory0()
             self.story_reward()
+            self.story_prep(location='1-7', name='through the canyon')
             return True
         else:
             return False
@@ -2872,22 +2873,22 @@ With a job still to do.
         )
 
 
-    def ch_20(self): # kosaur boss recovery; Spring 35th-4Xth, 3044, 6th age
-        mon_list0 = self.config_monsters({'small kobold':3})
-        mon_list1 = self.config_monsters({'ruin kobold':1})
-        mon_list2 = self.config_monsters({'treent':1, 'ruin kobold':1, 'kobold soldier':3, 'small kobold':1})
-        self.fifteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.fifteen_encounter0(), collective=True)
+    def ch_20(self): # kosaur boss recovery; Spring 35th-42nd, 3044, 6th age
+        mon_list0 = self.config_monsters({'red worm':1, 'silverfish':1, 'borogrove':1})
+        mon_list1 = self.config_monsters({'bryllyg':1, 'jackelope':1, 'sly shrewman':1})
+        mon_list2 = self.config_monsters({'marzeedote':3})
+        self.twenty_intro()
+        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
         if player_lives:
-            self.fifteen_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fifteen_encounter1(), collective=False)
+            self.twenty_victory0()
+            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=False)
             if player_lives:
-                self.fifteen_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.fifteen_encounter2(), collective=False)
+                self.twenty_victory1()
+                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
                 if player_lives:
-                    self.fifteen_victory2()
+                    self.twenty_victory2()
                     self.story_reward()
-                    self.story_prep(location='1-4')
+                    self.story_prep(location='1-8', name='continue')
                     return True
                 else: 
                     return False
@@ -2896,151 +2897,1502 @@ With a job still to do.
         else:
             return False
 
-    def twenty_intro(self): #
+    def twenty_intro(self): # word spreads fast
+        dprint(
+            f'''
+Whether it was the birds or the winds themselves, over the next few days, word
+seems to spread throughout the wilderness that the Scourge of the Kobold Canyon
+is no more. At first it was a surprise to you to see life hopping among
+the trees near by. But soon after another, and another, it became quite clear
+that the Kosaur had occupied a major choke point in the wilderness that was
+clearly disturbing the natural ballance of the area.
+'''
+        )
+
+    def twenty_encounter0(self): # slowing down
+        dprint(
+            f'''
+By now, at the close of the fourth day following your defeat of the Kosaur, 
+Monsters and beasts of all kinds were veritably swarming through the canyon in
+both directions causing your pace to slow significantly. It became necessary to
+find hard to reach nooks, hollows, caves and shelves along the confining canyon
+to set up each camp for the night. Tonight you think you've found just one such
+perfect place inside a large cavity obscured in part by a steady trickling of
+mountain run-off. 
+Unsurprisingly, you are forced to clear out your competitors first.
+'''
+        )
+
+    def twenty_victory0(self): # purpose
+        dprint(
+            f'''
+Upon settling in for the night, you doze quickly, more force of habbit now than
+anything and you dream restlessly of dark towers and deep caves; of monsters
+and unnamed creatures of the depths. None of these frighten you much like they
+did not long ago, what scares you is their threat to your comfort and
+livelihood as well as the lives of those you loved and cared for. 
+You wish none of this had ever happened and you wanted to find whoever made
+these things so and at the very least ask them why before teaching them all the
+lessons you have been forced to learn thus far.
+'''
+        )
+
+    def twenty_encounter1(self): # aw man 2wice in a row!
+        dprint(
+            '''
+Your thoughts are interrupted, as you are woken with a sharp pain in your
+abdomen. For the second night in a row, you are found and attacked by night-
+crawling monsters.
+'''
+        )
+    
+    def twenty_victory1(self): # another day another fight
+        dprint(
+            '''
+You manage to get some rest after the fight but what seems far too soon, you're
+again woken by the morning light and the sound of motion nearby.
+Momentarily, you find yourself back out in the canyon sneeking after what might
+be your breakfast in a small herd of wild boars.
+'''
+        )
+
+    def twenty_encounter2(self): # MARZEDOTES! HAHA!
+        dprint(
+            '''
+Just then a herd of something else charges in from the opposite direction,
+scattering the boars and at least a few coming after your hiding place. You
+recognize these beasts, though you've never seen one before. They looked like
+large fat zebras without front legs and talons instead of hooves. 
+Marzeedotes.
+Having only heard stories of these creatures, you didn't know what to expect,
+but you ready yourself for the fight anyway.
+'''
+        )
+    
+    def twenty_victory2(self): # oh shoot thats not good
+        dprint(
+            '''
+Now, finding the area cleared of monsters and beasts, you move on again as
+slowly as ever, frustrated to think that at this rate, you may still find
+yourself in this canyon for another three or even four days more. 
+You try to pick up the pace but each time you do without fail, another fight
+takes place and you simply cannot affort to continue exhasting your energy like
+this especially considering your sleep schedule, which, for the fifth night in
+a row yields little true rest. 
+On the evening of the seventh day, you are stirred from your approaching
+slumber yet again, this time not by mindless monsters or wild animals but by
+the sounds of distant raised voices in the midst of what sounded like a battle.
+The voices sounded like that of kobolds but there was something else mixed in
+with the high grating kobold tones. Something deeper, almost human. 
+Eager for the first asurances of being on the right path for the first time in
+what feels now like weeks, you slide out of your hole and sneek your way closer
+to the fray a good 500 feet farther down the canyon. Once there, you see the
+group. They appear to have just won a battle against a couple wargs, a fight
+you're glad you didn't have yourself.
+To your surprise, though, you see only kobolds. And then you remember, the
+giant kobolds from before. What you thought sounded almost like human speech
+was actualy just them.
+Another surprise, they were speaking common and with little accent. Counting
+your fortunes, and making sure to stay hidden, you listen.
+"Yeah, I think the capper was right. There are too many of these little
+bleeders suddenly comin out o'th'mountains." spoke one of the big ones. 
+"Yeah! I thik, we bay dot fide Belby wer we left it!" whinned on of the regular
+kobolds in the back who apparantly had a bloody nose or something.
+"Ah shut up!" bellowed the first, "Don't you go round takin credit for things
+we Ruin Kobolds do for yeh little runts! Ehh if I had my way, I'd see you all-"
+"Enough," interrupted an even deeper voiced Ruin Kobold just behind, "Be
+careful what you say. If Luxkhanna hears you said some like that..."
+"Mhhhh, well still,"
+*smack* 
+*eep*
+"Know your place runt!"
+They began to move again. You shrank deeper into the shadows of the bushes,
+sure to stay out of sight.
+"You may have a point though, I doubted ol' Kluffoot when he was thinkin that
+Belby had run off or even died but this is just gettin ludicr-what was that?"
+You heard it too, it sounded like a small boulder had been pushed over the
+opposite cliff edge and shattered against the canyon floor. 
+Moments later, there came another, and then another. 
+"There! Goblins!" shouted the last Ruin kobold in the very back of the group. 
+With their recognization, there came from the goblins several high screeches
+from atop the cliff and several dozen small but lanky dark masses began
+scuttling straight down the vertical cliff edge towards the bottom each
+accompanied by a pair of radiant green beads if light for their eyes.
+The high cackling and screaching of the goblins filled the canyon, echoing from
+edge to edge. 
+You back slowly, from the scene, knowing that by this point, most sounds you
+make will be drowned in the cocophony but also fully aware that everything in
+the area, except for you, can see clearly in the dark.
+*bong*
+All goes black.
+'''
+        )
+
+
+    def ch_21(self): # following the trail pt 3, Spring 44th, 3044, 6th age, variant chapter.
+        mon_list0 = self.config_monsters({'kobold chief':1, 'ruin kobold trooper':1, 'ruin kobold':1, 'condemned goblin':1})
+        mon_list1 = self.config_monsters({'goblin':3})
+        mon_list2 = self.config_monsters({'goblin king':1})
+        self.twenty_intro()
+        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        if player_lives:
+            self.twenty_victory0()
+            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=False)
+            if player_lives:
+                alt = self.twenty_victory1()
+                if alt == None:
+                    pass
+                else:
+                    return False
+                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                if player_lives:
+                    self.twenty_victory2()
+                    self.story_reward()
+                    self.story_prep(location='1-8', name='escape')
+                    return True
+                else: 
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def twenty_one_intro(self): # can you believe it... this is the short one
+        dprint(
+            f'''
+You wake. The first thing you notice are the lights of a strange combination of
+fire and liminant stone casting yellows and greens simultaneously across the
+scene. The second thing you notice is a dull pain in the top of you're head,
+you were clearly hit hard in the head by something. Then you remember. There
+were goblins coming into the canyon. You were about to make your escape but
+then you must have recieved a well coordinated sneakstrike because thats all
+you remember and now you're here. You make to stand and quickly make your third
+observation. Your elbow now hurts just as badly as your head. You were bound
+and so your attempt to stand resulted in a sort of wobble and flop ending in
+most of your body weight landing onto your now very bruised elbow.
+Biting your gag hard out of pain, you, observe more of your surroundings. You
+see that you're in a sort of giant basket woven out of reeds and carved tree
+branches suspended above, well, nothing as far down as you could see through
+the bottom of your prison, you could not make out any bottom. You are relieved
+as you look up to see rather sturdy by comparison supports holding you to the
+ceiling.
+A few moments pass before you make another, more careful attempt to stand,
+sliding upwards along the side of your box. Upon doing so, you make your next
+observation. There was a goblin nearby, sleeping hither to your motion to stand,
+who started awake and scurried off without hessitation. 
+Another minute or so passes in silence during which time, you look around and
+struggle at your bindings managing only to minorly loosen your wrists before
+you hear the sounds of goblins approaching from the apparent only entrance. 
+Moments later, you find your cage being opened by the front of five goblins
+including the one who had left. 
+After a few moments, the surprisingly strong goblins for their size, begin
+literally dragging your bound form through the stone halls requiring great
+effort not to aggrivate your sore skull. After what seems like miles, the
+procession comes to a halt and your gag as well as several other binding are
+roughly removed leaving only your wrists and ankles. Before you can do anything
+however, you captures lean your body over the edge of a dark pit supported by
+nothing but your wrist bindings.
+You know your protests will not be heard or even understood by the goblins but
+you make known your discomfort either way. Sure enough, the goblins just laugh
+at what they hear to be simply worried jibberish before cutting the line. . . 
+'''
+        )
+
+    def twenty_one_encounter0(self): # A very strategic battle
+        dprint(
+            f'''
+Fortunately the fall is not as far as you thought, only about twenty feet but
+still, with your legs still bound, it became very difficult to avoid damage
+alltogether. As you scramble to losen your sore ankles, a portion of the far
+wall seems to dizolve away revealing a stone passageway beyond. With the
+opening of the passageway comes the unmistakable cocophony of an excited goblin
+crowd. 
+Your bindings come loose well enough and your feet appear uninjured enough to
+function properly. With that in mind and no other place to go. You make your
+way steadily into what is surely some kind of arena. You are unarmed and
+underprepared, but you know you have to survive. Step after step, the sound
+grows louder until a light reaches your eyes beyond one final bend and you see
+the space before you.
+the arena is small and circular only about thirty or fourty feet across with
+openings similar to yours every several feet. As you enter the space, the
+volume of the goblin crowd increases drastically mixed with jeers, laughs,
+excited screeches and the like. 
+You appear to be the first party through their entrance and only wonder for a
+second or two what else might be coming before you begin scanning every inch of
+you perception for an escape. 
+The arena walls are little less than 20 feet tall ending in an iron railing and
+the packed stands which rise in steep tiers before finally coming to open
+stone passageways through which more goblins continue to come and go. The
+ceiling appears to be domed begining at about this point and from the ceiling
+hangs all the lighting for the chamber consisting of those green luminus
+stones. 
+Before you can scan much more of the area, another two participants enter from
+opposite entrances about five seconds appart from each other. Through the door
+on your left, enters three of the very same ruin kobolds you had see before you
+were knocked out (however long ago that was). From the right entrance staggers
+a single goblin quvering and cowering under the jeers and glares of it peers
+clearly under some kind of punishment.
+You and the other groups stare each other down for a few moments before several
+things happen. Iron portcullises materialize where each entrance was moments
+ago, another aperition at the center of the arena takes the form of a large
+wooden stand fully equipped with crude, goblin craft weapons of all sorts.
+Finally, the briefest thought crosses your mind that if none of the combatants
+ever grab the weapons no one needed to get hurt and you could all try to
+escape. Well, it really was a short lived thought because as soon as you
+thought this, both the goblin and the Kobolds made an instant break for the
+center weapons, leaving you in the dust and with a severe dissadvantage. 
+"Of course savages like kobolds and goblins woudn't think not to fight at the
+closest opportunity!" you think to yourself as you try to catch up. And now
+because of that moment's hessitation, your life really could be much more on
+the line than it already was.
+Before you can get anywhere close to the weapon stand, the kobolds appear to
+get there first grabbing weapons and slashing at the goblin and throwing the
+entire stand closer to their side of the arena giving them a massive advantage
+in both strength and numbers. The spectating goblins howl their approval at
+this one sided start to the battle.
+The goblin proves to exceed the kobolds in agility, however, as it quickly
+after dives past the defending ruin kobolds and just manages to snatch a
+viscious looking sickle from the scattered weapons. 
+Now it you were the only one unarmed. 
+"Tag e lum, ee pikik sha fah ou!" barks the largest of the ruin kobolds clearly
+having abandoned their common tongue for the time being. But it doesn't matter,
+the message is clear as the other two imediately turn towards you grinning
+menacingly and brandishing their weapons while the one that spoke engages the
+goblin. 
+You back slowly away back the way you came and a bit along the wall edging
+slightly closer towards the koblds section. You know agility and more often
+than not speed wise the kobolds have humans beat but if you can just catch them
+off guard with something, you might be able to snatch a weapon, and then you'll
+be in business. 
+Before you have time to edge much closer, the kobolds leap at you, full speed
+ahead, weapons forward.
+First things first, you need more to work with. You leap backwards and scan the
+area for anything. It was only a matter of time before the kobolds caught you
+and there was only a tiny chance you would be able to slip past them unscathed.
+With your mind in overdrive, your eyes fall upon the dueling pair across the
+arena and an idea strikes you. 
+Peeling off your course you make bee line for the battle. Unfortunately, your
+change of course comes too close to one of the ruin kobolds who slashed you
+across the back just within reach.
+'''
+        )
+        self.player.hp -= 4 if self.player.hp > 10 else 2
+        display_health(self.player)
+        dprint(
+            '''
+You continue forward through the pain having learned your lesson not to let
+something distract you in battle. 
+Within a few strides of the goblin, the kobold battling it sees you and lunges
+causing the goblin to leap back and to the side placing you within its line of
+sight as well. But a sneak attack wasn't your goal (allthough now that you
+think about it that may also have been a good plan). The goblin turns to defend
+itself from you and you dive to the side rolling behind it again but only after
+splaying your clearly unarmed hands int he goblin's view.
+It worked! The goblin was now completely surrounded, its original opponent, on
+one side and the other two kobolds beside him while you were behind. And now
+with the goblin aware that you were unarmed and therefore less of a threat, it
+did not turn back towards you but stayed essentially defending you from the
+kobolds for the time being.
+Now for the second part of your plan. 
+Focusing your attention on the kobold leader, you reach out your arms wide as
+if to say "is that all you got?" and at the exact same moment edging around the
+back of the goblin just enough so that all 3 kobolds and yourself were closer
+to one side of the goblin. 
+Edging this close earned you another swipe but it was worth the risk for the
+result. 
+'''
+        )
+        self.player.hp -= 4 if self.player.hp > 10 else 2
+        display_health(self.player)
+        dprint(
+            '''
+Your two kobold attackers and the taunted leader all bolt to one side
+of the goblin, the side closest to you. Upon seeiing this, you dash around the
+goblin at equal speed but not for long and you now finally have a perfect
+unobstructed path straight for the weapons.
+"AAAAAHHHHG, EOG YIE!" bellows the leader. 
+As you make a break for the thrown weapon stand the mildly relieved goblin
+takes a hearty swing at one of the other kobolds who turns to defend. It was
+just enough. Sliding in low, feet first just out of reach of the gaining
+kobold, you grip the unwrapped hilt of a short, crude, iron scimitar and rise
+to your feet finally ready to fight. 
+'''
+        )
+
+    def twenty_one_victory0(self): # Zoo goers' worst nightmare
+        dprint(
+            f'''
+Two kobolds lie dead in pools of orange blood, the goblin also leans against
+the far wall not dead but injured beyond continuing. The last ones left
+standing are you and the kobold leader who also seems to be on his last leg
+none the less. Your blades collide but this time it feel diffenent. Your sword
+seems to have hit its last leg too and it snaps right at the point of impact.
+'''
+        )
+        self.player.hp -= 2 if self.player.hp > 10 else 1
+        display_health(self.player)
+        dprint(
+            '''
+The bleeding ruin kobold stands over your collapsed body with a mixture of rage
+and satisfaction written across his face. You're by mo means unscathed but you,
+unlike the kobold, have strength to spare. Employing a move briefly taught you
+by Suphia, you sweep your heel across the kobolds ankles causing it not quite
+to fall but to reel just enough for you to get grab the only thing you can
+nearest to you, a line of rope.
+The kobold takes another swing now nothing but wrath on his face. The blade
+slices the end of rope you haphazardly threw his way while you crawl backwards
+away from your enemy.
+The momentary distraction bought you enought time to gain some ground and stand
+again on your feet. Your opponent charges after you again with a furious war
+cry. You scoop up a wooden shield along with your broken scimitar from the pile
+before turning to take the full force of the enranged ruin kobold leader.
+You leap vertically towards him with all the strength you can muster and as the
+kobold swings with what is surely all of his own, you reorient the shield to be
+directly between the kobolds blade and your feet. The kobolds considerable
+strength combined with your own blasts you upward. You leave the shield far
+below you and allow your body a half rotation and your feet to make contact
+with the upper half of the arena walls. One step, a jump and a full body
+extention, throwing with all your might is all you need to whip one end of the
+rope around the railing at the bottom of the goblin stands. You know you only
+have a split second before the nearest goblin cuts the line and even less time
+before the simple lash comes loose but a fraction of a second is all you need
+yank the line and bring yourself within arms reach of the railing. A surprised
+goblin spectator draws a dagger and makes a swipe at your hand as soon as you
+do so, but that was why you took the risk of re-aquiring your broken blade. You
+bring your opposite arm forward and block the swing just in time. 
+The expression on the goblins face instantly changes from surprised and gleeful
+to one of utmost terror as you pull yourself up, over the railing, out of the
+arena and into the midst of the scattering goblin spectators. 
+'''
+        )
+
+    def twenty_one_encounter1(self): # yikes a fight with a broken sword, weakened=True
+        dprint(
+            '''
+One final glace backwards reveals the kobold who aided your escape lying on its
+back staring emotionlessly at the distant ceiling. With you full attention on
+the pandemonium before you, your next objective becomes apparent. The best
+thing you've got to defend yourself is half of a crude old goblin scimitar. As
+a few goblins approach you to detain you again, You know this is going to be a
+tough fight. 
+'''
+        )
+        self.player.weakened = True
+
+    def twenty_one_victory1(self): # this..this is the long one, a little of everything, return
+        self.player.weakened = False
+        prompts = ('"And why on earth would I choose all them?!"',
+                   '"Is that supposed to be a fair choice?!"',
+                   '"I\'ll fight you!"',
+                   '"I\'ll fight everyone else!"',
+                   '"Neither!"')
+        dprint(
+            '''
+You've managed to stay strong through the battle and now at victory, you slide
+the best looking sword out from one of your fallen goblins hands. The fight
+isn't over yet. Even though you see the stands mostly cleared out by now, you
+know more powerful goblins are surely on their way.
+You run to and up the stairs towards the nearest exit three at a time and enter
+the hallway. The path before you is clear but that doesn't help, in fact it
+would almost be better at this time to get a feel for directions based on the
+flow of goblin traffic through these now deserted passages.
+So, you wend your way blindly, only aware of up and down as the winding,
+twisting, labyrinthine tunnels continue onward. Your best bet, you reason, is
+upwards towards what might be the surface from here. So you naturally stick to
+the right path unless one path very clearly heads farther upwards for longer
+in which case you go that way. After a while you realize another thing you are
+surprised to wish you had more of; dead ends. The tunnels rarely ever come to a
+full stop continually criss-crossing and connecting to small or larger chamber
+each with varying light levels, purposes and decor. Along your way you see
+several goblins but each time you do they are always in the very act of ducking
+out if sight or dissapearing in some other way. Its almost eery how adept they
+appear to be at simply vanishing on the spot. That is, until you realize that
+these goblins were likely born and raised in these tunnels and know them by
+heart.
+After nearly ten minutes of this, you get the sense they might just be watching
+you and laughing as you go in odd loops through what they might see as simple
+corridors. It was maddening imagining this going on forever, endless loops,
+pits, schutes, slides, chambers, and rooms. 
+You needed to stop. 
+You needed a breather. Just some time to think and get your bearings right.
+*skitter*
+You jerk your head to look behind you and see nothing. They're definitely out
+there, watching you. but now you needed to think and maybe exactly one goblin
+to ask directions. You're pretty sure you haven't seen anything twice so far so
+you're somewhat confident you haven't been going in circles, but you don't have
+a clue if you've been making any meaningful progress either. 
+*shuffle*
+You pause for another unfruitful glance behind you. 
+The passages have looked about the same the whole time with only little
+variation in decor and chizel paterns. Maybe you just needed to abandon your
+right path method and just go as straight as possible. But really, who knew how
+far into this mountain the goblins mined. You may starve to death before you
+find its end. 
+*chatter*
+. . .
+Really what you needed was company. Anything that might know these halls better
+than you did. And you knew they were nearby. 
+You sit downm, cross-legged and close your eyes. Listening for the goblins
+around you. 
+*jitter* *chuckle* *tap tap tap* *shuffle*
+Farther, farther, you needed to hear deeper into the endless caverns.
+*chatter* *tromp* *tromp*
+Through the halls you hear the sound of something heavier than a goblin, or
+maybe, yes it sounded like a bunch of goblins heading towards you. 
+Monents later, you realize that you don't even have to try very hard to hear
+this new heavy sound. You open your eyes and imediately see the faint but
+growing light of torches around two of the corners available to you.
+You wanted company but not this many! 
+You know that hiding here would be futile and so you make a brea for the third
+exit. The only one without approaching kobolds. The the next fork you see the
+light coming from all but one path yet again. 
+You count it fortunate that this is also the case at the next two forks but by
+the third you realize the odds of this happening this many times to be greater
+than coincidental. The goblins were leading you somewhere. They were backing
+you into corners knowing that you wouldn't be foolhardy enough to fight all of
+them at once.
+Bend after bend, fork after fork, chamber after chamber, this continues at
+varying paces for a few minutes before finally, the tunnel opens into a huge
+dark cavern. A cliff about twenty0 feet in prevents you from fleeing any
+further and you watch as the hoard files in behind you. Their bright green eyes
+shining in their torch light. After a few moments, about 500 goblins stand upon
+this same cliff edge with you keeping about three paces back, just staring.
+And then, one of the goblins at the edge hurls his torch into the abyss. The
+torch is caught by a hither to unseen hand at the other side of what you
+quickly deduce are mirroring cliff faces. The caught torch is lowered to a
+trough along the ground and the entire cavern is imediately iluminated by fire.
+In the light of the flames you see on the the other side of the cavern, a
+carven throne and a huge armored goblin sitting thereon with an unmistakable
+grin upon his face. 
+"You've caused quite a ruckus, little lum!" says the king in perfect common.
+"There have not been many who have escaped an arena of ours. You must be
+powerful! I desire to see your full strength for myself but unfortunately,
+you're belongings have already been melted down." At this moment the king turns
+to one of the even larger goblins to either side of him and speaks some command
+in gobbldeeguk. The goblin nods and sprints off at top speed while the kind
+gets off his throne and speaks again, adressing you.
+"This does not stay my desire, however," and as he nears the edge of the chasm,
+he hurls a drawn blade across to you. It was a two edged, straight, shorsword
+just like the one you carried before arriving here. Still crude and clearly
+goblin made but it was still clean and sharp and the goblin crowd behind you
+backs away another pace upon seeing it.
+"This should do in the stead of your own blade... Now, I give you a choice,
+fight all of my citezens with you right now, or, fight me!"
+The goblins around you began to slowly shuffle backwards and some in the back
+begin to panic as gates just like the portcullises in the arena materialize at
+each of the exits.
+'''
+        )
+        option = basic_player_prompt(prompts)
+        if option == 1:
+            dprint(
+                '''
+"Ah, of course, you wouldn't know! We goblins elect kings based on thier
+strength and skill in battle over all else. It would not be much of a threat to
+me if I fought all my subjects here right now. And I suppose I may have just
+swayed you in your desicion in saying that so I'll make it easy for you and
+choose option two in your stead."
+Several things happen at once. The portcullised vanish, the goblins begin to
+scatter, and the king, after winding up a bit, takes a running jump easily
+thirty feet across the entire chasm, landing ontop of one of his subjects,
+killing it.
+He stands and pulls his hammer from his back and straightens up revealing that
+he was about your height, huge for a goblin.
+'''
+            )
+        elif option == 2:
+            dprint(
+                '''
+The king pauses, briefly, grin even wider and chuckles before answering.
+"Yes it is."
+"Allow me to show you!"
+The king takes a few steps back before drawing his hammer from his back and
+leaping clear across the chasm right on top of one of his subjects which dies
+instantly. 
+'''
+            )
+        elif option == 3:
+            dprint(
+                '''
+"I was hoping you'd say that!" 
+The king takes a few steps back before drawing his hammer from his back and
+leaping clear across the chasm right on top of one of his subjects which dies
+instantly.
+'''
+            )
+        elif option == 4:
+            dprint(
+                '''
+"Hmm, interesting choice, still, You probably have a higher chance of surviving
+with that choice."
+The king sounds quite put out at your dicision but withdraws back to his throne
+none the less.
+After doing this he waves his hand dismissively and several hundred goblins
+move in to attack all at once.
+Not many are armed with more than little daggers but their sheer numbers grow
+almost imediately too great to defend against. You manage to swing at a few but
+its like throwing a hankerchief into a bucket of water.
+'''
+            )
+            self.player.hp -= 2
+            display_health(self.player)
+            self.player.hp -= 1
+            display_health(self.player)
+            dprint(
+                '''
+More and more swarm your increasingly helpless form, the jeers and cackles of a
+whole goblin civilization ringing in your ears
+'''
+            )
+            for _ in range(5):
+                if self.player.hp > 0:
+                    self.player.hp -= random.randint(1, 2)
+                    display_health(self.player)
+            dprint(
+                '''
+Through tiny gaps in the swarm and the blood in your eyes, you see the sad face
+of the gobblin king watching your distruction.
+'''
+            )
+            for _ in range(12):
+                if self.player.hp > 0:
+                    self.player.hp -= random.randint(1, 3)
+                    display_health(self.player)
+            dprint(
+                '''
+Your sword falls somewhere into the crowd as blades and fangs dig into your
+flesh. With the last bits of strength you posess, you bear your final apology
+to your mother, your siblings, and the others who were counting on you to bring
+justice to their enemies and salvation from further harm at their hands.
+'''
+            )
+            for _ in range(9):
+                if self.player.hp > 0:
+                    self.player.hp -= random.randint(1, 2)
+                    display_health(self.player)
+            dprint(
+                '''
+As your mind drifts away and your vision begins to fade, so does the pain,
+replaced only with regret and hope that someone greater and stronger than
+yourself can finish what you started.
+'''
+            )
+            for _ in range(15):
+                if self.player.hp > 0:
+                    self.player.hp -= random.randint(1, 4)
+                    display_health(self.player)
+            dprint(
+                '''
+Your life was over, you knew it and there was nothing you could do about it.
+No clever trick or quick thinking could help you escape. Your final thought
+before your mind vanished forever is of your life before the kobolds flipped it
+upside-down. You were greatful at least that you were able to enjoy life even
+if just for a little while.
+'''
+            )
+            while self.player.hp > 0:
+                self.player.hp -= 5
+                display_health(self.player)
+            return False
+        else:
+            dprint(
+                '''
+"Wrong answer!" Chuckled the king grinning wider than ever.
+"ROBGOC!" he bellowed.
+For the briefest moment you look up to see a huge iron something fall from the
+ceiling dropped by the servant he ordered earlier. 
+The next moment, you were dead.
+'''
+            )
+            return False
+    
+    def twenty_one_encounter2(self): # no way just 4 lines!
+        dprint(
+            '''
+"I trust you will give me a good fight?" said the king of the goblins as he
+takes a step towards you and the remaining goblins clear the area. 
+"I can't say you'll survive, but I may spare you if you can manage to do some
+decent damage to me. I'll be able to keep you as a training slave!"
+'''
+        )
+
+    def twenty_one_victory2(self): # YOU'LL NEVER CATCh me ali...
+        dprint(
+            '''
+"Alright, fine, thats enough! You have proven yourself useful to me. I have
+always been interested in the way you lum fight. That being one of the reasons
+I do not command my people to come down among your people and destroy them...
+PETOH, BOH, ki shagdash glim aiguka!"
+The two large guards of the king were back, having seemingly been ordered to
+help the king subdue you again.
+They charge in quickly and you defend yourself to the best of your ability, but
+not long after, you have your back against the edge of the chasm. Petoh, the
+one clesest to you tries to thrust a torch into your face. You manage to knock
+it out of his grip but loose your sword down the chasm as well. 
+With one eye on your enemies, you see out of your pereipheral vision, the light
+of the torch hit a fair sized lip less than sixty feet down before dropping out
+of sight. 
+You could survive 60 feet. If you had some level of cushioning...
+In a split second decision, you duck down narrowly avoiding the king's hammer
+and wrap both arms around the goblin Boh, before arching backwards sending both
+you and he over the chasm's edge. 
+Seconds later you hear a sickening crunch directly below you and you brace
+for impact. . . 
+'''
+        )
+
+
+    def ch_22(self): # following the trail pt 4, Spring 45th-47th, 3044, 6th age
+        mon_list0 = self.config_monsters({'shinigami':1})
+        mon_list1 = self.config_monsters({'large cave slime':3})
+        mon_list2 = self.config_monsters({'bark golem':1})
+        self.twenty_intro()
+        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        if player_lives:
+            self.twenty_victory0()
+            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=True)
+            if player_lives:
+                self.twenty_victory1()
+                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                if player_lives:
+                    self.twenty_victory2()
+                    self.story_reward()
+                    self.story_prep(location='1-9', name='to the camp')
+                    return True
+                else: 
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def twenty_two_intro(self): # recolection 1
+        dprint(
+            f'''
+*slam*
+Something broke, your sure of it. Everything hurts. The wind is knocked clean
+out of you. But you're alive. 
+Whats more, from this point you can see that the chasm begins to slope slightly
+forward, its not a lot but it may be enough to get farther out of the king and
+other goblin's reach. Your main priority right now is survival and the only way
+that is assured is getting away from the goblins. 
+As the king screams after you, and life and energy begins to reenter your body,
+you drag the crushed form of Boh and slide over the edge hoping and praying
+that the chasm would lead you somewhere with a soft landing and maybe from
+there, an escape and not just a dead end and certain death.
+You slide and drop deeper and deeper picking up speed you wish you had more
+control over. The rough, sometines jagged stone tears at your prison rags. The
+goblin you took with you has fallen far out of sight but before long, the chasm
+begins to level off and thin. In the pitch blackness you begin sliding slower
+and slower hitting foreign objects the subjects of likely centuries of
+discarded goblin things and likely goblins themselves too. After another minute
+of sliding, you are able to apply the breaks enough to be sure you won't take
+any significant damage. A the same time the width of the chasm is reduced to
+only a few feet wide and enclosing. 
+Finally, applying most of your remaining strength, you manage to brace your
+legs between what has now become the ceiling and the floor and you skid to a
+stop. 
+It's pitch black. Your eyes are not adjusting at all, but you really don't need
+them to. You know what you would see if they did. Without further hessitation
+you again begin sliding, much more controlled now, farther down the chasm.
+Every so often, when you hit a particularly easy spot to traverse, you move
+horrizontally closer to the unseen edge of the chasm. You have no idea how deep
+you are into the depths of the earth but you know even after that cave what
+seemes like years ago now, that this is the farthest down you've ever been. 
+Minutes, hours, maybe even days pass going deeper and deeper under the
+mountain, when, during one of your rare horrizontal movements, your hand meets
+a wall. You reach around briefly to be sure that you had found the edge and
+notice a general inward slope in the edge wall. 
+By this point the floor and ceiling were less than two feet appart on average
+and even tighter near the edge. While sticking to this side, its generous slope
+allows you to almost walk downwards. 
+Another long while passes of this when your forward foot hits nothing but thin
+air. It takes a lot of effort not to resume your wild careening down the chasm
+and stay steady on the admitedly less than solid ground. It takes you what
+seems like thirty minutes to figure out where the ground went. When you do
+you heart leaps. Feeling in the darkness you feel a clearly abnormal hole in the
+wall where you had been sliding. The hole quickly turnes into a tunnel and that
+tunnel quickly becomes more and more likely to be artificial. It was a much more
+controlled slope that spirals slowly downward in loose loops. 
+Eventually, the tunnel opened into a small, flat cavern and you saw a faint
+light for the first time since the goblins' lights. The light was bright and
+purple, a glow emenating from another off-shooting tunnel.
+As you approach the light, you feel a strange energy radiating from the
+entrance. Inside the tunnel the light becomes noticeably brighter and you hear
+a soft hum, like a thousand birds flapping their wings but quiet and distant. 
+You round the corner and see the source of the light. It was a large circular
+pool of unknown depth filled with a thick, opaque, bright purple, radiant
+liquid which churned and frothed unprompted in circular patterns around the
+pool. At the very center of the pool was a massive inverted pyramid with five
+sides which connected to the ceiling and decended to less than an inch above
+the surface. The closer the pyramid grew to the pool's surface, the more it
+radiated with the same bright purple hue as the stirring liquid and the more
+thick vein-like structures of this same color and radiance seemed to grow and
+twist around its sides.
+The sight was turely mezmorizing and before you knew it you found yourself
+crouching down at the edge of the pool admiring its contents. You realize this
+liquid may be dangerous and so you edge away but you can help your curiosity.
+You grab a convenient pebble, back to the exit incase the worst should happen
+and toss it in. 
+Nothing happens. Infact less than what you expected from a liquid happens. The
+pebble simply vanishes out of sight without any evidence either audibly or
+visually of disturbing the substance in any way. 
+You cast your eyes around for a larger stone and unable to find any, you
+briefly exit the chamber to find one from outside.
+You return and cast in the larger stone. 
+Again, nothing happens, the liquid is not disturbed in any way. Less even than
+a gas. You don't even hear the stone hit the bottom. . . 
+It coundn't just be an illusion, could it? you ask yourself, staring into its
+swirling surface. 
+You tear off a small peice of your goblin shoe and dangle it inches above the
+surface. You release, and, just like the inorganic material, nothing happens.
+There's a good chance its safe then, right? You reason. Surely your tests have
+proven so. 
+Should anything happen, you crouch low and far from the pool's edge and reach
+just a pinky forward towards the liquid.
+less than an inch away. You feel the distant hum, more inside you than around
+you. You take two deep breaths and, as lightly and minimally as possible, tap
+the surface.
+'''
+        )
+        input()
+        dprint(
+            f'''
+Everything goes dark. Tangibly thick smoke swirls around you. You jerk your arm
+back, having still felt nothing. You feel an odd shifting, like gravity tilting
+the wrong ways and then... The smoke, the cave, everything vanishes and reforms
+with a powerful rushing sound.
+But you're no longer where you were before. No longer crouching in some deep
+cave. You find yourself somewhere equally dark but somewhere that feels much
+more wide and open, outdoors maybe but theres no sun here nor stars or moon,
+just a soft dry breeze and dark shapes in the distance like crumbling mountains
+of obsidian. 
+You try to stand but recieve no respose. You have no control over your body.
+Your head turns on its own, your eyes blink on their own, you feel hair
+slightly longer than your own cover your forehead, you feel sore in all the
+wrong places. You feel clothing you did not have moments ago. 
+You are experiencing someone elses reality.
+The sounds of dust and silt sliding across stone in the breeze is interrupted
+by a soft but clear grunt made by the stone to your left. Last you knew, stones
+didn't grunt. Your heart rate spikes, finally something you feel would have
+happened to your own body. Your head turns just the slightest degree in the
+direction of the stone.
+"H-Hello?" came your voice. It was quiet, high-pitched and tmid, but clear,
+like a child, inocent and scared, but confident.
+You see what you thought was a boulder visibly freeze confirming your suspicion
+but a new sound meets your ears at your voice.
+*eep*
+It appeared, that both of the masses on either side of you were living
+creatures.
+'''
+        , speed=.045)
+
+    def twenty_two_encounter0(self): # guardian of the gate
+        dprint(
+            f'''
+Suddenly, a thick cloud of smoke, a rushing sound, and the sensation of falling
+all directions at once takes all of your senses far from the strange scene. The
+next thing you know, you land on your backside after having leaped backwards
+from the pool. Back to reality with the same old sores and wounds, clothes,
+environment and plights that come with it. 
+That was definitely the strangest thing you had ever experienced but you can't
+dwell on it. Something else is in the room with you now, rising from the pool
+taking the form of a tall ghostly human like figure with abnormally long limbs
+and nails. You back to the exit as it makes its full ascent, and as it turns
+its blank canvas of a face directly towards you, it screams a long rising,
+peircing, bone rattling scream. A long drawn out shriek that fills you with
+unearthly terror.
+'''
+        )
+
+    def twenty_two_victory0(self): # hurry up already
+        dprint(
+            f'''
+At the final strike, the aparition wails more high and terrible than ever
+before but only for a short period of time. The ghost simply faces you, unholy
+wrath written in its jerking twitching motions. It lunges once more before you
+can even react and its misty form glides straight through your chest. 
+Your entire body suddenly feels icy cold as if you has just fallen into a
+frozen lake. Instantly overcome with a fit of shivers, you do your best to look
+around you and see nothing. No sign of the ghost. You conclude only two
+possible options: either the ghost has vanished or it now resides in your own
+body. 
+You sit there quivering from head to toe for the better part of an hour before
+you decide that even if its just this freezing sensation, you have felt no more
+damage.
+You struggle to stand and upon doing so, you understandably find it very
+difficult to focus feeling this way. Dispite this you have no idea what to do
+about it, so, you grit your chattering teeth and do your best to ignore the
+cold. You scan your surroundings, you must have traveled a fair distance from
+the strange pool where the fight started and you had had that strange vision.
+In the dark you can begin to make out a few minor details about the cave you
+didn't recognize before. 
+Feeling your way in the darkness, shivering all the while, you find your way
+along the right hand wall of the cave tunnels. These ones are much less random
+seeming than your past experience. They come to much sooner dead ends than
+before allowing you to metally check off several tunnels over the hours of
+searching and feeling.
+'''
+        )
+    
+    def twenty_two_encounter1(self): # they come in L size
+        dprint(
+            f'''
+You find your way into one particular tunnel and a few steps in, your foot
+sinks into a pot of mud which you instantly feel begin to tear away at the
+flesh of your leg. Try as you might, you cannot remove it from the burning
+sludge. As you struggle, surrounded in ice and fire, both eating away at your
+body, mind and will, you plunge your blade into the puddle dangerously close
+your your submerged and melting foot. Upon doing so, you feel the slime
+physically slacken its grip on your flesh. In that instant you yank and most of
+your leg pulls free. You stab again and the puddle both releases your foot and
+bubbles up from the stony cave floor forming a large cave slime. At the same
+moment a few others pop out of the walls and various other places to attack.
+'''
+        )
+
+    def twenty_two_victory1(self): # Escape, Elysium
+        dprint(
+            f'''
+Minutes after the final slime exploded and the acid drained away, you were
+still gripping your burned leg shivering all the while. At last you again grit
+your teeth and stand bearing the pain and you listen for the sounds in the
+cave. You remember what you did in the goblin halls, straining your ears,
+blocking out all other senses, focusing with all your might for signals your
+ears pick up.
+Your eyes fly open, somewhere out there you hear a low moaning sound that you
+could only imagine being two things: the sound of strong air currents or
+vengeful spirits. Despite that you had already encountered one of those things
+and not the other. You make a hobbling, shivering break for the sound. 
+A left, another left, a difficult vertical climb and a right. One bend and fork
+after another, you hear the sound grow stronger and stronger before you finally
+enter a large cavern and feel a breeze. The air is cold and it seems to blow in
+a circular motion around this dark cavern. 
+Just before you finish your circuit around the cavern you pass a certain fork
+and are immediately thrown forward onto your hands and knees. An overpowering
+air current blasts out from a perpendicular opening on the cavern wall.
+You turn around and stagger forward doing you best not to be thrown backwards
+again while trying not to fall forward as well. 
+It takes you several minutes but you make it, crawling now, head first into the
+wind tunnel.
+What feels like hours later, the tunnel, the wind, the absolute complete
+darkness, all that had by now become familiar to you in the deep, comes to an
+end. This new cavern open before you swirls with wind similar to the last one 
+but this time you can see the source. At the far end and about fourty or fifty
+feet up the far wall, you see what is unmistakably daylight trickling in from
+somewhere soon after. 
+You drop you your bruised and cut knees, eyes forward, involuntarily and
+tearfully thanking open air for a view of the outside world which you start
+towards, beginning with a crawl and as meager strength begins to come back into
+your battered, torn, strained and starved body, that crawl becomes a staggering
+walk and then a weak jog by the time you reach the far wall. 
+Even after regaining some of your strength back, the lack of food and water in
+your metabolism causes you to take a long time to sieze enough fleeting energy
+to attempt the arduous climb up the the light.
+The greatest thing keeping you going through the pain and fatigue, was the near
+guarantee that you would be out of these caves soon and you're quest to rescue
+your siblings was not over. 
+It was these thoughts that propelled you up and over the wall, into the tunnel
+and through, all the way to the slim fissure leading to what seemed like a
+bright and sunny spring day outside. 
+It took a some work widening the crack and slithering through, but you managed
+it. Instantly the persistant albeit diminishing sensation of cold gripping your
+person ever since destroying that ghost at the edge of the supernatural pool,
+leaves you filling your body with a warmth and a comfort that made all other
+cares seem to fade away. You collapse flat on your back in the gravel. The sun
+beating down upon you, the warm dry breeze in your hair, the greens and blues
+of leaves a wide sky above you, you may as well have found yourself in the
+blessed fields of Elysium. 
+'''
+        )
+    
+    def twenty_two_encounter2(self): # golem number 1: bark.
+        dprint(
+            f'''
+Without setting up camp, or even getting up from where you lay, the sky slowly
+begins to darken until night arrives and the expanse above you fills with those
+familiar twinkling motes of light. 
+Before you drift to sleep lying in the rocks, your mind drifts for a moment and
+your mind's eye is filled with the strange experience you had had beside that
+strange pool deep under the mountain.
+Nothing like that had ever happened to you before, nor had you heard of
+something like that happeneing to anyone, even to people who were aquainted
+with magics and illusions and stuff of that nature. You had truly slipped into
+someone elses consciousness. Someone who was clearly not in a comfortable
+position. You empathized with them, whoever they were, wherever they were.
+Something like morbid curiosity gave you fleeting desires to see what would
+happen next but you also knew that whoever's life you were experiencing was or
+at least seemed nigh more painful and dangerous than yours was currently.
+You hoped the child was alright, and grew thankful again that at least you
+could see stars and the cresent moon above you.
+With those thoughts you drifted off to sleep. . .
+'''
+        )
+        dprint(
+            '''
+*crash*
+You wake suddenly and jump to your feet, imediately reminded that your legs are
+sore and wounded, and colapse again to the gravel which had partially been
+molded to your body while you slept. From the ground, you listen and scan your
+surroundings for what could have made the sound.
+Rather quickly, you hear and then see two masses moving about along the edge of
+the cliff you slept under. One of them is smaller and looks to be some kind of
+four legged mammal like a dog or a wolf but somehow different. The second looks
+almost like a small giant, it moves about on two legs and stands upright like
+that of a humanoid but it was as tall as some of the trees around it.
+Then you realize what made the crashing sound. The two seemed to ge fighting
+and the humanoid thing was attacking partially by picking up and throwing huge
+boulders at its foe. One such boulder missed the target and ended up soaring
+more than sixty feet colliding and shattering against the cliff wall about
+twenty feet from where you sat spying. For risk of becoming an involuntary
+target, you crouch walk closer to the fray for a better look at its
+participants. 
+Only about fourty or fifty feet away now, you can see what is clearly a
+direwolf saddled and armored fighting. . . actually you're still not quite
+certain up close what this thing is. It was tall, wide and humanoid like you
+had seen before but it's ody was composed of strips of bark that seemed to
+stick together and move on their own. 
+You move still closer, keeping and quiet and indetectable as possible. The
+growling of the direwold was clear in your ears and the strange bark creature
+was making no sounds as it fought. You could see its face, blank with two deep
+holes for eyes and a fixedly gaping pit for a mouth exposing no teeth nor
+anything but more bark inside. 
+The bark creature, landed a strong hit on the wolf which began to flee into
+the woods. The attacker did not persue, instead, it paused for a moment before
+turning slowly towards your hiding place and then barreling directly for you.
+'''
+        ,.0375)
+
+    def twenty_two_victory2(self): # heheh... yeah... were back baby!
+        dprint(
+            f'''
+The golem began to crumbe before your eyes leaving nothing more than a large
+pile of inanimate bark scraps. You were greatful that, despite your weakness
+you were able to fight as you normally would, doing so also made you acutely
+aware of what you felt was likely a fractured rib the result of your escape
+from the goblin king.
+You couldn't wait any more, though, during the fight you realized that the
+direwolf who was the pervious foe of the golem was tytpically used as a steed
+for Kobolds. Furthermore, that particular direwolf was laden with a saddle of
+sorts as well as wooden armor.
+Without a moment's hessitation save it be a little grimace from your wounds
+and soreness, you take off in the direction the direwolf had fled. The trees
+pass by you in blurrs surprising even yourself by your speed. It would seem
+that the memory and motivations of your main task had subconsciously reawakened.
+The discomfort around your body seemed to melt away as you ran and a smile, for
+the first time in what seemed like eons, grew upon your face.
+You were back. Not only that, but you were close, and sure enough after about
+five minutes, you see through the trees, smoke rising in the early blue glow
+coming up over the horrizon.
+'''
+        )
+
+
+    def ch_23(self): # spying out the kobold camp, Spring 47th-48th, 3044, 6th age
+        mon_list = self.config_monsters({'small kobold':1})
+        self.twenty_three_intro()
+        player_lives = self.battle.story(mon_list=mon_list, dialog=self.twenty_three_encounter0(), surprise=True)
+        if player_lives:
+            self.six_victory0()
+            self.story_reward()
+            self.story_prep(location='1-10', name='follow Luxkhanna')
+            return True
+        else:
+            return False
+
+    def twenty_three_intro(self): # infiltrating the stronghold
+        dprint(
+            f'''
+Peering through the trees near the top of a hill, you survey the area below
+you. About half an hour had passed since you left the crumbling pile of bark
+behind. From there you had mad your way towards what you had since sonfirmed to
+be the very kobold stronghold you had been looking for this entire journey thus
+far. Beginning at the bottom of the hill upon which you are perched, structures
+of stone and wood sprawl outward in a veritable city of kobolds before you all
+enclosed in a sturdy, well kept wall or large boulders and tree sized wooden
+pikes which remind you all to well of the wall you encountered before the
+nepenth wood. 
+You see little dots which you imagine to be kobold civilians and soldiers alike
+trapsing about between the various structures. You don't see too many, likely
+because of the early hour, but you know there will be a significant amount
+more as the day progresses.
+You wait and patrol, eventually, circling the entire stronghold for what
+becomes the rest of the day before you decide, you had found your ideal
+infiltration point and make your move.
+The sun sets quickly, darkening the south country and ushering in your moment.
+By this point in your adventure you are fully aware that the darkness will only
+inhibit your own perception but you chose the night time simply because you
+knew there would be fewer kobolds about at night. You dart from tree to tree
+about five hundred feet to the right of the eastern entrance. There, you set a
+candle's worth of fire amid some prepared kindling. As soon as you doo and you
+confirm that the kindling is well lit, you book it north, orienting your
+position closer to the front of the entrance. From there, you wait for the
+flames to catch the attention of the guard upon the wall. The distraction takes
+a bit but soon you see the outside patrol jogging towards the diversion. As
+soon as they pass, you make your move, crouching low but moving quickly out of
+the tree line and right up to the wall.
+This part was crucial, this was one of the only two entrances in the stronghold
+which was not equipped with a ground guard. You hope was that while the tower
+guard's eyes were focussed on the results of the patrol's findings, you would
+be able to slip through the gate unnoticed. Three factors were the main
+determiners of your success. 
+1: The tower guard had to keep their gaze upon the fire. 
+2: The patrol investigating the fire needed to investigate for sufficient time. 
+3: The eastern gate needed to be unguarded from the inside. 
+That last factor was the most risky, if there was a ground guard at that gate
+that was simply stationed on the inside. You were out of luck and would just
+have to run and hope you could find another way in. What made it worse was that
+you had no real way of knowing beforehand. It really was just a fifty percent
+chance once you made it to the gate. Furthermore, that was only if you made it
+that far.
+Sprinting along the wall, watching both your step and the workings of your
+distraction, you make it to the gate and peer around the corner. Inside, the
+gate passage way is empty of kobolds but a sharp corner prevented you from
+seeing far enough around the other side to make sure there was no guard. 
+You crouch down lower and creep ans silently and quickly as possible through
+the gate house. As you approach the end, you keep your eyes towards the far
+side so as to survey around that corner. You see a few merchant stalls and the
+backs of some stoneworked buildings. You take this to be a good omen, seeing no
+sign of what would obviously appear the be a guardhouse. This in mind you peer
+carefully around the corner and you instantly pull back, heart pounding. 
+Just inside, not ten feet away was a kobold sitting on a stool looking right at
+the entrance. 
+You were running out of time. 
+You didn't have to worry about the tower watch spotting you here but as soon as
+the patrol came back, you were in deep trouble.
+After a few moments you realize that, somehow, the kobold you saw hadn't made
+any noise. You had recieved no hale, heard no alert. And that much have meant
+that even though it was looking right at you, it hadn't seen you. But, you
+reason as you begin to hear marching kobolds approach from behind you, the only
+real way that can reasonably be possible with the kobold's darkvision would be
+if the kobold was asleep!
+Without peering a second time you round the corner and see the kobold you had
+seen before perfectly upright, but fast asleep. You count your fortune but
+don't stop there. The kobold patrol had just entered the gatehouse, you could
+hear at least five sets of kobold boots marching quickly across echoing
+cobblestones.
+There were no barrels or obstructions, you could use to hide yourself. A this
+rate your hessitation had gotten you into yet another fifty-fifty chance with
+now, even higher stakes. Your only option was to duck into the alleyway between
+the first two small stone buildings behind the sleeping kobold and hope that
+there was no kobold in ther as well or on the street beyond who would happen
+to look your way.
+'''
+        )
+
+    def twenty_three_encounter0(self): # assassin
+        dprint(
+            f'''
+You make your move quick and quiet as you had been all this time. This time,
+however, the kobold on the other side was awake with its back turned. Try as
+you might to enter the alley as silently and you could, the kobold still turns
+having heard your entrance.
+You brain works at hyper speed, scanning the area for anthing that you could
+do. The alley decended slightly ending in a short wall before exiting to the
+road beyond. This structure blocked most of the street's view of the alley and
+upon noticing this you knew what needed to be done, you couldn't afford any
+further hessitations.
+Time seemed to resume, and you saw the eyes of the kobold pop and air begin to
+collect in their lungs, you knew you only had one chance. . .
+'''
+        )
+
+    def twenty_three_victory0(self): # sneeeekiing, seen Luxkhanna
+        dprint(
+            f'''
+Quick, and silent, you take out the danger and carry the body to the darkest
+edge of the alley just as you hear the kobold patrol pass on the other side of
+the building. You take several silent deep breaths through your tattered goblin
+tunic and edge to the outside of the alley. 
+Seeing the coast clear, you again begin to creep your way along the inside of
+the stronghold wall, ducking into allies when passersy by approach. Soon you
+detect an opening from within one such alley and you use it to slip like a
+shadow across the street and into the greater interior. For here you are much
+more able to traverse undetected as the buildings, alleys, obstructions and
+convenient hiding places are much more common. 
+After nearly an hour, stalking the city, you see what might look like a town
+map right at the edge of an alley across the street. Your heart again began to
+race knowing that that map would likely show where the stronghold dungeon was
+located. You imagine that would be where they would be keeping the human
+prisoners, including your brother and sister. Now, it was no longer the risks
+and the danger increasing your heartrate, it was the thought that they were
+most likely here with you somewhere in the kobold stronghold. They were so
+close!
+You hold your position there for another several minutes before you find an
+opening. With the dark nightly street void of enemy eyes, you slip across right
+inside the alley. After a few more moments of listening just in case, you head
+to the alley entrance and take a look at the map.
+It's a crude depiction of vague streets and less than accurate building
+locations, but you do see five rather prominent land marks labeled in the
+common tongue: The "you are here" marker labeled out side of a shop you had
+passed two streets ago; "The North Gate" at the very far north of the
+stronghold; "The Keep" located near the southern end of the stronghold but
+still closer to the center; A large brown circular structure labeled "Anznag's
+Crater" taking up a large portion of the western stronghold; and, lastly, a
+slightly smaller structure labeled "War Dungeon."
+The marker was located about half way between the north gate and the keep. The
+inaccuracy of the "you are hear" marker showed that the map was off in places but
+even accounting for likely error, you were only five to ten minutes east of the
+keep now, which meant it was only a hop skip and a jump from there to the
+dungeon.
+You do your best to memorize the map and back again into the shadows. Edging
+your way closer and closer to the goal you had been seeking since the attack of
+greentown and the abduction of your little brother and sister.
+You look to your left and see the dark mass of what could only be the keep.
+Even from here it looked more like a dark stone palace than a keep, massive and
+looming in the darkness complete with towers, battlments and tattered banners
+the twisted heraldry of which you could not make out in tha darkness. 
+Another few minutes later you are stalking your way one street behind the main
+causway leading to the keep, when you see something through the alley that
+imediately catches your eye. A prosession of distinguished looking ruin kobolds
+surrounding and following what looked to be an open palankeen upon which
+lounged the largest, strongest, most distinguished looking ruin kobold you had
+ever seen before, far surpassing all the rest of the group.
+Making up your mind you decide to follow from alley to alley along side the
+prosession listening in on their conversation all the while. At your distance
+and position you can't hear much but you do make out one name as they address
+the royalty in the center.
+Luxkhanna.
+'''
+        )
+
+
+    def ch_24(self): # infiltrate, encounter with Illfang
+        mon_list = self.config_monsters({'owlbear':1,'kobold chief':1,'ruin kobold trooper':1,'ruin kobold':1,'kobold guard':1,'kobold soldier':1,'kobold slave':1,'small kobold':1})
+        self.twenty_four_intro()
+        player_lives = self.battle.story(mon_list=mon_list, dialog=self.twenty_four_encounter0(), collective=True)
+        if player_lives:
+            self.twenty_four_victory0()
+            self.story_reward()
+            return True
+        else:
+            return False
+
+    def twenty_four_intro(self): # Looooooooooooooorrrrrrrrre! 
+        dprint(
+            f'''
+You know this was a good move to follow the kobold leader you had heard so much
+about. Now that you were on him, you could find out where he stays and you
+might even have a chance to take him out before or after you rescue your
+siblings depending on how things went from here.
+You continue your persuit straining your ears for words the kobolds were
+speaking. You were unsure who's voice was who's but you were somewhat sure at
+this point that the voice of Luxkhanna was the mild tennor you could pick up
+the most frequently among the rest. Occasionally you could make out a few words
+in order. Thankfully, like most kobolds around here, they spoke common. 
+". . . And what of the human bandits, great capper? Ever since we destroyed
+th. . . "
+Each time their voices would fade you would slip out of the alley and move on
+to the next. Closer and closer each time to the keep. 
+". . . nothing. What comes out of that mountain is of little concern in the
+plans of the great. . ."
+Another alley closer.
+". . . have killed our war beast in that canyon, admittedly a great loss, but
+they will still pose no threat to us as we ma. . ."
+You were now only a few building's away from the front court yard of the keep.
+". . . es capper?"
+"We have arrived. No more questions. Leave."
+"Of course, lord. . ."
+The palankeen dropped to the street, Luxkhanna dismounted, the bearers knelt
+astride the palankeen towards Luxkhanna, the other nobles bowed and they with
+their capper departed, Luxkhanna, towards the keep entrance and the nobles,
+back up the street, each in silence.
+You again snuck out of the alley and traveled all the way to the edge of the
+keep entrance. You watched as your target approached and entered. Neither he
+nor anyone else around here seemed to care much about security as, not only
+were there no pedestrians around, there were, as far as you could detect, no
+guards around either. It must have been the dead of night that was giving you
+such a break. All the same though, you took your time and made absolutely sure
+there were no obvious eyes upon the keep exterior. You begin to scale the
+wall using some convenient leverage and a roll of rope you found and clamber
+into a window a short way above the roof line. Inside you quickly sneak to a
+stairwell nearby and head down just in time to see the kobold leader slipping
+into a chamber in the center which, for the brief moment you saw inside while
+the door was open, looked like it might be a throne room of sorts.
+You head back up the stairs and in the direction of that center room.
+Fortunately behind a weapon stand full of spears, you see a gap in the wood and
+stone large enough to peer inside. 
+You see Luxkhanna approach the throne but he does not continue to it.
+He stops about ten feet before, and bends one knee bowing his head in an act of
+reverence and salutation to one greater than himself siting just out of sight
+upon the throne.
+"Hail, the great kobold boss, Lord Illfang!"
+"Speak your business, Capper Luxkhanna," came the voice of the kobold boss, just
+deeper than Luxkhanna's with a hiss to it and a timbre that made it sound as
+though there was something perpetually lodged in the back of his throat.
+"Yes, my lord," answered Luxkhanna, faithfully, "I have come to report the
+findings concering my scouts' investigations, discuss your great plan and
+lastly recieve your orders."
+"Report away. I have been rather curious concerning your repeated failures in
+that area."
+"Of course my lord. My initial scouting party still has yet to return. They are
+being presumed dead. The second group, did return having dicovered truths that
+the group that preceeded tham was likely ambushed and captured by goblins-"
+"GOBLINS!?" shouted Illfang, "As soon as were done with the humans, they're
+next!"
+"I agree Boss!"
+"Shut up and continue!"
+"Yes, the party also found that the war beast had infact been slain as we
+suspected, likely by the bandits. They had found signs of a battle with bandits
+within the canyon as well, many died, but they must have still bested the
+beast."
+"I suppose you think it was not wise, to attack the bandit stronghold and anger
+them?"
+"I doubt none of your strategies, but that sentiment is reflected in many of
+the rancoo nobles here."
+". . ."
+You could not see Illfang but the air in the room seemed to radiate with
+malice. 
+"Is that all you have to report?"
+"All except that further bandits are coming through the canyon and attacking and
+wresting our supply trains."
+"I can understand their thoughts that I was foolish in my plans to attack the
+human barbarians. I know that like them, you also boubted my strategy to attack
+the humans in their towns. Don't deny it! I can see it written in your faces as
+you speak with me. The doubt and even trechery is crystal clear. But now and
+soon you will understand the plan. I have seen our victory as clearly as you
+see me before you. Great Gog, has spoken to me as he has to this point and told
+me that the time is soon to come! Everything, we have worked for and prepared
+for is coming together. The loss of the beast he gave to us, the foolish and
+clumsy escape of your human prisoners, the bandits, the treachery, all of your
+failures have been only minor setbacks. It only means that much less of your
+forces will join us in the conquest soon to come!"
+"Does that mean that we will be making our move soon...my lord?"
+"You have come to me to discuss my great plan, and this I have done. What I
+have said will be enough to you for now."
+"Of course, my lord Illfang."
+"Now. . . This time, I do not have orders for you concerning your failures. . .
+No, this time I give orders based on what you have heard of my great plan. You
+know that our attack is near at hand, I want you to gather your forces and make
+your way to my stronghold in the north-east. Now because the beast is dead, you
+have lost your opportunity for greater glory. We will be attacking from my
+own fortress rather than yours. Dissembark no later than two days after I do. I
+Will meet you there and give you and your forces further instructions. It will
+also likely be there that I explain to you all the entire plan as it has been
+given to me. Not only that, but if you do not fail me again, at least you may
+have a chance to meet the great Gog for yourself and recieve instructions at
+his hand even as I have."
+"My lord-"
+"Shut up. . . That is all, leave my presence and do not come back until you see
+me at my fortress. I expect you and your forces no more than twenty days from
+this night."
+". . . "
+Without another word, Luxkhanna stood, turned and strode out of the hall,
+leaving Illfang in a room full of tension and leaving you reeling.
+You had heard that it was not only the settled humans under thier threat but
+the barbaric bandit tribes of humans in tha area as well. You had heard that,
+the true boss and leader of the Kobolds was a kobold called Illfang a fact you
+might have deduced if you knew that the kobold title of capper was below that
+of boss in their heirarchy. Not only that, but there might even be a greater
+mastermind leading Illfang along. 
+You had also heard about the Kobold's great war beast in the canyon that they
+thought had been slain by bandits, but the two things that you heard that shook
+you the most, was that Luxkhanna's human captives had escaped. Meaning that you
+had no more reason to be here. And secondly, the kobolds had not planned to
+stop at their initial attacks. They were planning something much bigger, much
+worse and it would be happening soon. 
+In other words, not only did you have no more need to be in this stronghold any
+longer, but you also needed now to hurry home as fast as possible, to warn your
+home of the impending attack.
+Without thinking you stand up and back right into the spear stand sending it
+crashing down with a deafening clatter. Moments later, you hear the soft but
+clear taunting voice of Illfang address you from within the throne room.
+"More treacherous scum under the rule of Luxkhanna, I wish you luck outrunning
+the guards heh heh heh!"
+Almost instantly after Illfang stopped speaking, two kobold guards rounded the
+corner at the end of the hall at top speed. One, weilding a short bow, fired at
+you right as you dove out the window from which you entered.
+The drop wasn't too long but definitely longer because of your awkward and
+sudden dive, you tried your best to cushion the landing but you still nearly
+broke, feet first, through the straw roof. Another arrow wizzes past you and
+sticks into the roof. Just when you thought you had escaped the guards, defying
+Illfang's expectations, you hear a high alarm bell ringing loud and long,
+peircing the night air, loud enough to wake kobolds for hundreds of feet
+around.
+There was nothing else to do. You run.
+Deciding that it would be better to avoid the kobolds themselves rather than
+their detection you decide to stick to the rooftops. It didn't take long for
+kobolds of all shapes and sizes to exit, bleary-eyed and curious, from their
+several abodes and wonder at the ruckus that had awoken them. And it wasn't
+long after that, that some began to spot you, a human, an intruder, gliding
+atop their rooves, leaping from building to building across allyways. 
+Arrows, stones and larger more dangerous projectiles began steadily to zip by
+you, some coming dangerously close.
+'''
+        )
+
+    def twenty_four_encounter0(self): # Ruuuuuuuuuuuuuuuuuuun!
+        dprint(
+            f'''
+After only a minute of this, you determined it would be a slightly safer path
+out of here traveling by the streets, and so, finding your next relatively low
+rooftop, you slide right into a small crowd of bewildered kobolds who hadn't
+seen you yet. In passing, you topple several of them and leave the others
+completely lost for a while, long enough that, by the time they realized what
+had just happened, you were able to round the corner onto the next street.
+Right as you rounded the corner however, another kobold did the same about a
+block away armed and looking directly at you.
+"Kill, that human!" It bellowed to the nearest kobolds who all turn to you and
+attack. One kobold chooses not to participate opting to sick its pet on you
+instead.
+'''
+        )
+
+    def twenty_four_victory0(self): # *snort* that's how you escaped?!
+        dprint(
+            f'''
+Leaving the scene a bloody mess, you sprint farther northward as more and more
+kobolds begin dashing into veiw behind you. As soon as they begin appearing
+ahead of you as well, you duck into the nearest available alley to the east.
+This pattern of escape works fairly well until you reach the northern wall and
+have to find other, rather strategic, methods closer to the sealed north gate. 
+You know if you try to take a kobold hostage, they wouldn't think twice about
+killing the both of you so that was out. Hiding was hardly in the cards. . .
+Or was it?
+The street you just burst into contained a total of zero kobolds!
+You slip into a building with exacly one sleeping kobold inside and wait until
+the main force of pursuers pass by. At that moment, you re-emerge carefully and
+quietly from the building. And slip again into the alleyway. 
+Hiding behind some trash heaps and a barrel, you watch as three and then four
+more small groups of kobold guards pass by. After a bit more time you peer
+around the corner and begin to sneak again from house to house in the dark
+careful to check your surroundings at all times and especially before making
+any moves. Carefull also to remain obstructed from view at all times.
+Just then as you were again hiding behind some burlap bags of trash, you have
+an idea. You grab the bags of trash, two in each hand, and carefully exit the
+alley. Your new path takes you north skirting the edge of each building. It was
+a little hard to see in the current light level but moments later you detect a
+group of kobolds rounding a corner up ahead. 
+As quick as a wink you duck down, make yourself as small as possible, and pull
+the trashbags close. The searching kobolds come and go paying no heed to the
+inconspicuous pile of trash outside the house. As soon as the coas is clear
+again, you stand and continue carying the bags with you. Only a half second
+later you find yourself burried between fourty pounds or more of kobold trash
+waiting for the next unsuspecting kobolds to pass by.
+It was a bit more slow but it seemed to work very well. Kobolds were just so
+used to seeing piles of discarded garbage in their stronghold that no one ever
+bothered to question one until you made it all the way to the north gate, guard
+house between its back wall in the stronghold wall itself. It was here when
+finally a passing kobold did a quick double take after he had passed you by
+and even gone a few steps. You had been preparing for this though. By this
+point you decided that if anyone actually managed to spot you, you were close
+enough that you could make a break for the gate. 
+Like a blast of dynamite, you explode out of your faithful, rather smelly,
+disguise, the kobold approaching you falls backwards and shields itself as you
+blaze past. You exit the space between the back the guard house and are
+imediately spotted by the gate guards who hold their pikes forward in a feeble
+attempt to stop you. You were cornered but you knew what you had to do, you'd
+done it once before rather recently actually. Instead of rushing at the guard,
+you make a hard right and stride up the steep staircase to the top rampart
+where your saving grace stands pointing a javelin at your chest. 
+The guard makes a jab forward, you react by turning your torso to the left and
+leaning backwards deftly avoiding the point. From there you reach with your
+left hand for the spear shaft and the right hand for the kobold's throat.
+With it now grappled and panicking, you rotate left and force your victim
+against the wall and over.
+You found it hard to believe later, but the thought that crossed your mind as
+you fell was:
+"Only thirty feet? Peice of cake!"
+Sure enough, the grass and soft dirt combined with the cushioning of a kobold
+beneath your feet as well as a well executed tuck and roll maneuver upon
+landing made it seem like the fall was nothing, leaving only your feet a bit
+sore.
+Continuing flight from the stronghold, you glance backwards to see guards, a
+hundred feet behind you now, struggling to reopen the gate to pursue after
+you further. Imediately after remembering the urgency of the situation you
+can't help but let out a chuckle.
+'''
+        )
+
+
+    def ch_25(self): # back from whence you came
+        mon_list1 = self.config_monsters({'kobold soldier':2, 'dire wolf':2})
+        mon_list2 = self.config_monsters({'irrawrtzus':1})
+        self.twenty_five_intro()
+        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_five_encounter0(), collective=True)
+        if player_lives:
+            self.twenty_five_victory0()
+            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_five_encounter1(), collective=False)
+            if player_lives:
+                self.twenty_five_victory1()
+                self.story_reward()
+                self.story_prep(location='1-4', name='To the wall')
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def twenty_five_intro(self): # wow thats refreshing
+        dprint(
+            f'''
+Soon after your escape, you remembered the urgency of the situation. Illfang
+the lord of the kobolds was planning a large scale attack on the humans of the
+region including the inhabitants of Greentown. It would happen as soon as a few
+weeks from today and you absolutely had to get back home before then. You're
+not sure how long it's been since you left, you had lost track of the days long
+ago, not to mention you had no idea how long youu ere under the Amn mountains.
+The weight of the task bore down on you once again just as it had when you left
+to find Robin and Rosie. 
+'''
+        )
+
+    def twenty_five_encounter0(self): # just like good old times huh
+        dprint(
+            f'''
+You again glance behind you making sure you were correctin your assumption that
+the kobolds could not possibly pursue you. What you saw imediately proved you
+wrong. Dashing through the trees were two heavily armed kobold riders chansing
+you down on their steeds. You had overlooked the fact that the kobolds had
+mounts now. 
+'''
+        )
+
+    def twenty_five_victory0(self): # the seed of dread
+        dprint(
+            f'''
+There was no time to waste, you had to keep going as fast as possible. You were
+aware now that you were under persuit and also increasingly more aware of how
+quickly time seemed to move when you wanted it to stand still.
+A growing seed of dread began to grow within you knowing that after all this
+time you had failed to rescue your siblings, although, that was fine because
+they had apparently somehow managed to escape for themselves. The dread really
+came in knowing that there was a chance then, that they had also made it home
+and were now, yet again in grave danger and you were the one with the
+information that could save them.
+'''
+        )
+
+    def twenty_five_encounter1(self): # 
+        dprint(
+            f'''
+You head for the obvious breach in the looming mountain before you, keeping in
+mind both personal experience and what you had gleaned from the conversation
+between Illfang and Luxkhanna about what was coming out of there.
+As soon as you drew even remotely close to the canyon's mouth, those obstacles
+began to manifest themselves. A barkling here, a windwasp there, a few wild
+beasts who had managed to survive, and soon enough you were feeling as you
+had going through this canyon the opposite direction, assalted at every turn,
+slown down significantly by the need to sneak past enemies rather then fight to
+conserve energy and resources. This was especially important now and the last
+time you had eaten now was also the last time you were inside this canyon,
+several entire days ago. You'd never been so long without sustenance and you
+were really feeling it. Your legs and hands were shaking you vision grew fuzzy
+sometimes and all you wanted to do was lay down, maybe forever. 
+But the dread was keeping you on your feet. 
+These things made a terrible combination that made you clumsy and wreckless and
+it became only a matter of time before you would be found again, attacked and
+drained of what little strength you had left.
+'''
+        )
+
+    def twenty_five_victory1(self): # 
         dprint(
             f'''
 
 '''
         )
 
-    def twenty_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-
-    def ch_21(self):
-        pass # following the trail pt 3
-
-    def twenty_one_intro(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_one_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_one_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-
-    def ch_22(self):
-        pass # following the trail pt 4
-
-    def twenty_two_intro(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_two_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_two_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-
-    def ch_23(self):
-        pass # found the kobold camp and spot Robin
-
-    def twenty_three_intro(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_three_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_three_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-
-    def ch_24(self): # infiltrate, encounter with Illfang, (overtook bandit stronghold, attacked )
-        pass
-
-    def twenty_four_intro(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_four_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_four_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-
-    def ch_25(self):
-        pass # the kobold plans
-
-    def twenty_five_intro(self): #
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_five_encounter0(self): # 
-        dprint(
-            f'''
-
-'''
-        )
-
-    def twenty_five_victory0(self): #
-        dprint(
-            f'''
-
-'''
-        )
 
 
     def ch_26(self):

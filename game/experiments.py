@@ -8,6 +8,7 @@ from colorama import ansi, Fore, Style
 import pygame as pg
 import sys
 from math import ceil
+from fractions import Fraction
 import win32gui as wg
 import win32com.client as wcc
 from pynput import keyboard as kb
@@ -442,11 +443,40 @@ def attack_timing_window(monster, player, acu) -> float:
 #     key = ans
 #     return key
 
+# ------ math --------
+
+def calculate_hp_and_attack(cons: float | None = 1.0, level: int | None = 1) -> tuple[int, int]:
+    '''
+    if the cons == 1:
+        atk = level and hp = level * 20 (hp_mod)
+    elif the cons == 0:
+        atk = level * 2 and hp = level * 10
+    
+    hp_mod = some int from 10-20 (20 - (cons * 10))
+    atk_mod = 2 - cons
+
+    '''
+    if level == 1:
+        hp_mod = cons * 10
+    elif level < 5:
+        hp_mod = (level * 2) + (cons * 10)
+    else:
+        hp_mod = 10 + (cons * 10)
+    atk_mod = 2 - cons
+
+    # Multiply the ratio by level
+    hp = 2 if int(hp_mod * level) < 2 else int(hp_mod * level)
+    atk = int(atk_mod * level)
+
+    return hp, atk
+
 
 # ------ tests -------
 
-dprint('a bunch of stuff is happening, a bunch of stuff is happening...')
-dprint('WAIT!')
-input('ready')
-val = attack_timing_window(tmon, tpc)
-dprint(f'u did it!{val}')
+for i in range(500):
+    con = random.random()
+    # con = 1.0
+    # con = 0.0
+    # con = 0.5
+    hp_atk = calculate_hp_and_attack(cons = con, level = (i // 5) + 1)
+    print(f'level {(i // 5) + 1}. Hp -> {hp_atk} <- atk. Consentration = {round(con, 3)}')

@@ -7,7 +7,12 @@ from stuffs_that_do import init_spells
 
 
 class Player:
-    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col, progress=0):
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col,
+                 location='1-1', progress=0, asleep=False, poisoned=False,
+                 blessed=False, confused=False, frightened=False,
+                 enranged=False, focussed=False, defended=False,
+                 empowered=False, weakened=False, energized=False,
+                 auto_battle=False):
         self.name = name
         self.gender = gender
         self.maxhp = hp
@@ -17,19 +22,20 @@ class Player:
         self.level = level
         self.accuracy = accuracy
         self.col = col
-        self.asleep = False # skip turn
-        self.poisoned = False # -hp over time
-        self.blessed = False # +hp over time
-        self.confused = False # can't choose turn
-        self.frightened = False # run attempt each turn or nothing
-        self.enranged = False # +damage and -accuracy
-        self.focussed = False # +accuracy
-        self.defended = False # ???
-        self.empowered = False # +atk
-        self.energized = False # +mag
-        self.auto_battle = False
-        self.location = '1-0' # see location dictionary in notes
+        self.location = location # see location dictionary in notes
         self.progress = progress
+        self.asleep = asleep # skip turn
+        self.poisoned = poisoned # -hp over time
+        self.blessed = blessed # +hp over time
+        self.confused = confused # can't choose turn
+        self.frightened = frightened # run attempt each turn or nothing
+        self.enranged = enranged # +damage and -accuracy
+        self.focussed = focussed # +accuracy
+        self.defended = defended # ???
+        self.empowered = empowered # +atk
+        self.weakened = weakened # -atk
+        self.energized = energized # +mag
+        self.auto_battle = auto_battle
         if self.gender == 'Female':
             self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself'}
         else: 
@@ -112,26 +118,42 @@ class Player:
 
 
 class Fighter(Player):
-    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col, progress=0):
-        super().__init__(name, gender, hp, atk, xp, level, accuracy, col, progress)
-        self.title = 'Fighter'
-        self.acu = .06 # attack acuracy modifier
-        self.agi = 19 # used for battle order like a speed stat (out of 20?)
-        self.mag = 10 # used to calculate skill cost
-        self.maxmag = self.mag
-        self.mod = 1 + self.level // 4
-        self.skill_slots = 1
-        self.known_skills = []
+    def __init__(self, name, gender, hp, atk, xp, level, accuracy, col,
+                 location='1-1', progress=0, asleep=False, poisoned=False,
+                 blessed=False, confused=False, frightened=False,
+                 enranged=False, focussed=False, defended=False,
+                 empowered=False, weakened=False, energized=False,
+                 auto_battle=False, title='Fighter', acu=.06, agi=19, mag=10,
+                 maxmag=None, skill_slots=1, known_skills=[], allies=[]):
+        super().__init__(name, gender, hp, atk, xp, level, accuracy, col, location,
+                         progress, asleep, poisoned, blessed, confused,
+                         frightened, enranged, focussed, defended, empowered,
+                         weakened, energized, auto_battle)
+        self.title = title
+        self.acu = acu # attack acuracy modifier
+        self.agi = agi # used for battle order like a speed stat (out of 20?)
+        self.mag = mag # used to calculate skill cost
+        if maxmag == None:
+            self.maxmag = self.mag
+        else:
+            self.maxmag = maxmag
+        self.skill_slots = skill_slots
+        self.known_skills = known_skills
+        self.allies = allies
         self.skills = init_skills()
-        self.known_skills.append(self.skills[0])
+        if len(self.known_skills) == 0:
+            self.known_skills.append(self.skills[0])
+        else:
+            self.known_skills=known_skills
         self.inventory = Inventory()
-        self.allies = []
 
     def attack(self, enemy, xp_thresholds):
         if self.auto_battle:
             if random.random() < self.accuracy:
                 if self.empowered:
                     damage = self.atk + random.randint(0, self.atk // 5)
+                if self.weakened:
+                    damage = (self.atk // 5) + 1
                 else:
                     damage = self.atk - random.randint(0, self.atk // 5)
                 enemy.hp -= damage
@@ -221,6 +243,9 @@ class Fighter(Player):
         if self.empowered:
             strong_damage = self.atk + (self.atk // 5) + skill.damage
             weak_damage = self.atk
+        if self.weakened:
+            dprint('You can\'t use any skills right now.')
+            return self.attack(enemy, xp_thresholds)
         else:
             strong_damage = self.atk + random.randint(1, (self.atk // 5) + 1) + skill.damage # 272
             weak_damage = self.atk - random.randint(1, (self.atk // 5) + 1) # 180
@@ -316,6 +341,20 @@ class Fighter(Player):
         skill_int = get_validated_input('Add which skill', learnables)
         self.known_skills.append(learnables[skill_int - 1]) # append the selected choice to known skills
         dprint(f'{self.name} has learned the skill {self.known_skills[-1].name}!')
+    
+    def add_skill_by_name(self, skills, s_name):
+        skill_names = [skill.name for skill in self.known_skills]
+        if s_name not in skill_names:
+            for skill in skills:
+                if skill.name == s_name:
+                    self.known_skills.append(skill)
+
+    def add_ally_by_name(self, allies, a_des):
+        a_dees = [ally.designation for ally in allies]
+        if a_des not in a_dees:
+            for ally in allies:
+                if ally.designation == a_des:
+                    self.allies.append(ally)
 
     def choose_skill(self, skills):
         if skills == []:

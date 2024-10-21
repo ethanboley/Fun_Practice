@@ -197,6 +197,7 @@ def init_items():
     ruby = Item('ruby', 15, 25, 5, True, False)
     droplet_of_villi = Item('droplet of villi', 6, 14, 6, False, False) #
     lizard_hide = Item('lizard hide', 7, 4, 1, True, False)
+    animal_hide = Item('animal hide', 3, 3, 1, False, False)
     sapphire = Item('sapphire', 20, 35, 6, True, False)
     thicc_tendon = Item('thicc tendon', 1, 6, 1, False, False)
     noblewood = Item('noblewood', 2, 6, 2, False, False) #
@@ -208,6 +209,12 @@ def init_items():
     tremble_shortcake = TrembleShortcake('tremble shortcake', 7, 10, 7, True, True)
     hyper_slime_jelly = Item('hyper slime jelly', 2, 10, 2, False, False)
     super_aja_stone = SuperAjaStone('super aja stone', 9, 110, 9, False, True)
+    scale_hide = Item('scale hide', 4, 3, 1, False, False)
+    impish_wings = Item('impish wings', 15, 44, 2, False, False)
+    goblin_coin = Item('goblin coin', 6, 13, 2, False, False)
+    ectoplasm = Item('ectoplasm', 7, 15, 3, False, False)
+    astral_shroud = Item('astral shroud', 45, 1090, 4, False, True)
+    spirit_lantern = Item('spirit lantern', 78, 37525, 6, True, True)
 
     items = [col_coin, 
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
@@ -223,7 +230,8 @@ def init_items():
              noblewood, blue_blood_diamond, ooze_jelly, living_stone,
              solidite, slime_membrane, carapas, diamond, tremble_shortcake, 
              venom_glass, hyper_slime_jelly, super_aja_stone, giga_life_potion, 
-             glass_of_the_weave, colossal_col]
+             glass_of_the_weave, colossal_col, scale_hide, animal_hide,
+             impish_wings, goblin_coin]
 
     return items
 
