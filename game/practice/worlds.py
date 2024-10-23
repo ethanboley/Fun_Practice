@@ -11,8 +11,9 @@ allies = init_allies()
 
 
 class SaveLoad:
-    def __init__(self) -> None:
+    def __init__(self, xp_thresholds) -> None:
         self.name = 'Save/Load'
+        self.xp_thresholds = xp_thresholds
     
     def run(self, player=None, world=None, xp_thresholds=None):
         if os.path.exists('save_game.json') and player != None:
@@ -22,7 +23,7 @@ class SaveLoad:
                 return self.save(player=player)
             elif user in ['l','load','2','t','two','r','f','g','y','6','5','2: load']:
                 try:
-                    return self.load(player=player)
+                    return self.load(player=player, xp_thresholds=xp_thresholds)
                 except json.decoder.JSONDecodeError as err:
                     dprint('The file was currupted!')
                     print(f'{err}\n\n')
@@ -93,7 +94,7 @@ class SaveLoad:
                     gender=player_data['gender'],
                     hp=player_data['hp'],
                     atk=player_data['atk'],
-                    xp=player_data['xp'],
+                    xp=0,
                     level=player_data['level'], 
                     accuracy=player_data['accuracy'],
                     col=player_data['col'],
@@ -115,15 +116,18 @@ class SaveLoad:
                     agi=player_data['agi'],
                     mag=player_data['mag'],
                     maxmag=player_data['maxmag'],
-                    skill_slots=player_data['skill_slots'],
+                    skill_slots=player_data['skill_slots'], 
+                    known_skills=[0],
                     location=player_data['location']
                 )
+                player.known_skills.pop()
                 for s in player_data['known_skills']:
                     player.add_skill_by_name(skills, s)
                 for i, c in player_data['inventory'].items():
                     player.inventory.add_item_by_name(drops, i, count=c)
                 for a_d in player_data['allies']:
                     player.add_ally_by_name(allies, a_d)
+                player.gain_xp_quietly(player_data['xp'], self.xp_thresholds)
 
                 print(f"Game loaded from {filename}.")
                 return True
@@ -138,8 +142,8 @@ class WorldOne:
         self.number = 1
         self.mon_list = init_enemies()
         self.world_monsters = [monster for monster in self.mon_list if 1 in monster.world]
-        self.pc = self.create_character()
         self.xp_thresholds = xp_thresholds
+        self.pc = self.create_character()
         self.book_one = BookOne(self.pc, self.xp_thresholds)
         self.world_options = self.update_world_options()
     
@@ -230,7 +234,7 @@ class WorldOne:
                     gender=player_data['gender'],
                     hp=player_data['hp'],
                     atk=player_data['atk'],
-                    xp=player_data['xp'],
+                    xp=0,
                     level=player_data['level'], 
                     accuracy=player_data['accuracy'],
                     col=player_data['col'],
@@ -250,17 +254,20 @@ class WorldOne:
                     title=player_data['title'],
                     acu=player_data['acu'],
                     agi=player_data['agi'],
-                    mag=player_data['mag'],
+                    mag=player_data['mag'], 
+                    known_skills=[0],
                     maxmag=player_data['maxmag'],
                     skill_slots=player_data['skill_slots'],
                     location=player_data['location']
                 )
+                player.known_skills.pop()
                 for s in player_data['known_skills']:
                     player.add_skill_by_name(skills, s)
                 for i, c in player_data['inventory'].items():
                     player.inventory.add_item_by_name(drops, i, count=c)
                 for a_d in player_data['allies']:
                     player.add_ally_by_name(allies, a_d)
+                player.gain_xp_quietly(player_data['xp'], self.xp_thresholds)
 
                 print(f"Game loaded from {filename}.")
                 return player
@@ -289,7 +296,7 @@ class WorldOne:
         hospital = Hospital('greentown hospital', self.pc.level)
         market = Marketplace('greentown market', self.pc.level, self.xp_thresholds, self)
         gym = Gym(self.pc)
-        save_load = SaveLoad()
+        save_load = SaveLoad(self.xp_thresholds)
         quit_game = Quit()
         world_options = []
 

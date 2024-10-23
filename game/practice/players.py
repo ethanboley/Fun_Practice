@@ -195,18 +195,17 @@ class Fighter(Player):
     def gain_xp(self, xp, xp_thresholds:dict):
         dprint(f'{self.name} gained {xp} experience points, ')
         self.xp += xp
-        # level_key_to_remove = None
         for level_key, threshold in xp_thresholds.items():
             if self.xp >= threshold:
-                self.level = level_key + 1
-                ascci_fireworks()
-                dprint(f'{self.name} has leveled up to level {self.level}!')
-                self.level_up()
+                if self.level < level_key + 1: # if there are ever xp related problems in the future, 
+                    self.level = level_key + 1 # the big question here is the + 1 on the previous line
+                    ascci_fireworks() # or just the logic in general within that conditional.
+                    dprint(f'{self.name} has leveled up to level {self.level}!')
+                    self.level_up()
                 level_key_to_remove = level_key
         try:
             xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
         except UnboundLocalError as err:
-            # print(f'it works to do nothing here : {err}')
             pass
         dprint(f'{self.name} now has {self.xp} xp. ')
 
@@ -315,7 +314,8 @@ class Fighter(Player):
     def learn_skill(self):
         skills = init_skills()
         learnables = [skill for skill in skills if skill.level <= self.level and skill.type == 0]
-        dprint('You have an available skill slot')
+        if len(self.known_skills) < self.skill_slots:
+            dprint('You have an available skill slot')
         while len(self.known_skills) < self.skill_slots: 
             dprint('would you like to learn or replace a skill?')
             lorp = ['learn', 'replace', 'nope'] # lorp: Learn or Replace
@@ -355,6 +355,18 @@ class Fighter(Player):
             for ally in allies:
                 if ally.designation == a_des:
                     self.allies.append(ally)
+    
+    def gain_xp_quietly(self, xp, xp_thresholds:dict):
+        self.xp += xp
+        # for level_key, threshold in xp_thresholds.items():
+        #     if self.xp >= threshold:
+        #         self.level = level_key + 1
+        #         self.level_up()
+        #         level_key_to_remove = level_key
+        # try:
+        #     xp_thresholds.pop(level_key_to_remove) # Remove the threshold we just crossed
+        # except UnboundLocalError as err:
+        #     pass
 
     def choose_skill(self, skills):
         if skills == []:
