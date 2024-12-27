@@ -61,7 +61,7 @@ class LittleDagger(Item):
         super().__init__(name, level, sell_price, rarity, sold, can_use)
 
     def use(self, player=None, enemy=None, xp_thresholds=None):
-        if random.random() < player.accuracy:
+        if random.randint(0,1000) < player.accuracy:
             if player.empowered:
                 enemy.hp -= player.atk + 1
             else:
@@ -148,6 +148,22 @@ class SuperAjaStone(Item):
     def use(self, player=None, enemy=None, xp_thresholds=None):
         pass # high damaging attack
 
+class Weapon(Item):
+    def __init__(self, name, level, sell_price, rarity, sold, can_use, force) -> None:
+        super().__init__(name, level, sell_price, rarity, sold, can_use)
+        self.force = force
+
+    def use(self, player=None, enemy=None, xp_thresholds=None):
+        pass
+
+class Armor(Item):
+    def __init__(self, name, level, sell_price, rarity, sold, can_use, defense) -> None:
+        super().__init__(name, level, sell_price, rarity, sold, can_use)
+        self.defense = defense
+    
+    def use(self, player=None, enemy=None, xp_thresholds=None):
+        pass
+
 # --- #
 
 def init_items():
@@ -216,6 +232,11 @@ def init_items():
     astral_shroud = Item('astral shroud', 45, 1090, 4, False, True)
     spirit_lantern = Item('spirit lantern', 78, 37525, 6, True, True)
 
+    # weapons
+    dads_old_sword = Weapon('dads old sword', 1, 4, 1, False, False, 0)
+    goblin_cleaver = Weapon('goblin cleaver', 1, 2, 1, False, False, 0)
+    old_barbarian_sword = Weapon('old barbarian sword', 1, 3, 1, False, False, 1)
+
     items = [col_coin, 
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
              monster_tooth, glass_bottle, magic_glass, living_wood, simple_fabric,
@@ -231,10 +252,12 @@ def init_items():
              solidite, slime_membrane, carapas, diamond, tremble_shortcake, 
              venom_glass, hyper_slime_jelly, super_aja_stone, giga_life_potion, 
              glass_of_the_weave, colossal_col, scale_hide, animal_hide,
-             impish_wings, goblin_coin]
+             impish_wings, goblin_coin, ectoplasm, astral_shroud, spirit_lantern, 
+             dads_old_sword, goblin_cleaver, old_barbarian_sword]
 
     return items
 
+weapons = [item for item in init_items() if isinstance(item, Weapon)]
 
 # --- spells
 

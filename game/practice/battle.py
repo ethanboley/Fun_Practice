@@ -35,7 +35,7 @@ class Battle:
         # begin battle
         while self.active_player.is_alive() and len(self.active_monsters) != 0:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
             # handle the player's turn
@@ -81,7 +81,7 @@ class Battle:
 
         while True:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
 
@@ -142,7 +142,7 @@ class Battle:
 
         while True:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT!')
 
@@ -282,13 +282,13 @@ class Battle:
                     try:
                         self.active_player.allies.remove(target)
                     except ValueError as value_error:
-                        self.active_player.allies.append(target) # do nothing
+                        self.active_player.allies.append(target) # do nothing agi
                         self.active_player.allies.remove(target)
     
     def handle_boss_turns(self, seconds):
         for monster in self.active_monsters:
             if monster.has_phases:
-                if seconds % monster.acu == 0:
+                if seconds % monster.agi == 0:
                     target = monster.choose_target(self.active_teamates)
                     monster.fight(target)
                     if not target.is_alive():
@@ -301,7 +301,7 @@ class Battle:
                             self.active_player.allies.remove(target)
 
     def handle_additional_monsters(self, seconds, mon_list):
-        if seconds % 120 == 0:
+        if seconds % 6000 == 0:
             self.active_monsters.append(choose_monster(self.active_player,mon_list))
             dprint('The sound of battle and the smell of blood atracts')
             dprint(f'a {self.active_monsters[-1].name} which joins the fight!')

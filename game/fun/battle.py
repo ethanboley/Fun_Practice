@@ -35,7 +35,7 @@ class Battle:
         # begin battle
         while self.active_player.is_alive() and len(self.active_monsters) != 0:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
             # handle the player's turn
@@ -55,7 +55,7 @@ class Battle:
         self.active_teamates.clear()
         return True # tell the game the player is still alive
 
-    def boss(self, mon_list:list, dialog=None, collective=True):
+    def boss(self, mon_list:list, dialog=None, collective=True, boss_dialog=['']):
         for mon in mon_list:
             self.active_monsters.append(mon)
         
@@ -81,12 +81,12 @@ class Battle:
 
         while True:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
                 dprint(f'Round {round_num}, FIGHT! ')
 
             # handle the player's turn
-            self.handle_fighter_turn(seconds)
+            self.handle_fighter_turn(seconds, boss_dialog=boss_dialog)
             # go through the ally's turns
             self.handle_ally_turns(seconds)
 
@@ -103,10 +103,14 @@ class Battle:
             if not self.active_player.is_alive():
                 self.active_teamates.clear()
                 return False # tell the game the player is dead
+            self.handle_boss_turns(seconds)
+            if not self.active_player.is_alive():
+                self.active_teamates.clear()
+                return False # tell the game the player is dead
             
             seconds += 1
 
-    def story(self, mon_list:list, dialog=None, collective=False):
+    def story(self, mon_list:list, dialog=None, collective=False, surprise=False):
         to_use_mons = []
         for mon in mon_list:
             to_use_mons.append(mon)
@@ -138,9 +142,14 @@ class Battle:
 
         while True:
             # handle the rounds
-            if seconds % 20 == 1:
+            if seconds % 1000 == 1:
                 round_num += 1
-                dprint(f'Round {round_num}, FIGHT! ')
+                dprint(f'Round {round_num}, FIGHT!')
+
+            if surprise:
+                dprint('Surprise attack!')
+                self.handle_fighter_turn(self.active_player.agi)
+                surprise = False
 
             # handle the player's turn
             self.handle_fighter_turn(seconds)
@@ -162,11 +171,18 @@ class Battle:
             
             seconds += 1
 
-    def handle_fighter_turn(self, seconds):
+    def handle_fighter_turn(self, seconds, boss_dialog=['']):
         if seconds % self.active_player.agi == 0:
             # prompt for battle option
-            for i in range(len(self.battle_options)):
-                print(f'{i + 1}: {self.battle_options[i]}')
+            for mon in self.active_monsters:
+                if mon.has_phases:
+                    for i in range(len(self.battle_options) - 1):
+                        print(f'{i + 1}: {self.battle_options[i]}')
+                    break
+                else:
+                    for i in range(len(self.battle_options)):
+                        print(f'{i + 1}: {self.battle_options[i]}')
+                    break
             option = input()
 
             if option in ['','1','0','f','F','fight','Fight','FIGHT','attack','a','A','Y','y','yes']:
@@ -187,6 +203,9 @@ class Battle:
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
+                if target.has_phases:
+                    if target.hp <= 0:
+                        target.next_phase(boss_dialog)
 
             elif option in ['2','Skill','skill','s','S','spell','Spell','SKILL','SPELL']:
                 # define the target
@@ -200,6 +219,9 @@ class Battle:
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
+                if target.has_phases:
+                    if target.hp <= 0:
+                        target.next_phase(boss_dialog)
             
             elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
                 # define the target
@@ -213,6 +235,9 @@ class Battle:
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
+                if target.has_phases:
+                    if target.hp <= 0:
+                        target.next_phase(boss_dialog)
             
             elif option in ['4','run','Run','RUN','rUN','r','R','4: run','four','nigero','flee']:
                 escape = sum(1 for _ in self.active_monsters if self.active_player.run())
@@ -257,11 +282,26 @@ class Battle:
                     try:
                         self.active_player.allies.remove(target)
                     except ValueError as value_error:
-                        self.active_player.allies.append(target) # do nothing
+                        self.active_player.allies.append(target) # do nothing agi
                         self.active_player.allies.remove(target)
+    
+    def handle_boss_turns(self, seconds):
+        for monster in self.active_monsters:
+            if monster.has_phases:
+                if seconds % monster.agi == 0:
+                    target = monster.choose_target(self.active_teamates)
+                    monster.fight(target)
+                    if not target.is_alive():
+                        if target in self.active_teamates:
+                            self.active_teamates.remove(target)
+                        try:
+                            self.active_player.allies.remove(target)
+                        except ValueError as value_error:
+                            self.active_player.allies.append(target) # do nothing
+                            self.active_player.allies.remove(target)
 
     def handle_additional_monsters(self, seconds, mon_list):
-        if seconds % 120 == 0:
+        if seconds % 6000 == 0:
             self.active_monsters.append(choose_monster(self.active_player,mon_list))
             dprint('The sound of battle and the smell of blood atracts')
             dprint(f'a {self.active_monsters[-1].name} which joins the fight!')

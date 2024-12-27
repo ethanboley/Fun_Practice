@@ -61,7 +61,7 @@ class LittleDagger(Item):
         super().__init__(name, level, sell_price, rarity, sold, can_use)
 
     def use(self, player=None, enemy=None, xp_thresholds=None):
-        if random.random() < player.accuracy:
+        if random.randint(0,1000) < player.accuracy:
             if player.empowered:
                 enemy.hp -= player.atk + 1
             else:
@@ -148,6 +148,22 @@ class SuperAjaStone(Item):
     def use(self, player=None, enemy=None, xp_thresholds=None):
         pass # high damaging attack
 
+class Weapon(Item):
+    def __init__(self, name, level, sell_price, rarity, sold, can_use, force) -> None:
+        super().__init__(name, level, sell_price, rarity, sold, can_use)
+        self.force = force
+
+    def use(self, player=None, enemy=None, xp_thresholds=None):
+        pass
+
+class Armor(Item):
+    def __init__(self, name, level, sell_price, rarity, sold, can_use, defense) -> None:
+        super().__init__(name, level, sell_price, rarity, sold, can_use)
+        self.defense = defense
+    
+    def use(self, player=None, enemy=None, xp_thresholds=None):
+        pass
+
 # --- #
 
 def init_items():
@@ -197,6 +213,7 @@ def init_items():
     ruby = Item('ruby', 15, 25, 5, True, False)
     droplet_of_villi = Item('droplet of villi', 6, 14, 6, False, False) #
     lizard_hide = Item('lizard hide', 7, 4, 1, True, False)
+    animal_hide = Item('animal hide', 3, 3, 1, False, False)
     sapphire = Item('sapphire', 20, 35, 6, True, False)
     thicc_tendon = Item('thicc tendon', 1, 6, 1, False, False)
     noblewood = Item('noblewood', 2, 6, 2, False, False) #
@@ -208,6 +225,17 @@ def init_items():
     tremble_shortcake = TrembleShortcake('tremble shortcake', 7, 10, 7, True, True)
     hyper_slime_jelly = Item('hyper slime jelly', 2, 10, 2, False, False)
     super_aja_stone = SuperAjaStone('super aja stone', 9, 110, 9, False, True)
+    scale_hide = Item('scale hide', 4, 3, 1, False, False)
+    impish_wings = Item('impish wings', 15, 44, 2, False, False)
+    goblin_coin = Item('goblin coin', 6, 13, 2, False, False)
+    ectoplasm = Item('ectoplasm', 7, 15, 3, False, False)
+    astral_shroud = Item('astral shroud', 45, 1090, 4, False, True)
+    spirit_lantern = Item('spirit lantern', 78, 37525, 6, True, True)
+
+    # weapons
+    dads_old_sword = Weapon('dads old sword', 1, 4, 1, False, False, 0)
+    goblin_cleaver = Weapon('goblin cleaver', 1, 2, 1, False, False, 0)
+    old_barbarian_sword = Weapon('old barbarian sword', 1, 3, 1, False, False, 1)
 
     items = [col_coin, 
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
@@ -223,10 +251,13 @@ def init_items():
              noblewood, blue_blood_diamond, ooze_jelly, living_stone,
              solidite, slime_membrane, carapas, diamond, tremble_shortcake, 
              venom_glass, hyper_slime_jelly, super_aja_stone, giga_life_potion, 
-             glass_of_the_weave, colossal_col]
+             glass_of_the_weave, colossal_col, scale_hide, animal_hide,
+             impish_wings, goblin_coin, ectoplasm, astral_shroud, spirit_lantern, 
+             dads_old_sword, goblin_cleaver, old_barbarian_sword]
 
     return items
 
+weapons = [item for item in init_items() if isinstance(item, Weapon)]
 
 # --- spells
 

@@ -25,7 +25,8 @@ dev 0.0.30 (action timing meter)
 dev 0.0.31 (meter implementation)
 dev 0.0.35 (little bit o everything)
 dev 0.0.36 (little big changes)
-dev 0.0.37 (save) current
+dev 0.0.37 (save)
+dev 0.0.39 (carried away) current
 ...
 alpha 0.1.0 
 ...
@@ -34,7 +35,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 
-commit notes: 
+commit notes: damage_calculator(); battle improvements; minor misc adjustments; added malice for monsters; added defense and force stats; added more allies, added point alocation, critical hits and condiion modifiers; cleaned up story; added weapons and armor; adjusted skills; changed save systems to pickle from json; added more music. 
 
 
 
@@ -374,7 +375,7 @@ killing themselves out of grief or regret or something.
 Vecna knows his curse is breaking and knows of Rulid's treachery, but the curse
 is still in effect. So when the player and his brother finally confront each
 it is only by the commandment of Vecna that they fight. "My plan will be all
-for nothing if I come out on top in this fight!"
+for nothing if I come out on top in this fight!" ~ Rulid
 
 In the beginning there was the god of the worlds, he, using the two elements of
 all existence, created his spirit children, called by the first born the
@@ -442,7 +443,7 @@ children formed! I have been granting wisdom to the inteligences of the worlds.
 Wisdom regarding the foolishness of your creations, and their need to be
 destroyed! I and my followers, your so called children, will continue to do
 this thing as long as this Lho will stand to bear the stain of your creation!"
-"From hense, I will place an inate draw to good and the preservaition of these
+"From hense, I will place an inate draw to good and the preservation of these
 created worlds into all the inteligences of the worlds. Those who you do not
 have power over will be given strength and a desire to oppose you."
 "This makes little difference! With that very desire for strength, I and those
@@ -642,7 +643,7 @@ Vlig 'O Wilv (variant Black Hag), Scatha (Ancient Dragon), Kas The bloody Handed
 Acerak (Vampire), Raven Jasper (?), Raven Kxixi (?), Zephyr (Giant).
 Named Main Entities (+): Player Character (Human), Rulid Sr. (Human), Elond (Human),
 Robin (Human), Rosie (Human), Rulid* (variant Human), Milo (Human), Theo (Human),
-Toby (Human), Outh (Human), Rosalind (Human>variant Human), Ideal (Hobgoblin), Nora (Dwarf), 
+Toby (Halfling), Outh (Human), Rosalind (Human>variant Human), Ideal (Hobgoblin), Nora (Dwarf), 
 Chloe (Hylian), Wendy (Human), Callybon (Gnome), Suphia (Human), ...
 
 
@@ -665,7 +666,7 @@ Dragons: 4 legs, 2 wings, Fire Breath, Magic, Inteligence (Speech at adult+).
 Dragons, named for their superrace due to their commonality are nearly as
 ancient in existence as Wyrms coming into existence due to magical and natural
 evolution. Their power, magic and ability to understand and reason out their
-universe grows quickly but dispite this, their ability of speech usually only
+universe grows quickly but despite this, their ability of speech usually only
 comes somewhere in their adulthood (about 1,000-1,500 years of life). Dragon's
 fire breath takes the form of a strong, far flying, linear stream of flame from
 their mouths or nostrils. Dragons are typically either Evil or Good, never much
@@ -709,8 +710,220 @@ Ainur: transparent skin, faint white eyes, 0-10 wings.
 Valar: corporial Ainur.
 Primordials: true form ???. 
 
+The_Rulid():
+Player is heading to Kedren Main Palace on a internal protection mission.
+Sees/hears disturbance in the right direction and veers slightly to see whats up. 
+Enters a side street and sees fleeing people one or a few get shot down by magic.
+Player exits side street just in time to see...
+A figure in a tattered dark hood clearly evading capture. A
+bolt of magic energy sails over his hood causing it to fly
+back revealing the face underneath. 
+You stagger as recognition washed over you. Under the hood
+is the face of a young man less than a decade older than
+yourself. The oak brown wavy hair, the bright eyes, the
+short but powerful build and the single dimple on the right
+cheek. Your mind flashes back to your childhood for the
+briefest moment and you see the exact same face twelve
+years younger.
+The face of your long missing brother, Rulid.
+Time seems to slow down as he passes. The screams of
+pesestrians and shouts of officers fade into the
+background.
+Slowly, your brother turns to you as he passes. Your eyes
+meet and you see not the light hazel brown color he
+inherited from your parents, but a dark blood red.
+In the split second your eyes are locked, you see what
+might also be recognition dawn upon him as he gives you a
+shadow of a smile.
+Time resumes.
+His turn toward you became a twisting leap through the air,
+two more bolts of energy streaking past him. At the apex of
+his jump, he spread his arms wide and spoke an incantation
+in a voice that was only just above a whisper. Yet, despite
+the soft tone, the sound struck like the crack and roll of
+thunder, powerful and deafening, shaking all present to
+their bones and leaving ears ringing. It was as if, rather
+than speaking, he had projected his voice directly into the
+minds of you and all present, reverberating inside you with
+crushing intensity.
+"Ugokuna"
+A circle of crackling purple energy forms between his
+hands. For an instant, the world holds its breath, and
+then, with an earth-splitting blast, the entire street
+erupts in a storm of fire and debris.
+The shock of the explosion blasts you off your feet and
+clear through the corner shop's front window. . .
+Player appears to have been inexplicably magically protected in the blast.
+Gets to his feet, exits the shop and surveys the damage.
+Rulid is gone and Player is only survivor for at least 2 or 3 blocks.
+After some search and rescue duty, dark mass appears above the palace pinnacle.
+Big ol magical orb pulsating in the sky.
+scan of the sky again reveals Rulid, clearly conjuring (or whatever) the orb.
+The city tries and fails counter measures before initiating evacuation order.
+Before another hour or so, the orb begins releasing monsters and lethal energy into the city.
+Tens of thousands perish.
+Many become zombies (Meanderthralls?)
+Player and new main character cast begin jurney east following the path of Rulid.
+
+What's going on behind the scenes (antagonists' stories):
+The moment Player wakes up, somewhere in the depths of the Underdark Casting a
+Spell that had been prepared for for over 300 years (technically 6000+ years). 
+
+The 3rd to last chapter at the very end of the game, Player, speaking to "god"
+will be offered a choice to eliminate death permanently from all existance.
+Player considers for several moments and then thinks about his entire adventure
+through out the cosmos and having observed the beauty of the natural flow of
+the creation. He considers his most recent motivation that the last enemy to be
+defeated was death itself. He thinks on what he, his allies, his enemies, and
+everyone else he had met on his journey had done and accomplished finally
+deciding that he had grown to be more than all them and making the decision to
+decline this offer from the "god". He would choose to allow "god"'s creation to
+continue uninterrupted until the end. "god" then acknowledged Player's decision
+to be one no one else in creation would have made given what he had seen and
+done. For this reason, Player and any others who would follow Player and to the
+same extent "god", after the remaider of their mortal lives would be granted
+Primordial status and power and charged to return at the end of the world to
+estroy the darkness one last time.
+
+
+Characters:
+Player: {To main: Main character;
+    Relationships: The younger brother of the current Kairon;
+    class: All;
+    Personality: determined; responsible; etc.;
+    Race: Human;
+    Char Dev: Fights for himself, his family, his comforts then fights for
+        revenge then fights fanatically for life, then fights for preservation
+        of creation natural order and the will of god}
+Milo: {To main: Friend; 
+    Relationships: Nephew of Outh, son of Nobles;
+    class: Paladin, Swordsman;
+    Personality: Excitable, rich but uncomfortable about it, motivated, etc.;
+    Race: Human;
+    Char dev: etc.}
+Toby: {To main: Friend; 
+    Relationships: ;
+    class: Monk;
+    Personality: insecure, calculating, perfect cross between Ly Ren, Nevil
+        Longbottom and a male Becky (until a better idea comes to mind);
+    Race: Halfling;
+    Char dev: Quiet and reserved but for good reason, dark past unveiling, etc.}
+Theo:{To main: Friend; 
+    Relationships: ;
+    class: Bard, Wizard;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Rosalind:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Wendy:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Chloe:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Hylean;
+    Char dev: }
+Ideal:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Hobgoblin;
+    Char dev: }
+Outh:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Callybon:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Gnome;
+    Char dev: }
+Nora:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Dwarf;
+    Char dev: }
+Rulid:{To main: Brother;
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Variant human;
+    Char dev: }
+Elond:{To main: Brother;
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Rulid Sr.: {To main: Father; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Kairon (original): {To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Variant human;
+    Char dev: }
+Suphia: {To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: Human;
+    Char dev: }
+Xeno:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: ;
+    Char dev: }
+Pol:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: ;
+    Char dev: }
+Oliver:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: ;
+    Char dev: }
+Nori:{To main: ; 
+    Relationships: ;
+    class: ;
+    Personality: ;
+    Race: ;
+    Char dev: }
+Valor: {To main: ; 
+    Relationships: Ideal's older brother;
+    Personality: ;
+    Race: Hobgoblin;
+    class: ;
+    Char dev: }
+
+
+
+The 5th age was just under 4000 years long. 5th age 780 Kairon is born.
+
+
 plot layer 1: 
-pass
+    The plan of salvation.
 
 plot layer 2:
 book1: Robin is stolen by kobolds player rescues him. 
@@ -769,11 +982,11 @@ book 1:
 25: the Luxkhanna and Illfang converse about secret plans to attack from a 
     northern base in several days. player is discovered and chased out without
     Robin.
-26: player breaks through the canyon again kobolds still in hot pursuit. After a 
+26: player breaks through the canyon again kobolds still in hot pursuit. After a
     while they leave and player continues in haste to Greentown. 
 27: near the town player finds several kobolds scouting the town for information
     player gives them a pounding. 
-28: In town, player speaks wth the mayor and the captain informing them of 
+28: In town, player speaks with the mayor and the captain informing them of
     Illfang's plans. Deliberation and planning. 
 29: Forces are requested and gathered including several familiar faces. Force 
     heads north to the base. 
@@ -788,71 +1001,57 @@ book 1:
 book 2:
 33(0): Player is sent to the capital with the captain to report on the small 
     kobold war in Greentown. Rulid is to go with the trade caravan Rulid sr and
-    Elond work for resulting in a joyous reunion. 
-35(1): The journey is long and the fields along the way crawl with cow flavored
-    monsters.
-36(2): Elond, the captain and others prove their combat skill in figts with
-    these monsters. 
-37(3): player and co are attacked in the night. 
-38(4): bandits attack too. 
-39(5): Elond and dad have a chat about poor missing Rulid. Clues say he's still
+    Elond work, for resulting in a joyous reunion. 
+34(1): The journey is long and the fields along the way crawl with cow flavored
+    monsters. Player and co are attacked in the night. 
+35(2): 
+36(3): Elond and dad have a chat about poor missing Rulid. Clues say he's still
     alive. They've been on a low key hunt this whole time. 
-40(6): casual battles as well as these chats and lore drops happen spread 
+37(4): casual battles as well as these chats and lore drops happen spread 
     across the previous and next few chapters. also descriptive scenery. 
-41(7): same ol, also the rule of the safety wagon is mentioned (ya have a 
-    dissagreement you go think it out on the wagon).
-42(8): another bandit run in. 
-43(9): The caravan stops at the midpoint, a savanna outpost called Farthe 
-    Outpost. Elond and later player participates in a pit fight.
-44(10): player sees a sketchy guy in the tavern. That night, player sees
-    sketchy guy stealing goods from the caravan. Guy gets away with nothing 
-    but the caravan headcount list. 
-45(11): next morning, caravan leaves again. Quick fight in the plains. 
-46(12): in the middle of no where, a giant skorpion attacks the caravan 
-    leaving one dead and several badly injured. *field boss fight*
-47(13): many suggest heading back to Farthe Outpost for better medical aid but
-    the outpost is quite far away now and the majority decide on continuing 
-    on. One, Kuretch, the second mate, seems particularly peeved by this. 
-48(14): The next day, Kuretch asks for a revote, is denied, told to go into the 
-    safety wagon, refues. This is a sign of open hostility. he is told to stand 
-    down, he refuses, others draw weapons, he is told to leave, he says not 
-    without the caravan, etc. eventually a fight breaks out and the caravan is 
-    split. *4 part battle*
-49(15): Lack of supplies and increased injured cause a crisis in the greater 
+38(5): The caravan stops at the midpoint, a savanna outpost called Farthe 
+    Outpost. Elond and later player participates in a pit fight. caravan
+    robbed [headcount list]. 
+39(6): Caravan leaves. Surrounded by minotaurs. huge battle. 
+40(7): Vote to retreat to the outpost or not. Not., Kuretch asks for a revote,
+    is denied, told to go into the safety wagon, refues. This is a sign of open
+    hostility. he is told to stand down, he refuses, others draw weapons, he is
+    told to leave, he says not without the caravan, etc. eventually a fight
+    breaks out and the caravan is split. *4 part battle*
+41(8): Lack of supplies and increased injured cause a crisis in the greater 
     caravan. player is taksed with a few others to go out and find food/get help. 
-50(16): player and team head into the woods. 
-51(17): Midnight assasination. player recognizes same clothes as scetchy guy. 
-52(18): quick solo chase, assassins get away. 
-53(19): woodland fights back to camp under siege by more scetchy guys. 
-54(20): emergency retreat back to the caravan also under attack by Tauruses in
+42(9): player and team head into the woods. Midnight assasination. player
+    recognizes same clothes as scetchy guy. quick solo chase, assassins get away.
+43(10): head back to the caravan also under attack by Tauruses in
     sketchy guy ish garb. 
-55(21): death/injured count rising, the caravan decides to go back to the 
-    Farthe Outpost anyway. 
-56(22): Elond reports and dad concurs, he has never had a trip nearly this bad.
-57(23): a few bitter fights. 
-58(24): Finally make it back to the outpost, Kuretch and others not there. 
+44(11): death/injured count rising, the caravan decides to go back to the 
+    Farthe Outpost anyway. never had a trip nearly this bad. a few bitter fights. 
+45(12): Finally make it back to the outpost, Kuretch and others not there. 
     inhabitants explain their arrival being in perfect peace and order, their
     problems solved quickly and they left again that morning. 
-59(25): That night Tarus attack on the outpost. 
-60(26): caravan sent away attributing bad luck or omen. 
-61(27): that night player takes Elond and captain stealthing after scetchy guys. 
-    They are led to a small hilly alcove where a tarus is reported to. team
-    player lays in wait for scetchy guys puts on their clothing and follows 
-    tauruses. 
-62(28): led to a larger taurus and scetchy guy group who head out. miles and 
-    miles they travel into the day with little to no issue, reach a structure 
-    carved into a cliffside, meet with others and are adressed by a giga 
-    sketchy guy. Cult leader cuts his adress short and anounces that there are 
-    unwanted guests in the crowd. 
-63(29): distraction, missdirection, blindsighting, stealth and lastly combat 
-    lead to a narrow escape and pursuit. 
-64(30): team player, kites the pursuers, who narrow down to just a few taruses 
-    and their military leaders, all the way back to the caravan. 
-65(31): caravan battles with the taurus force. 
-66(32): caravan battles Baran and Asterios Boss. After victory, Asterios says
-    "filthy feet-walkers and your dead Gods! No Minotaur should have to die for 
-    your cause!" caravan spends a day or so recovering, heads out again, and 
-    finally reaches the capital, Kedren Main, with strangely little issue.
+46(13): That night Tarus attack on the outpost. 
+47(14): caravan sent away attributing bad luck or omen. 
+48(15): Acquire disguises. 
+49(16): Attend cult meeting. Lore. Cult leader cuts his address short and
+    announces that there are unwanted guests in the crowd. distraction,
+    missdirection, blindsighting, stealth and lastly combat lead to a narrow
+    escape and pursuit.
+50(17): 
+51(18): 
+52(19): 
+53(20): 
+54(21): 
+55(22): 
+56(23): 
+57(24): 
+58(25): 
+59(26): 
+60(27): 
+61(28): 
+62(29): 
+63(30): 
+64(31): 
+65(32): 
 
 book 3:
 67(1): Inside the city of Kedren Main, player needs are met imediately and well.
@@ -915,20 +1114,19 @@ book 4:
 102(3):
 103(4):
 104(5):
-105(6):
+105(6): Player goes to reported disturbance downtown. The_Rulid()
 106(7):
-107(8):
-108(9):
+107(8): Entire City Explodes (or similar)
+108(9): No one but Elond in family really believes your story. Only main 
+    characters are willing to go though.
 109(10):
-110(11):
-111(12): Player goes to reported disturbance downtown. Passes Rulid fleeing the 
-    scene. Give chase. 
+110(11): Main group dissembarks to the east.
+111(12):
 112(13): 
 113(14):
-114(15): No one but Elond in family really believes your story. Only main 
-    characters are willing to go though. 
+114(15):
 115(16):
-116(17): Entire City Explodes (or similar)
+116(17):
 117(18):
 118(19):
 119(20):

@@ -21,29 +21,41 @@ from pynput import keyboard as kb
 
 
 # Set Initial Stats
-# def display_stats():
-#     max_hp = 10
-#     atk = 2
-#     accuracy = 0.75
-#     skill_slots = 1
-#     max_mag = 10
-#     agi = 19
-#     prog = 0
+def display_stats():
+    max_hp = 10
+    atk = 2
+    accuracy = 750
+    skill_slots = 1
+    max_mag = 10
+    agi = 999
+    prog = 0
+    tsklp = 0
+    # Iterate through levels 1-n
+    for level in range(1, 101):
+        # Update stats for each level
+        hpp = atkp = acup = magp = agip = sklp = (5 + (level // 10)) // 6
+        max_hp += 4 + round(1.03 ** level) + hpp
+        atk += (level // 8) + atkp if level > 20 else 1 + (level // 5) + atkp
+        accuracy += 2 * acup if accuracy < 1000 else accuracy == 1000
+        tsklp += sklp
+        skill_slots = 1 + int(math.log(level, 1.85) + (tsklp * .015))
+        max_mag += 1 + (level // 40) + magp if level % 5 == 0 else (level // 40) + magp
+        agi -= 1 + agip if agi > 400 else ceil(agip / 1.5)
+        prog += 2 if level % 3 == 0 else 3
 
-#     # Iterate through levels 1-n
-#     for level in range(1, 101):
-#         # Update stats for each level
-#         max_hp += 5 + round(level * 1.025)
-#         atk += (level // 8) if level > 20 else 1 + (level // 5)
-#         accuracy += 0.0025 if accuracy < 1 else 0
-#         skill_slots = 1 + int(math.log(level, 1.85))
-#         max_mag += 1 + (level // 40) if level % 5 == 0 else (level // 40)
-#         agi -= 1 if level % 12 == 0 else 0
-#         prog += 4 if level % 3 == 0 else 3
+        # hpp, atkp, acup, magp, agip, sklp = self.point_allocation()
+        # self.maxhp += 4 + round(1.03 ** self.level) + hpp #
+        # self.hp += 4 + round(1.03 ** self.level) + hpp #
+        # self.atk += (self.level // 8) + atkp if self.level > 20 else 1 + (self.level // 5) + atkp
+        # self.accuracy += 2 * acup if self.accuracy < 1000 else self.accuracy == 1000 #
+        # self.sklp += sklp #
+        # self.skill_slots = 1 + int(math.log(self.level, 1.85) + (self.sklp * 0.015)) #
+        # self.maxmag += 1 + (self.level // 40) + magp if self.level % 5 == 0 else (self.level // 40) + magp #
+        # self.agi -= 1 + agip if self.agi > 400 else ceil(agip / 1.5) #
 
-#         # Print the stats for the current level
-#         print(f'Level {level + 1}:')
-#         print(f'\tMax HP: {max_hp}; ATK: {atk}; Accuracy: {accuracy:.4f}; Skill Slots: {skill_slots}; Max MAG: {max_mag}; AGI: {agi}; stpry progress: {prog}')
+        # Print the stats for the current level
+        print(f'Level {level + 1}:')
+        print(f'\tMax HP: {max_hp}; ATK: {atk}; Accuracy: {accuracy}; Skill Slots: {skill_slots}; Max MAG: {max_mag}; AGI: {agi}; story progress: {prog}')
 
 
 
@@ -134,8 +146,20 @@ class Player:
         self.maxhp = 100
         self.level = 3
         self.name = 'Rulid'
-        self.acu = 0.70
+        self.acu = 700
+        self.accuracy = 80
         self.allies = []
+        self.asleep = False
+        self.poisoned = False
+        self.blessed = False
+        self.confused = False
+        self.frightened = False
+        self.enraged = False
+        self.focused = False
+        self.defended = False
+        self.empowered = False
+        self.weakened = False
+        self.energized = False
     
     def test(self):
         # for _ in range(120):
@@ -144,6 +168,51 @@ class Player:
         # # display_health(self)
         # display_health(self)
         pass
+
+    def get_cond_mod(self) -> float:
+        if self.asleep:
+            return 0
+
+        modifier = 1.0
+
+        if self.poisoned:
+            modifier *= 0.95
+        if self.blessed:
+            modifier *= 1.1
+        if self.confused:
+            modifier *= 1.05
+        if self.frightened:
+            modifier *= 0.85
+        if self.enraged:
+            modifier *= 1.2
+        if self.focused:
+            modifier *= 1.35
+        if self.defended:
+            modifier *= 0.98
+        if self.empowered:
+            modifier *= 1.5
+        if self.weakened:
+            modifier *= 0.75
+        if self.energized:
+            modifier *= 1.05
+
+        return modifier
+
+    def is_crit(self, hit_val):
+        crit_val = (
+            (2 if self.focused else 0) +
+            (1 if self.enraged else 0) +
+            (1 if self.blessed else 0) -
+            (1 if self.confused else 0) +
+            (1 if self.empowered else 0) -
+            (2 if self.frightened else 0) -
+            (1 if self.weakened else 0) +
+            (1 if (self.accuracy + self.acu) / 8 > hit_val else 0) +
+            (1 if hit_val <= 0.04 else 0))
+
+        crit_thresholds = {0: 95, 1: 84, 2: 66, 3: 50}
+        threshold = crit_thresholds.get(crit_val, 34)
+        return random.randint(1, 100) > threshold if crit_val >= 0 else False
 
 
 tpc = Player()
@@ -201,15 +270,15 @@ tpc = Player()
 
 class Monster:
     def __init__(self) -> None:
-        self.ac = (200, 6, 480, 2) # rail size, hit dc, speed, chances
-        self.level = 31
+        self.ac = (600, 130, 480, 20) # rail size, hit dc, speed, chances
+        self.level = 3
 
 tmon = Monster()
 
 # Initialize Pygame
 pg.init()
 
-def attack_timing_window(monster, player, acu) -> float:
+def attack_timing_window(monster, player) -> int:
     '''
     Creates a Pygame window that simulates an attack timing challenge. Closes
     and returns with enter key or after closing the window.
@@ -219,8 +288,8 @@ def attack_timing_window(monster, player, acu) -> float:
         player: a Player object with acu and level attributes
     
     Returns:
-        hit_v (float, between 0 and 1 inclusive): A hit value representing how
-        close the user came to hitting the target. 
+        hit_v (int, between 0 and 1000 inclusive): A hit value representing how
+        close the user came to hitting the target.
     '''
 
     # initialize starting values
@@ -240,7 +309,7 @@ def attack_timing_window(monster, player, acu) -> float:
     speed = round(adjusted_speed)
 
     # initialize the hit condition
-    hit_v = 0.0
+    hit_v = 1000
 
     # Set the width and height of the window
     window_width = 1000
@@ -260,7 +329,7 @@ def attack_timing_window(monster, player, acu) -> float:
     
     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
     shell = wcc.Dispatch("WScript.Shell")
-    shell.SendKeys(' ') # I have actually non idea why this works but it does
+    shell.SendKeys(' ') # I have actually no idea why this works but it does
     wg.SetForegroundWindow(hwnd)
 
     # Define colors
@@ -275,6 +344,8 @@ def attack_timing_window(monster, player, acu) -> float:
     RED = (200, 0, 40)
     BLUE = (40, 100, 255)
 
+    sub_factor = .65
+
     # Bar properties
     bar_length = rail_size if rail_size < window_width else 600
     bar_height = 20
@@ -283,19 +354,19 @@ def attack_timing_window(monster, player, acu) -> float:
 
     # Target area properties
     target_width = hit_dc + difficulty_mod
-    if target_width + (ceil(target_width * 1.85) * 2) > window_width:
+    if target_width + (ceil(target_width * sub_factor) * 2) > window_width:
         target_width = 30
     target_x = bar_x + (bar_length - target_width) // 2
     target_y = bar_y - 5
     target_height = bar_height + 10
 
     # Sub-target areas properties'
-    sub1_width = ceil(target_width * 1.85) if 1 < ceil(target_width * 1.85) <= (window_width - 10) else 2
+    sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
     sub1_x = target_x - sub1_width
     sub1_y = bar_y - 3
     sub1_height = bar_height + 6
     
-    sub2_width = ceil(target_width * 1.85) if 1 < ceil(target_width * 1.85) <= (window_width - 10) else 1
+    sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
     sub2_x = target_x + target_width
     sub2_y = bar_y - 3
     sub2_height = bar_height + 6
@@ -317,31 +388,43 @@ def attack_timing_window(monster, player, acu) -> float:
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                hit_v = 0.0
+                hit_v = 1000
                 running = False
                 break
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
                     if target_x <= slider_x <= target_x + target_width:
-                        # print('Success!')
-                        hit_v = 1.0
+                        # Center field
+                        distance = abs(slider_x - (target_x + target_width / 2))
+                        hit_v = round((distance / (target_width / 2)) * player.accuracy)
                         running = False
                         break
-                    elif sub1_x <= slider_x <= sub1_x + sub1_width:
-                        distance = slider_x - target_x
+                    elif sub1_x <= slider_x < target_x:
+                        # Left subfield
+                        distance = abs(sub1_x + sub1_width - slider_x)
                         normalized_distance = distance / sub1_width
-                        hit_v = acu + (1 - acu) * (1 + normalized_distance) # a number from .65 to 1.0 that represents how far away slider_x is from target_x
+                        hit_v = round(player.accuracy + normalized_distance * player.acu)
                         running = False
                         break
-                    elif sub2_x <= slider_x <= sub2_x + sub2_width:
-                        distance = (slider_x + slider_width) - sub2_x
-                        normalized_distance = distance / sub2_width
-                        hit_v = acu + (1 - acu) * (1 - normalized_distance) # a number from .65 to 1.0 that represents how far away slider_x is from target_x + target_width (or sub2_x)
+                    elif target_x + target_width < slider_x <= sub2_x + sub2_width:
+                        # Right subfield
+                        distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
+                        normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
+                        hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
                         running = False
                         break
                     else:
-                        # print('Miss!')
-                        hit_v = 0.0
+                        # Outer field
+                        if slider_x < sub1_x:
+                            # Beyond the left subfield
+                            distance = abs(slider_x - sub1_x)
+                            maxdist = sub1_x - bar_x
+                        else:
+                            # Beyond the right subfield
+                            distance = abs(slider_x - (sub2_x + sub2_width))
+                            maxdist = bar_x + bar_length - (sub2_x + sub2_width)
+                        normalized_distance = min(distance / maxdist, 1)
+                        hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
                         running = False
                         break
 
@@ -366,7 +449,7 @@ def attack_timing_window(monster, player, acu) -> float:
         
         # Check if the player has run out of chances
         if passes >= chances:
-            hit_v = 0.0
+            hit_v = 1000
             running = False
 
         # Clear the window
@@ -381,7 +464,7 @@ def attack_timing_window(monster, player, acu) -> float:
 
         # These bars are just to add a bit more color
         pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
-        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 3, sub1_height))
+        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
 
         # Draw the target area
         pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
@@ -445,38 +528,52 @@ def attack_timing_window(monster, player, acu) -> float:
 
 # ------ math --------
 
-def calculate_hp_and_attack(cons: float | None = 1.0, level: int | None = 1) -> tuple[int, int]:
-    '''
-    if the cons == 1:
-        atk = level and hp = level * 20 (hp_mod)
-    elif the cons == 0:
-        atk = level * 2 and hp = level * 10
+# def calculate_hp_and_attack(cons: float | None = 1.0, level: int | None = 1) -> tuple[int, int]:
+#     '''
+#     if the cons == 1:
+#         atk = level and hp = level * 20 (hp_mod)
+#     elif the cons == 0:
+#         atk = level * 2 and hp = level * 10
     
-    hp_mod = some int from 10-20 (20 - (cons * 10))
-    atk_mod = 2 - cons
+#     hp_mod = some int from 10-20 (20 - (cons * 10))
+#     atk_mod = 2 - cons
 
-    '''
-    if level == 1:
-        hp_mod = cons * 10
-    elif level < 5:
-        hp_mod = (level * 2) + (cons * 10)
-    else:
-        hp_mod = 10 + (cons * 10)
-    atk_mod = 2 - cons
+#     '''
+#     if level == 1:
+#         hp_mod = cons * 10
+#     elif level < 5:
+#         hp_mod = (level * 2) + (cons * 10)
+#     else:
+#         hp_mod = 10 + (cons * 10)
+#     atk_mod = 2 - cons
 
-    # Multiply the ratio by level
-    hp = 2 if int(hp_mod * level) < 2 else int(hp_mod * level)
-    atk = int(atk_mod * level)
+#     # Multiply the ratio by level
+#     hp = 2 if int(hp_mod * level) < 2 else int(hp_mod * level)
+#     atk = int(atk_mod * level)
 
-    return hp, atk
+#     return hp, atk
+
+# ------ damage ------
+
+
+# def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, other=1) -> int:
+#     critv = 1
+#     specv = 1
+#     if num_targets > 9:
+#         num_targets = 9
+#     if crit:
+#         critv = 1.5
+#     if special:
+#         specv = 1.15
+#     rand = random.randint(95,105) / 100
+#     base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+#     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * rand * other + power
+#     return int(final_damage)
 
 
 # ------ tests -------
 
-for i in range(500):
-    con = random.random()
-    # con = 1.0
-    # con = 0.0
-    # con = 0.5
-    hp_atk = calculate_hp_and_attack(cons = con, level = (i // 5) + 1)
-    print(f'level {(i // 5) + 1}. Hp -> {hp_atk} <- atk. Consentration = {round(con, 3)}')
+dprint('things and stuff')
+input('ready?')
+val = attack_timing_window(tmon, tpc)
+dprint(f'val is: {val}')

@@ -1,9 +1,65 @@
 
 from actions import *
 from players import Fighter
-from monsters import init_enemies
+from monsters import init_enemies, drops
 from misc import Hospital, Marketplace, Gym, Quit
 from story import *
+import pickle
+
+
+skills = init_skills()
+allies = init_allies()
+
+
+class SaveLoad:
+    def __init__(self, xp_thresholds) -> None:
+        self.name = 'Save/Load'
+        self.xp_thresholds = xp_thresholds
+    
+    def run(self, player=None, world=None, xp_thresholds=None):
+        if os.path.exists('save_file.pkl') and player != None:
+            dprint('1: Save\n2: Load\n3: Erase save\n4: Return\n')
+            user = input().strip().lower()
+            if user in ['','s','save','1','o','one','w','d','x','z','a','q','1: save']:
+                return self.save(player=player)
+            elif user in ['l','load','2','t','two','r','f','g','y','6','5','2: load']:
+                try:
+                    return self.load()
+                except EOFError as err:
+                    dprint('The file was currupted!')
+                    print(f'{err}\n\n')
+                    dprint(' . . . ',.085)
+                    dprint('Returning . . .')
+                    return True
+                except pickle.UnpicklingError as err:
+                    dprint('The file was currupted!')
+                    print(f'{err}\n\n')
+                    dprint(' . . . ',.085)
+                    dprint('Returning . . .')
+                    return True
+            elif user in ['e','3','erase','es','erase save','three','t','del','3: erase save']:
+                os.remove('save_file.pkl')
+                return True
+            else:
+                return True
+        elif player != None:
+            self.save(player=player)
+            return True
+        else:
+            return True
+            
+    def save(self, filename='save_file.pkl', player:Fighter=None):
+        with open(filename, 'wb') as file:
+            pickle.dump(player, file)
+        return True
+
+    def load(self, filename='save_file.pkl'):
+        try:
+            with open(filename, 'rb') as file:
+                return pickle.load(file)
+        except FileNotFoundError:
+            print(f'No save file found at {filename}.')
+            return None
 
 
 class WorldOne:
@@ -12,29 +68,70 @@ class WorldOne:
         self.number = 1
         self.mon_list = init_enemies()
         self.world_monsters = [monster for monster in self.mon_list if 1 in monster.world]
-        self.pc = self.create_character()
         self.xp_thresholds = xp_thresholds
-        self.book_one = BookOne(self.pc, self.xp_thresholds) # doesn't work if prompt is always 'Begin story'
+        self.pc = self.create_character()
+        self.book_one = BookOne(self.pc, self.xp_thresholds)
         self.world_options = self.update_world_options()
-    
+
     def create_character(self):
+        if os.path.exists('save_file.pkl'):
+            dprint('You have a save file available. \nLoad? \n1: Y \n2: N')
+            uload = input().strip().lower()
+            if uload in ['0','1','','!',')','q','`','y','t','g','h','u','6','7','yes','l','load','?','1: y','1: yes','1:y','sure','s','i would like to load the file thank you','one','uno','e','w','3','load? 1: y']:
+                pc = self.load('save_file.pkl')
+                if pc == None:
+                    pass
+                else:
+                    return pc
         dprint('What is your name: ')
         pname = input()
         dprint(f'Is {pname} male or female?')
-        ugender = input()
-        if ugender in ['2','f','F','3','female','Female','FEMALE','fEMALE','Fe','iron','not male','girl','GIRL','Girl','g','G','ggs',f'{pname} is a female. ','d','r','c','v','t',' ','i','q','w','e','6','x','X','xx','XX','fe','FE','fem','two','T','Two','TWO','too','feminine','Feminine','FEMININE']: 
+        ugender = input().strip().lower()
+        if ugender in ['2','f','3','female','fe','iron','not male','girl','g','ggs',f'{pname} is a female.','d','r','c','v','t','i','q','w','e','6','x','xx','fem','two','too','lady','l','wow, a lady knight!']:
             pgender = 'Female'
         else:
             pgender = 'Male'
         if pname == 'admin':
-            pc = Fighter(pname, pgender, 5000, 600, 0, 100, .96, 10000)
-        if pname == 'debug':
-            pc = Fighter(pname, pgender, 23, 4, 300, 3, .755, 30, 7)
-        else:
-            pc = Fighter(pname, pgender, 10, 2, 0, 1, .69, 3)
+            pc = Fighter(pname, pgender, 5000, 600, 0, 100, 960, 10000)
             return pc
-        
-    
+        if pname == 'debug':
+            pc = Fighter(pname, pgender, 23, 4, 300, 3, 755, 30, 7)
+            return pc
+        else:
+            pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
+            return pc
+
+    def save(self, filename='save_file.pkl'):
+        if os.path.exists(filename):
+            os.remove(filename)
+        with open(filename, 'wb') as save_file:
+            pickle.dump(self.pc, save_file)
+        print(f'Game saved to {filename}.')
+
+    def load(self, filename):
+        try:
+            with open('save_file.pkl', 'rb') as save_file:
+                try:
+                    player_data = pickle.load(save_file)
+                except EOFError as err:
+                    dprint('The file was currupted!')
+                    print(f'{err}\n\n')
+                    dprint(' . . . ',.085)
+                    dprint('Creating new character . . .')
+                    return None
+                except pickle.UnpicklingError as err:
+                    dprint('The file was currupted!')
+                    print(f'{err}\n\n')
+                    dprint(' . . . ',.085)
+                    dprint('Creating new character . . .')
+                    return None
+
+                print(f'Game loaded from {filename}.')
+                return player_data
+        except FileNotFoundError:
+            print(f'No save file found at {filename}.')
+            return None
+
     def introdction(self):
         # self.pc = self.create_character()
         time.sleep(1)
@@ -56,6 +153,7 @@ class WorldOne:
         hospital = Hospital('greentown hospital', self.pc.level)
         market = Marketplace('greentown market', self.pc.level, self.xp_thresholds, self)
         gym = Gym(self.pc)
+        save_load = SaveLoad(self.xp_thresholds)
         quit_game = Quit()
         world_options = []
 
@@ -74,7 +172,8 @@ class WorldOne:
                     world_options.append(hospital) if hospital not in world_options else None
                     world_options.append(market) if hospital not in world_options else None
                     pass
-
+        
+        world_options.append(save_load)
         world_options.append(quit_game)
         return world_options
 
@@ -90,6 +189,11 @@ class WorldOne:
 
             playing = action.run(self.pc, self, self.xp_thresholds)
 
+            if hasattr(playing, 'title'):
+                self.pc = playing
+                playing = self.pc.is_alive()
+            if playing is None:
+                playing == True
             if not playing:
                 break
     

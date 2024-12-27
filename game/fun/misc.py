@@ -17,7 +17,7 @@ class Hospital:
 
     def welcome(self):
         options = ['healing', 'superheal', 'information', 'nothing']
-        dprint(f'Welcome to {self.name} hospital! ')
+        dprint(f'Welcome to {self.name}!')
         dprint(f'This hospital is a level {self.quality} facility. ')
         dprint('What seems to be the problem today! ')
         for i in range(len(options)):
@@ -133,7 +133,7 @@ class Hospital:
         print(f'Attack power: {low_atk}-{player.atk}')
         print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
         print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
-        print(f'Speed: {20 - player.agi}')
+        print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
         print('Skills: ')
@@ -164,7 +164,7 @@ class Marketplace():
     def stock_inventory(self):
         for item in self.salable:
             if item.level <= self.level:
-                self.inventory[item] = self.level # starting at 1 for now change later to increase according to levels
+                self.inventory[item] = self.level # Return
     
     def welcome(self):
         options = ['sell','buy','information','black market']
@@ -178,7 +178,6 @@ class Marketplace():
         return input()
     
     def resolve(self, player):
-        options = ['sell','buy','information','black market']
         choice_task = self.welcome()
 
         if choice_task in ['','sell','Sell','SELL','1','S','s','0','buy from me!']:
@@ -187,11 +186,7 @@ class Marketplace():
             user = input('1: Yes\n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                dprint('What would you like to do then? ')
-                for i in range(len(options)):
-                    print(f'{i + 1}: {options[i]}')
-                user = input()
-                self.resolve(player, user)
+                self.resolve(player)
             else:
                 return True
 
@@ -201,10 +196,7 @@ class Marketplace():
             user = input()
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                for i in range(len(options)):
-                    print(f'{i + 1}: {options[i]}')
-                user = input()
-                self.resolve(player, user)
+                self.resolve(player)
             else:
                 return True
 
@@ -214,10 +206,7 @@ class Marketplace():
             user = input()
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                for i in range(len(options)):
-                    print(f'{i + 1}: {options[i]}')
-                user = input()
-                self.resolve(player, user)
+                self.resolve(player)
             else:
                 return True
         
@@ -228,10 +217,7 @@ class Marketplace():
                 user = input()
 
                 if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                    for i in range(len(options)):
-                        print(f'{i + 1}: {options[i]}')
-                    user = input()
-                    self.resolve(player, user)
+                    self.resolve(player)
                 else: 
                     return True
             else:
@@ -323,7 +309,7 @@ class Marketplace():
         print(f'Attack power: {low_atk}-{player.atk}')
         print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
         print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
-        print(f'Speed: {20 - player.agi}')
+        print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
         print('Skills: ')
@@ -338,7 +324,7 @@ class Marketplace():
                 print(ally.name)
 
     def black_market(self, player):
-        pass
+        return True
 
     def update_inventory(self, item):
         if self.inventory[item] == 1:

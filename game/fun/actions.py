@@ -8,6 +8,7 @@ import pygame as pg
 import win32gui as wg
 import win32com.client as wcc
 import os
+import json
 
 from things_stuff import Skill, Spell, Spall
 
@@ -152,7 +153,7 @@ def initialize_pygame():
     input('Press enter to start . . . ')
 
 
-def attack_timing_window(monster, player, acu) -> float:
+def attack_timing_window(monster, player) -> int:
     '''
     Creates a Pygame window that simulates an attack timing challenge. Closes
     and returns with enter key or after closing the window.
@@ -162,8 +163,8 @@ def attack_timing_window(monster, player, acu) -> float:
         player: a Player object with acu and level attributes
     
     Returns:
-        hit_v (float, between 0 and 1 inclusive): A hit value representing how
-        close the user came to hitting the target. 
+        hit_v (int, between 0 and 1000 inclusive): A hit value representing how
+        close the user came to hitting the target.
     '''
 
     # initialize starting values
@@ -183,7 +184,7 @@ def attack_timing_window(monster, player, acu) -> float:
     speed = round(adjusted_speed)
 
     # initialize the hit condition
-    hit_v = 0.0
+    hit_v = 1000
 
     # Set the width and height of the window
     window_width = 1000
@@ -203,7 +204,7 @@ def attack_timing_window(monster, player, acu) -> float:
     
     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
     shell = wcc.Dispatch("WScript.Shell")
-    shell.SendKeys(' ') # I have actually non idea why this works but it does
+    shell.SendKeys(' ') # I have actually no idea why this works but it does
     wg.SetForegroundWindow(hwnd)
 
     # Define colors
@@ -218,6 +219,8 @@ def attack_timing_window(monster, player, acu) -> float:
     RED = (200, 0, 40)
     BLUE = (40, 100, 255)
 
+    sub_factor = .65
+
     # Bar properties
     bar_length = rail_size if rail_size < window_width else 600
     bar_height = 20
@@ -226,19 +229,19 @@ def attack_timing_window(monster, player, acu) -> float:
 
     # Target area properties
     target_width = hit_dc + difficulty_mod
-    if target_width + (ceil(target_width * 1.85) * 2) > window_width:
+    if target_width + (ceil(target_width * sub_factor) * 2) > window_width:
         target_width = 30
     target_x = bar_x + (bar_length - target_width) // 2
     target_y = bar_y - 5
     target_height = bar_height + 10
 
     # Sub-target areas properties'
-    sub1_width = ceil(target_width * 1.85) if 1 < ceil(target_width * 1.85) <= (window_width - 10) else 2
+    sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
     sub1_x = target_x - sub1_width
     sub1_y = bar_y - 3
     sub1_height = bar_height + 6
     
-    sub2_width = ceil(target_width * 1.85) if 1 < ceil(target_width * 1.85) <= (window_width - 10) else 1
+    sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
     sub2_x = target_x + target_width
     sub2_y = bar_y - 3
     sub2_height = bar_height + 6
@@ -260,31 +263,43 @@ def attack_timing_window(monster, player, acu) -> float:
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                hit_v = 0.0
+                hit_v = 1000
                 running = False
                 break
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
                     if target_x <= slider_x <= target_x + target_width:
-                        # print('Success!')
-                        hit_v = 1.0
+                        # Center field
+                        distance = abs(slider_x - (target_x + target_width / 2))
+                        hit_v = round((distance / (target_width / 2)) * player.accuracy)
                         running = False
                         break
-                    elif sub1_x <= slider_x <= sub1_x + sub1_width:
-                        distance = slider_x - target_x
+                    elif sub1_x <= slider_x < target_x:
+                        # Left subfield
+                        distance = abs(sub1_x + sub1_width - slider_x)
                         normalized_distance = distance / sub1_width
-                        hit_v = acu + (1 - acu) * (1 + normalized_distance) # a number from .65 to 1.0 that represents how far away slider_x is from target_x
+                        hit_v = round(player.accuracy + normalized_distance * player.acu)
                         running = False
                         break
-                    elif sub2_x <= slider_x <= sub2_x + sub2_width:
-                        distance = (slider_x + slider_width) - sub2_x
-                        normalized_distance = distance / sub2_width
-                        hit_v = acu + (1 - acu) * (1 - normalized_distance) # a number from .65 to 1.0 that represents how far away slider_x is from target_x + target_width (or sub2_x)
+                    elif target_x + target_width < slider_x <= sub2_x + sub2_width:
+                        # Right subfield
+                        distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
+                        normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
+                        hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
                         running = False
                         break
                     else:
-                        # print('Miss!')
-                        hit_v = 0.0
+                        # Outer field
+                        if slider_x < sub1_x:
+                            # Beyond the left subfield
+                            distance = abs(slider_x - sub1_x)
+                            maxdist = sub1_x - bar_x
+                        else:
+                            # Beyond the right subfield
+                            distance = abs(slider_x - (sub2_x + sub2_width))
+                            maxdist = bar_x + bar_length - (sub2_x + sub2_width)
+                        normalized_distance = min(distance / maxdist, 1)
+                        hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
                         running = False
                         break
 
@@ -309,7 +324,7 @@ def attack_timing_window(monster, player, acu) -> float:
         
         # Check if the player has run out of chances
         if passes >= chances:
-            hit_v = 0.0
+            hit_v = 1000
             running = False
 
         # Clear the window
@@ -324,7 +339,7 @@ def attack_timing_window(monster, player, acu) -> float:
 
         # These bars are just to add a bit more color
         pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
-        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 3, sub1_height))
+        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
 
         # Draw the target area
         pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
@@ -390,3 +405,17 @@ def ascci_fireworks():
     ,.0005)
     dprint('           YAAAAAAAAAAAAY!!!')
 
+
+def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, mon=0.0, other=1) -> int:
+    critv = 1
+    specv = 1
+    if num_targets > 9:
+        num_targets = 9
+    if crit:
+        critv = 1.5
+    if special:
+        specv = 1.15
+    rand = random.randint(95,105) / 100
+    base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+    final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
+    return int(final_damage)

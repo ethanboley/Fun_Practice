@@ -162,4 +162,4 @@ cython_debug/
 #.idea/
 
 # game save file
-save_game.json
+save_file.pkl

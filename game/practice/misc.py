@@ -17,7 +17,7 @@ class Hospital:
 
     def welcome(self):
         options = ['healing', 'superheal', 'information', 'nothing']
-        dprint(f'Welcome to {self.name} hospital! ')
+        dprint(f'Welcome to {self.name}!')
         dprint(f'This hospital is a level {self.quality} facility. ')
         dprint('What seems to be the problem today! ')
         for i in range(len(options)):
@@ -133,7 +133,7 @@ class Hospital:
         print(f'Attack power: {low_atk}-{player.atk}')
         print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
         print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
-        print(f'Speed: {20 - player.agi}')
+        print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
         print('Skills: ')
@@ -309,7 +309,7 @@ class Marketplace():
         print(f'Attack power: {low_atk}-{player.atk}')
         print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
         print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
-        print(f'Speed: {20 - player.agi}')
+        print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
         print('Skills: ')
