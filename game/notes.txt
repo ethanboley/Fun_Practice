@@ -26,7 +26,8 @@ dev 0.0.31 (meter implementation)
 dev 0.0.35 (little bit o everything)
 dev 0.0.36 (little big changes)
 dev 0.0.37 (save)
-dev 0.0.39 (carried away) current
+dev 0.0.39 (carried away)
+dev 0.0.40 (Book 1) current
 ...
 alpha 0.1.0 
 ...
@@ -35,9 +36,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 
-commit notes: damage_calculator(); battle improvements; minor misc adjustments; added malice for monsters; added defense and force stats; added more allies, added point alocation, critical hits and condiion modifiers; cleaned up story; added weapons and armor; adjusted skills; changed save systems to pickle from json; added more music. 
-
-
+commit notes: Finished book 1; minor adjustemnts to actions; spalls for allies; fixed player.grammer 
 
 
 
@@ -105,6 +104,8 @@ LOCATION DICTIONARY:
 1-8: under the Amn mountains
 1-9: south kobold territory
 1.10: south kobold stronghold
+1-11: north kobold territory
+1-12: north kobold stronghold
 
 : Greentown
 0: Pompon
@@ -397,7 +398,7 @@ similar in size to that of his own father, grew proud and overconfident,
 boasting that he would rise to be greater even than his own father and creator.
 This open rebellion resulted in himself, as well as all those that followed him
 rather than trust the plans of their father, to be stripped of their power and
-thrust with the dust into Lho, the void where the dust of creation resided.
+thrust with the dust into Lho, the void where the dust of creation resided. 
 The second born is cast into Lho or the void to be mixed and mingled, scrambled
 and organized with the rest of the dust. He thus baceme lower than the lowest
 Archlho. Having risen so high and fallen suddenly so low, his whole being was
@@ -677,7 +678,7 @@ primordials. They are only technically dragons due to their serpentine nature
 and compatibility with other species. They are typically the largest of the
 dragons beating out Wyrms by quite a bit as they age, though, Wyrms Eggs are
 often larger than Leviathan eggs. Their inteligence grows slowly throughout
-their lives but have never been knows to speak. Leviathans sleep in large
+their lives but have never been known to speak. Leviathans sleep in large
 bodies of (usually) salt water and attack anything that disturbes that slumber
 making them almost exclusively evil in allignment.
 Kazuryus: Many legs, No wings, Elemental breath, Long body, Magic, growing inteligence from adult+.
@@ -696,7 +697,7 @@ to do so and so use their magic to convey ideas. Oroboros are very often Good
 in allignment but some have become corrupted and Evil.
 All types of dragons, if they have magical capability usually only weild
 illusory magic but gain the ability to shapeshift into cretures whose language
-they have learned to speak. Dragons thay have achieved this are usually
+they have learned to speak. Dragons that have achieved this are usually
 considered the pinacle of draconic life and power some even being considered
 lesser deities.
 
@@ -727,7 +728,7 @@ briefest moment and you see the exact same face twelve
 years younger.
 The face of your long missing brother, Rulid.
 Time seems to slow down as he passes. The screams of
-pesestrians and shouts of officers fade into the
+pedestrians and shouts of officers fade into the
 background.
 Slowly, your brother turns to you as he passes. Your eyes
 meet and you see not the light hazel brown color he
@@ -814,7 +815,7 @@ Theo:{To main: Friend;
     Personality: ;
     Race: Human;
     Char dev: }
-Rosalind:{To main: ; 
+Rosalind:{To main: Wife?;
     Relationships: ;
     class: ;
     Personality: ;
@@ -923,75 +924,68 @@ The 5th age was just under 4000 years long. 5th age 780 Kairon is born.
 
 
 plot layer 1: 
-    The plan of salvation.
+    The plan of salvation X Hero's journey.
 
 plot layer 2:
-book1: Robin is stolen by kobolds player rescues him. 
-book2: player goes to the capital facing a rediculous number of trials along 
-    the way. 
-book3: player, at the capital is intruduced to the deuteragonists of the rest
-    of the story including Milo, Theo, Toby, Outh, Rosalind, Ideal, Nori, 
-    Chloe and Callybon. Otherwise least consequential arc. 
-book4: player goes after a scetchy guy group leader lead crap hits the fan as
-    a few scetchy guys pass by in a chase and its Rulid now Kairon. 
-book5: 
+book1: Robin is stolen by kobolds player rescues him.
+book2: player is introduced to the wider world.
+book3: intro of protagonist group. plot explosion. departure.
+book4: adventrues in a new realm.
+book5: the underdark?
+book6: into the planes?
 
 
 plot layer 3: 
 (important plot points are included not specific fights (with some exceptions))
 book 1: 
 0: player wakes up with increased power and memory loss
-1: player and Robin fight their way backto town
+1: player and Robin fight their way back to town
 2: player is 3rd of 5 children born to a wholesome family, something odd about 
-    missing oldest son Rulid (24 now). They are attacked by kobolds. 
+    missing oldest brother Rulid (24 now). They are attacked by kobolds.
 3: Robin and player go out to fight and are attacked by kobolds again. 
 4: player proves his worth and joins a kobold counter measure task force. 
 5: player and team is ambushed by kobolds and a teamate is mortally wounded. 
 6: player makes it back to town, obtains aid and is assigned another mission. 
 7: player ventures into a cave, fights a cave bear and finds the burnt carcass 
-    of a kobold as well as a charred note explaining that the kobold was killed 
-    for disloyalty to the new Kobold Boss. 
-8: exploring deeper, player finds an exit and an abandoned kobold camp. Inside 
-    he finds an order given by a kobold called Luxkhanna to kidnap certain 
-    unnamed humans from Greentown.
-9: player ventures home encountering no kobolds on the way. 
-10: in the middle of the night, a large force of kobolds attack Greentown. 
-    Parts of the town are burned and Robin as well as many others are abducted. 
-11: player and 3 others begin pursuit and watch with each fight as their quary 
-    grows farther and farther. 
-12: player finds himself alone in the southern woods. 
-13: player finds the name Luxkhanna prefixed by the title capper and a map of 
-    kobold camps. 
-14: player goes to the location which is abandoned but finds more current place. 
-15: place is far but player heads out far south-west into the woods. 
-16: player finds treasure but has to fight for it. 
-17: player is led near the mouth of a canyon. Fowl stench signals a bunch of 
-    nepenths to attack.
-18: player enters the canyon and finds the Kosaur asleep. no way around. 
-19: player confronts the Kosaur. 
-20: the lack of a Kosaur causes a surge of small monsters through the canyon. 
-21: monsters that make it through signal kobold scouts who send investigative 
-    kobold parties
-22: finally player breaks through and continues to follow trail leading them 
-    to the camp at last. 
-23: spying out the camp, player spots Capper Luxkhanna. careful maneuvering and 
-    stealth reveals several captives and at last, Robin. 
-24: night comes and player moves in *controlled dprint() for tense situations*
-    player spots Luxkhanna again roaming around in the night and player follows. 
-    Luxkhanna kneels before a large enshrowded Kobold.
-25: the Luxkhanna and Illfang converse about secret plans to attack from a 
-    northern base in several days. player is discovered and chased out without
-    Robin.
-26: player breaks through the canyon again kobolds still in hot pursuit. After a
-    while they leave and player continues in haste to Greentown. 
+    of a kobold as well as evidence of a new Kobold Boss. 
+8: Player finds an exit and an abandoned kobold camp. Inside he finds an order
+    given by a kobold called Luxkhanna to kidnap children from Greentown.
+9: player ventures home strangely encountering no kobolds on the way.
+10: in the middle of the night, a large force of kobolds attack Greentown.
+    Parts of the town are burned. Robin, Rosie and many others are abducted.
+11: player and 3 others begin pursuit and watch with each fight as their quary
+    grows farther and farther.
+12: player finds himself in the southern woods. 
+13: player finds the name Luxkhanna prefixed by the title capper and a map of
+    kobold camps.
+14: player goes to the location which is abandoned but finds more current place.
+15: place is far but player heads out far south into the woods. 
+16: player finds treasure and more evidence but has to fight for it.
+17: player is led near the mouth of a canyon. Fowl stench signals a bunch of
+    nepenths to attack, loss of ally, life.
+18: player enters the canyon and finds the Kosaur asleep. no way around.
+19: player confronts the Kosaur.
+20: the lack of a Kosaur causes a surge of small monsters through the canyon.
+21: monsters that make it through signal kobold scouts who send investigative
+    kobold parties. player trapped by goblins.
+22: finally player breaks through goblins and continues to follow trail leading
+    them to the camp at last.
+23: spying out the camp, player spots Capper Luxkhanna. Still no siblings. 
+24: night comes and player moves in player spots Luxkhanna again roaming around
+    in the night and player follows. Luxkhanna kneels before a large enshrowded
+    Kobold.
+25: the Luxkhanna and Illfang converse about secret plans to attack from a
+    northern base in weeks. player is discovered and chased out without
+    siblings.
+26: player breaks through the canyon again kobolds no longer in pursuit.
 27: near the town player finds several kobolds scouting the town for information
-    player gives them a pounding. 
-28: In town, player speaks with the mayor and the captain informing them of
-    Illfang's plans. Deliberation and planning. 
+    player and locals give them a pounding. 
+28: In town, player speaks with leaders informing them of Illfang's plans.
+    Deliberation and planning.
 29: Forces are requested and gathered including several familiar faces. Force 
     heads north to the base. 
 30: Base is in a hilly place, force penetrates and begins forced entry. 
-31: inside a large stone keep, many final guards await. Robin is found and 
+31: inside a large stone keep, many final guards await. captives are found and
     freed.
 32: player and company confront Illfang. Illfang says some cryptic words before 
     death of one who led him to his actions. Upon returning home, the body of
@@ -1001,7 +995,7 @@ book 1:
 book 2:
 33(0): Player is sent to the capital with the captain to report on the small 
     kobold war in Greentown. Rulid is to go with the trade caravan Rulid sr and
-    Elond work, for resulting in a joyous reunion. 
+    Elond work for resulting in a joyous reunion.
 34(1): The journey is long and the fields along the way crawl with cow flavored
     monsters. Player and co are attacked in the night. 
 35(2): 
@@ -1010,8 +1004,8 @@ book 2:
 37(4): casual battles as well as these chats and lore drops happen spread 
     across the previous and next few chapters. also descriptive scenery. 
 38(5): The caravan stops at the midpoint, a savanna outpost called Farthe 
-    Outpost. Elond and later player participates in a pit fight. caravan
-    robbed [headcount list]. 
+    Outpost. Elond and player participate in a pit fight. caravan robbed
+    [headcount list].
 39(6): Caravan leaves. Surrounded by minotaurs. huge battle. 
 40(7): Vote to retreat to the outpost or not. Not., Kuretch asks for a revote,
     is denied, told to go into the safety wagon, refues. This is a sign of open

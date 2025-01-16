@@ -37,9 +37,9 @@ class Player:
         self.energized = energized # +mag
         self.auto_battle = auto_battle
         if self.gender == 'Female':
-            self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself'}
+            self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself', 'altposs':'her'}
         else: 
-            self.grammer = {'subjective':'he', 'objective':'him', 'possessive':'his', 'reflexive':'himself'}
+            self.grammer = {'subjective':'he', 'objective':'him', 'possessive':'his', 'reflexive':'himself', 'altposs':'his'}
 
 
     def attack(self, enemy, xp_thresholds):

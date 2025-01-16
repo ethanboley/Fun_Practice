@@ -57,20 +57,18 @@ def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\
             sys.stdout.flush()
             time.sleep(speed) # lower value is faster
         else:
-            sys.stdout.write(char) # really puts in perspective how fast .write() is
+            sys.stdout.write(char)
 
-        if msvcrt.kbhit():  # Check if a key is pressed
+        if msvcrt.kbhit(): # Check if a key is pressed
             key = msvcrt.getch().decode('utf-8')
-            if key == '\r':  # Press Enter to skip
+            if key == '\r': # Press Enter to skip
                 skip_slow_display = True
 
-    sys.stdout.write(end)  # Add the correct end when done
+    sys.stdout.write(end) # Add the correct end when done
 
 
 def display_health(player):
-    percent = (player.hp / player.maxhp) * 100 # __ what about a situation where the player max = 33 and the hp = 7?
-    # that would make percent = 21.2121212121212121...
-    # Therefore the next line would do some funky things because it is not working with int. 
+    percent = (player.hp / player.maxhp) * 100
 
     if 50 < percent <= 100:
         ansi_code = '\033[38;2;0;160;10m' # Green RGB:0,160,10
@@ -384,7 +382,7 @@ def basic_player_prompt(*prompts):
 
 
 def ascci_fireworks():
-    dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!')
+    dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!', .05)
     dprint(
         '''
                                                                         *,                  _`Y,           
@@ -416,6 +414,7 @@ def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False
     if special:
         specv = 1.15
     rand = random.randint(95,105) / 100
-    base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+    # base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100))) # old
+    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100))) # new
     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
-    return int(final_damage)
+    return round(final_damage)

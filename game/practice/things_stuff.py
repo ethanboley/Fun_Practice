@@ -289,9 +289,9 @@ def init_skills():
 
 def init_spalls():
     punch = Spall('punch', 2, 1, 1, 1, 1)
-    flurry_of_blows = Spall()
+    # flurry_of_blows = Spall()
 
-    spalls = [punch, flurry_of_blows]
+    spalls = [punch]
 
     return spalls
 
