@@ -41,7 +41,7 @@ def display_stats():
         # Update stats for each level
         hpp, atkp, acup, magp, agip, sklp = random_point_allocation(level)
         max_hp += 4 + round(1.03 ** level) + hpp
-        atk += (level // 8) + atkp if level > 20 else 1 + (level // 5) + atkp
+        atk += 1 + round((1.03 ** level) / 5) + atkp if level % 8 == 0 else round((1.03 ** level) / 5) + atkp
         accuracy += 2 * acup if accuracy < 998 else 0
         tsklp += sklp
         skill_slots = 1 + int(math.log(level, 1.85) + (sklp * 0.015))
@@ -552,21 +552,28 @@ tpc = Player()
 # ------ damage ------
 
 
-# def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, other=1) -> int:
-#     critv = 1
-#     specv = 1
-#     if num_targets > 9:
-#         num_targets = 9
-#     if crit:
-#         critv = 1.5
-#     if special:
-#         specv = 1.15
-#     rand = random.randint(95,105) / 100
-#     base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
-#     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * rand * other + power
-#     return int(final_damage)
+def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, mon=0.0, other=1) -> int:
+    critv = 1
+    specv = 1
+    if num_targets > 9:
+        num_targets = 9
+    if crit:
+        critv = 1.5
+    if special:
+        specv = 1.15
+    rand = random.randint(95,105) / 100
+    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+    final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
+    return round(final_damage)
 
 
 # ------ tests -------
 
 display_stats()
+# time.sleep(10)
+print()
+print(damage_calculator(300,1,0,0,0,1,False,False,1,0.0,1))
+print(damage_calculator(300,100,0,0,0,1,False,False,1,0.0,1))
+print(damage_calculator(2,1,0,0,0,1,False,False,1,0.0,1))
+print(damage_calculator(2,100,0,0,0,1,False,False,1,0.0,1))
+print(damage_calculator(1,3,0,0,0,1,False,False,1,50.0,1))

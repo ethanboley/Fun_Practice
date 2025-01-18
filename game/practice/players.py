@@ -217,7 +217,7 @@ class Fighter(Player):
         hpp, atkp, acup, magp, agip, sklp = self.point_allocation()
         self.maxhp += 4 + round(1.03 ** self.level) + hpp #
         self.hp += 4 + round(1.03 ** self.level) + hpp #
-        self.atk += (self.level // 8) + atkp if self.level > 20 else 1 + (self.level // 5) + atkp
+        self.atk += 1 + round((1.03 ** self.level) / 5) + atkp if self.level % 8 == 0 else round((1.03 ** self.level) / 5) + atkp
         self.accuracy += 2 * acup if self.accuracy < 1000 else self.accuracy == 1000 #
         self.sklp += sklp #
         self.skill_slots = 1 + int(math.log(self.level, 1.85) + (self.sklp * 0.015)) #

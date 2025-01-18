@@ -414,7 +414,6 @@ def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False
     if special:
         specv = 1.15
     rand = random.randint(95,105) / 100
-    # base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100))) # old
-    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100))) # new
+    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
     return round(final_damage)
