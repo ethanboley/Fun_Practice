@@ -1327,43 +1327,35 @@ book 1:
     thirty_two_victory_0() detailing victory and also transitioning into book2*
 
 book 2:
-33(0): Player is sent to the capital with the captain to report on the small 
-    kobold war in Greentown. Rulid is to go with the trade caravan Rulid sr and
-    Elond work for resulting in a joyous reunion.
+33(0): Player goes to the capital to report on the small kobold war along with
+    the Captain and trade caravan Rulid sr and Elond work for.
 34(1): The journey is long and the fields along the way crawl with cow flavored
-    monsters. Player and co are attacked in the night. 
-35(2): 
-36(3): Elond and dad have a chat about poor missing Rulid. Clues say he's still
-    alive. They've been on a low key hunt this whole time. 
-37(4): casual battles as well as these chats and lore drops happen spread 
-    across the previous and next few chapters. also descriptive scenery. 
-38(5): The caravan stops at the midpoint, a savanna outpost called Farthe 
-    Outpost. Elond and player participate in a pit fight. caravan robbed
-    [headcount list].
-39(6): Caravan leaves. Surrounded by minotaurs. huge battle. 
-40(7): Vote to retreat to the outpost or not. Not., Kuretch asks for a revote,
-    is denied, told to go into the safety wagon, refues. This is a sign of open
-    hostility. he is told to stand down, he refuses, others draw weapons, he is
-    told to leave, he says not without the caravan, etc. eventually a fight
-    breaks out and the caravan is split. *4 part battle*
-41(8): Lack of supplies and increased injured cause a crisis in the greater 
-    caravan. player is taksed with a few others to go out and find food/get help. 
-42(9): player and team head into the woods. Midnight assasination. player
-    recognizes same clothes as scetchy guy. quick solo chase, assassins get away.
-43(10): head back to the caravan also under attack by Tauruses in
-    sketchy guy ish garb. 
-44(11): death/injured count rising, the caravan decides to go back to the 
-    Farthe Outpost anyway. never had a trip nearly this bad. a few bitter fights. 
-45(12): Finally make it back to the outpost, Kuretch and others not there. 
-    inhabitants explain their arrival being in perfect peace and order, their
-    problems solved quickly and they left again that morning. 
-46(13): That night Tarus attack on the outpost. 
-47(14): caravan sent away attributing bad luck or omen. 
-48(15): Acquire disguises. 
-49(16): Attend cult meeting. Lore. Cult leader cuts his address short and
-    announces that there are unwanted guests in the crowd. distraction,
-    missdirection, blindsighting, stealth and lastly combat lead to a narrow
-    escape and pursuit.
+    monsters. Caravan has a bunch of non-humans.
+35(2): Player find himself a bit racist. Elond talks to player about the wider
+    world. 
+36(3): Elond continues talking about the world moving on to city life. A tornado
+    touches down nearby. 
+37(4): racist arc pt 1. the problem, and the prejudice.
+38(5): racist arc pt 2. the brooding and conflicting. 
+39(6): racist arc pt 3. the solution and the lesson.
+40(7): The caravan stops at the midpoint, a savanna outpost called Farthe 
+    Outpost. Elond and player participate in a pit fight. caravan nearly robbed
+41(8): next day investigations and side questing.
+42(9): Elond and dad have a chat about poor missing Rulid. Clues say he's still
+    alive. They've been on a low key hunt this whole time. Conversations resumed
+    following next arc. Caravan departs again.
+43(10): Caravan encounters what looks like a battle field full of dead minotaurs.
+    Survivor tells of a 1 man massacre and blames humanity.
+44(11): Further search reveals location of tarus fort in a mountain.
+45(12): Player and a few others including Elond, investigate. 
+46(13): investigation pt 2 ends when the mountain wherein the supposed fort was
+    located explodes volcanically. Despite still being miles out, still make a
+    narrow escape.
+47(14): Crew meet back up with caravan, report and continue to the coast.
+    Coastal encounters.
+48(15): One more talk about the real world and the wild life and culture in the
+    city. 
+49(16): City spotted, arrival, check in, and first impressions. 
 50(17): 
 51(18): 
 52(19): 

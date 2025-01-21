@@ -10,7 +10,7 @@ import copy
 
 class BookOne:
     def __init__(self, player, xp_thresholds):
-        self.name = 'Begin story'
+        self.name = 'Story'
         self.player = player
         self.xp_thresholds = xp_thresholds
         self.monsters = init_enemies()
@@ -449,9 +449,9 @@ class BookOne:
 
 
     def ch_5(self): # Spring 22nd and 23rd, 3044, 6th age
-        mon_list0 = self.config_monsters({'dire wolf':3, 'small kobold':3, 'kobold slave':2, 'kobold guard':1})
-        mon_list1 = self.config_monsters({'dire wolf':1, 'small kobold':2, 'kobold slave':2, 'kobold soldier':1})
-        mon_list2 = self.config_monsters({'dire wolf':2, 'small kobold':2, 'kobold guard':1})
+        mon_list0 = self.config_monsters({'dire wolf':2, 'small kobold':3, 'kobold slave':2})
+        mon_list1 = self.config_monsters({'dire wolf':1, 'small kobold':2, 'kobold slave':1})
+        mon_list2 = self.config_monsters({'dire wolf':2, 'small kobold':2})
         self.adjust_team('Henry',add=True)
         self.adjust_team('Liliyah',add=True)
         self.adjust_team('Tiffey',add=True)

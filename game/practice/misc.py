@@ -118,21 +118,20 @@ class Hospital:
 
     def give_info(self, player, xp_thresholds:dict, world):
         next_thresh = xp_thresholds[player.level]
-        low_atk = player.atk - player.atk // 5
-        lowest = player.atk - (player.atk // 5 + 1)
-        low_sptk = player.atk + 2 # 1 + skill damage (minimum)
-        high_sptk = player.atk + player.atk // 5 + 4
+        low_atk = damage_calculator(atk=player.atk, level=player.level)
+        atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
+        lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
+        high_sptk = damage_calculator(self.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
-        dprint(f'in the {self.name} hospital.')
+        dprint(f'in the {self.name} central marketplace.')
         dprint(f'{player.name} has the following stats:')
         print(f'Level: {player.level}')
         print(f'Experience Points: {player.xp}/{next_thresh}')
-        print(f'Domain: {player.title}')
         print(f'Hit Points: {player.hp}/{player.maxhp}')
-        print(f'Attack power: {low_atk}-{player.atk}')
-        print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
-        print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
+        print(f'Attack power: {low_atk}-{atk}')
+        print(f'Skill attack power: {lowest}-{high_sptk}')
+        print(f'Accuracy: {round((player.accuracy + player.acu) / 10, 2)}%')
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
@@ -146,6 +145,7 @@ class Hospital:
             print('Allies: ')
             for ally in player.allies:
                 print(ally.name)
+        print(f'Story progress: {player.progress}')
 
 
 class Marketplace():
@@ -164,7 +164,7 @@ class Marketplace():
     def stock_inventory(self):
         for item in self.salable:
             if item.level <= self.level:
-                self.inventory[item] = self.level # Return
+                self.inventory[item] = self.level
     
     def welcome(self):
         options = ['sell','buy','information','black market']
@@ -182,42 +182,42 @@ class Marketplace():
 
         if choice_task in ['','sell','Sell','SELL','1','S','s','0','buy from me!']:
             self.buy(player)
-            dprint('Would you like to stay in the market? ')
+            dprint('Would you like to stay in the market?')
             user = input('1: Yes\n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
 
         elif choice_task in ['2','Buy','buy','B','b','what have you got?']:
             self.sell(player)
-            dprint('Would you like to stay in the market? \n1: Yes \n2: No')
-            user = input()
+            dprint('Would you like to stay in the market?')
+            user = input('\n1: Yes \n2: No')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
 
         elif choice_task in ['information','info','Information','Info','3','i','I']:
             self.give_info(player, self.xp_thresholds, self.world)
-            dprint('Would you like to stay in the market? ')
-            user = input()
+            dprint('Would you like to stay in the market?')
+            user = input('\n1: Yes \n2: No')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
         
         elif choice_task in ['Black Market', 'black market', 'm', 'M', '4', 'black', 'Black', 'market', 'b market', 'black m', 'bm', 'm', '...', 'you know what.']:
             survived = self.black_market(player)
             if survived:
-                dprint('Would you like to stay in the market? ')
-                user = input()
+                dprint('Would you like to stay in the market?')
+                user = input('\n1: Yes \n2: No')
 
                 if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                    self.resolve(player)
+                    return self.resolve(player)
                 else: 
                     return True
             else:
@@ -294,21 +294,20 @@ class Marketplace():
 
     def give_info(self, player, xp_thresholds, world):
         next_thresh = xp_thresholds[player.level]
-        low_atk = player.atk - player.atk // 5
-        lowest = player.atk - (player.atk // 5 + 1)
-        low_sptk = player.atk + 2 # 1 + skill damage (minimum)
-        high_sptk = player.atk + player.atk // 5 + 4
+        low_atk = damage_calculator(atk=player.atk, level=player.level)
+        atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
+        lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
+        high_sptk = damage_calculator(self.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
         dprint(f'in the {self.name} central marketplace.')
         dprint(f'{player.name} has the following stats:')
         print(f'Level: {player.level}')
         print(f'Experience Points: {player.xp}/{next_thresh}')
-        print(f'Domain: {player.title}')
         print(f'Hit Points: {player.hp}/{player.maxhp}')
-        print(f'Attack power: {low_atk}-{player.atk}')
-        print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
-        print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
+        print(f'Attack power: {low_atk}-{atk}')
+        print(f'Skill attack power: {lowest}-{high_sptk}')
+        print(f'Accuracy: {round((player.accuracy + player.acu) / 10, 2)}%')
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
@@ -322,6 +321,7 @@ class Marketplace():
             print('Allies: ')
             for ally in player.allies:
                 print(ally.name)
+        print(f'Story progress: {player.progress}')
 
     def black_market(self, player):
         return True

@@ -133,20 +133,21 @@ class WorldOne:
             return None
 
     def introdction(self):
-        # self.pc = self.create_character()
-        time.sleep(1)
-        dprint('.   .   .')
-        time.sleep(1)
-        sys.stdout.flush()
-        time.sleep(1)
-        dprint(f'. . . {self.pc.name[-3:]} . . .')
-        time.sleep(1)
-        dprint(f'. . . {self.pc.name}!')
-        time.sleep(.30)
-        dprint(f'Come one wake up, {self.pc.name}!')
-        dprint('You just collapsed all the sudden are you ok?')
-        dprint('Look, were still on our way back to town. Its not safe here!')
-        dprint('Lets get going...')
+        if self.pc.xp <= 0:
+            time.sleep(1)
+            dprint('.   .   .')
+            time.sleep(1)
+            sys.stdout.flush()
+            time.sleep(1)
+            dprint(f'. . . {self.pc.name[-3:]} . . .')
+            time.sleep(1)
+            dprint(f'. . . {self.pc.name}!')
+            time.sleep(.30)
+            dprint(f'Come one wake up, {self.pc.name}!')
+            dprint('You just collapsed all the sudden are you ok?')
+            dprint('Look, were still on our way back to town. Its not safe here!')
+            dprint('Lets get going...')
+            self.pc.xp += 1
 
     def update_world_options(self):
         battle = Battle(self.pc,self.xp_thresholds)
@@ -180,7 +181,7 @@ class WorldOne:
     def world_loop(self):
         while True:
             print()
-            dprint(f'. . . {self.name} . . . ',.1)
+            dprint(f'<<------- {self.name} ------->>',.085)
             input(f'{self.pc.progress}/32 - {self.number}\n')
 
             self.world_options = self.update_world_options()
@@ -192,7 +193,7 @@ class WorldOne:
             if hasattr(playing, 'title'):
                 self.pc = playing
                 playing = self.pc.is_alive()
-            if playing is None:
+            if playing == None:
                 playing == True
             if not playing:
                 break
