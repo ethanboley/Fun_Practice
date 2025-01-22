@@ -15,12 +15,12 @@ from things_stuff import Skill, Spell, Spall
 
 
 def define_xp_thresholds():
-    """
+    '''
     Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
 
     Returns:
         dict: Dictionary containing level-based XP thresholds.
-    """
+    '''
 
     base_xp = 100
     xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
@@ -38,8 +38,8 @@ def choose_monster(player, monsters):
     return random.choice(worthies)
 
 
-def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\n') -> None:
-    """
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n') -> None:
+    '''
     Writes text to the terminal one character at a time at a specified speed.
 
     Args:
@@ -48,7 +48,7 @@ def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\
         end (str | None): The string appended after the text is fully printed. Defaults to a newline.
 
     Returns: None
-    """
+    '''
     skip_slow_display = False
 
     for char in text:
@@ -116,7 +116,7 @@ def get_validated_input(prompt, options):
             else:
                 print(f'{i}: {option.name}')
         
-        user_in = input("Enter the number: ").strip()
+        user_in = input('Enter the number: ').strip()
         
         if user_in == '':
             user_in = '1'  # Default to the first option
@@ -201,7 +201,7 @@ def attack_timing_window(monster, player) -> int:
     chwnd = wg.GetForegroundWindow()
     
     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
-    shell = wcc.Dispatch("WScript.Shell")
+    shell = wcc.Dispatch('WScript.Shell')
     shell.SendKeys(' ') # I have actually no idea why this works but it does
     wg.SetForegroundWindow(hwnd)
 
@@ -370,7 +370,7 @@ def basic_player_prompt(*prompts):
         for i in range(len(prompts)):
             dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
 
-        user_in = input("Enter the number: ").strip()
+        user_in = input('Enter the number: ').strip()
 
         if user_in == '':
             user_in = '1'  # Default to the first option

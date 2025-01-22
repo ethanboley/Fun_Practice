@@ -193,7 +193,7 @@ class Marketplace():
         elif choice_task in ['2','Buy','buy','B','b','what have you got?']:
             self.sell(player)
             dprint('Would you like to stay in the market?')
-            user = input('\n1: Yes \n2: No')
+            user = input('\n1: Yes \n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 return self.resolve(player)
@@ -203,7 +203,7 @@ class Marketplace():
         elif choice_task in ['information','info','Information','Info','3','i','I']:
             self.give_info(player, self.xp_thresholds, self.world)
             dprint('Would you like to stay in the market?')
-            user = input('\n1: Yes \n2: No')
+            user = input('\n1: Yes \n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                 return self.resolve(player)
@@ -214,7 +214,7 @@ class Marketplace():
             survived = self.black_market(player)
             if survived:
                 dprint('Would you like to stay in the market?')
-                user = input('\n1: Yes \n2: No')
+                user = input('\n1: Yes \n2: No\n')
 
                 if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
                     return self.resolve(player)
@@ -352,8 +352,8 @@ class Gym():
             if  len(self.player.known_skills) < self.player.skill_slots:
                 dprint('You appear to have an available skill slot.')
                 dprint('would you like to learn or replace a skill?')
-                lorp = ['learn', 'replace', 'nevermind'] # lorp: Learn or Replace
-                for i in range(3):
+                lorp = ['learn','replace','nevermind'] # lorp: Learn or Replace
+                for i in range(len(lorp)):
                     print(f'{i + 1}: {lorp[i]}')
                 ans = input()
             
@@ -373,7 +373,8 @@ class Gym():
                 dprint('would you like to replace a skill you know?')
                 print('1: replace a skill\n2: Nevermind\n')
 
-                if ans in ['1', '0','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
+                ans = input().lower().strip()
+                if ans in ['1','0','r','replace','repl','e','','d','f','t','4','5']: # if replace known
                     self.player.remove_skill()
                     self.player.add_skill(self.learnables)
                 elif ans in ['2','n','N','NO','no','No','nope','Nope','NOPE','3','absolutely not!']:
@@ -387,7 +388,7 @@ class Quit:
         self.name = 'quit'
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        print('keep playing? \n1: N \n2: Y')
+        print('keep playing? \n1: No \n2: Yes')
         sure = input()
         if sure.strip() in ['2','3','y','Y','yes','Yes','YES','sure','definitely','p','P','2: Y','yep!']:
             return True

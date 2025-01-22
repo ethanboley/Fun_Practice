@@ -6,7 +6,7 @@ def main_game():
 
     initialize_pygame()
 
-    world_1 = WorldOne('The Kobold Wood', xp_thresholds)
+    world_1 = WorldOne('Mainenkedren', xp_thresholds)
     world_1.introdction()
     world_1.world_loop()
 

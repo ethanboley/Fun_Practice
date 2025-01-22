@@ -80,7 +80,7 @@ class BookOne:
     def story_reward(self):
         self.player.progress += 1
         self.player.hp += (self.player.maxhp - self.player.hp) // 2 if self.player.hp < self.player.maxhp else 0
-        self.player.gain_xp((self.player.level * 2) + (self.player.progress * 2) + 1, self.xp_thresholds)
+        self.player.gain_xp((self.player.level * 2) + self.player.progress + 1, self.xp_thresholds)
 
     def story_prep(self, location='1-1', name='continue'):
         self.player.location = location
@@ -606,7 +606,7 @@ yourself sprinting with all you have southward back to town. . .
         player_lives = self.battle.story(mon_list=mon_list, dialog=self.six_encounter0())
         if player_lives:
             self.six_victory0()
-            self.story_prep(location='1-0', name='The cave')
+            self.story_prep(location='1-1', name='The cave')
             self.adjust_team('Kajlo Sohler',add=False)
             self.story_reward()
             return True
@@ -831,10 +831,10 @@ Kobolds into a forest. The team sent a report of their findings by pigeon mail
 back to Greentown while they continued following the Kobolds. The original team 
 has yet to come back and the return pigeon came back having failed to deliver 
 his note indicating the scout team has likely been captured and taken off site.
-The mission for {self.player.name} is now to find the scouts and if possible
-look further into the followed kobolds. For this reason this mission is to be
-executed in utmost stealth and caution. Follow the provided map for location
-details and return and report if possible before spring 29th at midday.
+The mission for {self.player.name} is now to find the scouts and if possible look further
+into the followed kobolds. For this reason this mission is to be executed in
+utmost stealth and caution. Follow the provided map for location details and
+return and report if possible before spring 29th at midday.
 Good Luck.
 '''
         )
@@ -1123,7 +1123,7 @@ barracks and onto the road back home to see your family. . .
         player_lives = self.battle.story(mon_list=mon_list, dialog=self.ten_encounter0(), collective=True)
         if player_lives:
             self.ten_victory0()
-            self.story_prep(location='1-3', name='Give chase')
+            self.story_prep(location='1-0', name='Give chase')
             self.adjust_team('Liliyah', add=False)
             self.adjust_team('Bulli', add=False)
             self.adjust_team('milo_0', add=False)
@@ -1159,28 +1159,17 @@ and fireballs into shops and homes, fighting people and dragging a few people
 out of sight. The pair of Kobolds who smashed in your window appear to have 
 just ended a fit of cackling having not expected something to exit the window 
 they just destroyed. 
-''', .05)
-        if self.player.title == 'Fighter':
-            dprint(
-                f'''
+'''
+        , .05)
+        dprint(
+            f'''
 Without more than a second hesitation while you take all this in, you execute 
 the skill, {self.player.known_skills[-1].name} with power somehow far above 
 your normal standard. 
-''', .05)
-        elif self.player.title == 'Mage':
-            dprint(
-                f'''
-Without more than a second hessitation while you take all this in, you cast
-{self.player.known_spells[-1].name} with power somehow far above your normal 
-standard. 
-''', .5)
-        elif self.player.title == 'Pugilist':
-            dprint(
-                f'''
-Without more than a second hessitation while you take all this in, you use
-{self.player.known_spalls[-1].name} with power somehow far above your normal 
-standard.
-''', .05)
+'''
+        , .05)
+
+
 
         dprint(
             f'''
@@ -1453,15 +1442,15 @@ increase in activity the most concerning of which was the report of an entire
 missing team. 
 Upon further investigation, you discovered possibly erroneus inteligence that 
 the enemy was planning an attack of some sort on nearby human settlments, 
-possibly including greentown, Pompon, Farthe Outpost and Tolbantha or maybe 
+possibly including Greentown, Pompon, Farthe Outpost and Tolbantha or maybe 
 villages in the farther east like Kyoma or Uten. This combined with the lack of 
-concrete evidence and the discovery of contradicting intel at about the same time 
-resulted in indecision and crucial preparation time spent strategising and
-reasoning about next steps. 
-Whether it was a well orcestrated attack strategy, which Suphia pointed out 
+concrete evidence and the discovery of contradicting intel at about the same
+time resulted in indecision and crucial preparation time spent strategizing and
+reasoning about next steps.
+Whether it was a well orcestrated attack strategy, which Suphia pointed out
 was incongruent with usual kobold nature; or, the work of some human 
 traitor or mole, it had worked and the kobolds had, counter to their normal 
-behavior, orchestrated a combined attack on Greentown and more than likely, 
+behavior, orchestrated a combined attack on Greentown and more than likely,
 several other towns in the area.
 There was one other important piece of inteligence that you and at least one 
 other source discovered. The kobold called Luxkhanna. That kobold was 
@@ -1497,7 +1486,7 @@ resting again atop a grassy noll for a view above the thick treeline. From that
 vantage point, and between the 2 of you, you find not 1, nor even 2 but 3 
 interesting things a ways off. The first, to the north close to the way you 
 came, is a glassy lake with an unusually large tree stump at its center. The 
-second is a feint column of smoke to the north-west and last you spot an old 
+second is a faint column of smoke to the north-west and last you spot an old 
 stone tower in the southward distance. After some discussion you decide that your
 time would be best spent moving in the same direction but that any signs of 
 structure or inteligent life should be top priority. For this reason you decide 
@@ -1530,6 +1519,7 @@ anything.
     def ch_13(self): # alone int he woods pt 2, Spring 27th, 3044, 6th age
         mon_list = self.config_monsters({'little nepenth':3})
         self.thirteen_intro()
+        self.adjust_team(to_modify='Suphia', add=True)
         player_lives = self.battle.story(mon_list=mon_list, dialog=self.thirteen_encounter0(), collective=False)
         if player_lives:
             self.thirteen_victory0()

@@ -79,10 +79,8 @@ class WorldOne:
             uload = input().strip().lower()
             if uload in ['0','1','','!',')','q','`','y','t','g','h','u','6','7','yes','l','load','?','1: y','1: yes','1:y','sure','s','i would like to load the file thank you','one','uno','e','w','3','load? 1: y']:
                 pc = self.load('save_file.pkl')
-                if pc == None:
-                    pass
-                else:
-                    return pc
+                if pc != None:
+                    return pc                    
         dprint('What is your name: ')
         pname = input()
         dprint(f'Is {pname} male or female?')
@@ -133,6 +131,7 @@ class WorldOne:
             return None
 
     def introdction(self):
+        print(self.pc.xp)
         if self.pc.xp <= 0:
             time.sleep(1)
             dprint('.   .   .')
