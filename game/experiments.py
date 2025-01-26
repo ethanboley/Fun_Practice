@@ -99,28 +99,30 @@ def dprint(text='', speed:float | None = 0.035, end:str | None = '\n'):
 #     return xp_thresholds
 
 
-# def define_xp_thresholds_d():
-#     """
-#     Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
+def define_xp_thresholds_d():
+    """
+    Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
 
-#     Returns:
-#         dict: Dictionary containing level-based XP thresholds.
-#     """
+    Returns:
+        dict: Dictionary containing level-based XP thresholds.
+    """
 
-#     base_xp = 100
-#     xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
+    base_xp = 100
+    xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
 
-#     for i in range(1, 104):  # Iterate from 1 to 104 (inclusive) for 104 levels
-#       thresh = round((base_xp * 1.25) + (100 + i))
-#       xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
-#       base_xp = thresh
+    for i in range(1, 104):  # Iterate from 1 to 104 (inclusive) for 104 levels
+      thresh = round((base_xp * 1.25) + (100 + i))
+      xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
+      base_xp = thresh
 
-#     return xp_thresholds
+    return xp_thresholds
 
 
-# def display_xp_thresholds_d(xp_thresholds:dict):
-#     for key, value in xp_thresholds.items():
-#         print(f'level: {key}, \n\tthreshold: {value}')
+def display_xp_thresholds_d(xp_thresholds:dict):
+    for key, value in xp_thresholds.items():
+        print(f'level: {key}, \n\tthreshold: {value}')
+    for key, value in xp_thresholds.items():
+        print(f'({key},{value}),', end='')
 
 # def display_xp_thresholds(xp_thresholds:list):
 #     for i in range(len(xp_thresholds)):
@@ -569,11 +571,5 @@ def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False
 
 # ------ tests -------
 
-display_stats()
-# time.sleep(10)
-print()
-print(damage_calculator(300,1,0,0,0,1,False,False,1,0.0,1))
-print(damage_calculator(300,100,0,0,0,1,False,False,1,0.0,1))
-print(damage_calculator(2,1,0,0,0,1,False,False,1,0.0,1))
-print(damage_calculator(2,100,0,0,0,1,False,False,1,0.0,1))
-print(damage_calculator(1,3,0,0,0,1,False,False,1,50.0,1))
+xps = define_xp_thresholds_d()
+display_xp_thresholds_d(xps)

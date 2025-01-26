@@ -80,7 +80,7 @@ class BookOne:
     def story_reward(self):
         self.player.progress += 1
         self.player.hp += (self.player.maxhp - self.player.hp) // 2 if self.player.hp < self.player.maxhp else 0
-        self.player.gain_xp((self.player.level * 2) + self.player.progress + 1, self.xp_thresholds)
+        self.player.gain_xp(round(self.player.level * 1.5) + self.player.progress + 5, self.xp_thresholds)
 
     def story_prep(self, location='1-1', name='continue'):
         self.player.location = location
