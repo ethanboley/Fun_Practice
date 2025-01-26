@@ -155,7 +155,6 @@ class BookOne:
                 self.one_victory1()
                 self.story_reward()
                 self.story_prep(location='1-0', name='Continue to the town')
-                self.adjust_team('robin_0', add=False)
                 return True
             else:
                 return False
@@ -218,7 +217,6 @@ class BookOne:
                 if player_lives:
                     self.two_victory2()
                     self.story_prep(name='continue')
-                    self.adjust_team('robin_0',False)
                     self.story_reward()
                     return True
                 else: 
@@ -332,7 +330,6 @@ class BookOne:
             if player_lives:
                 self.three_victory1()
                 self.story_reward()
-                self.adjust_team('robin_0', False)
                 return True
             else:
                 return False
@@ -396,7 +393,6 @@ class BookOne:
         if player_lives:
             self.four_victory0()
             self.story_prep(name='first mission')
-            self.adjust_team('robin_0', add=False)
             self.story_reward()
             return True
         else:
@@ -457,7 +453,6 @@ class BookOne:
         self.adjust_team('Tiffey',add=True)
         self.adjust_team('Kajlo Sohler',add=True)
         self.adjust_team('Officer Jerrimathyus',add=True)
-        self.adjust_team('robin_0', add=False)
         self.five_intro()
         player_lives = self.battle.story(mon_list=mon_list0, dialog=self.five_encounter0(), collective=True)
         if player_lives:
@@ -472,9 +467,7 @@ class BookOne:
                     self.adjust_team('Henry',add=False)
                     self.adjust_team('Liliyah',add=False)
                     self.adjust_team('Tiffey',add=False)
-                    self.adjust_team('Kajlo Sohler',add=False)
                     self.adjust_team('Officer Jerrimathyus',add=False)
-                    self.adjust_team('robin_0', add=False)
                     self.story_reward()
                     return True
                 else: 
@@ -1269,7 +1262,6 @@ all just keep running . . .
                     if player_lives:
                         self.eleven_victory3()
                         self.story_prep(location='1-0', name='Rescue your siblings')
-                        self.adjust_team('Suphia', add=False)
                         self.adjust_team('milo_0', add=False)
                         self.adjust_team('Electo', add=False)
                         self.story_reward()
@@ -1575,6 +1567,7 @@ that, the camp of Capper Luxkhanna.
     def ch_14(self): # alone int he woods pt 3, Spring 28th, 3044, 6th age
         mon_list1 = self.config_monsters({'skeleton':1})
         mon_list2 = self.config_monsters({'refuse':3})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.fourteen_intro()
         player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fourteen_encounter0(), collective=False)
         if player_lives:
@@ -1719,6 +1712,7 @@ with your brother and sister.
         mon_list0 = self.config_monsters({'small kobold':3})
         mon_list1 = self.config_monsters({'ruin kobold':1})
         mon_list2 = self.config_monsters({'treent':1, 'ruin kobold':1, 'kobold soldier':3, 'small kobold':1})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.fifteen_intro()
         player_lives = self.battle.story(mon_list=mon_list0, dialog=self.fifteen_encounter0(), collective=True)
         if player_lives:
@@ -1945,6 +1939,7 @@ treent with you to face the kobolds instead.
     def ch_16(self): # following the trail pt 2, Spring 30th-31st, 3044, 6th age
         mon_list1 = self.config_monsters({'onikuma':3})
         mon_list2 = self.config_monsters({'small kobold':3})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.sixteen_intro()
         player_lives = self.battle.story(mon_list=mon_list1, dialog=self.sixteen_encounter0(), collective=False)
         if player_lives:
@@ -2247,6 +2242,7 @@ the briefest emotionless smile before leading the way.
         mon_list2 = self.config_monsters({'Pod Nepenth':1, 'flower nepenth':2, 'big nepenth':1, 'nepenth':4, 'little nepenth':3})
         mon_list3 = self.config_monsters({'flower nepenth':1, 'nepenth':1,'little nepenth':3})
         mon_list4 = self.config_monsters({'flower nepenth':1, 'big nepenth':1, 'nepenth':2, 'little nepenth':1})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.seventeen_intro()
         player_lives = self.battle.story(mon_list=mon_list0, dialog=self.seventeen_encounter0(), collective=False)
         if player_lives:
@@ -5206,7 +5202,17 @@ her knees out of relief before welcoming you back home at last. . .
         if player_lives:
             self.twenty_nine_victory0()
             self.story_prep(name='Enter the Stronghold', location='1-11')
-            self.adjust_team(to_modify='Rivek', add=False)
+            self.adjust_team(to_modify='robin_1', add=True)
+            self.adjust_team(to_modify='Captain Gurenge', add=True)
+            self.adjust_team(to_modify='Dykester', add=True)
+            self.adjust_team(to_modify='Ford', add=True)
+            self.adjust_team(to_modify='Rivek', add=True)
+            self.adjust_team(to_modify='Officer Mickle', add=True)
+            self.adjust_team(to_modify='Reywyn', add=True)
+            self.adjust_team(to_modify='liliyah_1', add=True)
+            self.adjust_team(to_modify='Bellman', add=True)
+            self.adjust_team(to_modify='Huffman', add=True)
+            self.adjust_team(to_modify='Dagshor', add=True)
             self.story_reward()
             return True
         else:
@@ -5488,6 +5494,13 @@ at Robin, you and your team make your move.
         self.adjust_team(to_modify='Captain Gurenge', add=True)
         self.adjust_team(to_modify='Dykester', add=True)
         self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='Rivek', add=False)
+        self.adjust_team(to_modify='Officer Mickle', add=False)
+        self.adjust_team(to_modify='Reywyn', add=False)
+        self.adjust_team(to_modify='liliyah_1', add=False)
+        self.adjust_team(to_modify='Bellman', add=False)
+        self.adjust_team(to_modify='Huffman', add=False)
+        self.adjust_team(to_modify='Dagshor', add=False)
         self.thirty_intro()
         player_lives = self.battle.story(mon_list=mon_list0, dialog=self.thirty_encounter0(), collective=True)
         if player_lives:
@@ -5682,14 +5695,14 @@ his signatire Loss, while the Captain performed a new single hit skill which
 seemed to add weight to the air itself. When both skills hit the bear rock the
 end of the bridge cracked and burst appart falling bit by bit into the abyss.
 With no hessitation, you and the team rush for the door and leap through it
-sprinting with abandon for anywhere to hide while the eney figures out a way to
-get accross the half crumbled access point.
+sprinting with abandon for anywhere to hide while the enemy figures out a way
+to get accross the half crumbled access point.
 Fortunately, you see a good spot and point it out. It was a deep sort of shelf
 in the wall near the much more ornately carved ceiling, it was large enough for
 at least three of you to fit into. Captain Gurenge and Ford volunteer to find a
 different place to hide nearby. 
 Upon them departing you get a closerlook at your surroundings. More detailed,
-carefully build kobold furnishings lined the walls here, you hadn't noticed
+carefully built kobold furnishings lined the walls here, you hadn't noticed
 before but occasional torches were lit and held in brackets at evenly spaced
 intervals. The floor seemed much less dusty and more smooth and even. You
 deduce from all this that you had entered some sort of inner keep within the
@@ -5706,6 +5719,8 @@ had heard his voice in the south stronghold.
         mon_list3 = self.config_monsters({'kobold guard':8, 'dire wolf':2})
         self.adjust_team(to_modify='Captain Gurenge', add=True)
         self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='robin_1', add=True)
+        self.adjust_team(to_modify='Dykester', add=True)
         self.thirty_one_intro()
         player_lives = self.battle.story(mon_list=mon_list0, dialog=self.thirty_one_encounter0(), collective=True)
         if player_lives:
@@ -5729,13 +5744,6 @@ had heard his voice in the south stronghold.
                         self.thirty_one_victory3()
                         self.story_reward()
                         self.story_prep(location='1-12', name='Destroy Illfang')
-                        self.adjust_team(to_modify='Rivek', add=True)
-                        self.adjust_team(to_modify='Officer Mickle', add=True)
-                        self.adjust_team(to_modify='Reywyn', add=True)
-                        self.adjust_team(to_modify='liliyah_1', add=True)
-                        self.adjust_team(to_modify='Bellman', add=True)
-                        self.adjust_team(to_modify='Huffman', add=True)
-                        self.adjust_team(to_modify='Dagshor', add=True)
                         return True
                     else:
                         return False
@@ -6049,19 +6057,20 @@ the doors and pushed.
 
     def ch_32(self): # Illfang boss fight, Spring 66th-67th, 3044, 6th age
         mon_list = self.config_monsters({'Illfang':1,'ruin kobold sentinel':6,'flying kobold':2})
-        self.adjust_team(to_modify='Rivek', add=False)
-        self.adjust_team(to_modify='Officer Mickle', add=False)
-        self.adjust_team(to_modify='Reywyn', add=False)
-        self.adjust_team(to_modify='liliyah_1', add=False)
-        self.adjust_team(to_modify='Bellman', add=False)
-        self.adjust_team(to_modify='Huffman', add=False)
-        self.adjust_team(to_modify='Dagshor', add=False)
+        self.adjust_team(to_modify='Captain Gurenge', add=True)
+        self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='robin_1', add=True)
+        self.adjust_team(to_modify='Dykester', add=True)
         self.thirty_two_intro()
         player_lives = self.battle.boss(mon_list=mon_list, dialog=self.thirty_two_encounter0(), collective=True, boss_dialog=self.thrity_two_boss())
         if player_lives:
             self.twenty_nine_victory0()
-            self.story_reward()
             self.story_prep(name='Continue', location='1-3')
+            self.adjust_team(to_modify='Captain Gurenge', add=False)
+            self.adjust_team(to_modify='Ford', add=False)
+            self.adjust_team(to_modify='robin_1', add=False)
+            self.adjust_team(to_modify='Dykester', add=False)
+            self.story_reward()
             return True
         else:
             return False
@@ -6122,7 +6131,7 @@ an unnatural heat that seemed to warp the air around it.
 '''
         )
 
-    def thirty_two_encounter0(self): # The first Boss
+    def thirty_two_encounter0(self): # The first (non-field) Boss
         dprint(
             f'''
 "Ah," Illfang purred, gesturing lazily with his blade. "I almost forgot to
@@ -6147,13 +6156,15 @@ Illfang stood, heaving and staring at some point in the ceiling.
 takak UO . . . heheheheheHEHEHEHE!"
 In a movement faster than any Illfang had done previously, he flipped
 backwards towards his throne tossing his Talwar asside as he did. Reaching
-behind his throne he grabbed a new, similar weapon but one that radiated with
-even more energy and something else that felt like pure malice.
+behind his throne he grabbed a new, similar but longer weapon that radiated
+with even more energy and something else that felt like pure malice. He spun it
+briefly in his hand making it clear that he was stronger with this weapon than
+the last.
 '''
         )
 
     def thirty_two_victory0(self): # The end of the beginning
-        dprint(
+        dprint( # Battle end and escape
             f'''
 Launching yourself forward, your blade cutting through the air with unrelenting
 force, you aim a killing blow at the enemy. Almost too fast to percieve,
@@ -6196,7 +6207,7 @@ suspected, they were not there. The attacking kobolds were following through
 with their plans to use the children as shields in their siege of Greentown.
 '''
         )
-        dprint(
+        dprint( # kobold spying
             f'''
 Soon you were again outside under the blazing afternoon desert sun. The heat
 seemed to be another more unintentional strategy of the kobolds as running
@@ -6226,7 +6237,7 @@ itself. The biggest risk to a counter efforts had been eliminated with the
 absence of human hostages. 
 '''
         )
-        dprint(
+        dprint( # Turning the kobold army
             f'''
 At this point there were a lot of different ways to turn the army, each as
 risky as the last. Over the next half hour you and the team concocted a
@@ -6369,7 +6380,7 @@ retreat. The kobolds army had been turned without a single drop of human blood
 spilt.
 '''
         )
-        dprint(
+        dprint( # thirty two victory 0
             f'''
 Broken weapons, discarded supplies, and hastily abandoned tents and carts
 littered the ground, a testament to their hasty flight. The successful human
@@ -6418,7 +6429,7 @@ time spent together was more joyful, fulilling and comfortable, than the most
 expensive party ever. 
 '''
         )
-        dprint(
+        dprint( # adventure transition
             '''
 Another few days passed while the town concluded the last reparations from the
 events of what was now becoming known as the kobold war. Refugees from
@@ -6500,10 +6511,10 @@ and come out stronger.
 Whatever lay beyond the horizon, you were more than prepared.
 '''
         , .036)
-        dprint('. . . . . . . . . ', .1)
+        dprint('. . . . . . . . . ', .1) # lore (a look into the dark side)
         dprint(
             f'''
-Complete, absolute, all consuming blackness was the only fitting description of
+Complete, absolute, all consuming darkness was the only fitting description of
 this place. All was still, almost afraid to disturb the cold, dead silence.
 The darkness and stillness was suddenly split by a shpere of blinding orange
 light and a crack like a discharge of lightning. The light quickly faded but
@@ -6517,7 +6528,7 @@ find for me."
 "Yes lord, I have failed."
 A certain shift in the air made the atmosphere seem heavier.
 The older voice continued, "Might I suggest you give this task to lord T-"
-"DO not dare utter his name here, as you well know he has much to do of his own
+"DO not dare utter his name here. As you well know he has much to do of his own
 still!"
 The young voice of Lord Kairon dropped to a whisper so dangerous it seemed to
 phisically freeze the air.
@@ -6530,16 +6541,18 @@ There was dragging moment of silence following these words that seemed to
 penetrate deeper than before.
 "Good. Now, the reason for your failure is simple and pointless. You, are fully
 capable of performing this task being as powerful as you are. But you simply
-refuse to do it yourself. You rely pointlessly on your underlings and the cult
-as if it was you they worship! I now command you, with the same task as before,
-and to do it YOURSELF! Time is running thin for the both of us. There will be
-no more room for failure this time. And. . . once your done, go to Dakamos at
-the primed horrizon. He will need to examine the spell along with his other
-preparations long before it is cast. Are your commands perfectly clear?"
+refuse to do it yourself. You rely pointlessly on your underlings and that cult
+as if it was YOU they worship! I now command you, with the same task as before,
+but this time to do it YOURSELF! Time is running thin for the both of us. There
+will be no more room for failure this time. And. . . once your done, go to Lord
+Dakamos at the primed horrizon. He will need to examine the spell along with
+his other preparations long before it is cast. Are your commands perfectly
+clear?"
 "Yes."
-"Yes," repeated lord Kairon with fully undisguised wrath, "Now, your god does
-not completely overlook your successes. Before you return, go to the temple of
-the hand, there you will find your reward, and remember, leave none alive."
+"Yes," repeated lord Kairon in a voice dripping with wrath and mockery, "Now,
+your god does not completely overlook your successes. Before you return, go to
+the Temple Of The Hand, there you will find your reward, and remember, leave
+none alive. This gift should be FULLY appriciated."
 There was another ear splitting crack, another flash and there was silence once
 again. A few moment's passed and an new light appeared, faint and blue but just
 bright enough to somewhat illuminate the figure holding this new light. The
@@ -6551,7 +6564,7 @@ the voice of Lord Kairon.
 young but so ragged and hoarse it sounded like a forced whisper, as though it
 saw very little use, "The slime would be long dead if it was me."
 "What word do you have of the enemy?"
-"Actually this is something else. The raven queen. . ."
+"Actually this is something else. The Raven Queen. . ."
 "Isn't that still the enemy?"
 "Regardless, a servant of hers has recently been thwarted by none but a gaggle
 of human pesants somewhere near the primed horrizon. It was a rather ingenious
@@ -6559,7 +6572,7 @@ strategem on her part all things considered. She used a force and a race so
 insignificant that it completely passed under my gaze yet still nearly
 succeeded."
 "What force? What race?"
-"Wild, Kobolds."
+"Wild Kobolds."
 Lord Kairon snorted his disbelief.
 "Fortunately," continued Mozkith, "I know of at least one other similar plot
 happening a little closer to the primed horrizon that will be equally simple to
@@ -6569,10 +6582,11 @@ stop."
 eyes than just my own lately."
 "And you question why I have servants."
 Mozkith scoffed loudly but continued, "Any word from Dakamos?"
-"I hear very little, but he is where he needs to be. The time is close now."
-"Yes, I can feel it in the air. Well, see you somewhat soon then, Kairon."
+"I hear very little, but he is where he needs to be. The time is close now,"
+answered Lord Kairon.
+"Yes. . . I can feel it in the air. Well, see you somewhat soon then, Kairon."
 "Yes, I think so, Mozkith."
-The light faded and silence and darkness once again filled the air. As in the
+The light faded and silence and darkness once again filled the air, as in the
 same moments, an impossible distance away, the young hero {self.player.name} settled into
 bed awaiting a morning departure on {self.player.grammer['altposs']} next great adventure.
 '''

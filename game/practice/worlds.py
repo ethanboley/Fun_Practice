@@ -3,7 +3,8 @@ from actions import *
 from players import Fighter
 from monsters import init_enemies, drops
 from misc import Hospital, Marketplace, Gym, Quit
-from story import *
+from game.practice.book_1 import *
+from game.practice.book_2 import *
 import pickle
 
 
@@ -71,6 +72,7 @@ class WorldOne:
         self.xp_thresholds = xp_thresholds
         self.pc = self.create_character()
         self.book_one = BookOne(self.pc, self.xp_thresholds)
+        self.book_two = BookTwo(self.pc, self.xp_thresholds)
         self.world_options = self.update_world_options()
 
     def create_character(self):
@@ -162,16 +164,18 @@ class WorldOne:
         if self.pc.progress > 0:
             world_options.append(self.book_one)
             world_options.append(battle)
-            if self.pc.location == '1-1' or self.pc.location == '1-3':
+            if self.pc.location in ['1-1','1-3']:
                 world_options.append(hospital)
                 world_options.append(market)
             if self.pc.level > 2:
                 world_options.append(gym)
-                if self.pc.level > 2 and (self.pc.location == '1-1' or self.pc.location == '1-3'):
-
+                if self.pc.level > 2 and (self.pc.location in ['1-1','1-3']):
                     world_options.append(hospital) if hospital not in world_options else None
                     world_options.append(market) if hospital not in world_options else None
                     pass
+        if self.pc.progress >= 33:
+            self.world_options.remove(self.book_one)
+            self.world_options.insert(index=0, object=self.book_two)
         
         world_options.append(save_load)
         world_options.append(quit_game)
