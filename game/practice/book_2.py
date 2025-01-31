@@ -8,7 +8,7 @@ import time
 import copy
 
 
-class BookTwo():
+class BookTwo:
     def __init__(self, player, xp_thresholds):
         self.name = 'Story'
         self.player = player
@@ -22,12 +22,12 @@ class BookTwo():
         return self.play_story(player.progress)
 
     def play_story(self, progress):
-        chapter_name = f"ch_{progress}"  # Create chapter function name string
+        chapter_name = f'ch_{progress}'  # Create chapter function name string
         if hasattr(self, chapter_name):  # Check if function exists
             return getattr(self, chapter_name)()  # Call the function dynamically
 
     def config_monsters(self, monsters_to_include:dict={}) -> list:
-        """
+        '''
         A method to set up the monsters to fight in the chapter
 
         Arguments: 
@@ -38,9 +38,9 @@ class BookTwo():
 
         returns:
             configured_monsters:
-                A list containing the monsters of type Enemy to include in the 
+                A list containing the monsters of type Enemy to include in the
                 chapter. 
-        """
+        '''
         configured_monsters = []
 
         for name, count in monsters_to_include.items():
@@ -55,7 +55,7 @@ class BookTwo():
         return configured_monsters
 
     def config_loot(self, loot_to_include:dict={}):
-        """
+        '''
         A method to set up the loot to gain in the chapter
 
         Arguments: 
@@ -68,7 +68,7 @@ class BookTwo():
             configured_loot:
                 A list containing the items of type Item to include in the 
                 chapter. 
-        """
+        '''
         configured_loot = []
 
         for name, count in loot_to_include.items():
@@ -77,35 +77,74 @@ class BookTwo():
 
         return configured_loot
     
-    def story_reward(self):
+    def chapter_end(self, location='2-0', name='continue'):
         self.player.progress += 1
         self.player.hp += (self.player.maxhp - self.player.hp) // 2 if self.player.hp < self.player.maxhp else 0
         self.player.gain_xp(round(self.player.level * 1.5) + self.player.progress + 5, self.xp_thresholds)
-
-    def story_prep(self, location='2-0', name='continue'):
         self.player.location = location
         self.name = name
         for ally in self.player.allies:
             ally.hp = ally.maxhp
 
-    def adjust_team(self, to_modify:str, add:bool | None = True):
-        """
-        Modifies the player's team by adding or removing allies based on their designation.
-    
-        Args:
-            to_modify (str, required): Designation of the ally to add or remove.
-            add (bool, optional): Determines whether to add or remove the ally.
-                False to remove, True or leave empty to add. Defaults to True.
-        """
-
-        ally_to_modify = next((ally for ally in self.all_allies if ally.designation == to_modify), None)
-    
-        if not ally_to_modify:
+    def adjust_team(self, to_modify:dict | None = None):
+        '''
+        
+        '''
+        if to_modify is None:
             return
-    
-        if add:
-            if ally_to_modify not in self.player.allies:
-                self.player.allies.append(ally_to_modify)
-        else:
-            self.player.allies = [ally for ally in self.player.allies if ally.designation != to_modify]
+        
+        for tmate, do in to_modify.items():
+            ally_to_modify = next((ally for ally in self.all_allies if ally.designation == tmate), None)
+        
+            if not ally_to_modify:
+                continue
 
+            if do:
+                if ally_to_modify not in self.player.allies:
+                    self.player.allies.append(ally_to_modify)
+            else:
+                self.player.allies = [ally for ally in self.player.allies if ally.designation != tmate]
+
+    '''
+    def ch00(self): # example chapter (unused)
+        ch_num, part, parts = (00, 0, 13)
+        self.adjust_team(to_modify={'Person':True, 'personage_3':True, 'Individual':False, 'sample_desigantion_4':False})
+        battle_types = ['story', 'story', 'boss', 'regular', 'story', 'of_words']
+        battles = {
+            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
+            3:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, ['']),
+            5:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
+            7:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
+            9:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, True, ['']),
+            11:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [''])}
+        alive = self.player.is_alive()
+        while alive:
+            if part % 2 == 0:
+                alive = getattr(self, f'passage_{ch_num}_{part}')()
+            else:
+                alive = getattr(self.battle, f'{battle_types[part // 2]}')(*battles[part])
+            part += 1
+            if part == parts:
+                self.chapter_end(location='2-0', name='continue')
+                break
+        return alive
+    '''
+
+    def ch0(self):
+        ch_num, part, parts = (0, 0, 3)
+        battle_types = ['story'] # story, boss, duel, of_words, regular
+        battles = { # part:(mon_list, dialog, collective=False, surprise=False, boss_dialog=[''])
+            1:(self.config_monsters({'monster':2}),
+               getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(),
+               False, False)}
+        alive = self.player.is_alive()
+        while alive:
+            if part % 2 == 0:
+                alive = getattr(self, f'passage_{ch_num}_{part}')()
+            else:
+                alive = getattr(self.battle, f'{battle_types[part // 2]}')(*battles[part])
+            part += 1
+            if part == parts:
+                self.chapter_end(location='2-0', name='embark')
+                break
+        return alive

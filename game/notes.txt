@@ -1131,19 +1131,19 @@ Player: {To main: Main character;
         revenge then fights fanatically for life, then fights for preservation
         of creation natural order and the will of god}
 Milo: {To main: Friend; 
-    Relationships: Nephew of Outh, son of Nobles;
+    Relationships: Nephew of Outh, son of Nobles, Wendy;
     class: Paladin, Swordsman;
     Personality: Excitable, rich but uncomfortable about it, motivated, etc.;
     Race: Human;
     Char dev: etc.}
-Toby: {To main: Friend; 
+Theo: {To main: Friend; 
     Relationships: ;
     class: Monk;
     Personality: insecure, calculating, perfect cross between Ly Ren, Nevil
         Longbottom and a male Becky (until a better idea comes to mind);
     Race: Halfling;
     Char dev: Quiet and reserved but for good reason, dark past unveiling, etc.}
-Theo:{To main: Friend; 
+Toby:{To main: Husband?;
     Relationships: ;
     class: Bard, Wizard;
     Personality: ;
@@ -1156,7 +1156,7 @@ Rosalind:{To main: Wife?;
     Race: Human;
     Char dev: }
 Wendy:{To main: ; 
-    Relationships: ;
+    Relationships: Milo;
     class: ;
     Personality: ;
     Race: Human;
@@ -1168,14 +1168,14 @@ Chloe:{To main: ;
     Race: Hylean;
     Char dev: }
 Ideal:{To main: ; 
-    Relationships: ;
-    class: ;
+    Relationships: Brother of Valor;
+    class: Mage, Monk, Firebender;
     Personality: ;
     Race: Hobgoblin;
     Char dev: }
 Outh:{To main: ; 
     Relationships: ;
-    class: ;
+    class: Fighter, Swordsman;
     Personality: ;
     Race: Human;
     Char dev: }
@@ -1262,14 +1262,14 @@ plot layer 1:
 
 plot layer 2:
 book1: Robin is stolen by kobolds player rescues him.
-book2: player is introduced to the wider world.
-book3: intro of protagonist group. plot explosion. departure.
+book2: player is introduced to the wider world. intro of protagonist group.
+book3: plot explosion. departure.
 book4: adventrues in a new realm.
 book5: the underdark?
 book6: into the planes?
 
 
-plot layer 3: 
+plot layer 3:
 (important plot points are included not specific fights (with some exceptions))
 book 1: 
 0: player wakes up with increased power and memory loss
@@ -1296,7 +1296,7 @@ book 1:
 15: place is far but player heads out far south into the woods. 
 16: player finds treasure and more evidence but has to fight for it.
 17: player is led near the mouth of a canyon. Fowl stench signals a bunch of
-    nepenths to attack, loss of ally, life.
+    nepenths to attack, loss of ally life.
 18: player enters the canyon and finds the Kosaur asleep. no way around.
 19: player confronts the Kosaur.
 20: the lack of a Kosaur causes a surge of small monsters through the canyon.
@@ -1318,7 +1318,7 @@ book 1:
     Deliberation and planning.
 29: Forces are requested and gathered including several familiar faces. Force 
     heads north to the base. 
-30: Base is in a hilly place, force penetrates and begins forced entry. 
+30: Base is in a hilly badlands, force penetrates and begins forced entry. 
 31: inside a large stone keep, many final guards await. captives are found and
     freed.
 32: player and company confront Illfang. Illfang says some cryptic words before 
@@ -1330,142 +1330,152 @@ book 2:
 33(0): Player goes to the capital to report on the small kobold war along with
     the Captain and trade caravan Rulid sr and Elond work for.
 34(1): The journey is long and the fields along the way crawl with cow flavored
-    monsters. Caravan has a bunch of non-humans.
-35(2): Player find himself a bit racist. Elond talks to player about the wider
-    world. 
+    monsters. Caravan has a bunch of non-humans. racist arc pt 1. the problem,
+    and the prejudice.
+35(2): Elond talks to player about the wider world. racist arc pt 2. the
+    brooding and conflicting.
 36(3): Elond continues talking about the world moving on to city life. A tornado
-    touches down nearby. 
-37(4): racist arc pt 1. the problem, and the prejudice.
-38(5): racist arc pt 2. the brooding and conflicting. 
-39(6): racist arc pt 3. the solution and the lesson.
-40(7): The caravan stops at the midpoint, a savanna outpost called Farthe 
-    Outpost. Elond and player participate in a pit fight. caravan nearly robbed
-41(8): next day investigations and side questing.
-42(9): Elond and dad have a chat about poor missing Rulid. Clues say he's still
-    alive. They've been on a low key hunt this whole time. Conversations resumed
-    following next arc. Caravan departs again.
-43(10): Caravan encounters what looks like a battle field full of dead minotaurs.
-    Survivor tells of a 1 man massacre and blames humanity.
-44(11): Further search reveals location of tarus fort in a mountain.
-45(12): Player and a few others including Elond, investigate. 
-46(13): investigation pt 2 ends when the mountain wherein the supposed fort was
-    located explodes volcanically. Despite still being miles out, still make a
-    narrow escape.
-47(14): Crew meet back up with caravan, report and continue to the coast.
-    Coastal encounters.
-48(15): One more talk about the real world and the wild life and culture in the
-    city. 
-49(16): City spotted, arrival, check in, and first impressions. 
-50(17): 
-51(18): 
-52(19): 
-53(20): 
-54(21): 
-55(22): 
-56(23): 
-57(24): 
-58(25): 
-59(26): 
-60(27): 
-61(28): 
-62(29): 
-63(30): 
-64(31): 
-65(32): 
+    touches down nearby. racist arc pt 3. the solution and the lesson.
+37(4): The caravan stops at the midpoint, a savanna outpost called Farthe 
+    Outpost. Elond and player participate in a pit fight. caravan nearly robbed. 
+    investigations and side questing.
+38(5): fam has a chat about Rulid. Conversations resumed following next arc.
+    Caravan departs again.
+39(6): Caravan encounters what looks like a battle field full of dead minotaurs.
+    Survivor tells of a 1 man massacre and blames humanity. Tarus fort in a
+    mountain.
+40(7): Player and a few others including Elond, investigate. but ends when the
+    mountain wherein the supposed fort was located explodes volcanically.
+    Despite still being miles out, still make a narrow escape.
+41(8): Crew meets back up with caravan, reports and continues to the coast.
+    One more talk about the real world and the wild life and culture in the city.
+42(9): City spotted, arrival, check in, and first impressions. Settle Inn.
+43(10): The report. Catch some thugs, meet Rosalind/Toby. Job offer.
+44(11): Consideration of the offer (thinking about a new life). Cool new practice
+    dummy atomaton thing. 
+45(12): quest accepted. Orientation w/RorT (embarrassed at getting rescued).
+    Intro to an extra long test of strength++ to try the grit of new recruits
+    (final selection clone). 
+46(13): major test of strenght++ pt 1. Instructor/Supervisor: Ideal.
+47(14): major test of strenght++ pt 2. Team up with Toby/Rosalind (the other).
+    Mid-Boss, Victory!
+48(15): entrance ceremony, basic training and first day. Meet Wendy.
+49(16): Time+, life as a town guard. Elond and Rulid Sr. leave once again (first
+    time feeling really alone).
+50(17): Day?? on the job, catch more thugs. Thug 3 is Theo who wants a change
+    of ways and has information to prove it.
+51(18): Following Theo's intel pt 1. Clues prove valid, too risky to investigate
+    too deep. Return to town for reinforcements and Theo.
+52(19): Following Theo's intel pt 2. 3-way mission: 1, cult meeting in the
+    woods; 2, follow warrant for scetchy barman; 3, enter the hidden cult
+    sanctuary in town. 
+53(20): Following Theo's intel pt 3. Catastrophy at some, success at others
+    return less than desireable results but some good informaition none the less. 
+54(21): Review of info, cult of the hand, mention of recent massacre and leader
+    change (somethings a'brewin). A day with friends. Nightly assassination
+    attempt.
+55(22): Attempted interrogation, assassin escapes by magic.
+56(23): After the scare, priority is given to cult threat. Theo officially
+    joins city guard intel branch.
+57(24): News of major ancient magic library break in. (Cult of the hand had made
+    an attempt less than a season ago) thief traced back to Kedren Main.
+58(25): Following Theo's intel pt 4. Into the darkness. lowest levels,
+    innner cityest, scetchiest, most lawless part of town, maybe the world.
+    Dakamos near encounter. Dozens perish. Seriously freaky stuff goes down. 
+59(26): Never experienced something like that. A day to recover and spar in the
+    yard. Short-lived due to emergency in the guard captian's chambers. Given
+    maximum protection Player and Milo among them.
+60(27): That night captain killed in sleep dispite max prot. Chase into the
+    woods and encounter with The Hand (real). Ideal firebending. 
+61(28): City wide emergency, lockdown and max prot to city leaders.
+    Investigations continue (Player not invited). 
+62(29): A few days of uneasy silence. More uneasy friend moments.
+63(30): Working overtime for protection, jails filling up for even minor
+    offenses. Intel discovered (false trail).
+64(31): The cult base.
+65(32): Boss fight with The Hand (fake), fight breaks into open air and dies in
+    front of witnesses. Heroes recognized/promoted. Emergency status lifted.
+    Atmosphere generally lightens. 1st Date with Rosalind/Toby. a look into the dark
+    side (the truth revealed).
 
 book 3:
-67(1): Inside the city of Kedren Main, player needs are met imediately and well.
-    player finally gives report. player is taken to the east barracks. meet and 
-    spar with Milo. 
-68(2): charming Milo asks future plans suggests a trial run for a city guard 
-    position. 
-69(3): trial run = gladiatorial turnament where top finalists get inducted 
-    for a trial run, even non-citizens. Milo provides training dummy construct. 
-70(4): first 3 trails: 1 monster, 10 weaker monsters, 1 duel. 
-71(5): second 3 trials: 1 duel, 1 duel, 3 monsters. 
-72(6): final 2 trials: second one is called off because the first one, 1 
-    monster, was basically drugged by an unknown hand to be about 5 times more 
-    dificult. Several official guards join the fight. 
-73(7): captain notes that someone may be out to get player. player is permitted 
-    to participate in the final trial anyway which player does making them a 
-    top finalist. 
-74(8): trial run begins, first task patroll the walls, pretty boring. 
-75(9): player accidentally catches a theif and is recognized. 
-76(10): second task, escort a prospecter to a new dig site. 
-77(11): third task, wall patroll night shift. Guard, then player, spots a dark 
-    figure who vanishes. Short investigation. 
-78(12): fourth task never happens, player is extracted from wall duty again by 
-    captain who takes player kobold investigating. 
-79(13): kobold investigating. 
-80(14): kobold investigating, run in with goblins. No luck with Kobolds. 
-81(15): walking through the streets board out of mind, player sees 3 figures 
-    standing in the sky but vanish. 
-82(16): fifth task, policing duty in the scetchy part of town. Overhear, some 
-    folk doing shady business *Vecna mentioned: "What in the name of Vecna's 
-    blackest eye" or something* also the briefest glimse of floating figures. 
-83(17): this time Toby spots the floaters, all 3 give chase. listening from 
-    around the corner, they hear not the declaration of war but a date. 
-    Summer 1st, 3044, 6th age at dawn. 
-84(18): next morning, player is given a formal invitation to join full time
-    guard, policing or military forces of the city at least for the rest of the 
-    year. 
-85(19): player accepts and is given a 'new' induction challenge to spar with 
-    guard golem prototype. *Field Boss*
-86(20): 3 days of silence. Stalking around at night when a boy in a sketchy guy
-    out fit surrenders to Rulid and other guard present, Ideal, ready to repent and 
-    leave the cult. Boy is Theo. 
-87(21): Theo, in custody, confesses and gives unheard info during interrogation. 
-88(22):
-89(23):
-90(24):
-91(25):
-92(26):
-93(27):
-94(28):
-95(29):
-96(30):
-97(31):
-98(32):
+67(0): more dates.
+68(1): 
+69(2): 
+70(3): 
+71(4): 
+72(5): 
+73(6): 
+74(7): 
+75(8): 
+76(9): 
+77(10): 
+78(11): 
+79(12): 
+80(13): 
+81(14): 
+82(15): *Vecna mentioned: "What in the name of Vecna's blackest left eye" or
+    something*
+83(16): 
+84(17): 
+85(18): 
+86(19): 
+87(20): 
+88(21): 
+89(22): Player goes to reported disturbance downtown. The_Rulid()
+90(23): Finding friends, firefighter duty, seeking Brother (Kairon).
+91(24): Rulid (Kairon casts the spell), city imediately engulfed. 
+92(25): Rescue and evacuation efforts.
+93(26): Main group dissembarks to the east. looking for information of that
+    kind of magic, the strenge otherworldly monsters, Player's Brother, how it
+    came to this, etc.
+94(27): 
+95(28): 
+96(29): 
+97(30): 
+98(31): { sometime between here ... vvv
+99(32): 
 
 book 4:
-99(0):
-100(1):
-101(2):
-102(3):
-103(4):
-104(5):
-105(6): Player goes to reported disturbance downtown. The_Rulid()
-106(7):
-107(8): Entire City Explodes (or similar)
-108(9): No one but Elond in family really believes your story. Only main 
-    characters are willing to go though.
-109(10):
-110(11): Main group dissembarks to the east.
-111(12):
-112(13): 
-113(14):
-114(15):
-115(16):
-116(17):
-117(18):
-118(19):
-119(20):
-120(21):
-121(22):
-122(23):
-123(24):
-124(25):
-125(26):
-126(27):
-127(28):
-128(29):
-129(30):
-130(31):
-131(32):
+100(0):
+101(1):
+102(2):
+103(3):
+104(4):
+105(5): and here ... ^^^ Player and Toby/Rosalind are married }
+106(6): 
+107(7):
+108(8): 
+109(9): 
+110(10): { Sometime between here ... vvv
+111(11): 
+112(12):
+113(13): 
+114(14):
+115(15):
+116(16):
+117(17): and here ... ^^^ old sage mage hag revels forbidden secrets of planar traversal without death }
+118(18):
+119(19):
+120(20):
+121(21):
+122(22):
+123(23):
+124(24):
+125(25):
+126(26):
+127(27):
+128(28):
+129(29):
+130(30):
+131(31):
+132(32):
 
 book 5:
-132(0):
-
+133(0):
+134(1):
+135(3):
+ . . .  { sometime after this point Player spouse tragically dies Clannad style and player commits to forbidden planar traversal ritual }
 
 
 epilogueueue:

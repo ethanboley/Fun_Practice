@@ -2979,9 +2979,7 @@ All goes black.
             player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_one_encounter1(), collective=False)
             if player_lives:
                 alt = self.twenty_one_victory1()
-                if alt == None:
-                    pass
-                else:
+                if alt != None:
                     return False
                 player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_one_encounter2(), collective=False)
                 if player_lives:

@@ -15,11 +15,12 @@ class Battle:
         self.all_monsters = init_enemies()
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        return self.regular([monster for monster in self.all_monsters if world.number in monster.world])
+        return self.regular([monster for monster in self.all_monsters if monster.name in player.monsters_seen])
 
     def regular(self, mon_list):
         # define the initial participants of this particular battle
-        self.init_parti(mon_list)
+        if not self.init_parti(mon_list):
+            return True
         # set seconds to 1
         seconds = 1
         # set round num to 1
@@ -55,7 +56,7 @@ class Battle:
         self.active_teamates.clear()
         return True # tell the game the player is still alive
 
-    def boss(self, mon_list:list, dialog=None, collective=True, boss_dialog=['']):
+    def boss(self, mon_list:list, dialog=None, collective=True, surprise=False, boss_dialog=['']):
         for mon in mon_list:
             self.active_monsters.append(mon)
         
@@ -110,7 +111,7 @@ class Battle:
             
             seconds += 1
 
-    def story(self, mon_list:list, dialog=None, collective=False, surprise=False):
+    def story(self, mon_list:list, dialog=None, collective=False, surprise=False, boss_dialog=None):
         to_use_mons = []
         for mon in mon_list:
             to_use_mons.append(mon)
@@ -307,9 +308,14 @@ class Battle:
             dprint(f'a {self.active_monsters[-1].name} which joins the fight!')
 
     def init_parti(self, mon_list):
-        self.active_teamates.append(self.active_player)
-        for ally in self.active_player.allies:
-            if ally not in self.active_teamates:
-                self.active_teamates.append(ally)
-        self.active_monsters.append(choose_monster(self.active_player,mon_list))
+        if not mon_list:
+            dprint('You have no idea how to fight!')
+            return False
+        else:
+            self.active_teamates.append(self.active_player)
+            for ally in self.active_player.allies:
+                if ally not in self.active_teamates:
+                    self.active_teamates.append(ally)
+            self.active_monsters.append(choose_monster(self.active_player,mon_list))
+            return True
 

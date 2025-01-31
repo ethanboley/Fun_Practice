@@ -152,6 +152,7 @@ class Fighter(Player):
         self.armor = None
         self.defense = 0 # to be automatically adjusted with changes in self.armor
         # self.shield = None # introduced in kedren main
+        self.mosters_seen = set()
 
     def attack(self, enemy, xp_thresholds):
         if self.auto_battle:
@@ -169,6 +170,7 @@ class Fighter(Player):
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
+                    self.mosters_seen.add(enemy.name)
             else:
                 dprint(f'{self.name} misses their attack!')
         else:
