@@ -81,7 +81,7 @@ class Hospital:
                 round += 1
 
     def superheal(self, player):
-        cost = 5 + self.quality
+        cost = 5 + (self.quality // 2)
         dprint(f'Welcome to the {self.name} super healing booth.')
         dprint('here we don\'t use such foolish things like doctors and science.')
         dprint('we use the much more reasonable approach of,')
@@ -121,10 +121,10 @@ class Hospital:
         low_atk = damage_calculator(atk=player.atk, level=player.level)
         atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
         lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
-        high_sptk = damage_calculator(self.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
+        high_sptk = damage_calculator(atk=player.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
-        dprint(f'in the {self.name} central marketplace.')
+        dprint(f'in the {self.name}.')
         dprint(f'{player.name} has the following stats:')
         print(f'Level: {player.level}')
         print(f'Experience Points: {player.xp}/{next_thresh}')
@@ -297,7 +297,7 @@ class Marketplace():
         low_atk = damage_calculator(atk=player.atk, level=player.level)
         atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
         lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
-        high_sptk = damage_calculator(self.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
+        high_sptk = damage_calculator(atk=player.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
         dprint(f'in the {self.name} central marketplace.')
@@ -347,6 +347,7 @@ class Gym():
     def skill_learning(self):
         dprint('Welcome to the skill gym, here you can learn new skills or')
         dprint('change the ones you know!')
+        self.level = self.player.level
 
         while True:
             if  len(self.player.known_skills) < self.player.skill_slots:

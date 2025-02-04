@@ -3,8 +3,8 @@ from actions import *
 from players import Fighter
 from monsters import init_enemies, drops
 from misc import Hospital, Marketplace, Gym, Quit
-from game.practice.book_1 import *
-from game.practice.book_2 import *
+from book_1 import *
+from book_2 import *
 import pickle
 
 
@@ -87,12 +87,30 @@ class WorldOne:
         pname = input()
         dprint(f'Is {pname} male or female?')
         ugender = input().strip().lower()
-        if ugender in ['2','f','3','female','fe','iron','not male','girl','g','ggs',f'{pname} is a female.','d','r','c','v','t','i','q','w','e','6','x','xx','fem','two','too','lady','l','wow, a lady knight!']:
+        if ugender in ['2','f','3','female','fe','iron','not male','girl','g','ggs',f'{pname} is a female.','d','r','c','v','t','i','q','w','e','6','x','xx','fem','two','too','lady','l','wow, a lady knight!','h']:
             pgender = 'Female'
         else:
             pgender = 'Male'
+        if pname == '' and pgender == 'Female':
+            pname = 'Reyna'
+        elif pname == '' and pgender == 'Male':
+            pname = 'Rowan'
         if pname == 'admin':
-            pc = Fighter(pname, pgender, 5000, 600, 0, 100, 960, 10000)
+            print(f'hello {pname}, enter the book number you would like to skip to:')
+            try:
+                book = int(input().lower().strip())
+            except ValueError:
+                book = 1
+            print(f'What would you actually like your name to be:')
+            pname = input().strip()
+            if book == 1:
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
+            if book == 2:
+                print('In preparation, you need to be leveled properly as follows:')
+                pc = Fighter(pname, pgender, 60, 10, 2650, 10, 750, 100, progress=33)
+                pc.gain_xp_quietly(2650, self.xp_thresholds)
+            else:
+                pc = Fighter(pname, pgender, 10000, 5000, 0, 1, 999, 100000)
             return pc
         if pname == 'debug':
             pc = Fighter(pname, pgender, 23, 4, 300, 3, 755, 30, 7)
@@ -133,7 +151,6 @@ class WorldOne:
             return None
 
     def introdction(self):
-        print(self.pc.xp)
         if self.pc.xp <= 0:
             time.sleep(1)
             dprint('.   .   .')
@@ -174,8 +191,8 @@ class WorldOne:
                     world_options.append(market) if hospital not in world_options else None
                     pass
         if self.pc.progress >= 33:
-            self.world_options.remove(self.book_one)
-            self.world_options.insert(index=0, object=self.book_two)
+            world_options.remove(self.book_one)
+            world_options.insert(0, self.book_two)
         
         world_options.append(save_load)
         world_options.append(quit_game)

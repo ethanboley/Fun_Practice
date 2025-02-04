@@ -23,17 +23,18 @@ class GlassOfTheWeave(Item):
 
 
 class LifePotion(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, sold=True, can_use=True):
+        super().__init__(name, level, sell_price, rarity, power=0, sold=True, can_use=True)
+        self.power = power
     
     def use(self, player=None, enemy=None, xp_thresholds=None):
-        player.hp += 8 + (player.level * self.rarity) + self.level
+        player.hp += 6 + (player.level * self.rarity) + self.level + self.power
         display_health(player)
 
 
 class GigaLifePotion(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, sold=True, can_use=True):
+        super().__init__(name, level, sell_price, rarity, power=0, sold=True, can_use=True)
     
     def use(self, player=None, enemy=None, xp_thresholds=None):
         player.hp = player.maxhp
@@ -74,6 +75,7 @@ class LittleDagger(Item):
                 player.gain_xp(enemy.xp, xp_thresholds)
                 player.gain_col(enemy.col)
                 enemy.drop(player)
+                player.mosters_seen.add(enemy.name)
         else:
             dprint(f"{player.name} misses with the dagger!")
         
@@ -172,19 +174,19 @@ def init_items():
     colossal_col = Item('colossal col', 8, 50, 8, False, False)
     magic_glass = MagicGlass('magic glass', 1, 4, 1, True, True)
     glass_of_the_weave = GlassOfTheWeave('glass of the weave', 20, 20, 4, True, True)
-    life_potion = LifePotion('life potion', 1, 7, 2, True, True)
-    vermilion_life_potion = LifePotion('vermilion life potion', 2, 10, 3, True, True)
-    rose_life_potion = LifePotion('rose life potion', 3, 15, 4, True, True)
-    magenta_life_potion = LifePotion('magenta life potion', 5, 21, 5, True, True)
-    fuchsia_life_potion = LifePotion('fuchsia life potion', 8, 28, 6, True, True)
-    purple_life_potion = LifePotion('purple life potion', 12, 40, 7, True, True)
-    lavender_life_potion = LifePotion('lavender life potion', 18, 64, 8, True, True)
-    azure_life_potion = LifePotion('azure life potion', 28, 100, 9, True, True)
-    indigo_life_potion = LifePotion('indigo life potion', 42, 180, 10, False, True)
-    blue_life_potion = LifePotion('blue life potion', 64, 240, 11, False, True)
-    navy_life_potion = LifePotion('navy life potion', 96, 365, 12, False, True)
-    deoxidized_blood_of_life_god = LifePotion('bottled deoxidized blood of the life potion deity', 120, 1000, 15, False, True)
-    giga_life_potion = GigaLifePotion('giga life potion', 16, 20, 4, True, True)
+    life_potion = LifePotion('life potion', 1, 7, 1, 2, True, True)
+    vermilion_life_potion = LifePotion('vermilion life potion', 6, 10, 2, 5, True, True)
+    rose_life_potion = LifePotion('rose life potion', 12, 15, 3, 11, True, True)
+    magenta_life_potion = LifePotion('magenta life potion', 18, 21, 4, 20, True, True)
+    fuchsia_life_potion = LifePotion('fuchsia life potion', 28, 28, 5, 38, True, True)
+    purple_life_potion = LifePotion('purple life potion', 38, 40, 6, 60, True, True)
+    lavender_life_potion = LifePotion('lavender life potion', 48, 64, 7, 100, True, True)
+    azure_life_potion = LifePotion('azure life potion', 58, 100, 8, 180, True, True)
+    indigo_life_potion = LifePotion('indigo life potion', 70, 180, 9, 350, False, True)
+    blue_life_potion = LifePotion('blue life potion', 82, 240, 10, 650, False, True)
+    navy_life_potion = LifePotion('navy life potion', 96, 365, 11, 1200, False, True)
+    deoxidized_blood_of_life_god = LifePotion('bottled deoxidized blood of the life potion deity', 120, 1000, 12, 2500, False, True)
+    giga_life_potion = GigaLifePotion('giga life potion', 16, 20, 4, 10, True, True)
     glass_bottle = GlassBottle('glass bottle', 1, 0, 1, True, True)
     kales_o_bottle = KalesOBottle('kales o bottle', 5, 11, 5, False, True)
     prostomium = Item('prostomium', 1, 1, 1, False, False)

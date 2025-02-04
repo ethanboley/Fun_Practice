@@ -136,11 +136,12 @@ class Spall(Skill): # for pugilists (verb: to break into small peices)
 
 
 class Item():
-    def __init__(self, name, level, sell_price, rarity, sold, can_use) -> None:
+    def __init__(self, name, level, sell_price, rarity, power=0, sold=False, can_use=False) -> None:
         self.name = name
         self.level = level
         self.sell_price = sell_price
         self.rarity = rarity
+        self.power = power
         self.sold = sold
         self.can_use = can_use
 

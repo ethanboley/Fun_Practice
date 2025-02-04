@@ -109,20 +109,19 @@ class BookTwo:
     def ch00(self): # example chapter (unused)
         ch_num, part, parts = (00, 0, 13)
         self.adjust_team(to_modify={'Person':True, 'personage_3':True, 'Individual':False, 'sample_desigantion_4':False})
-        battle_types = ['story', 'story', 'boss', 'regular', 'story', 'of_words']
         battles = {
-            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
-            3:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, ['']),
-            5:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
-            7:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
-            9:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, True, ['']),
-            11:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [''])}
+            0:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
+            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, ['']),
+            2:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
+            3:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
+            4:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, True, ['']),
+            5:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [''])}
         alive = self.player.is_alive()
         while alive:
             if part % 2 == 0:
                 alive = getattr(self, f'passage_{ch_num}_{part}')()
             else:
-                alive = getattr(self.battle, f'{battle_types[part // 2]}')(*battles[part])
+                alive = self.battle.battle(*battles[part // 2])
             part += 1
             if part == parts:
                 self.chapter_end(location='2-0', name='continue')
@@ -132,9 +131,8 @@ class BookTwo:
 
     def ch0(self):
         ch_num, part, parts = (0, 0, 3)
-        battle_types = ['story'] # story, boss, duel, of_words, regular
         battles = { # part:(mon_list, dialog, collective=False, surprise=False, boss_dialog=[''])
-            1:(self.config_monsters({'monster':2}),
+            0:(self.config_monsters({'monster':2}),
                getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(),
                False, False)}
         alive = self.player.is_alive()
@@ -142,7 +140,7 @@ class BookTwo:
             if part % 2 == 0:
                 alive = getattr(self, f'passage_{ch_num}_{part}')()
             else:
-                alive = getattr(self.battle, f'{battle_types[part // 2]}')(*battles[part])
+                alive = self.battle.battle(*battles[part // 2])
             part += 1
             if part == parts:
                 self.chapter_end(location='2-0', name='embark')

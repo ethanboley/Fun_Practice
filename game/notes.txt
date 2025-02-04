@@ -129,6 +129,13 @@ potential solution: reduce enemy xp to 1 (or maybe the world value) after the
 boss is defeated (or if player.world == 2+ or something). That way gaining 
 levels by grinding on lower worlds will take much longer. 
 
+Notes after first real play test of book 1 (without these features, the game is essentially unplayable):
+1: Mercy rule for 3 or 4 misses in a row (player attribute called mercy which increments after miss and resets upon reaching 3 or 4)
+2: Inventory fix (Just so that every time you see the inventory, you don't see 50,000 little daggers)
+3: Some way to obtain healing potions without a market (maybe if you have an empty bottle you can convert materials and the bottle into a life potion? World Option)
+    3.5: Also maybe another World Option for meditation or something to provide extra healing between chapters (should still involve some sort of work like a puzzle minigame or something).
+4: Fighter.fix_team() method implementing similar logic to the end of init_parti() in Battle() this will be called in various places around the game like in the load function to ensure that only one of each ally exist int he team. (I'm so freaking done with this issue)
+
 Level: 3
 Experience Points: 240/0
 Domain: Fighter

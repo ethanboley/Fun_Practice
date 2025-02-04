@@ -573,3 +573,4 @@ def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False
 
 xps = define_xp_thresholds_d()
 display_xp_thresholds_d(xps)
+display_stats()

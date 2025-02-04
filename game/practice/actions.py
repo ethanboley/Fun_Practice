@@ -38,7 +38,7 @@ def choose_monster(player, monsters):
     return random.choice(worthies)
 
 
-def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n') -> None:
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n', story:bool | None = False) -> None:
     '''
     Writes text to the terminal one character at a time at a specified speed.
 
@@ -46,6 +46,7 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
         text (str | None): The text to be printed. Defaults to an empty string.
         speed (float | None): The delay in seconds between characters, defaults to 0.035.
         end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+        story (bool | False): story mode or not. 
 
     Returns: None
     '''
@@ -55,7 +56,10 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
         if not skip_slow_display:
             sys.stdout.write(char)
             sys.stdout.flush()
-            time.sleep(speed) # lower value is faster
+            if story:
+                time.sleep(0.045)
+            else:
+                time.sleep(speed)
         else:
             sys.stdout.write(char)
 
@@ -65,6 +69,8 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
                 skip_slow_display = True
 
     sys.stdout.write(end) # Add the correct end when done
+    if story:
+        input()
 
 
 def display_health(player):
@@ -114,8 +120,12 @@ def get_validated_input(prompt, options):
             if isinstance(option, Skill):
                 print(f'{i}: {option.name}; cost: {option.cost}, cooldown: {option.cooldown}, power: {option.damage}')
             else:
-                print(f'{i}: {option.name}')
-        
+                try:
+                    print(f'{i}: {option.name}')
+                except AttributeError:
+                    option = option[0]
+                    print(f'{i}: {option.name}')
+
         user_in = input('Enter the number: ').strip()
         
         if user_in == '':

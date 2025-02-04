@@ -152,11 +152,11 @@ class Fighter(Player):
         self.armor = None
         self.defense = 0 # to be automatically adjusted with changes in self.armor
         # self.shield = None # introduced in kedren main
-        self.mosters_seen = set()
+        self.monsters_seen = set()
 
     def attack(self, enemy, xp_thresholds):
         if self.auto_battle:
-            hit_value = random.random()
+            hit_value = random.randint(0, 1000)
             if hit_value < self.accuracy:
                 condition_modifier = self.get_cond_mod()
                 crit = self.is_crit(hit_value)
@@ -170,7 +170,7 @@ class Fighter(Player):
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
-                    self.mosters_seen.add(enemy.name)
+                    self.monsters_seen.add(enemy.name)
             else:
                 dprint(f'{self.name} misses their attack!')
         else:
@@ -183,10 +183,11 @@ class Fighter(Player):
                 crit = self.is_crit(hit_value)
                 damage = damage_calculator(self.atk, self.level, power=0, f=self.weapon.force, d=enemy.defense, num_targets=1, crit=crit, special=False, condition=condition_modifier, other=1)
                 enemy.hp -= damage
+                dprint('A critical hit!') if crit else None
                 dprint(f'{self.name} attacks {enemy.name} for {damage} damage!')
-                dprint('A critical hit!') if crit else print()
                 if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                    if enemy.hp > 0:
+                        dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     if enemy.has_phases:
                         enemy.next_phase(self)
@@ -195,6 +196,7 @@ class Fighter(Player):
                         self.gain_xp(enemy.xp, xp_thresholds)
                         self.gain_col(enemy.col)
                         enemy.drop(self)
+                        self.monsters_seen.add(enemy.name)
             else:
                 dprint(f'{self.name} misses their attack!')
 
@@ -295,15 +297,17 @@ class Fighter(Player):
                 enemy.hp -= strong_damage
                 skill.set_downtime() # downtime, to make sure the skills aren't used too fast. 
                 dprint(f'{self.name} connects with the sword skill {skill.name}!')
-                dprint('A critical hit!') if crit else print()
+                dprint('A critical hit!') if crit else None
                 dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
                 if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                    if enemy.hp > 0:
+                        dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     dprint(f'{skill.name} obliterated {enemy.name}!')
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
+                    self.monsters_seen.add(enemy.name)
             elif hit_value < self.accuracy + self.acu:
                 weak_damage = damage_calculator(self.atk, level=self.level, power=0, f=self.weapon.force, d=enemy.defense, num_targets=1, crit=crit, special=True, condition=condition_modifier, other=1)
                 enemy.hp -= weak_damage
@@ -312,12 +316,14 @@ class Fighter(Player):
                 dprint('A critical hit!') if crit else print()
                 dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
                 if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                    if enemy.hp > 0:
+                        dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     dprint(f'Despite the weak hit with {skill.name}, {enemy.name} has died!')
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
+                    self.monsters_seen.add(enemy.name)
             else:
                 dprint(f'{self.name} executed the skill {skill.name} but missed! ')
                 skill.set_downtime() # even though it was a miss, its still a use.
@@ -334,12 +340,14 @@ class Fighter(Player):
                 dprint(f'{self.name} connects with the sword skill {skill.name}!')
                 dprint(f'the attack hits {enemy.name} for {strong_damage} damage!')
                 if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                    if enemy.hp > 0:
+                        dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     dprint(f'{skill.name} obliterated {enemy.name}!')
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
+                    self.monsters_seen.add(enemy.name)
             elif hit_value < self.accuracy + self.acu:
                 weak_damage = damage_calculator(self.atk, level=self.level, power=0, f=self.weapon.force, d=enemy.defense, num_targets=1, crit=crit, special=True, condition=condition_modifier, other=1)
                 enemy.hp -= weak_damage
@@ -347,12 +355,14 @@ class Fighter(Player):
                 dprint(f'{self.name} dealt a weak hit of the skill {skill.name}.')
                 dprint(f'The attack dealt {weak_damage} damage to {enemy.name}.')
                 if enemy.is_alive():
-                    dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                    if enemy.hp > 0:
+                        dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
                 else:
                     dprint(f'Despite the weak hit with {skill.name}, {enemy.name} has died!')
                     self.gain_xp(enemy.xp, xp_thresholds)
                     self.gain_col(enemy.col)
                     enemy.drop(self)
+                    self.monsters_seen.add(enemy.name)
             else:
                 dprint(f'{self.name} executed the skill {skill.name} but missed! ')
                 skill.set_downtime() # even though it was a miss, its still a use.
@@ -421,6 +431,16 @@ class Fighter(Player):
     
     def gain_xp_quietly(self, xp, xp_thresholds:dict):
         self.xp += xp
+        for level_key, threshold in xp_thresholds.items():
+            if self.xp >= threshold:
+                if self.level < level_key + 1: # if there are ever xp related problems in the future, 
+                    self.level = level_key + 1 # the big question here is the + 1 on the previous line
+                    self.level_up()
+                level_key_to_remove = level_key
+        try:
+            xp_thresholds.pop(level_key_to_remove)
+        except UnboundLocalError as err:
+            pass
 
     def choose_skill(self, skills):
         if skills == []:

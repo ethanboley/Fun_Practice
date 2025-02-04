@@ -118,7 +118,8 @@ class Ally:
             target.hp -= damage
             dprint(f'{self.name} attacks {target.name} for {damage} damage!')
             if target.is_alive():
-                dprint(f'{target.name} has {target.hp} hp remaining.')
+                if target.hp > 0:
+                    dprint(f'{target.name} has {target.hp} hp remaining.')
             else:
                 dprint(f'{self.name} has defeated {target.name}!')
 
@@ -136,7 +137,8 @@ class Ally:
                 target.hp -= active_damage
                 dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
                 if target.is_alive():
-                    dprint(f'{target.name} has {target.hp} hp remaining.')
+                    if target.hp > 0:
+                        dprint(f'{target.name} has {target.hp} hp remaining.')
                 else:
                     dprint(f'{self.name} has defeated {target.name}!')
         
@@ -151,7 +153,8 @@ class Ally:
                     target.hp -= active_damage
                     dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
                     if target.is_alive():
-                        dprint(f'{target.name} has {target.hp} hp remaining.')
+                        if target.hp > 0:
+                            dprint(f'{target.name} has {target.hp} hp remaining.')
                     else:
                         dprint(f'{self.name} has defeated {target.name}!')
 
@@ -173,7 +176,8 @@ class Ally:
                 target.hp -= active_damage
                 dprint(f'{self.name} used {self.skill.name} dealing {active_damage} damage to {target.name}!')
                 if target.is_alive():
-                    dprint(f'{target.name} is left with {target.hp} hp.')
+                    if target.hp > 0:
+                        dprint(f'{target.name} is left with {target.hp} hp.')
                 else:
                     dprint(f'{self.name} pulverized {target.name} with {self.skill.name}!')
 
@@ -223,7 +227,7 @@ class Boss:
             return None
 
     def is_alive(self):
-        return self.hp > 0 or self.phases > 0
+        return True
 
 
 # ----------- Bosses
@@ -246,7 +250,7 @@ class BossTest(Boss):
     def big_attack(self, player):
         can_use = random.randint(1,2) in [1]
         if can_use:
-            strong_damage = damage_calculator(self.atk, level=self.level, power=6, f=self.force, d=player.defense, special=True, mon=100)
+            strong_damage = damage_calculator(self.atk, level=self.level, power=2, f=self.force, d=player.defense, special=True, mon=100)
             weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=100)
             hit_value = random.randint(0, 1000)
             if hit_value < self.acu:
@@ -271,12 +275,22 @@ class BossTest(Boss):
             dprint(f'{self.name} looks a little tired after its last attack.')
 
     def next_phase(self, player, dialogues:list):
-        if self.phases > 0:
+        if self.phases > 1:
             self.phases -= 1
             self.hp = self.maxhp
-            dialogues.pop()
+            if dialogues: 
+                text = dialogues.pop()
+                text()
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
+
+    def drop(self, player):
+        dprint(f'loot the body?\n1: Yes\n2: No\n')
+        if input().lower().strip() in ['y','ye','yes','',' ','1','1:','q','\t','`','0','1: yes','yeah!','!','loot','l']:
+            print('You found:')
+            loot = [drop for drop in drops if drop.name == 'onix stone'] 
+            print(loot[0].name)
+            player.inventory.add_item(loot[0])
 
 
 class Kosaur(Boss):
@@ -284,7 +298,7 @@ class Kosaur(Boss):
         super().__init__(name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac)
         self.acu_mod = .02
         self.title = 'Scourge of the Kobold Canyon'
-        self.phases = 2
+        self.phases = 1
     
     def fight(self, player):
         if self.phases == 2:
@@ -356,13 +370,28 @@ class Kosaur(Boss):
         else:
             dprint(f'{self.name} looks a little tired after its last attack.')
         
-    def next_phase(self, player, dialogues:list):
+    def next_phase(self, player, dialogues:list, xp_thresholds):
         if self.phases > 0:
             self.phases -= 1
             self.hp = self.maxhp
-            dialogues.pop()
+            if dialogues: 
+                text = dialogues.pop()
+                text()
+            return False
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
+            player.gain_xp(self.xp, xp_thresholds)
+            player.gain_col(self.col)
+            self.drop(player)
+            return True
+    
+    def drop(self, player):
+        dprint(f'loot the body?\n1: Yes\n2: No\n')
+        if input().lower().strip() in ['y','ye','yes','',' ','1','1:','q','\t','`','0','1: yes','yeah!','!','loot','l']:
+            print('You found:')
+            loot = [drop for drop in drops if drop.name == 'onix stone'] 
+            print(loot[0].name)
+            player.inventory.add_item(loot[0])
 
 
 class Illfang(Boss):
@@ -370,15 +399,15 @@ class Illfang(Boss):
         super().__init__(name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac)
         self.acu_mod = .03
         self.title = 'the Kobold Lord'
-        self.phases = 2
+        self.phases = 1
     
     def fight(self, player):
-        if self.phases == 2:
+        if self.phases == 1:
             if random.randint(0,2):
                 self.attack(player)
             else:
                 self.talwar(player)
-        elif self.phases == 1:
+        elif self.phases == 0:
             if random.randint(0,1):
                 self.attack(player)
             else:
@@ -387,9 +416,9 @@ class Illfang(Boss):
     def talwar(self, player):
         can_use = random.randint(0,5) in [2, 3, 4, 5]
         if can_use:
-            power = random.randint(-1, (self.atk // 2)) + 10
+            power = random.randint(-1, (self.atk // 3)) + 7
             hit_value = random.randint(0, 1000)
-            crit = hit_value < 250
+            crit = hit_value < 200
             strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, crit=crit, special=True, mon=self.malice)
             weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, crit=crit, mon=self.malice)
             if hit_value < self.acu:
@@ -416,9 +445,9 @@ class Illfang(Boss):
     def odachi(self, player):
         can_use = random.randint(0,3) in [1,2,3]
         if can_use:
-            power = random.randint(1, self.atk + 2) + 12
+            power = random.randint(1, self.atk + 2) + 9
             hit_value = random.randint(0, 1000)
-            crit = hit_value < 225
+            crit = hit_value < 220
             strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, crit=crit, special=True, mon=self.malice)
             weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, crit=crit, mon=self.malice)
             if hit_value < self.acu:
@@ -437,19 +466,31 @@ class Illfang(Boss):
                 else:
                     dprint(f'but that was all {player.name} could take!')
             else:
-                dprint(f'{self.name} took a swing {player.name} but missed!')
+                dprint(f'{self.name} took a swing at {player.name} but missed!')
         else:
             dprint(f'{self.name} looks a little tired after its last attack.')
             dprint('now\'s your chance to strike back hard!')
 
-    def next_phase(self, player, dialogues:list):
+    def next_phase(self, player, dialogues:list, xp_thresholds):
         if self.phases > 0:
             self.phases -= 1
             self.hp = self.maxhp
-            dialogues.pop()
-            self.force += 15
+            if dialogues: 
+                text = dialogues.pop()
+                text()
+            return False
         else:
-            dprint('. . . . . ', .06)
+            player.gain_xp(self.xp, xp_thresholds)
+            player.gain_col(self.col)
+            self.drop(player)
+            dprint('. . . . . ', .07)
+            return True
+
+    def drop(self, player):
+        loot = [drop for drop in drops if drop.name == 'opal']
+        dprint('drops:')
+        print(loot[0].name)
+        player.inventory.add_item(loot[0])
 
 
 class Barran(Boss):
@@ -1083,42 +1124,42 @@ def init_enemies():
     frenzy_boar = Beast('frenzy boar', 55, 4, 1, 5, 1, 550, 0, 900, 0, 0, [1,2,3,4], (600, 18, 280, 10))
     field_wolf = Beast('field wolf', 40, 5, 1, 5, 1, 700, 0, 750, 0, 0, [1,2], (300, 19, 260, 10))
     greedy_badger = Beastoid('greedy badger', 35, 5, 1, 6, 1, 350, 2, 650, 0, 0, [1,2,3], (200, 17, 275, 8))
-    awakened_shrub = Plant('awakened shrub', 80, 5, 1, 5, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
-    small_kobold = Koboldoid('small kobold', 25, 14, 2, 8, 2, 435, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
-    barkling = Plant('barkling', 85, 16, 1, 7, 2, 450, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
+    awakened_shrub = Plant('awakened shrub', 80, 6, 1, 5, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
+    small_kobold = Koboldoid('small kobold', 25, 9, 2, 8, 2, 435, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
+    barkling = Plant('barkling', 85, 15, 1, 7, 2, 450, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
     swarm_of_bats = Beast('swarm of bats', 70, 13, 1, 6, 2, 900, 0, 800, 0, 0, [1,2,3,4,5], (800, 10, 110, 30))
-    little_nepenth = Nepenth('little nepenth', 85, 16, 1, 11, 3, 660, 0, 660, 0, 0, [1], (400, 11, 200, 2))
-    kobold_slave = Koboldoid('kobold slave', 25, 16, 2, 8, 3, 750, 1, 950, 0, 0, [1], (750, 10, 285, 4))
-    windwasp = Insect('windwasp', 70, 13, 1, 9, 3, 550, 0, 550, 0, 0, [1,2], (700, 17, 400, 7))
-    dire_wolf = Beast('dire wolf', 65, 17, 1, 10, 3, 850, 0, 950, 0, 0, [1,3,4], (300, 13, 250, 10))
+    little_nepenth = Nepenth('little nepenth', 85, 16, 1, 11, 3, 600, 0, 680, 0, 0, [1], (400, 16, 190, 2))
+    kobold_slave = Koboldoid('kobold slave', 25, 11, 2, 8, 3, 750, 1, 950, 0, 0, [1], (750, 10, 285, 4))
+    windwasp = Insect('windwasp', 70, 12, 1, 9, 3, 550, 0, 550, 0, 0, [1,2], (700, 17, 400, 7))
+    dire_wolf = Beast('dire wolf', 65, 13, 1, 10, 3, 850, 0, 950, 0, 0, [1,3,4], (300, 13, 250, 10))
     green_worm = Worm('green worm', 65, 26, 1, 8, 3, 350, 0, 1450, 0, 0, [1], (300, 16, 165, 19))
-    nepenth = Nepenth('nepenth', 85, 18, 1, 12, 3, 705, 0, 795, 0, 0, [1], (400, 12, 200, 2))
+    nepenth = Nepenth('nepenth', 85, 18, 1, 12, 3, 645, 0, 790, 0, 0, [1], (400, 17, 190, 2))
     onikuma = Beast('onikuma', 90, 30, 2, 15, 4, 755, 0, 1240, 1, 0, [1], (760, 30, 385, 4))
     cave_slime = Slime('cave slime', 100, 35, 2, 13, 4, 550, 0, 1450, 0, 0, [1], (600, 14, 160, 10))
-    kobold_soldier = Koboldoid('kobold soldier', 25, 29, 4, 16, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
-    Kobold_guard = Koboldoid('kobold guard', 25, 27, 4, 16, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
-    shrubent = Plant('shrubent', 85, 42, 3, 20, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
-    cave_bear = Beast('cave bear', 20, 33, 5, 19, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
-    pre_pod_nepenth = Nepenth('pod nepenth', 85, 8, 2, 0, 5, 600, 0, 700, 0, 0, [1], (400, 120, 200, 2))
-    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 22, 5, 600, 0, 700, 0, 0, [1], (400, 11, 200, 2))
-    flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 23, 5, 600, 0, 700, 0, 0, [1], (400, 11, 200, 2))
+    kobold_soldier = Koboldoid('kobold soldier', 25, 24, 4, 16, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
+    Kobold_guard = Koboldoid('kobold guard', 25, 23, 4, 16, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
+    shrubent = Plant('shrubent', 85, 40, 3, 20, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
+    cave_bear = Beast('cave bear', 20, 34, 5, 19, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
+    pre_pod_nepenth = Nepenth('pod nepenth', 85, 8, 2, 0, 5, 600, 0, 710, 0, 0, [1], (400, 120, 190, 2))
+    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 22, 5, 600, 0, 710, 0, 0, [1], (400, 18, 190, 2))
+    flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 23, 5, 600, 0, 725, 0, 0, [1], (400, 18, 190, 2))
     red_worm = Worm('red worm', 65, 55, 1, 19, 5, 400, 0, 1400, 0, 0, [1], (250, 17, 130, 18))
     kosaur = Kosaur('Kosaur', 95, 144, 7, 300, 5, 750, 3, 1050, 1, 0, [1], (900, 70, 800, 5))
-    big_nepenth = Nepenth('big nepenth', 85, 48, 3, 32, 6, 680, 0, 920, 0, 0, [1], (350, 16, 200, 2))
+    big_nepenth = Nepenth('big nepenth', 85, 48, 3, 32, 6, 680, 0, 930, 0, 0, [1], (350, 24, 190, 2))
     sappent = Plant('sappent', 85, 44, 3, 26, 6, 700, 0, 1415, 0, 0, [1], (600, 14, 320, 10))
     ruin_kobold = Koboldoid('ruin kobold', 30, 38, 5, 30, 6, 700, 4, 1000, 1, 0, [1,3], (600, 18, 296, 4))
-    sly_srewman = Beastoid('sly shrewman', 35, 19, 1, 24, 6, 995, 6, 195, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
+    sly_srewman = Beastoid('sly shrewman', 35, 19, 1, 24, 6, 999, 6, 195, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
     human_bandit = Humanoid('bandit', 0, 30, 6, 27, 6, 800, 6, 1005, 1, 0, [1,2,3,6], (600, 10, 250, 4))
     kobold_chief = Koboldoid('kobold chief', 30, 46, 6, 33, 7, 750, 5, 900, 1, 0, [1], (750, 19, 310, 4))
     blue_worm = Worm('blue worm', 65, 70, 2, 32, 7, 550, 0, 1350, 0, 0, [1,2], (225, 18, 140, 17))
     treent = Plant('treent', 85, 52, 3, 34, 7, 675, 0, 1445, 12, 0, [1,4], (600, 15, 100, 5))
-    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 46, 6, 36, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
-    skeleton = Undead('skeleton', 100, 60, 3, 41, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
+    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 45, 6, 36, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
+    skeleton = Undead('skeleton', 100, 60, 4, 41, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
     bark_golem = Plant('bark golem', 95, 66, 4, 44, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
-    flying_kobold = Koboldoid('flying kobold', 30, 52, 7, 47, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
-    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 61, 8, 61, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
+    flying_kobold = Koboldoid('flying kobold', 30, 40, 6, 47, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
+    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 50, 7, 61, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
     # ac: (dist or def, size ratio, actual speed, balance)  (rail_size600px, hit_dc10px, speed480fps, chances10i) # limit ratio 450:95
-    illfang = Illfang('Illfang', 35, 240, 17, 800, 9, 900, 15, 1000, 3, 5, [1], (980, 18, 640, 6))
+    illfang = Illfang('Illfang', 35, 200, 9, 800, 9, 900, 15, 1000, 3, 5, [1], (980, 18, 640, 6))
 
     jackelope = Beast('jackelope', 40, 16, 2, 6, 2, 800, 0, 600, 0, 0, [1], (600, 10, 200, 10))
     borogrove = Beast('borogrove', 90, 17, 1, 12, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
@@ -1199,7 +1240,7 @@ def init_allies(): # designations use snake case and numerals
     hesh = Ally('Hesh', 3, 19, 7, 840, 760, 0, 0, SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0))
     coef = Ally('Coef', 6, 39, 12, 840, 770, 0, 1, Skill('avalanche', 0, 6, 1, 6, 9))
     deg = Ally('Deg', 5, 34, 7, 990, 765, 0, 0, Skill('triangular', 0, 5, 3, 3, 8))
-    virabela  = Ally('Virabela', 5, 30, 10, 1000, 810, 0, 0, SpellAttack('magic arrow', 1, 4, 6, 5, 3, 0))
+    virabela  = Ally('Virabela', 5, 30, 10, 1000, 810, 0, 0, SpellAttack('magic arrow', 1, 4, 6, 5, 5, 0))
     polly = Ally('Polly', 4, 28, 5, 900, 800, 0, 0, Skill('streak', 0, 3, 1, 3, 2))
     rivek = Ally('Rivek', 7, 45, 14, 1005, 795, 10, 2, Skill('vertical arc', 0, 8, 2, 7, 11))
     outh_gurenge = Ally('Captain Gurenge', 10, 72, 19, 890, 890, 12, 15, Skill('quad pain', 0, 11, 4, 6, 14))
