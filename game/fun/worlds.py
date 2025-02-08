@@ -1,9 +1,10 @@
 
-from actions import *
+# from actions import *
 from players import Fighter
-from monsters import init_enemies, drops
-from misc import Hospital, Marketplace, Gym, Quit
-from story import *
+# from monsters import init_enemies, drops
+from misc import Hospital, Marketplace, Gym, Alchemy, Quit
+from story.book_1 import *
+from story.book_2 import *
 import pickle
 
 
@@ -71,6 +72,7 @@ class WorldOne:
         self.xp_thresholds = xp_thresholds
         self.pc = self.create_character()
         self.book_one = BookOne(self.pc, self.xp_thresholds)
+        self.book_two = BookTwo(self.pc, self.xp_thresholds)
         self.world_options = self.update_world_options()
 
     def create_character(self):
@@ -79,20 +81,40 @@ class WorldOne:
             uload = input().strip().lower()
             if uload in ['0','1','','!',')','q','`','y','t','g','h','u','6','7','yes','l','load','?','1: y','1: yes','1:y','sure','s','i would like to load the file thank you','one','uno','e','w','3','load? 1: y']:
                 pc = self.load('save_file.pkl')
-                if pc == None:
-                    pass
-                else:
-                    return pc
+                if pc != None:
+                    return pc                    
         dprint('What is your name: ')
         pname = input()
         dprint(f'Is {pname} male or female?')
         ugender = input().strip().lower()
-        if ugender in ['2','f','3','female','fe','iron','not male','girl','g','ggs',f'{pname} is a female.','d','r','c','v','t','i','q','w','e','6','x','xx','fem','two','too','lady','l','wow, a lady knight!']:
+        if ugender in ['2','f','3','female','fe','iron','not male','girl','g','ggs',f'{pname} is a female.','d','r','c','v','t','i','q','w','e','6','x','xx','fem','two','too','lady','l','wow, a lady knight!','h']:
             pgender = 'Female'
         else:
             pgender = 'Male'
+        if pname == '' and pgender == 'Female':
+            pname = 'Reyna'
+        elif pname == '' and pgender == 'Male':
+            pname = 'Rowan'
         if pname == 'admin':
-            pc = Fighter(pname, pgender, 5000, 600, 0, 100, 960, 10000)
+            print(f'hello {pname}, enter the book number you would like to skip to:')
+            try:
+                book = int(input().lower().strip())
+            except ValueError:
+                book = 1
+            print(f'What would you actually like your name to be:')
+            pname = input().strip()
+            if book == 1:
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
+            if book == 2:
+                print('In preparation, you need to be leveled properly as follows:')
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 710, 100, progress=33)
+                pc.gain_xp_quietly(3000, self.xp_thresholds)
+            if book == 3:
+                print('In preparation, you need to be leveled properly as follows:')
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 720, 100, progress=67)
+                pc.gain_xp_quietly(15000, self.xp_thresholds)
+            else:
+                pc = Fighter(pname, pgender, 10000, 5000, 0, 1, 999, 100000)
             return pc
         if pname == 'debug':
             pc = Fighter(pname, pgender, 23, 4, 300, 3, 755, 30, 7)
@@ -133,20 +155,21 @@ class WorldOne:
             return None
 
     def introdction(self):
-        # self.pc = self.create_character()
-        time.sleep(1)
-        dprint('.   .   .')
-        time.sleep(1)
-        sys.stdout.flush()
-        time.sleep(1)
-        dprint(f'. . . {self.pc.name[-3:]} . . .')
-        time.sleep(1)
-        dprint(f'. . . {self.pc.name}!')
-        time.sleep(.30)
-        dprint(f'Come one wake up, {self.pc.name}!')
-        dprint('You just collapsed all the sudden are you ok?')
-        dprint('Look, were still on our way back to town. Its not safe here!')
-        dprint('Lets get going...')
+        if self.pc.xp <= 0:
+            time.sleep(1)
+            dprint('.   .   .')
+            time.sleep(1)
+            sys.stdout.flush()
+            time.sleep(1)
+            dprint(f'. . . {self.pc.name[-3:]} . . .')
+            time.sleep(1)
+            dprint(f'. . . {self.pc.name}!')
+            time.sleep(.30)
+            dprint(f'Come one wake up, {self.pc.name}!')
+            dprint('You just collapsed all the sudden are you ok?')
+            dprint('Look, were still on our way back to town. Its not safe here!')
+            dprint('Lets get going...')
+            self.pc.xp += 1
 
     def update_world_options(self):
         battle = Battle(self.pc,self.xp_thresholds)
@@ -155,6 +178,7 @@ class WorldOne:
         gym = Gym(self.pc)
         save_load = SaveLoad(self.xp_thresholds)
         quit_game = Quit()
+        alchemy = Alchemy()
         world_options = []
 
         if self.pc.progress == 0:
@@ -162,17 +186,20 @@ class WorldOne:
         if self.pc.progress > 0:
             world_options.append(self.book_one)
             world_options.append(battle)
-            if self.pc.location == '1-1' or self.pc.location == '1-3':
+            if self.pc.location in ['1-1','1-3']:
                 world_options.append(hospital)
                 world_options.append(market)
             if self.pc.level > 2:
                 world_options.append(gym)
-                if self.pc.level > 2 and (self.pc.location == '1-1' or self.pc.location == '1-3'):
-
+                if self.pc.level > 2 and (self.pc.location in ['1-1','1-3']):
                     world_options.append(hospital) if hospital not in world_options else None
                     world_options.append(market) if hospital not in world_options else None
                     pass
+        if self.pc.progress >= 33:
+            world_options.remove(self.book_one)
+            world_options.insert(0, self.book_two)
         
+        world_options.append(alchemy)
         world_options.append(save_load)
         world_options.append(quit_game)
         return world_options
@@ -180,7 +207,7 @@ class WorldOne:
     def world_loop(self):
         while True:
             print()
-            dprint(f'. . . {self.name} . . . ',.1)
+            dprint(f'<<------- {self.name} ------->>',.085)
             input(f'{self.pc.progress}/32 - {self.number}\n')
 
             self.world_options = self.update_world_options()
@@ -196,6 +223,7 @@ class WorldOne:
                 playing == True
             if not playing:
                 break
+            self.pc.fix_team()
     
     def reset_monsters(self):
         self.mon_list = init_enemies()

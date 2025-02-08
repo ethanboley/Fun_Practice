@@ -81,7 +81,7 @@ class Hospital:
                 round += 1
 
     def superheal(self, player):
-        cost = 5 + self.quality
+        cost = 5 + (self.quality // 2)
         dprint(f'Welcome to the {self.name} super healing booth.')
         dprint('here we don\'t use such foolish things like doctors and science.')
         dprint('we use the much more reasonable approach of,')
@@ -118,34 +118,33 @@ class Hospital:
 
     def give_info(self, player, xp_thresholds:dict, world):
         next_thresh = xp_thresholds[player.level]
-        low_atk = player.atk - player.atk // 5
-        lowest = player.atk - (player.atk // 5 + 1)
-        low_sptk = player.atk + 2 # 1 + skill damage (minimum)
-        high_sptk = player.atk + player.atk // 5 + 4
+        low_atk = damage_calculator(atk=player.atk, level=player.level)
+        atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
+        lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
+        high_sptk = damage_calculator(atk=player.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
-        dprint(f'in the {self.name} hospital.')
+        dprint(f'in the {self.name}.')
         dprint(f'{player.name} has the following stats:')
         print(f'Level: {player.level}')
         print(f'Experience Points: {player.xp}/{next_thresh}')
-        print(f'Domain: {player.title}')
         print(f'Hit Points: {player.hp}/{player.maxhp}')
-        print(f'Attack power: {low_atk}-{player.atk}')
-        print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
-        print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
+        print(f'Attack power: {low_atk}-{atk}')
+        print(f'Skill attack power: {lowest}-{high_sptk}')
+        print(f'Accuracy: {round((player.accuracy + player.acu) / 10, 2)}%')
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        print('Skills: ')
+        print('Skills:')
         for skill in player.known_skills:
             print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
-        for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
-            print(f'{i}: {item.name}')
+        player.inventory.display_contents()
         if player.level >= 6:
             print('Allies: ')
             for ally in player.allies:
                 print(ally.name)
+        print(f'Story progress: {player.progress}')
 
 
 class Marketplace():
@@ -164,7 +163,7 @@ class Marketplace():
     def stock_inventory(self):
         for item in self.salable:
             if item.level <= self.level:
-                self.inventory[item] = self.level # Return
+                self.inventory[item] = self.level
     
     def welcome(self):
         options = ['sell','buy','information','black market']
@@ -182,42 +181,42 @@ class Marketplace():
 
         if choice_task in ['','sell','Sell','SELL','1','S','s','0','buy from me!']:
             self.buy(player)
-            dprint('Would you like to stay in the market? ')
+            dprint('Would you like to stay in the market?')
             user = input('1: Yes\n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
 
         elif choice_task in ['2','Buy','buy','B','b','what have you got?']:
             self.sell(player)
-            dprint('Would you like to stay in the market? \n1: Yes \n2: No')
-            user = input()
+            dprint('Would you like to stay in the market?')
+            user = input('\n1: Yes \n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
 
         elif choice_task in ['information','info','Information','Info','3','i','I']:
             self.give_info(player, self.xp_thresholds, self.world)
-            dprint('Would you like to stay in the market? ')
-            user = input()
+            dprint('Would you like to stay in the market?')
+            user = input('\n1: Yes \n2: No\n')
         
             if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                self.resolve(player)
+                return self.resolve(player)
             else:
                 return True
         
         elif choice_task in ['Black Market', 'black market', 'm', 'M', '4', 'black', 'Black', 'market', 'b market', 'black m', 'bm', 'm', '...', 'you know what.']:
             survived = self.black_market(player)
             if survived:
-                dprint('Would you like to stay in the market? ')
-                user = input()
+                dprint('Would you like to stay in the market?')
+                user = input('\n1: Yes \n2: No\n')
 
                 if user in ['','y','Y','1','0','Yes','YES','yes','sure']:
-                    self.resolve(player)
+                    return self.resolve(player)
                 else: 
                     return True
             else:
@@ -294,34 +293,33 @@ class Marketplace():
 
     def give_info(self, player, xp_thresholds, world):
         next_thresh = xp_thresholds[player.level]
-        low_atk = player.atk - player.atk // 5
-        lowest = player.atk - (player.atk // 5 + 1)
-        low_sptk = player.atk + 2 # 1 + skill damage (minimum)
-        high_sptk = player.atk + player.atk // 5 + 4
+        low_atk = damage_calculator(atk=player.atk, level=player.level)
+        atk = damage_calculator(atk=player.atk, level=player.level, crit=True)
+        lowest = damage_calculator(atk=player.atk, level=player.level, f=player.weapon.force, crit=False, special=True)
+        high_sptk = damage_calculator(atk=player.atk, level=player.level, power=player.known_skills[0].damage, f=player.weapon.force, crit=True, special=True)
         print()
         dprint(f'{player.name} is in world {world.number}: {world.name}')
         dprint(f'in the {self.name} central marketplace.')
         dprint(f'{player.name} has the following stats:')
         print(f'Level: {player.level}')
         print(f'Experience Points: {player.xp}/{next_thresh}')
-        print(f'Domain: {player.title}')
         print(f'Hit Points: {player.hp}/{player.maxhp}')
-        print(f'Attack power: {low_atk}-{player.atk}')
-        print(f'Skill attack power: {lowest}-{low_sptk}~{high_sptk}')
-        print(f'Accuracy: {round((player.accuracy + player.acu) * 100, 2)}%')
+        print(f'Attack power: {low_atk}-{atk}')
+        print(f'Skill attack power: {lowest}-{high_sptk}')
+        print(f'Accuracy: {round((player.accuracy + player.acu) / 10, 2)}%')
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        print('Skills: ')
+        print('Skills:')
         for skill in player.known_skills:
             print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
-        for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
-            print(f'{i}: {item.name}')
+        player.inventory.display_contents()
         if player.level >= 6:
             print('Allies: ')
             for ally in player.allies:
                 print(ally.name)
+        print(f'Story progress: {player.progress}')
 
     def black_market(self, player):
         return True
@@ -339,29 +337,30 @@ class Gym():
         self.level = player.level
         self.player = player
         self.skills = init_skills()
-        self.learnables = [[skill for skill in self.skills if skill.level <= self.level and skill.type == 0]]
+        self.learnables = [skill for skill in self.skills if skill.level <= self.level and skill.type == 0]
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        return self.skill_learning()
+        return self.skill_learning(player)
 
-    def skill_learning(self):
+    def skill_learning(self, player:Fighter):
         dprint('Welcome to the skill gym, here you can learn new skills or')
         dprint('change the ones you know!')
+        self.level = player.level
 
         while True:
-            if  len(self.player.known_skills) < self.player.skill_slots:
+            if  len(player.known_skills) < player.skill_slots:
                 dprint('You appear to have an available skill slot.')
                 dprint('would you like to learn or replace a skill?')
-                lorp = ['learn', 'replace', 'nevermind'] # lorp: Learn or Replace
-                for i in range(3):
+                lorp = ['learn','replace','nevermind'] # lorp: Learn or Replace
+                for i in range(len(lorp)):
                     print(f'{i + 1}: {lorp[i]}')
                 ans = input()
             
                 if ans in ['0','1','l','L','Learn','learn','LEARN']: # if learn new
-                    self.player.add_skill(self.learnables)
+                    player.add_skill(self.learnables)
                 if ans in ['2','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
-                    self.player.remove_skill()
-                    self.player.add_skill(self.learnables)
+                    player.remove_skill()
+                    player.add_skill(self.learnables)
                 elif ans in ['3','n','N','NO','no','No','nope','Nope','NOPE','4','absolutely not!']:
                     dprint('Ok, you have a wonderful day!')
                     break
@@ -373,21 +372,74 @@ class Gym():
                 dprint('would you like to replace a skill you know?')
                 print('1: replace a skill\n2: Nevermind\n')
 
-                if ans in ['1', '0','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
-                    self.player.remove_skill()
-                    self.player.add_skill(self.learnables)
+                ans = input().lower().strip()
+                if ans in ['1','0','r','replace','repl','e','','d','f','t','4','5']: # if replace known
+                    player.remove_skill()
+                    player.add_skill(self.learnables)
                 elif ans in ['2','n','N','NO','no','No','nope','Nope','NOPE','3','absolutely not!']:
                     dprint('Alrighty then, have a magnifacent day!')
                     break
                 else:
                     continue
+        return True
+
+
+class Alchemy:
+    def __init__(self):
+        self.name = 'Alchemy'
+
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.create_potion(player, xp_thresholds)
+    
+    def create_potion(self, player:Fighter, xp_thresholds:dict):
+        if not player.inventory.has('glass bottle'):
+            dprint('You don\'t appear to have any available containers to')
+            dprint('successfully do alchemy right now.')
+            dprint('To proceed, you need the item called: glass bottle.')
+            return True
+        if random.getrandbits(1):
+            dprint('Time to do some science!')
+        else:
+            dprint('Time to do some magic!')
+        ability = ceil(player.level / 2) + 1
+        dprint(f'You can use up to {ability} alchemical ingredients.')
+        ingredients = [item for item in player.inventory.contents.keys() if item.is_ingredient]
+        compound = []
+        potential = 0
+        for i in range(ability):
+            dprint(f'Select items to mix ({ability - i} items left):')
+            ingredient = get_list_option(ingredients)
+            if ingredient is None:
+                dprint('Oooo, actually you don\'t have anything to cook with!')
+                return True
+            player.inventory.remove_item(ingredient)
+            ingredients.remove(ingredient)
+            compound.append(ingredient)
+            dprint(f'Current compound:')
+            for i in compound:
+                print(i.name)
+            potential += ingredient.potency
+            dprint(f'Compound potential: {potential}')
+            dprint('Would you like to add more?\n1: Yes\n2: No\n')
+            if input().lower().strip() in [' ', 'no', 'n', '2']:
+                break
+        
+        dprint('Select something to produce with this compound:')
+        product = get_list_option([item for item in items if item.craftable and (item.sell_price - 1) <= potential])
+        bottle = [bottle for bottle in items if bottle.name == 'glass bottle']
+        player.inventory.remove_item(bottle[0])
+        player.inventory.add_item(product)
+        dprint(f'You successfully produced 1 {product.name}!')
+        player.gain_xp(product.rarity, xp_thresholds)
+        return True
+
 
 class Quit:
     def __init__(self) -> None:
         self.name = 'quit'
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        print('keep playing? \n1: N \n2: Y')
+        print('keep playing? \n1: No \n2: Yes')
         sure = input()
         if sure.strip() in ['2','3','y','Y','yes','Yes','YES','sure','definitely','p','P','2: Y','yep!']:
             return True

@@ -105,17 +105,7 @@ class BookTwo:
             else:
                 self.player.allies = [ally for ally in self.player.allies if ally.designation != tmate]
 
-    '''
-    def ch00(self): # example chapter (unused)
-        ch_num, part, parts = (00, 0, 13)
-        self.adjust_team(to_modify={'Person':True, 'personage_3':True, 'Individual':False, 'sample_desigantion_4':False})
-        battles = {
-            0:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
-            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, ['']),
-            2:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
-            3:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, False, ['']),
-            4:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), False, True, ['']),
-            5:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(), True, False, [''])}
+    def chapter_loop(self, ch_num, part, parts, battles):
         alive = self.player.is_alive()
         while alive:
             if part % 2 == 0:
@@ -127,22 +117,35 @@ class BookTwo:
                 self.chapter_end(location='2-0', name='continue')
                 break
         return alive
+
+    '''
+    def ch00(self): # example chapter (unused)
+        ch_num, part, parts = (00, 0, 13)
+        self.adjust_team(to_modify={'Person':True, 'personage_3':True, 'Individual':False, 'sample_desigantion_4':False})
+        battles = {
+            0:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, False, ['']),
+            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, ['']),
+            2:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
+            3:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, False, ['']),
+            4:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, True, ['']),
+            5:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, [''])}
+        return self.chapter_loop(ch_num, part, parts, battles)
     '''
 
+
     def ch0(self):
-        ch_num, part, parts = (0, 0, 3)
+        ch_num, part, parts = (0, 0, 2)
         battles = { # part:(mon_list, dialog, collective=False, surprise=False, boss_dialog=[''])
             0:(self.config_monsters({'monster':2}),
-               getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end=''))(),
+               getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')),
                False, False)}
-        alive = self.player.is_alive()
-        while alive:
-            if part % 2 == 0:
-                alive = getattr(self, f'passage_{ch_num}_{part}')()
-            else:
-                alive = self.battle.battle(*battles[part // 2])
-            part += 1
-            if part == parts:
-                self.chapter_end(location='2-0', name='embark')
-                break
-        return alive
+        return self.chapter_loop(ch_num, part, parts, battles)
+
+    def passage_0_0(self):
+        dprint('', story=True)
+    
+    def prefight_0_1(self):
+        dprint('', story=True)
+
+    def passage_0_2(self):
+        dprint('', story=True)

@@ -91,6 +91,9 @@ class Ally:
             self.designation = self.name
         else:
             self.designation = designation
+        self.xp = 0
+        self.col = 0
+
 
     def choose_target(self, targets:list):
         if len(targets):
@@ -185,7 +188,9 @@ class Ally:
             
     def is_alive(self):
         return self.hp > 0
-
+    
+    def drop(self, player):
+        dprint(f'{player.name}! What did you do! You literally gained nothing from that.')
 
 class Boss:
     def __init__(self, name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac):
@@ -697,9 +702,9 @@ class Worm(Enemy):
         
     def create_loot_table(self):
         drop_list = [] # define returnable list
-        if self.level > 0 and random.randint(0, 10) > self.possible_drops[0].rarity:
+        if self.level > 0 and random.randint(0, 10) >= self.possible_drops[0].rarity:
             drop_list.append(self.possible_drops[0])
-            if self.level > 15 and random.randint(0, 10) > self.possible_drops[1].rarity:
+            if self.level > 15 and random.randint(0, 10) >= self.possible_drops[1].rarity:
                 drop_list.append(self.possible_drops[1])
         return drop_list
 
@@ -1116,74 +1121,74 @@ These values get a little messed up at higher levels starting at around 50-65
 
 def init_enemies():
     test_boss = BossTest('test_boss', 100, 12, 2, 600, 1, 600, 20, 1200, 0, 0, [1], (750, 60, 120, 5))
-    windworm = Worm('windworm', 70, 1, 1, 3, 1, 150, 0, 1650, 0, 0, [1], (500, 70, 180, 8))
-    brown_worm = Worm('brown worm', 65, 2, 1, 2, 1, 200, 0, 1500, 0, 0, [1], (450, 15, 60, 20))
-    slime = Slime('slime', 100, 2, 1, 2, 1, 350, 0, 1550, 0, 0, [1], (600, 21, 200, 10))
-    refuse = Construct('refuse', 100, 3, 1, 4, 1, 200, 1, 1250, 0, 0, [1,3,6,9], (400, 33, 240, 12))
-    cykloone = Insect('cykloone', 70, 3, 1, 4, 1, 150, 0, 800, 0, 0, [1], (250, 27, 400, 6))
-    frenzy_boar = Beast('frenzy boar', 55, 4, 1, 5, 1, 550, 0, 900, 0, 0, [1,2,3,4], (600, 18, 280, 10))
-    field_wolf = Beast('field wolf', 40, 5, 1, 5, 1, 700, 0, 750, 0, 0, [1,2], (300, 19, 260, 10))
-    greedy_badger = Beastoid('greedy badger', 35, 5, 1, 6, 1, 350, 2, 650, 0, 0, [1,2,3], (200, 17, 275, 8))
-    awakened_shrub = Plant('awakened shrub', 80, 6, 1, 5, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
-    small_kobold = Koboldoid('small kobold', 25, 9, 2, 8, 2, 435, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
-    barkling = Plant('barkling', 85, 15, 1, 7, 2, 450, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
-    swarm_of_bats = Beast('swarm of bats', 70, 13, 1, 6, 2, 900, 0, 800, 0, 0, [1,2,3,4,5], (800, 10, 110, 30))
+    windworm = Worm('windworm', 70, 1, 1, 5, 1, 150, 0, 1650, 0, 0, [1], (500, 70, 180, 8))
+    brown_worm = Worm('brown worm', 65, 2, 1, 4, 1, 200, 0, 1500, 0, 0, [1], (450, 15, 60, 20))
+    slime = Slime('slime', 100, 2, 1, 3, 1, 350, 0, 1550, 0, 0, [1], (600, 21, 200, 10))
+    refuse = Construct('refuse', 100, 3, 1, 6, 1, 200, 1, 1250, 0, 0, [1,3,6,9], (400, 33, 240, 12))
+    cykloone = Insect('cykloone', 70, 3, 1, 6, 1, 150, 0, 800, 0, 0, [1], (250, 27, 400, 6))
+    frenzy_boar = Beast('frenzy boar', 55, 4, 1, 7, 1, 550, 0, 900, 0, 0, [1,2,3,4], (600, 18, 280, 10))
+    field_wolf = Beast('field wolf', 40, 5, 1, 7, 1, 700, 0, 750, 0, 0, [1,2], (300, 19, 260, 10))
+    greedy_badger = Beastoid('greedy badger', 35, 5, 1, 8, 1, 350, 2, 650, 0, 0, [1,2,3], (200, 17, 275, 8))
+    awakened_shrub = Plant('awakened shrub', 80, 6, 1, 7, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
+    small_kobold = Koboldoid('small kobold', 25, 9, 2, 9, 2, 435, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
+    barkling = Plant('barkling', 85, 15, 1, 8, 2, 450, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
+    swarm_of_bats = Beast('swarm of bats', 70, 13, 1, 7, 2, 900, 0, 800, 0, 0, [1,2,3,4,5], (800, 10, 110, 30))
     little_nepenth = Nepenth('little nepenth', 85, 16, 1, 11, 3, 600, 0, 680, 0, 0, [1], (400, 16, 190, 2))
     kobold_slave = Koboldoid('kobold slave', 25, 11, 2, 8, 3, 750, 1, 950, 0, 0, [1], (750, 10, 285, 4))
     windwasp = Insect('windwasp', 70, 12, 1, 9, 3, 550, 0, 550, 0, 0, [1,2], (700, 17, 400, 7))
     dire_wolf = Beast('dire wolf', 65, 13, 1, 10, 3, 850, 0, 950, 0, 0, [1,3,4], (300, 13, 250, 10))
     green_worm = Worm('green worm', 65, 26, 1, 8, 3, 350, 0, 1450, 0, 0, [1], (300, 16, 165, 19))
     nepenth = Nepenth('nepenth', 85, 18, 1, 12, 3, 645, 0, 790, 0, 0, [1], (400, 17, 190, 2))
-    onikuma = Beast('onikuma', 90, 30, 2, 15, 4, 755, 0, 1240, 1, 0, [1], (760, 30, 385, 4))
-    cave_slime = Slime('cave slime', 100, 35, 2, 13, 4, 550, 0, 1450, 0, 0, [1], (600, 14, 160, 10))
-    kobold_soldier = Koboldoid('kobold soldier', 25, 24, 4, 16, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
-    Kobold_guard = Koboldoid('kobold guard', 25, 23, 4, 16, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
-    shrubent = Plant('shrubent', 85, 40, 3, 20, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
-    cave_bear = Beast('cave bear', 20, 34, 5, 19, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
+    onikuma = Beast('onikuma', 90, 30, 2, 14, 4, 755, 0, 1240, 1, 0, [1], (760, 30, 385, 4))
+    cave_slime = Slime('cave slime', 100, 35, 2, 12, 4, 550, 0, 1450, 0, 0, [1], (600, 14, 160, 10))
+    kobold_soldier = Koboldoid('kobold soldier', 25, 24, 4, 15, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
+    Kobold_guard = Koboldoid('kobold guard', 25, 23, 4, 15, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
+    shrubent = Plant('shrubent', 85, 40, 3, 18, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
+    cave_bear = Beast('cave bear', 20, 34, 5, 17, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
     pre_pod_nepenth = Nepenth('pod nepenth', 85, 8, 2, 0, 5, 600, 0, 710, 0, 0, [1], (400, 120, 190, 2))
-    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 22, 5, 600, 0, 710, 0, 0, [1], (400, 18, 190, 2))
-    flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 23, 5, 600, 0, 725, 0, 0, [1], (400, 18, 190, 2))
-    red_worm = Worm('red worm', 65, 55, 1, 19, 5, 400, 0, 1400, 0, 0, [1], (250, 17, 130, 18))
+    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 20, 5, 600, 0, 710, 0, 0, [1], (400, 18, 190, 2))
+    flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 21, 5, 600, 0, 725, 0, 0, [1], (400, 18, 190, 2))
+    red_worm = Worm('red worm', 65, 55, 1, 17, 5, 400, 0, 1400, 0, 0, [1], (250, 17, 130, 18))
     kosaur = Kosaur('Kosaur', 95, 144, 7, 300, 5, 750, 3, 1050, 1, 0, [1], (900, 70, 800, 5))
-    big_nepenth = Nepenth('big nepenth', 85, 48, 3, 32, 6, 680, 0, 930, 0, 0, [1], (350, 24, 190, 2))
-    sappent = Plant('sappent', 85, 44, 3, 26, 6, 700, 0, 1415, 0, 0, [1], (600, 14, 320, 10))
-    ruin_kobold = Koboldoid('ruin kobold', 30, 38, 5, 30, 6, 700, 4, 1000, 1, 0, [1,3], (600, 18, 296, 4))
-    sly_srewman = Beastoid('sly shrewman', 35, 19, 1, 24, 6, 999, 6, 195, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
-    human_bandit = Humanoid('bandit', 0, 30, 6, 27, 6, 800, 6, 1005, 1, 0, [1,2,3,6], (600, 10, 250, 4))
-    kobold_chief = Koboldoid('kobold chief', 30, 46, 6, 33, 7, 750, 5, 900, 1, 0, [1], (750, 19, 310, 4))
-    blue_worm = Worm('blue worm', 65, 70, 2, 32, 7, 550, 0, 1350, 0, 0, [1,2], (225, 18, 140, 17))
-    treent = Plant('treent', 85, 52, 3, 34, 7, 675, 0, 1445, 12, 0, [1,4], (600, 15, 100, 5))
-    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 45, 6, 36, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
-    skeleton = Undead('skeleton', 100, 60, 4, 41, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
-    bark_golem = Plant('bark golem', 95, 66, 4, 44, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
-    flying_kobold = Koboldoid('flying kobold', 30, 40, 6, 47, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
-    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 50, 7, 61, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
+    big_nepenth = Nepenth('big nepenth', 85, 48, 3, 29, 6, 680, 0, 930, 0, 0, [1], (350, 24, 190, 2))
+    sappent = Plant('sappent', 85, 44, 3, 23, 6, 700, 0, 1415, 0, 0, [1], (600, 14, 320, 10))
+    ruin_kobold = Koboldoid('ruin kobold', 30, 38, 5, 27, 6, 700, 4, 1000, 1, 0, [1,3], (600, 18, 296, 4))
+    sly_srewman = Beastoid('sly shrewman', 35, 19, 1, 21, 6, 999, 6, 195, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
+    human_bandit = Humanoid('bandit', 0, 30, 6, 24, 6, 800, 6, 1005, 1, 0, [1,2,3,6], (600, 10, 250, 4))
+    kobold_chief = Koboldoid('kobold chief', 30, 46, 6, 28, 7, 750, 5, 900, 1, 0, [1], (750, 19, 310, 4))
+    blue_worm = Worm('blue worm', 65, 70, 2, 27, 7, 550, 0, 1350, 0, 0, [1,2], (225, 18, 140, 17))
+    treent = Plant('treent', 85, 52, 3, 29, 7, 675, 0, 1445, 12, 0, [1,4], (600, 15, 100, 5))
+    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 45, 6, 31, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
+    skeleton = Undead('skeleton', 100, 60, 4, 33, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
+    bark_golem = Plant('bark golem', 95, 66, 4, 36, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
+    flying_kobold = Koboldoid('flying kobold', 30, 40, 6, 39, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
+    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 50, 7, 48, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
     # ac: (dist or def, size ratio, actual speed, balance)  (rail_size600px, hit_dc10px, speed480fps, chances10i) # limit ratio 450:95
     illfang = Illfang('Illfang', 35, 200, 9, 800, 9, 900, 15, 1000, 3, 5, [1], (980, 18, 640, 6))
 
     jackelope = Beast('jackelope', 40, 16, 2, 6, 2, 800, 0, 600, 0, 0, [1], (600, 10, 200, 10))
-    borogrove = Beast('borogrove', 90, 17, 1, 12, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
+    borogrove = Beast('borogrove', 90, 17, 1, 10, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
     silver_fish = Insect('silverfish', 80, 8, 1, 5, 1, 600, 0, 1000, 0, 0, [1,3,4,9], (500, 10, 180, 16))
-    moamwrath = Monstrosity('moamwrath', 100, 40, 2, 32, 6, 666, 0, 850, 0, 0, [1,2,3,5], (720, 22, 720, 22))
-    bryllyg = Monstrosity('bryllyg', 100, 34, 2, 19, 4, 900, 1, 1000, 0, 0, [1], (600, 18, 200, 10))
-    slythy_tove = Monstrosity('slythy tove', 100, 40, 2, 23, 5, 700, 0, 1000, 0, 0, [1], (600, 14, 190, 10))
+    moamwrath = Monstrosity('moamwrath', 100, 40, 2, 28, 6, 666, 0, 850, 0, 0, [1,2,3,5], (720, 22, 720, 22))
+    bryllyg = Monstrosity('bryllyg', 100, 34, 2, 17, 4, 900, 1, 1000, 0, 0, [1], (600, 18, 200, 10))
+    slythy_tove = Monstrosity('slythy tove', 100, 40, 2, 20, 5, 700, 0, 1000, 0, 0, [1], (600, 14, 190, 10))
     borogove = Monstrosity('borogove', 100, 36, 2, 16, 4, 620, 0, 850, 0, 0, [1], (800, 14, 118, 10))
-    marzeedote = Beast('marzeedote', 65, 33, 3, 17, 4, 750, 0, 1000, 0, 0, [1], (600, 14, 200, 6))
-    doezeedote = Beast('doezeedote', 75, 48, 3, 34, 6, 810, 0, 950, 0, 0, [1], (500, 18, 210, 8))
-    little_amzedivie = Monstrosity('little amzedivie', 100, 63, 3, 61, 9, 675, 0, 1000, 1, 0, [1], (600, 10, 125, 11))
-    kiddleydivie = Monstrosity('kiddleydivie', 100, 40, 2, 23, 5, 705, 0, 1005, 0, 0, [1], (100, 10, 100, 8))
-    woodenchew = Construct('woodenchew', 95, 20, 1, 14, 3, 650, 1, 600, 0, 0, [1,2], (300, 10, 70, 9))
-    condemned_goblin = Goblinoid('condemned goblin', 35, 34, 4, 25, 5, 740, 0, 850, 0, 0, [1], (700, 10, 194, 4))
-    goblin = Goblinoid('goblin', 35, 41, 5, 29, 6, 700, 8, 950, 1, 0, [1,2,3], (600, 12, 160, 10))
-    goblin_king = Goblinoid('goblin king', 40, 55, 6, 52, 8, 880, 0, 990, 2, 0, [1], (500, 13, 180, 5))
-    shinigami = Astral('shinigami', 95, 49, 3, 31, 6, 595, 0, 700, 0, 0, [1,6,8,9,10], (995, 12, 205, 2))
-    large_cave_slime = Slime('large cave slime', 100, 26, 3, 44, 8, 670, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
-    owlbear = Beast('owlbear', 20, 26, 4, 16, 4, 685, 1, 900, 1, 0, [1,2], (750, 20, 300, 12))
-    irrawrtzus = Beastoid('irrawrtzus', 45, 47, 5, 33, 6, 890, 5, 1000, 0, 0, [2,3,4,6], (800, 12, 700, 6))
-    letiche = Beast('letiche', 90, 30, 2, 18, 4, 600, 0, 850, 0, 0, [1], (400, 10, 140, 4))
-    bullbous_bow = Beast('bullbous bow', 45, 61, 6, 61, 9, 700, 0, 1000, 15, 3, [1,2], (700, 22, 200, 10))
+    marzeedote = Beast('marzeedote', 65, 33, 3, 15, 4, 750, 0, 1000, 0, 0, [1], (600, 14, 200, 6))
+    doezeedote = Beast('doezeedote', 75, 48, 3, 31, 6, 810, 0, 950, 0, 0, [1], (500, 18, 210, 8))
+    little_amzedivie = Monstrosity('little amzedivie', 100, 63, 3, 47, 9, 675, 0, 1000, 1, 0, [1], (600, 10, 125, 11))
+    kiddleydivie = Monstrosity('kiddleydivie', 100, 40, 2, 20, 5, 705, 0, 1005, 0, 0, [1], (100, 10, 100, 8))
+    woodenchew = Construct('woodenchew', 95, 20, 1, 11, 3, 650, 1, 600, 0, 0, [1,2], (300, 10, 70, 9))
+    condemned_goblin = Goblinoid('condemned goblin', 35, 34, 4, 22, 5, 740, 0, 850, 0, 0, [1], (700, 10, 194, 4))
+    goblin = Goblinoid('goblin', 35, 41, 5, 24, 6, 700, 8, 950, 1, 0, [1,2,3], (600, 12, 160, 10))
+    goblin_king = Goblinoid('goblin king', 40, 55, 6, 44, 8, 880, 0, 990, 2, 0, [1], (500, 13, 180, 5))
+    shinigami = Astral('shinigami', 95, 49, 3, 27, 6, 595, 0, 700, 0, 0, [1,6,8,9,10], (995, 12, 205, 2))
+    large_cave_slime = Slime('large cave slime', 100, 26, 3, 36, 8, 670, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
+    owlbear = Beast('owlbear', 20, 26, 4, 15, 4, 685, 1, 900, 1, 0, [1,2], (750, 20, 300, 12))
+    irrawrtzus = Beastoid('irrawrtzus', 45, 47, 5, 30, 6, 890, 5, 1000, 0, 0, [2,3,4,6], (800, 12, 700, 6))
+    letiche = Beast('letiche', 90, 30, 2, 17, 4, 600, 0, 850, 0, 0, [1], (400, 10, 140, 4))
+    bullbous_bow = Beast('bullbous bow', 45, 61, 6, 50, 9, 700, 0, 1000, 15, 3, [1,2], (700, 22, 200, 10))
 
-    black_worm = Worm('black worm', 65, 122, 3, 29, 6, 550, 0, 1300, 0, 0, [1,2], (210, 9, 90, 16))
+    black_worm = Worm('black worm', 65, 122, 3, 23, 6, 550, 0, 1300, 0, 0, [1,2], (210, 9, 90, 16))
     bronze_worm = Worm('bronze worm', 65, 54, 1, 19, 4, 550, 0, 1250, 0, 0, [1,2], (200, 9, 100, 15))
     white_worm = Worm('snow worm', 65, 54, 1, 19, 4, 550, 0, 1200, 0, 0, [1,2], (185, 9, 120, 14))
     yellow_worm = Worm('yellow worm', 65, 54, 1, 19, 4, 550, 0, 1150, 0, 0, [1,2], (175, 9, 145, 13))

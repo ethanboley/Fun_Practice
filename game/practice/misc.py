@@ -135,12 +135,11 @@ class Hospital:
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        print('Skills: ')
+        print('Skills:')
         for skill in player.known_skills:
             print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
-        for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
-            print(f'{i}: {item.name}')
+        player.inventory.display_contents()
         if player.level >= 6:
             print('Allies: ')
             for ally in player.allies:
@@ -311,12 +310,11 @@ class Marketplace():
         print(f'Speed: {1000 - player.agi}')
         print(f'Magic: {player.mag}/{player.maxmag}')
         print(f'Col: {player.col}')
-        print('Skills: ')
+        print('Skills:')
         for skill in player.known_skills:
             print(f'{skill.name.capitalize()} --> cost: {skill.cost}, cooldown: {skill.cooldown - skill.downtime}/{skill.cooldown}, power: {skill.damage}')
         print('Inventory:')
-        for i, item in enumerate(list(player.inventory.contents.keys()), start=1):
-            print(f'{i}: {item.name}')
+        player.inventory.display_contents()
         if player.level >= 6:
             print('Allies: ')
             for ally in player.allies:
@@ -339,18 +337,18 @@ class Gym():
         self.level = player.level
         self.player = player
         self.skills = init_skills()
-        self.learnables = [[skill for skill in self.skills if skill.level <= self.level and skill.type == 0]]
+        self.learnables = [skill for skill in self.skills if skill.level <= self.level and skill.type == 0]
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        return self.skill_learning()
+        return self.skill_learning(player)
 
-    def skill_learning(self):
+    def skill_learning(self, player:Fighter):
         dprint('Welcome to the skill gym, here you can learn new skills or')
         dprint('change the ones you know!')
-        self.level = self.player.level
+        self.level = player.level
 
         while True:
-            if  len(self.player.known_skills) < self.player.skill_slots:
+            if  len(player.known_skills) < player.skill_slots:
                 dprint('You appear to have an available skill slot.')
                 dprint('would you like to learn or replace a skill?')
                 lorp = ['learn','replace','nevermind'] # lorp: Learn or Replace
@@ -359,10 +357,10 @@ class Gym():
                 ans = input()
             
                 if ans in ['0','1','l','L','Learn','learn','LEARN']: # if learn new
-                    self.player.add_skill(self.learnables)
+                    player.add_skill(self.learnables)
                 if ans in ['2','r','R','replace','Replace','repl','Repl','REPLACE','REPL']: # if replace known
-                    self.player.remove_skill()
-                    self.player.add_skill(self.learnables)
+                    player.remove_skill()
+                    player.add_skill(self.learnables)
                 elif ans in ['3','n','N','NO','no','No','nope','Nope','NOPE','4','absolutely not!']:
                     dprint('Ok, you have a wonderful day!')
                     break
@@ -376,13 +374,65 @@ class Gym():
 
                 ans = input().lower().strip()
                 if ans in ['1','0','r','replace','repl','e','','d','f','t','4','5']: # if replace known
-                    self.player.remove_skill()
-                    self.player.add_skill(self.learnables)
+                    player.remove_skill()
+                    player.add_skill(self.learnables)
                 elif ans in ['2','n','N','NO','no','No','nope','Nope','NOPE','3','absolutely not!']:
                     dprint('Alrighty then, have a magnifacent day!')
                     break
                 else:
                     continue
+        return True
+
+
+class Alchemy:
+    def __init__(self):
+        self.name = 'Alchemy'
+
+    def run(self, player=None, world=None, xp_thresholds=None):
+        return self.create_potion(player, xp_thresholds)
+    
+    def create_potion(self, player:Fighter, xp_thresholds:dict):
+        if not player.inventory.has('glass bottle'):
+            dprint('You don\'t appear to have any available containers to')
+            dprint('successfully do alchemy right now.')
+            dprint('To proceed, you need the item called: glass bottle.')
+            return True
+        if random.getrandbits(1):
+            dprint('Time to do some science!')
+        else:
+            dprint('Time to do some magic!')
+        ability = ceil(player.level / 2) + 1
+        dprint(f'You can use up to {ability} alchemical ingredients.')
+        ingredients = [item for item in player.inventory.contents.keys() if item.is_ingredient]
+        compound = []
+        potential = 0
+        for i in range(ability):
+            dprint(f'Select items to mix ({ability - i} items left):')
+            ingredient = get_list_option(ingredients)
+            if ingredient is None:
+                dprint('Oooo, actually you don\'t have anything to cook with!')
+                return True
+            player.inventory.remove_item(ingredient)
+            ingredients.remove(ingredient)
+            compound.append(ingredient)
+            dprint(f'Current compound:')
+            for i in compound:
+                print(i.name)
+            potential += ingredient.potency
+            dprint(f'Compound potential: {potential}')
+            dprint('Would you like to add more?\n1: Yes\n2: No\n')
+            if input().lower().strip() in [' ', 'no', 'n', '2']:
+                break
+        
+        dprint('Select something to produce with this compound:')
+        product = get_list_option([item for item in items if item.craftable and (item.sell_price - 1) <= potential])
+        bottle = [bottle for bottle in items if bottle.name == 'glass bottle']
+        player.inventory.remove_item(bottle[0])
+        player.inventory.add_item(product)
+        dprint(f'You successfully produced 1 {product.name}!')
+        player.gain_xp(product.rarity, xp_thresholds)
+        return True
+
 
 class Quit:
     def __init__(self) -> None:

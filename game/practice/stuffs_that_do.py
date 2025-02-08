@@ -7,239 +7,240 @@ from actions import *
 # --- useable items
 
 class MagicGlass(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         player.mag += (player.maxmag // 2)
 
 
 class GlassOfTheWeave(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         player.mag = player.maxmag
 
 
 class LifePotion(Item):
-    def __init__(self, name, level, sell_price, rarity, power=0, sold=True, can_use=True):
-        super().__init__(name, level, sell_price, rarity, power=0, sold=True, can_use=True)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
         self.power = power
     
-    def use(self, player=None, enemy=None, xp_thresholds=None):
-        player.hp += 6 + (player.level * self.rarity) + self.level + self.power
-        display_health(player)
+    def use(self, player=None, target=None, xp_thresholds=None):
+        target.hp += 6 + (target.level * self.rarity) + self.level + self.power
+        display_health(target)
 
 
 class GigaLifePotion(Item):
-    def __init__(self, name, level, sell_price, rarity, power=0, sold=True, can_use=True):
-        super().__init__(name, level, sell_price, rarity, power=0, sold=True, can_use=True)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
     
-    def use(self, player=None, enemy=None, xp_thresholds=None):
-        player.hp = player.maxhp
+    def use(self, player=None, target=None, xp_thresholds=None):
+        target.hp = target.maxhp
         display_health(player)
 
 
 class GlassBottle(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass
 
 
 class KalesOBottle(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass
         
 
 class LittleDagger(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         if random.randint(0,1000) < player.accuracy:
             if player.empowered:
-                enemy.hp -= player.atk + 1
+                damage = player.atk + self.power
+                target.hp -= damage
             else:
-                enemy.hp -= 1
-            dprint(f"{player.name} throws {self.name} at {enemy.name} dealing 1 damage!")
-            if enemy.is_alive():
-                dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+                damage = self.power
+                target.hp -= damage
+            dprint(f"{player.name} throws {self.name} at {target.name} dealing {damage} damage!")
+            if target.is_alive():
+                dprint(f'{target.name} has {target.hp} hp remaining.')
             else:
-                dprint(f'{player.name} has defeated {enemy.name}!')
-                player.gain_xp(enemy.xp, xp_thresholds)
-                player.gain_col(enemy.col)
-                enemy.drop(player)
-                player.mosters_seen.add(enemy.name)
+                dprint(f'{player.name} has defeated {target.name}!')
+                player.gain_xp(target.xp, xp_thresholds)
+                player.gain_col(target.col)
+                target.drop(player)
         else:
             dprint(f"{player.name} misses with the dagger!")
         
 
 class VenomGlass(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
-        dprint(f'{player.name} chucks the small bottle at the {enemy.name}')
+    def use(self, player=None, target=None, xp_thresholds=None):
+        dprint(f'{player.name} chucks the small bottle at the {target.name}')
         dprint(f'it shatters on impact and the venom seeps into it\'s body')
-        damage = 12 + player.level + (player.atk - 1)
+        damage = self.power + player.level + (player.atk - 1)
         dprint(f'The venom deals {damage} damage! ')
-        enemy.hp -= damage
-        if enemy.is_alive():
-            dprint(f'{enemy.name} has {enemy.hp} hp remaining.')
+        target.hp -= damage
+        if target.is_alive():
+            dprint(f'{target.name} has {target.hp} hp remaining.')
         else:
-            dprint(f'the poison killed {enemy.name}!')
-            player.gain_xp(enemy.xp, xp_thresholds)
-            player.gain_col(enemy.col)
-            enemy.drop(player)
-        
+            dprint(f'the poison killed {target.name}!')
+            player.gain_xp(target.xp, xp_thresholds)
+            player.gain_col(target.col)
+            target.drop(player)
 
 class NepenthFruit(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         dprint(f'{player.name} eats a fruit during battle and')
         dprint('feels a short surge of power')
         player.hp += 6
         
 
 class NawsothFruit(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         dprint(f'{player.name} eats a fruit during battle')
         dprint('the fruit has healing properties!')
         player.hp += (player.maxhp // 4) - 1
         
 
 class ReturnSoulStone(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass # for use on a team mate self use will be atomatic
         
 
 class OozeJelly(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass # similar to the venom glass but does more damage and doesn't drop drops
         
 
 class TrembleShortcake(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass # adds temporary buff to speed and damage
         
 
 class SuperAjaStone(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use):
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass # high damaging attack
 
 class Weapon(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use, force) -> None:
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False, force=0):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
         self.force = force
 
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass
 
 class Armor(Item):
-    def __init__(self, name, level, sell_price, rarity, sold, can_use, defense) -> None:
-        super().__init__(name, level, sell_price, rarity, sold, can_use)
+    def __init__(self, name, level, sell_price, rarity, power=0, potency=0, sold=False, can_use=False, is_ingredient=False, is_craftable=False, defense=0):
+        super().__init__(name, level, sell_price, rarity, power, potency, sold, can_use, is_ingredient, is_craftable)
         self.defense = defense
     
-    def use(self, player=None, enemy=None, xp_thresholds=None):
+    def use(self, player=None, target=None, xp_thresholds=None):
         pass
 
 # --- #
 
 def init_items():
-    col_coin = Item('col coin', 1, 1, 0, False, False)
-    grand_col = Item('grand col', 5, 10, 5, False, False)
-    colossal_col = Item('colossal col', 8, 50, 8, False, False)
-    magic_glass = MagicGlass('magic glass', 1, 4, 1, True, True)
-    glass_of_the_weave = GlassOfTheWeave('glass of the weave', 20, 20, 4, True, True)
-    life_potion = LifePotion('life potion', 1, 7, 1, 2, True, True)
-    vermilion_life_potion = LifePotion('vermilion life potion', 6, 10, 2, 5, True, True)
-    rose_life_potion = LifePotion('rose life potion', 12, 15, 3, 11, True, True)
-    magenta_life_potion = LifePotion('magenta life potion', 18, 21, 4, 20, True, True)
-    fuchsia_life_potion = LifePotion('fuchsia life potion', 28, 28, 5, 38, True, True)
-    purple_life_potion = LifePotion('purple life potion', 38, 40, 6, 60, True, True)
-    lavender_life_potion = LifePotion('lavender life potion', 48, 64, 7, 100, True, True)
-    azure_life_potion = LifePotion('azure life potion', 58, 100, 8, 180, True, True)
-    indigo_life_potion = LifePotion('indigo life potion', 70, 180, 9, 350, False, True)
-    blue_life_potion = LifePotion('blue life potion', 82, 240, 10, 650, False, True)
-    navy_life_potion = LifePotion('navy life potion', 96, 365, 11, 1200, False, True)
-    deoxidized_blood_of_life_god = LifePotion('bottled deoxidized blood of the life potion deity', 120, 1000, 12, 2500, False, True)
-    giga_life_potion = GigaLifePotion('giga life potion', 16, 20, 4, 10, True, True)
-    glass_bottle = GlassBottle('glass bottle', 1, 0, 1, True, True)
-    kales_o_bottle = KalesOBottle('kales o bottle', 5, 11, 5, False, True)
-    prostomium = Item('prostomium', 1, 1, 1, False, False)
-    slime_jelly = Item('slime jelly', 1, 1, 0, False, False)
-    mundane_scrap_metal = Item('mundane scrap metal', 1, 1, 0, False, False)
-    little_dagger = LittleDagger('little dagger', 1, 1, 0, False, True)
-    dagger = LittleDagger('dagger', 2, 2, 1, False, True)
-    onix_stone = Item('onix stone', 4, 5, 3, True, False)
-    monster_tooth = Item('monster tooth', 1, 2, 1, False, False)
-    venom_glass = VenomGlass('venom glass', 2, 5, 2, False, True)
-    carapas = Item('carapas', 1, 1, 0, False, False)
-    slime_membrane = Item('slime membrane', 4, 11, 4, False, False)
-    hide = Item('hide', 3, 1, 1, True, False)
-    simple_fabric = Item('simple fabric', 2, 1, 0, True, False)
-    living_wood = Item('living wood', 1, 2, 1, False, False) #
-    aged_teak_log = Item('aged teak log', 2, 3, 2, False, False) #
-    opal = Item('opal', 8, 10, 4, True, False)
-    nepenth_fruit = NepenthFruit('nepenth fruit', 1, 2, 1, False, True)
-    argiros_sheet = Item('agiros sheet', 9, 2, 1, True, False)
-    nepenths_ovule = Item('nepenths ovule', 4, 8, 4, False, False)
-    nawsoth_fruit = NawsothFruit('nawsoth fruit', 6, 5, 2, True, True) #
-    emarald = Item('emerald', 11, 15, 4, True, False)
-    acutite = Item('acutite', 2, 3, 2, False, False)
-    crystalite = Item('crystalite', 3, 6, 3, False, False)
-    return_soul_stone = ReturnSoulStone('return soul stone', 5, 5, 5, False, True)
-    ruby = Item('ruby', 15, 25, 5, True, False)
-    droplet_of_villi = Item('droplet of villi', 6, 14, 6, False, False) #
-    lizard_hide = Item('lizard hide', 7, 4, 1, True, False)
-    animal_hide = Item('animal hide', 3, 3, 1, False, False)
-    sapphire = Item('sapphire', 20, 35, 6, True, False)
-    thicc_tendon = Item('thicc tendon', 1, 6, 1, False, False)
-    noblewood = Item('noblewood', 2, 6, 2, False, False) #
-    blue_blood_diamond = Item('blue blood diamond', 23, 50, 7, True, False)
-    ooze_jelly = OozeJelly('ooze jelly', 1, 4, 1, False, True)
-    living_stone = Item('living stone', 4, 15, 4, False, False)
-    solidite = Item('solidite', 4, 12, 4, False, False)
-    diamond = Item('diamond', 31, 85, 8, True, False)
-    tremble_shortcake = TrembleShortcake('tremble shortcake', 7, 10, 7, True, True)
-    hyper_slime_jelly = Item('hyper slime jelly', 2, 10, 2, False, False)
-    super_aja_stone = SuperAjaStone('super aja stone', 9, 110, 9, False, True)
-    scale_hide = Item('scale hide', 4, 3, 1, False, False)
-    impish_wings = Item('impish wings', 15, 44, 2, False, False)
-    goblin_coin = Item('goblin coin', 6, 13, 2, False, False)
-    ectoplasm = Item('ectoplasm', 7, 15, 3, False, False)
-    astral_shroud = Item('astral shroud', 45, 1090, 4, False, True)
-    spirit_lantern = Item('spirit lantern', 78, 37525, 6, True, True)
+    col_coin = Item('col coin', 1, 1, 0, 0, 0, False, False, False, False)
+    grand_col = Item('grand col', 5, 10, 5, 0, 0, False, False, False, False)
+    colossal_col = Item('colossal col', 8, 50, 8, 0, 0, False, False, False, False)
+    sludge = Item('sludge', 1, 0, 0, 0, 0, False, False, False, True)
+    magic_glass = MagicGlass('magic glass', 1, 4, 1, 0, 4, True, True, True, True)
+    glass_of_the_weave = GlassOfTheWeave('glass of the weave', 20, 20, 4, 0, 20, True, True, True, True)
+    life_potion = LifePotion('life potion', 1, 7, 1, 2, 7, True, True, True, True)
+    vermilion_life_potion = LifePotion('vermilion life potion', 6, 10, 2, 5, 10, True, True, True, True)
+    rose_life_potion = LifePotion('rose life potion', 12, 15, 3, 11, 15, True, True, True, True)
+    magenta_life_potion = LifePotion('magenta life potion', 18, 21, 4, 20, 21, True, True, True, True)
+    fuchsia_life_potion = LifePotion('fuchsia life potion', 28, 28, 5, 38, 28, True, True, True, True)
+    purple_life_potion = LifePotion('purple life potion', 38, 40, 6, 60, 40, True, True, True, True)
+    lavender_life_potion = LifePotion('lavender life potion', 48, 64, 7, 100, 64, True, True, True, True)
+    azure_life_potion = LifePotion('azure life potion', 58, 100, 8, 180, 100, True, True, True, True)
+    indigo_life_potion = LifePotion('indigo life potion', 70, 180, 9, 350, 180, False, True, True, True)
+    blue_life_potion = LifePotion('blue life potion', 82, 240, 10, 650, 240, False, True, True, True)
+    navy_life_potion = LifePotion('navy life potion', 96, 365, 11, 1200, 365, False, True, True, True)
+    deoxidized_blood_of_life_god = LifePotion('bottled deoxidized blood of the life potion deity', 120, 1000, 12, 2500, 1000, False, True, True, True)
+    giga_life_potion = GigaLifePotion('giga life potion', 16, 20, 4, 10, 20, True, True, True, True)
+    glass_bottle = GlassBottle('glass bottle', 1, 0, 1, 0, 0, True, True, False, True)
+    kales_o_bottle = KalesOBottle('kales o bottle', 5, 11, 5, 0, 0, False, True, False, True)
+    prostomium = Item('prostomium', 1, 1, 1, 0, 2, False, False, True, False)
+    slime_jelly = Item('slime jelly', 1, 1, 0, 0, 1, False, False, True, False)
+    mundane_scrap_metal = Item('mundane scrap metal', 1, 1, 0, 0, 0, False, False, False, False)
+    little_dagger = LittleDagger('little dagger', 1, 1, 0, 0, 0, False, True, False, False)
+    dagger = LittleDagger('dagger', 2, 2, 1, 1, 0, False, True, False, False)
+    onix_stone = Item('onix stone', 4, 5, 3, 0, 4, True, False, True, False)
+    monster_tooth = Item('monster tooth', 1, 2, 1, 1, 3, False, False, True, False)
+    venom_glass = VenomGlass('venom glass', 2, 5, 2, 12, 5, False, True, True, True)
+    carapas = Item('carapas', 1, 1, 0, 0, 3, False, False, True, False)
+    slime_membrane = Item('slime membrane', 4, 11, 4, 0, 2, False, False, True, False)
+    hide = Item('hide', 3, 1, 1, 0, 0, True, False, False, False)
+    simple_fabric = Item('simple fabric', 2, 1, 0, 0, 0, True, False, False, False)
+    living_wood = Item('living wood', 1, 2, 1, 0, 4, False, False, True, False) #
+    aged_teak_log = Item('aged teak log', 2, 3, 2, 0, 0, False, False, False, False) #
+    opal = Item('opal', 8, 10, 4, 0, 7, True, False, True, False)
+    nepenth_fruit = NepenthFruit('nepenth fruit', 1, 2, 1, 0, 4, False, True, True, False)
+    argiros_sheet = Item('agiros sheet', 9, 2, 1, 0, 0, True, False, False, False)
+    nepenths_ovule = Item('nepenths ovule', 4, 8, 4, 0, 8, False, False, True, False)
+    nawsoth_fruit = NawsothFruit('nawsoth fruit', 6, 5, 2, 0, 6, True, True, True, False) #
+    emarald = Item('emerald', 11, 15, 4, 0, 14, True, False, True, False)
+    acutite = Item('acutite', 2, 3, 2, 0, 7, False, False, True, False)
+    crystalite = Item('crystalite', 3, 6, 3, 0, 8, False, False, True, False)
+    return_soul_stone = ReturnSoulStone('return soul stone', 5, 5, 5, 0, 0, False, True, False, False)
+    ruby = Item('ruby', 15, 25, 5, 0, 18, True, False, True, False)
+    droplet_of_villi = Item('droplet of villi', 6, 14, 6, 0, 21, False, False, True, False) #
+    lizard_hide = Item('lizard hide', 7, 4, 1, 0, 0, True, False, False, False)
+    animal_hide = Item('animal hide', 3, 3, 1, 0, 0, False, False, False, False)
+    sapphire = Item('sapphire', 20, 35, 6, 0, 22, True, False, True, False)
+    thicc_tendon = Item('thicc tendon', 1, 6, 1, 0, 10, False, False, True, False)
+    noblewood = Item('noblewood', 2, 6, 2, 0, 0, False, False, False, False) #
+    blue_blood_diamond = Item('blue blood diamond', 23, 50, 7, 0, 32, True, False, True, False)
+    ooze_jelly = OozeJelly('ooze jelly', 1, 4, 1, 0, 9, False, True, True, False)
+    living_stone = Item('living stone', 4, 15, 4, 0, 6, False, False, True, False)
+    solidite = Item('solidite', 4, 12, 4, 0, 9, False, False, True, False)
+    diamond = Item('diamond', 31, 85, 8, 0, 35, True, False, True, False)
+    tremble_shortcake = TrembleShortcake('tremble shortcake', 7, 10, 7, 0, 5, True, True, True, False)
+    hyper_slime_jelly = Item('hyper slime jelly', 2, 10, 2, 0, 17, False, False, True, False)
+    super_aja_stone = SuperAjaStone('super aja stone', 9, 110, 9, 0, 36, False, True, True, False)
+    scale_hide = Item('scale hide', 4, 3, 1, 0, 0, False, False, False, False)
+    impish_wings = Item('impish wings', 15, 44, 2, 0, 11, False, False, True, False)
+    goblin_coin = Item('goblin coin', 6, 13, 2, 0, 0, False, False, False, False)
+    ectoplasm = Item('ectoplasm', 7, 15, 3, 0, 20, False, False, True, False)
+    astral_shroud = Item('astral shroud', 45, 1090, 4, 0, 35, False, True, True, False)
+    spirit_lantern = Item('spirit lantern', 78, 37525, 6, 0, 48, True, True, True, False)
 
     # weapons
-    dads_old_sword = Weapon('dads old sword', 1, 4, 1, False, False, 0)
-    goblin_cleaver = Weapon('goblin cleaver', 1, 2, 1, False, False, 0)
-    old_barbarian_sword = Weapon('old barbarian sword', 1, 3, 1, False, False, 1)
+    dads_old_sword = Weapon('dads old sword', 1, 4, 1, 0, 0, False, False, False, 0)
+    goblin_cleaver = Weapon('goblin cleaver', 1, 2, 1, 0, 0, False, False, False, 0)
+    old_barbarian_sword = Weapon('old barbarian sword', 1, 3, 1, 0, 0, False, False, False, 1)
 
-    items = [col_coin, 
+    items = [col_coin, sludge, 
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
              monster_tooth, glass_bottle, magic_glass, living_wood, simple_fabric,
              aged_teak_log, opal, nepenth_fruit, argiros_sheet, nepenths_ovule, 

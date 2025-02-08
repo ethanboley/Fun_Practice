@@ -91,6 +91,9 @@ class Ally:
             self.designation = self.name
         else:
             self.designation = designation
+        self.xp = 0
+        self.col = 0
+
 
     def choose_target(self, targets:list):
         if len(targets):
@@ -118,7 +121,8 @@ class Ally:
             target.hp -= damage
             dprint(f'{self.name} attacks {target.name} for {damage} damage!')
             if target.is_alive():
-                dprint(f'{target.name} has {target.hp} hp remaining.')
+                if target.hp > 0:
+                    dprint(f'{target.name} has {target.hp} hp remaining.')
             else:
                 dprint(f'{self.name} has defeated {target.name}!')
 
@@ -136,7 +140,8 @@ class Ally:
                 target.hp -= active_damage
                 dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
                 if target.is_alive():
-                    dprint(f'{target.name} has {target.hp} hp remaining.')
+                    if target.hp > 0:
+                        dprint(f'{target.name} has {target.hp} hp remaining.')
                 else:
                     dprint(f'{self.name} has defeated {target.name}!')
         
@@ -151,7 +156,8 @@ class Ally:
                     target.hp -= active_damage
                     dprint(f'{self.name} used {self.skill.name} and dealt {active_damage} damage to {target.name}!')
                     if target.is_alive():
-                        dprint(f'{target.name} has {target.hp} hp remaining.')
+                        if target.hp > 0:
+                            dprint(f'{target.name} has {target.hp} hp remaining.')
                     else:
                         dprint(f'{self.name} has defeated {target.name}!')
 
@@ -163,12 +169,28 @@ class Ally:
                     active_damage = damage if random.random() < self.acu else (damage // 4) + 1
                     target.hp += active_damage
                     dprint(f'{self.name} healed {target.name}!')
+        
+        elif self.skill.type == 2: # spall
+            crit = random.random() > .8
+            damage = damage_calculator(self.atk, level=self.level, power=self.skill.damage, f=self.force, d=target.defense, num_targets=1, crit=crit, special=True)
+            if self.cooldown <= 0:
+                hit_value = random.randint(0, 1000)
+                active_damage = damage if hit_value < self.acu else (damage // 4) + 1
+                target.hp -= active_damage
+                dprint(f'{self.name} used {self.skill.name} dealing {active_damage} damage to {target.name}!')
+                if target.is_alive():
+                    if target.hp > 0:
+                        dprint(f'{target.name} is left with {target.hp} hp.')
+                else:
+                    dprint(f'{self.name} pulverized {target.name} with {self.skill.name}!')
 
         self.cooldown += 4
             
     def is_alive(self):
         return self.hp > 0
-
+    
+    def drop(self, player):
+        dprint(f'{player.name}! What did you do! You literally gained nothing from that.')
 
 class Boss:
     def __init__(self, name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac):
@@ -192,16 +214,16 @@ class Boss:
     def attack(self, player):
         hit_value = random.randint(0,1000)
         if hit_value < self.acu:
-            damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=85)
+            damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=self.malice)
             player.hp -= damage
-            dprint(f"{player.name} is hit for {damage} damage from {self.name}\'s attack!")
+            dprint(f'{player.name} is hit for {damage} damage from {self.name}\'s attack!')
             if player.is_alive():
                 dprint(f'{player.name} takes the hit like a boss!')
                 display_health(player)
             else:
                 dprint(f'{player.name} was slain at the hand of {self.name}!')
         else:
-            dprint(f"{self.name} attacks but misses {player.name}!")
+            dprint(f'{self.name} attacks but misses {player.name}!')
     
     def choose_target(self, targets:list):
         if len(targets):
@@ -210,7 +232,7 @@ class Boss:
             return None
 
     def is_alive(self):
-        return self.hp > 0 or self.phases > 0
+        return True
 
 
 # ----------- Bosses
@@ -233,7 +255,7 @@ class BossTest(Boss):
     def big_attack(self, player):
         can_use = random.randint(1,2) in [1]
         if can_use:
-            strong_damage = damage_calculator(self.atk, level=self.level, power=6, f=self.force, d=player.defense, special=True, mon=100)
+            strong_damage = damage_calculator(self.atk, level=self.level, power=2, f=self.force, d=player.defense, special=True, mon=100)
             weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=100)
             hit_value = random.randint(0, 1000)
             if hit_value < self.acu:
@@ -258,12 +280,22 @@ class BossTest(Boss):
             dprint(f'{self.name} looks a little tired after its last attack.')
 
     def next_phase(self, player, dialogues:list):
-        if self.phases > 0:
+        if self.phases > 1:
             self.phases -= 1
             self.hp = self.maxhp
-            dialogues.pop()
+            if dialogues: 
+                text = dialogues.pop()
+                text()
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
+
+    def drop(self, player):
+        dprint(f'loot the body?\n1: Yes\n2: No\n')
+        if input().lower().strip() in ['y','ye','yes','',' ','1','1:','q','\t','`','0','1: yes','yeah!','!','loot','l']:
+            print('You found:')
+            loot = [drop for drop in drops if drop.name == 'onix stone'] 
+            print(loot[0].name)
+            player.inventory.add_item(loot[0])
 
 
 class Kosaur(Boss):
@@ -271,7 +303,7 @@ class Kosaur(Boss):
         super().__init__(name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac)
         self.acu_mod = .02
         self.title = 'Scourge of the Kobold Canyon'
-        self.phases = 2
+        self.phases = 1
     
     def fight(self, player):
         if self.phases == 2:
@@ -291,8 +323,8 @@ class Kosaur(Boss):
         can_use = random.randint(1,5) in [3, 4, 5]
         if can_use:
             power = random.randint(-2, (self.atk // 3)) + 6
-            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, special=True, mon=85)
-            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=85)
+            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, special=True, mon=self.malice)
+            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=self.malice)
             hit_value = random.randint(0, 1000)
             if hit_value < self.acu:
                 player.hp -= strong_damage
@@ -319,8 +351,8 @@ class Kosaur(Boss):
         can_use = random.randint(1,3) in [2, 3]
         if can_use:
             power = random.randint(1, self.atk + 1) + 2
-            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, special=True, mon=85)
-            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=85)
+            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, special=True, mon=self.malice)
+            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, mon=self.malice)
             hit_value = random.randint(0, 1000)
             if hit_value < self.acu:
                 player.hp -= strong_damage
@@ -343,13 +375,28 @@ class Kosaur(Boss):
         else:
             dprint(f'{self.name} looks a little tired after its last attack.')
         
-    def next_phase(self, player, dialogues:list):
+    def next_phase(self, player, dialogues:list, xp_thresholds):
         if self.phases > 0:
             self.phases -= 1
             self.hp = self.maxhp
-            dialogues.pop()
+            if dialogues: 
+                text = dialogues.pop()
+                text()
+            return False
         else:
             dprint(f'CONGRADULATIONS!!! {player.name} defeated {self.name} {self.title}')
+            player.gain_xp(self.xp, xp_thresholds)
+            player.gain_col(self.col)
+            self.drop(player)
+            return True
+    
+    def drop(self, player):
+        dprint(f'loot the body?\n1: Yes\n2: No\n')
+        if input().lower().strip() in ['y','ye','yes','',' ','1','1:','q','\t','`','0','1: yes','yeah!','!','loot','l']:
+            print('You found:')
+            loot = [drop for drop in drops if drop.name == 'onix stone'] 
+            print(loot[0].name)
+            player.inventory.add_item(loot[0])
 
 
 class Illfang(Boss):
@@ -357,15 +404,98 @@ class Illfang(Boss):
         super().__init__(name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac)
         self.acu_mod = .03
         self.title = 'the Kobold Lord'
+        self.phases = 1
     
-    def talwar(self):
-        pass
+    def fight(self, player):
+        if self.phases == 1:
+            if random.randint(0,2):
+                self.attack(player)
+            else:
+                self.talwar(player)
+        elif self.phases == 0:
+            if random.randint(0,1):
+                self.attack(player)
+            else:
+                self.odachi(player)
 
-    def odachi(self):
-        pass
+    def talwar(self, player):
+        can_use = random.randint(0,5) in [2, 3, 4, 5]
+        if can_use:
+            power = random.randint(-1, (self.atk // 3)) + 7
+            hit_value = random.randint(0, 1000)
+            crit = hit_value < 200
+            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, crit=crit, special=True, mon=self.malice)
+            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, crit=crit, mon=self.malice)
+            if hit_value < self.acu:
+                player.hp -= strong_damage
+                dprint(f'{self.title} slashes {player.name} with his Talwar!')
+                dprint(f'the attack hits {player.name} for {strong_damage} damage!')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'The talwar splits {player.name} in two!')
+            elif hit_value < self.acu + self.acu_mod:
+                player.hp -= weak_damage
+                dprint(f'{self.name} just grazed {player.name} for {weak_damage} damage!')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'It was still too much for {player.name}!')
+            else:
+                dprint(f'{self.name} took a swing at {player.name} but missed!')
+        else:
+            dprint(f'{self.name} looks a little tired after its last attack.')
+            dprint('time for a counter attack!')
 
-    def next_phase(self): # force also increases
-        pass
+    def odachi(self, player):
+        can_use = random.randint(0,3) in [1,2,3]
+        if can_use:
+            power = random.randint(1, self.atk + 2) + 9
+            hit_value = random.randint(0, 1000)
+            crit = hit_value < 220
+            strong_damage = damage_calculator(self.atk, level=self.level, power=power, f=self.force, d=player.defense, crit=crit, special=True, mon=self.malice)
+            weak_damage = damage_calculator(self.atk, level=self.level, f=self.force, d=player.defense, crit=crit, mon=self.malice)
+            if hit_value < self.acu:
+                player.hp -= strong_damage
+                dprint(f'{self.title} attacks with his Odachi!')
+                dprint(f'the attack hits {player.name} for {strong_damage} damage!')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'{player.name} was sliced into a hundred tiny pieces!')
+            elif hit_value < self.acu + self.acu_mod:
+                player.hp -= weak_damage
+                dprint(f'{self.name} just got a bit of {player.name} dealing {weak_damage} damage.')
+                if player.is_alive():
+                    display_health(player)
+                else:
+                    dprint(f'but that was all {player.name} could take!')
+            else:
+                dprint(f'{self.name} took a swing at {player.name} but missed!')
+        else:
+            dprint(f'{self.name} looks a little tired after its last attack.')
+            dprint('now\'s your chance to strike back hard!')
+
+    def next_phase(self, player, dialogues:list, xp_thresholds):
+        if self.phases > 0:
+            self.phases -= 1
+            self.hp = self.maxhp
+            if dialogues: 
+                text = dialogues.pop()
+                text()
+            return False
+        else:
+            player.gain_xp(self.xp, xp_thresholds)
+            player.gain_col(self.col)
+            self.drop(player)
+            dprint('. . . . . ', .07)
+            return True
+
+    def drop(self, player):
+        loot = [drop for drop in drops if drop.name == 'opal']
+        dprint('drops:')
+        print(loot[0].name)
+        player.inventory.add_item(loot[0])
 
 
 class Barran(Boss):
@@ -572,9 +702,9 @@ class Worm(Enemy):
         
     def create_loot_table(self):
         drop_list = [] # define returnable list
-        if self.level > 0 and random.randint(0, 10) > self.possible_drops[0].rarity:
+        if self.level > 0 and random.randint(0, 10) >= self.possible_drops[0].rarity:
             drop_list.append(self.possible_drops[0])
-            if self.level > 15 and random.randint(0, 10) > self.possible_drops[1].rarity:
+            if self.level > 15 and random.randint(0, 10) >= self.possible_drops[1].rarity:
                 drop_list.append(self.possible_drops[1])
         return drop_list
 
@@ -977,109 +1107,111 @@ that the adjusted values left the final monster slightly more powerful within
 the level 4 range giving us an xp value above the median value of 25, maybe
 something like 29. Now that we have all stats accounted for, we can initailize
 the monster as follows:
-giant_rhino_beatle = Insect('giant rhino beatle', 86, 5, 29, 4, .55, 18, ...)
+giant_rhino_beetle = Insect('giant rhino beetle', 86, 5, 29, 4, .55, 18, ...)
 note: The two remaining stats after the agi value (18) that are dotted out are
 unimportant to these calculations and represent the worlds this particular
 enemy appears in and the values to use for the attack minigame when
 initiallized during a battle.
-Xp ranges per level:
-1:{1x10}, 2:{6x16}, 3:{12x24}, 4:{18x32}, 5:{25x40}, 6:{35x50}, 7{48x64},
-8:{62x80}, 9:{76x96}, 10:{95x120}, 11:{118x144}, 12:{142x170}, 13:{164x196}, 
-14:{195x230}, 15:{228x272}, 16:{270x320}, ...
+Xp per level (revised):
+1:{4.6}, 2:{7.8}, 3:{12}, 4:{17}, 5:{23.5}, 6:{30}, 7{38}, 8:{49}, 9:{63}, 10:{79},
+11:{100}, 12:{126}, 13:{157}, 14:{196}, 15:{244}, 16:{303}, ... 
+These values get a little messed up at higher levels starting at around 50-65
+(xp becomes too small compared to xp thresholds).
 '''
 
 def init_enemies():
     test_boss = BossTest('test_boss', 100, 12, 2, 600, 1, 600, 20, 1200, 0, 0, [1], (750, 60, 120, 5))
-    windworm = Worm('windworm', 70, 1, 1, 3, 1, 150, 0, 1650, 0, 0, [1], (500, 70, 180, 8))
-    brown_worm = Worm('brown worm', 65, 2, 1, 4, 1, 200, 0, 2200, 0, 0, [1], (450, 15, 60, 20)) # limit ratio 450:95
-    slime = Slime('slime', 100, 2, 1, 5, 1, 350, 0, 1550, 0, 0, [1], (600, 21, 200, 10))
-    refuse = Construct('refuse', 100, 3, 1, 4, 1, 200, 1, 1250, 0, 0, [1,3,6,9], (400, 33, 240, 12))
-    cykloone = Insect('cykloone', 70, 3, 1, 3, 1, 150, 0, 800, 0, 0, [1], (250, 27, 400, 6))
-    frenzy_boar = Beast('frenzy boar', 55, 4, 1, 6, 1, 550, 0, 900, 0, 0, [1,2,3,4], (600, 18, 280, 10))
-    field_wolf = Beast('field wolf', 40, 5, 1, 6, 1, 700, 0, 750, 0, 0, [1,2], (300, 19, 260, 10))
-    greedy_badger = Beastoid('greedy badger', 35, 5, 1, 5, 1, 350, 2, 650, 0, 0, [1,2,3], (200, 17, 275, 8))
-    awakened_shrub = Plant('awakened shrub', 80, 5, 1, 5, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
-    small_kobold = Koboldoid('small kobold', 25, 6, 2, 8, 1, 450, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
-    barkling = Plant('barkling', 85, 8, 1, 7, 1, 400, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
-    swarm_of_bats = Beast('swarm of bats', 70, 8, 1, 9, 1, 900, 0, 800, 0, 0, [1,2,3,4,5], (800, 10, 110, 30))
-    little_nepenth = Nepenth('little nepenth', 85, 14, 2, 13, 2, 600, 0, 650, 0, 0, [1], (400, 11, 200, 2))
-    kobold_slave = Koboldoid('kobold slave', 25, 13, 1, 12, 2, 750, 1, 950, 0, 0, [1], (750, 10, 285, 4))
-    windwasp = Insect('windwasp', 70, 12, 2, 10, 2, 550, 0, 550, 0, 0, [1,2], (700, 17, 400, 7))
-    dire_wolf = Beast('dire wolf', 65, 15, 1, 13, 2, 850, 0, 950, 0, 0, [1,3,4], (300, 13, 250, 10))
-    green_worm = Worm('green worm', 65, 21, 1, 10, 2, 350, 0, 1500, 0, 0, [1], (300, 16, 165, 19))
-    nepenth = Nepenth('nepenth', 85, 20, 2, 14, 2, 600, 0, 720, 0, 0, [1], (400, 12, 200, 2))
-    onikuma = Beast('onikuma', 90, 17, 3, 14, 2, 700, 0, 1240, 1, 0, [1], (760, 30, 385, 4))
-    cave_slime = Slime('cave slime', 100, 13, 3, 11, 2, 550, 0, 1450, 0, 0, [1], (600, 14, 160, 10))
-    kobold_soldier = Koboldoid('kobold soldier', 25, 21, 2, 13, 2, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
-    Kobold_guard = Koboldoid('kobold guard', 25, 20, 2, 14, 2, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
-    shrubent = Plant('shrubent', 80, 27, 1, 14, 3, 900, 0, 1200, 0, 0, [1], (600, 11, 280, 10))
-    cave_bear = Beast('cave bear', 30, 25, 4, 15, 3, 550, 1, 1100, 1, 0, [1], (900, 64, 700, 6))
-    pre_pod_nepenth = Nepenth('pod nepenth', 85, 7, 1, 14, 3, 500, 0, 850, 0, 0, [1], (400, 120, 200, 2))
-    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 21, 1, 14, 3, 500, 0, 850, 0, 0, [1], (400, 11, 200, 2))
-    flower_nepenth = Nepenth('flower nepenth', 85, 32, 2, 18, 3, 750, 0, 700, 0, 0, [1], (400, 11, 200, 2))
-    red_worm = Worm('red worm', 65, 35, 1, 14, 3, 400, 0, 1400, 0, 0, [1], (250, 17, 130, 18))
-    kosaur = Kosaur('Kosaur', 95, 144, 6, 300, 3, 750, 3, 1050, 1, 0, [1], (900, 70, 800, 5))
-    big_nepenth = Nepenth('big nepenth', 85, 35, 2, 19, 3, 700, 0, 950, 0, 0, [1], (350, 16, 200, 2))
-    sappent = Plant('sappent', 80, 37, 2, 19, 3, 950, 0, 1500, 0, 0, [1], (600, 14, 320, 10))
-    ruin_kobold = Koboldoid('ruin kobold', 30, 38, 3, 20, 3, 700, 4, 1000, 1, 0, [1,3], (600, 18, 296, 4))
-    sly_srewman = Beastoid('sly shrewman', 35, 39, 1, 17, 3, 995, 6, 210, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
-    human_bandit = Humanoid('bandit', 0, 21, 7, 20, 4, 800, 3, 1010, 1, 0, [1,2,3,6], (600, 10, 250, 4))
-    kobold_chief = Koboldoid('kobold chief', 30, 40, 2, 18, 4, 750, 5, 900, 1, 0, [1], (750, 19, 310, 4))
-    blue_worm = Worm('blue worm', 65, 54, 2, 19, 4, 550, 0, 1350, 0, 0, [1,2], (225, 18, 140, 17))
-    treent = Plant('treent', 80, 66, 4, 22, 4, 650, 0, 1500, 0, 0, [1,4], (600, 15, 100, 5))
-    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 52, 3, 22, 4, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
-    skeleton = Undead('skeleton', 100, 38, 9, 26, 4, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
-    bark_golem = Plant('bark golem', 95, 61, 2, 21, 4, 900, 1, 1350, 1, 0, [1], (500, 14, 300, 10))
-    flying_kobold = Koboldoid('flying kobold', 30, 47, 3, 25, 4, 500, 4, 450, 0, 0, [1], (850, 13, 300, 2))
-    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 67, 4, 26, 5, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
-    # ac: (dist or def, size ratio, actual speed, balance)    (rail_size600px, hit_dc10px, speed480fps, chances10i)
-    illfang = Enemy('Illfang the Kobold Lord (Boss)', 35, 140, 11, 1000, 5, 900, 15, 1000, 3, 0, [1], (980, 18, 640, 6))
+    windworm = Worm('windworm', 70, 1, 1, 5, 1, 150, 0, 1650, 0, 0, [1], (500, 70, 180, 8))
+    brown_worm = Worm('brown worm', 65, 2, 1, 4, 1, 200, 0, 1500, 0, 0, [1], (450, 15, 60, 20))
+    slime = Slime('slime', 100, 2, 1, 3, 1, 350, 0, 1550, 0, 0, [1], (600, 21, 200, 10))
+    refuse = Construct('refuse', 100, 3, 1, 6, 1, 200, 1, 1250, 0, 0, [1,3,6,9], (400, 33, 240, 12))
+    cykloone = Insect('cykloone', 70, 3, 1, 6, 1, 150, 0, 800, 0, 0, [1], (250, 27, 400, 6))
+    frenzy_boar = Beast('frenzy boar', 55, 4, 1, 7, 1, 550, 0, 900, 0, 0, [1,2,3,4], (600, 18, 280, 10))
+    field_wolf = Beast('field wolf', 40, 5, 1, 7, 1, 700, 0, 750, 0, 0, [1,2], (300, 19, 260, 10))
+    greedy_badger = Beastoid('greedy badger', 35, 5, 1, 8, 1, 350, 2, 650, 0, 0, [1,2,3], (200, 17, 275, 8))
+    awakened_shrub = Plant('awakened shrub', 80, 6, 1, 7, 1, 600, 0, 1100, 0, 0, [1,4,5], (600, 16, 290, 10))
+    small_kobold = Koboldoid('small kobold', 25, 9, 2, 9, 2, 435, 1, 1050, 0, 0, [1], (700, 10, 170, 4))
+    barkling = Plant('barkling', 85, 15, 1, 8, 2, 450, 0, 1350, 0, 0, [1], (500, 10, 150, 10))
+    swarm_of_bats = Beast('swarm of bats', 70, 13, 1, 7, 2, 900, 0, 800, 0, 0, [1,2,3,4,5], (800, 10, 110, 30))
+    little_nepenth = Nepenth('little nepenth', 85, 16, 1, 11, 3, 600, 0, 680, 0, 0, [1], (400, 16, 190, 2))
+    kobold_slave = Koboldoid('kobold slave', 25, 11, 2, 8, 3, 750, 1, 950, 0, 0, [1], (750, 10, 285, 4))
+    windwasp = Insect('windwasp', 70, 12, 1, 9, 3, 550, 0, 550, 0, 0, [1,2], (700, 17, 400, 7))
+    dire_wolf = Beast('dire wolf', 65, 13, 1, 10, 3, 850, 0, 950, 0, 0, [1,3,4], (300, 13, 250, 10))
+    green_worm = Worm('green worm', 65, 26, 1, 8, 3, 350, 0, 1450, 0, 0, [1], (300, 16, 165, 19))
+    nepenth = Nepenth('nepenth', 85, 18, 1, 12, 3, 645, 0, 790, 0, 0, [1], (400, 17, 190, 2))
+    onikuma = Beast('onikuma', 90, 30, 2, 14, 4, 755, 0, 1240, 1, 0, [1], (760, 30, 385, 4))
+    cave_slime = Slime('cave slime', 100, 35, 2, 12, 4, 550, 0, 1450, 0, 0, [1], (600, 14, 160, 10))
+    kobold_soldier = Koboldoid('kobold soldier', 25, 24, 4, 15, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
+    Kobold_guard = Koboldoid('kobold guard', 25, 23, 4, 15, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
+    shrubent = Plant('shrubent', 85, 40, 3, 18, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
+    cave_bear = Beast('cave bear', 20, 34, 5, 17, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
+    pre_pod_nepenth = Nepenth('pod nepenth', 85, 8, 2, 0, 5, 600, 0, 710, 0, 0, [1], (400, 120, 190, 2))
+    post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 20, 5, 600, 0, 710, 0, 0, [1], (400, 18, 190, 2))
+    flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 21, 5, 600, 0, 725, 0, 0, [1], (400, 18, 190, 2))
+    red_worm = Worm('red worm', 65, 55, 1, 17, 5, 400, 0, 1400, 0, 0, [1], (250, 17, 130, 18))
+    kosaur = Kosaur('Kosaur', 95, 144, 7, 300, 5, 750, 3, 1050, 1, 0, [1], (900, 70, 800, 5))
+    big_nepenth = Nepenth('big nepenth', 85, 48, 3, 29, 6, 680, 0, 930, 0, 0, [1], (350, 24, 190, 2))
+    sappent = Plant('sappent', 85, 44, 3, 23, 6, 700, 0, 1415, 0, 0, [1], (600, 14, 320, 10))
+    ruin_kobold = Koboldoid('ruin kobold', 30, 38, 5, 27, 6, 700, 4, 1000, 1, 0, [1,3], (600, 18, 296, 4))
+    sly_srewman = Beastoid('sly shrewman', 35, 19, 1, 21, 6, 999, 6, 195, 0, 0, [1,2,3,5,9], (200, 10, 400, 2))
+    human_bandit = Humanoid('bandit', 0, 30, 6, 24, 6, 800, 6, 1005, 1, 0, [1,2,3,6], (600, 10, 250, 4))
+    kobold_chief = Koboldoid('kobold chief', 30, 46, 6, 28, 7, 750, 5, 900, 1, 0, [1], (750, 19, 310, 4))
+    blue_worm = Worm('blue worm', 65, 70, 2, 27, 7, 550, 0, 1350, 0, 0, [1,2], (225, 18, 140, 17))
+    treent = Plant('treent', 85, 52, 3, 29, 7, 675, 0, 1445, 12, 0, [1,4], (600, 15, 100, 5))
+    ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 45, 6, 31, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
+    skeleton = Undead('skeleton', 100, 60, 4, 33, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
+    bark_golem = Plant('bark golem', 95, 66, 4, 36, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
+    flying_kobold = Koboldoid('flying kobold', 30, 40, 6, 39, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
+    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 50, 7, 48, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
+    # ac: (dist or def, size ratio, actual speed, balance)  (rail_size600px, hit_dc10px, speed480fps, chances10i) # limit ratio 450:95
+    illfang = Illfang('Illfang', 35, 200, 9, 800, 9, 900, 15, 1000, 3, 5, [1], (980, 18, 640, 6))
 
-    jackelope = Beast('jackelope', 40, 9, 1, 8, 2, 800, 0, 600, 0, 0, [1], (600, 10, 200, 10))
-    borogrove = Beast('borogrove', 90, 30, 3, 20, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
-    silver_fish = Insect('silverfish', 80, 8, 2, 5, 1, 600, 0, 1000, 0, 0, [1,3,4,9], (500, 10, 180, 16))
-    moamwrath = Monstrosity('moamwrath', 100, 99, 7, 34, 6, 666, 0, 850, 0, 0, [1,2,3,5], (720, 22, 720, 22))
-    bryllyg = Monstrosity('bryllyg', 50, 37, 5, 22, 4, 900, 1, 1000, 0, 0, [1], (600, 18, 200, 10))
-    slythy_tove = Monstrosity('slythy tove', 75, 66, 4, 26, 5, 700, 0, 1000, 0, 0, [1], (600, 14, 190, 10))
-    borogove = Monstrosity('borogove', 90, 41, 4, 26, 4, 620, 0, 850, 0, 0, [1], (800, 14, 118, 10))
-    marzeedote = Beast('marzeedote', 65, 40, 3, 20, 4, 750, 0, 1000, 0, 0, [1], (600, 14, 200, 6))
-    doezeedote = Beast('doezeedote', 75, 80, 9, 55, 6, 810, 0, 950, 0, 0, [1], (500, 18, 210, 8))
-    little_amzedivie = Monstrosity('little amzedivie', 80, 164, 24, 119, 9, 675, 0, 1000, 1, 0, [1], (600, 10, 125, 11))
-    kiddleydivie = Monstrosity('kiddleydivie', 90, 70, 5, 30, 5, 700, 0, 1000, 0, 0, [1], (100, 10, 100, 8))
-    woodenchew = Construct('woodenchew', 95, 12, 12, 12, 3, 650, 1, 600, 0, 0, [1,2], (300, 10, 70, 9))
-    condemned_goblin = Goblinoid('condemned goblin', 35, 50, 6, 23, 5, 740, 0, 850, 0, 0, [1], (700, 10, 194, 4))
-    goblin = Goblinoid('goblin', 35, 50, 4, 19, 5, 700, 8, 1000, 1, 0, [1,2,3], (600, 12, 160, 10))
-    goblin_king = Goblinoid('goblin king', 35, 100, 8, 32, 7, 880, 0, 1300, 2, 0, [1], (500, 13, 180, 5))
-    shinigami = Astral('shinigami', 95, 44, 3, 17, 4, 595, 0, 700, 0, 0, [1,6,8,9,10], (995, 12, 205, 2))
-    large_cave_slime = Slime('large cave slime', 100, 26, 6, 26, 4, 775, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
-    owlbear = Beast('owlbear', 20, 32, 3, 16, 4, 685, 1, 900, 1, 0, [1,2], (750, 20, 300, 12))
-    irrawrtzus = Beastoid('irrawrtzus', 45, 55, 4, 35, 6, 890, 5, 1000, 0, 0, [2,3,4,6], (800, 12, 700, 6))
-    letiche = Beast('letiche', 90, 53, 5, 27, 4, 600, 0, 850, 0, 0, [1], (400, 10, 140, 4))
+    jackelope = Beast('jackelope', 40, 16, 2, 6, 2, 800, 0, 600, 0, 0, [1], (600, 10, 200, 10))
+    borogrove = Beast('borogrove', 90, 17, 1, 10, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
+    silver_fish = Insect('silverfish', 80, 8, 1, 5, 1, 600, 0, 1000, 0, 0, [1,3,4,9], (500, 10, 180, 16))
+    moamwrath = Monstrosity('moamwrath', 100, 40, 2, 28, 6, 666, 0, 850, 0, 0, [1,2,3,5], (720, 22, 720, 22))
+    bryllyg = Monstrosity('bryllyg', 100, 34, 2, 17, 4, 900, 1, 1000, 0, 0, [1], (600, 18, 200, 10))
+    slythy_tove = Monstrosity('slythy tove', 100, 40, 2, 20, 5, 700, 0, 1000, 0, 0, [1], (600, 14, 190, 10))
+    borogove = Monstrosity('borogove', 100, 36, 2, 16, 4, 620, 0, 850, 0, 0, [1], (800, 14, 118, 10))
+    marzeedote = Beast('marzeedote', 65, 33, 3, 15, 4, 750, 0, 1000, 0, 0, [1], (600, 14, 200, 6))
+    doezeedote = Beast('doezeedote', 75, 48, 3, 31, 6, 810, 0, 950, 0, 0, [1], (500, 18, 210, 8))
+    little_amzedivie = Monstrosity('little amzedivie', 100, 63, 3, 47, 9, 675, 0, 1000, 1, 0, [1], (600, 10, 125, 11))
+    kiddleydivie = Monstrosity('kiddleydivie', 100, 40, 2, 20, 5, 705, 0, 1005, 0, 0, [1], (100, 10, 100, 8))
+    woodenchew = Construct('woodenchew', 95, 20, 1, 11, 3, 650, 1, 600, 0, 0, [1,2], (300, 10, 70, 9))
+    condemned_goblin = Goblinoid('condemned goblin', 35, 34, 4, 22, 5, 740, 0, 850, 0, 0, [1], (700, 10, 194, 4))
+    goblin = Goblinoid('goblin', 35, 41, 5, 24, 6, 700, 8, 950, 1, 0, [1,2,3], (600, 12, 160, 10))
+    goblin_king = Goblinoid('goblin king', 40, 55, 6, 44, 8, 880, 0, 990, 2, 0, [1], (500, 13, 180, 5))
+    shinigami = Astral('shinigami', 95, 49, 3, 27, 6, 595, 0, 700, 0, 0, [1,6,8,9,10], (995, 12, 205, 2))
+    large_cave_slime = Slime('large cave slime', 100, 26, 3, 36, 8, 670, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
+    owlbear = Beast('owlbear', 20, 26, 4, 15, 4, 685, 1, 900, 1, 0, [1,2], (750, 20, 300, 12))
+    irrawrtzus = Beastoid('irrawrtzus', 45, 47, 5, 30, 6, 890, 5, 1000, 0, 0, [2,3,4,6], (800, 12, 700, 6))
+    letiche = Beast('letiche', 90, 30, 2, 17, 4, 600, 0, 850, 0, 0, [1], (400, 10, 140, 4))
+    bullbous_bow = Beast('bullbous bow', 45, 61, 6, 50, 9, 700, 0, 1000, 15, 3, [1,2], (700, 22, 200, 10))
 
-    black_worm = Worm('black worm', 65, 122, 3, 29, 6, 550, 0, 1400, 0, 0, [1,2], (210, 9, 90, 16))
-    bronze_worm = Worm('bronze worm', 65, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (200, 9, 100, 15))
-    white_worm = Worm('snow worm', 65, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (185, 9, 120, 14))
-    yellow_worm = Worm('yellow worm', 65, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (175, 9, 145, 13))
-    fall_worm = Worm('fall worm', 70, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (160, 10, 160, 12))
-    blood_worm = Worm('blood worm', 70, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (145, 10, 180, 11))
-    midnight_worm = Worm('midnight worm', 70, 54, 1, 19, 4, 550, 0, 1400, 0, 0, [1,2], (130, 11, 210, 10))
-    purple_worm = Worm('purple worm', 70, 54, 1, 19, 4, 550, 0, 1400, 1, 0, [1,2], (115, 11, 240, 9))
-    water_worm = Worm('water worm', 70, 54, 1, 19, 4, 550, 0, 1400, 2, 0, [1,2], (100, 10, 260, 9))
-    fire_worm = Worm('fire worm', 70, 54, 1, 19, 4, 550, 0, 1400, 2, 0, [1,2], (100, 10, 280, 8))
-    wyrm_worm = Worm('wyrm worm', 75, 54, 1, 19, 4, 550, 0, 1400, 3, 0, [1,2], (200, 9, 320, 7))
-    giant_brown_worm = Worm('giant brown worm', 75, 54, 1, 19, 4, 550, 0, 1400, 5, 0, [1,2], (400, 19, 360, 6))
-    giant_green_worm = Worm('giant green worm', 75, 54, 1, 19, 4, 550, 0, 1400, 15, 0, [1,2], (415, 20, 400, 6))
-    giant_red_worm = Worm('giant red worm', 75, 54, 1, 19, 4, 550, 0, 1400, 22, 0, [1,2], (430, 22, 440, 5))
-    giant_blue_worm = Worm('giant blue worm', 75, 54, 1, 19, 4, 550, 0, 1400, 28, 0, [1,2], (445, 23, 480, 5))
-    giant_black_worm = Worm('giant black worm', 75, 54, 1, 19, 4, 550, 0, 1400, 32, 0, [1,2], (460, 24, 500, 4))
-    giant_bronze_worm = Worm('giant bronze worm', 75, 54, 1, 19, 4, 550, 0, 1400, 35, 0, [1,2], (480, 25, 520, 4))
-    giant_white_worm = Worm('giant snow worm', 75, 54, 1, 19, 4, 550, 0, 1400, 36, 0, [1,2], (500, 27, 540, 4))
-    giant_yellow_worm = Worm('giant yellow worm', 75, 54, 1, 19, 4, 550, 0, 1400, 40, 0, [1,2], (520, 28, 560, 3))
-    giant_fall_worm = Worm('giant fall worm', 75, 54, 1, 19, 4, 550, 0, 1400, 44, 0, [1,2], (540, 30, 580, 3))
-    giant_blood_worm = Worm('giant blood worm', 80, 54, 1, 19, 4, 550, 0, 1400, 50, 0, [1,2], (560, 32, 600, 3))
-    giant_midnight_worm = Worm('giant midnight worm', 80, 54, 1, 19, 4, 550, 0, 1400, 60, 0, [1,2], (580, 35, 620, 2))
-    giant_purple_worm = Worm('giant purple worm', 85, 54, 1, 19, 4, 550, 0, 1400, 92, 0, [1,2], (600, 36, 640, 2))
-    giant_wyrm_worm = Enemy('giant wyrm worm', 90, 54, 1, 19, 4, 550, 0, 1400, 196, 0, [1,2], (990, 34, 720, 2)) # side boss
+    black_worm = Worm('black worm', 65, 122, 3, 23, 6, 550, 0, 1300, 0, 0, [1,2], (210, 9, 90, 16))
+    bronze_worm = Worm('bronze worm', 65, 54, 1, 19, 4, 550, 0, 1250, 0, 0, [1,2], (200, 9, 100, 15))
+    white_worm = Worm('snow worm', 65, 54, 1, 19, 4, 550, 0, 1200, 0, 0, [1,2], (185, 9, 120, 14))
+    yellow_worm = Worm('yellow worm', 65, 54, 1, 19, 4, 550, 0, 1150, 0, 0, [1,2], (175, 9, 145, 13))
+    fall_worm = Worm('fall worm', 70, 54, 1, 19, 4, 550, 0, 1100, 0, 0, [1,2], (160, 10, 160, 12))
+    blood_worm = Worm('blood worm', 70, 54, 1, 19, 4, 550, 0, 1050, 0, 0, [1,2], (145, 10, 180, 11))
+    midnight_worm = Worm('midnight worm', 70, 54, 1, 19, 4, 550, 0, 1000, 0, 0, [1,2], (130, 11, 210, 10))
+    purple_worm = Worm('purple worm', 70, 54, 1, 19, 4, 550, 0, 975, 1, 0, [1,2], (115, 11, 240, 9))
+    water_worm = Worm('water worm', 70, 54, 1, 19, 4, 550, 0, 950, 2, 0, [1,2], (100, 10, 260, 9))
+    fire_worm = Worm('fire worm', 70, 54, 1, 19, 4, 550, 0, 925, 2, 0, [1,2], (100, 10, 280, 8))
+    wyrm_worm = Worm('wyrm worm', 75, 54, 1, 19, 4, 550, 0, 900, 3, 0, [1,2], (200, 9, 320, 7))
+    giant_brown_worm = Worm('giant brown worm', 75, 54, 1, 19, 4, 550, 0, 1100, 5, 0, [1,2], (400, 19, 360, 6))
+    giant_green_worm = Worm('giant green worm', 75, 54, 1, 19, 4, 550, 0, 1075, 15, 0, [1,2], (415, 20, 400, 6))
+    giant_red_worm = Worm('giant red worm', 75, 54, 1, 19, 4, 550, 0, 1050, 22, 0, [1,2], (430, 22, 440, 5))
+    giant_blue_worm = Worm('giant blue worm', 75, 54, 1, 19, 4, 550, 0, 1025, 28, 0, [1,2], (445, 23, 480, 5))
+    giant_black_worm = Worm('giant black worm', 75, 54, 1, 19, 4, 550, 0, 1000, 32, 0, [1,2], (460, 24, 500, 4))
+    giant_bronze_worm = Worm('giant bronze worm', 75, 54, 1, 19, 4, 550, 0, 980, 35, 0, [1,2], (480, 25, 520, 4))
+    giant_white_worm = Worm('giant snow worm', 75, 54, 1, 19, 4, 550, 0, 960, 36, 0, [1,2], (500, 27, 540, 4))
+    giant_yellow_worm = Worm('giant yellow worm', 75, 54, 1, 19, 4, 550, 0, 940, 40, 0, [1,2], (520, 28, 560, 3))
+    giant_fall_worm = Worm('giant fall worm', 75, 54, 1, 19, 4, 550, 0, 920, 44, 0, [1,2], (540, 30, 580, 3))
+    giant_blood_worm = Worm('giant blood worm', 80, 54, 1, 19, 4, 550, 0, 900, 50, 0, [1,2], (560, 32, 600, 3))
+    giant_midnight_worm = Worm('giant midnight worm', 80, 54, 1, 19, 4, 550, 0, 880, 60, 0, [1,2], (580, 35, 620, 2))
+    giant_purple_worm = Worm('giant purple worm', 85, 54, 1, 19, 4, 550, 0, 860, 92, 0, [1,2], (600, 36, 640, 2))
+    giant_wyrm_worm = Enemy('giant wyrm worm', 90, 54, 1, 19, 4, 550, 0, 850, 196, 0, [1,2], (990, 34, 720, 2)) # side boss
 
 
     mon_list = [test_boss, windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
@@ -1092,7 +1224,7 @@ def init_enemies():
                 ruin_kobold_sentinel, illfang, jackelope, borogrove, silver_fish, moamwrath,
                 bryllyg, slythy_tove, borogove, marzeedote, doezeedote, little_amzedivie,
                 kiddleydivie, woodenchew, condemned_goblin, goblin, goblin_king, shinigami,
-                large_cave_slime, owlbear, irrawrtzus, letiche]
+                large_cave_slime, owlbear, irrawrtzus, letiche, bullbous_bow]
 
     return mon_list
 
@@ -1100,30 +1232,38 @@ def init_enemies():
 def init_allies(): # designations use snake case and numerals
     robin_0 = Ally('Robin', 1, 14, 1, 1111, 700, 0, 0, Skill('slant', 0, 1, 1, 2, 1), 'robin_0')
     henry = Ally('Henry', 2, 11, 3, 960, 650, 0, 0, Skill('reverse pull', 0, 2, 5, 4, 3))
-    liliyah = Ally('Liliyah', 2, 15, 5, 920, 780, 0, 0, Skill('parallel sting', 0, 2, 2, 2, 2))
-    tiffey = Ally('Tiffey', 2, 19, 1, 1020, 700, 0, 0, Skill('cross hatch', 0, 3, 2, 4, 3))
-    kajlo_sohler = Ally('Kajlo Sohler', 2, 17, 3, 940, 760, 0, 0, Skill('cork screw', 0, 1, 1, 3, 1))
-    officer_jerrimathyus = Ally('Officer Jerrimathyus', 3, 26, 5, 1245, 750, 1, 0, Skill('uppercut', 0, 3, 1, 4, 3))
-    bulli = Ally('Bulli', 2, 18, 2, 1000, 760, 0, 0, Skill('mega poke', 0, 1, 2, 2, 1))
-    milo_0 = Ally('Milo', 2, 15, 3, 960, 820, 0, 0, Skill('linear', 0, 2, 1, 3, 3), 'milo_0')
-    gaffer = Ally('Gaffer', 1, 9, 1, 1030, 600, 0, 0, Skill('pitch fork', 0, 1, 2, 4, 1))
-    holt = Ally('Holt', 3, 27, 2, 1160, 720, 0, 0, Skill('back rush', 0, 4, 1, 5, 4))
-    suphia = Ally('Suphia', 4, 28, 3, 950, 700, 0, 0, Healing('quick tonic', 1, 3, 4, 4, 2, 1))
-    electo = Ally('Electo', 4, 27, 3, 960, 720, 0, 0, SpellAttack('thunder wave', 1, 3, 4, 4, 2, 0))
-    hesh = Ally('Hesh', 3, 24, 2, 940, 760, 0, 0, SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0))
-    coef = Ally('Coef', 6, 58, 7, 830, 740, 0, 1, Skill('avalanche', 0, 6, 1, 6, 9))
-    deg = Ally('Deg', 5, 41, 7, 1000, 698, 0, 0, Skill('triangular', 0, 5, 3, 3, 8))
-    virabela  = Ally('Virabela', 5, 50, 6, 920, 800, 0, 0, SpellAttack('magic arrow', 1, 4, 6, 5, 3, 0))
-    polly = Ally('Polly', 4, 35, 4, 1080, 860, 0, 0, Skill('streak', 0, 3, 1, 3, 2))
-    # dykester = Ally('Dykester',)
-    # bellman = Ally('Bellman')
-    # ford = Ally('Ford')
-    # huffman = Ally('Huffman')
-    # dagshor = Ally('Dagshor')
+    liliyah = Ally('Liliyah', 2, 15, 2, 865, 790, 0, 0, Skill('parallel sting', 0, 2, 2, 2, 2), 'liliyah_0')
+    tiffey = Ally('Tiffey', 2, 16, 2, 820, 700, 0, 0, Skill('cross hatch', 0, 3, 2, 4, 3))
+    kajlo_sohler = Ally('Kajlo Sohler', 2, 18, 3, 975, 760, 0, 0, Skill('cork screw', 0, 1, 1, 3, 1))
+    officer_jerrimathyus = Ally('Officer Jerrimathyus', 3, 26, 7, 1225, 760, 1, 0, Skill('uppercut', 0, 3, 1, 4, 3))
+    bulli = Ally('Bulli', 2, 12, 1, 1000, 750, 0, 0, Skill('mega poke', 0, 1, 2, 2, 1))
+    milo_0 = Ally('Milo', 2, 16, 3, 960, 785, 0, 0, Skill('linear', 0, 2, 1, 3, 3), 'milo_0')
+    gaffer = Ally('Gaffer', 1, 9, 1, 1030, 635, 0, 0, Skill('pitch fork', 0, 1, 2, 4, 1))
+    holt = Ally('Holt', 3, 22, 6, 1150, 760, 0, 0, Skill('back rush', 0, 4, 1, 5, 4))
+    suphia = Ally('Suphia', 4, 28, 5, 925, 750, 0, 0, Healing('quick tonic', 1, 3, 4, 4, 2, 1))
+    electo = Ally('Electo', 4, 26, 7, 1010, 780, 0, 0, SpellAttack('thunder wave', 1, 3, 4, 4, 2, 0))
+    hesh = Ally('Hesh', 3, 19, 7, 840, 760, 0, 0, SpellAttack('fire bolt', 1, 3, 4, 3, 3, 0))
+    coef = Ally('Coef', 6, 39, 12, 840, 770, 0, 1, Skill('avalanche', 0, 6, 1, 6, 9))
+    deg = Ally('Deg', 5, 34, 7, 990, 765, 0, 0, Skill('triangular', 0, 5, 3, 3, 8))
+    virabela  = Ally('Virabela', 5, 30, 10, 1000, 810, 0, 0, SpellAttack('magic arrow', 1, 4, 6, 5, 5, 0))
+    polly = Ally('Polly', 4, 28, 5, 900, 800, 0, 0, Skill('streak', 0, 3, 1, 3, 2))
+    rivek = Ally('Rivek', 7, 45, 14, 1005, 795, 10, 2, Skill('vertical arc', 0, 8, 2, 7, 11))
+    outh_gurenge = Ally('Captain Gurenge', 10, 72, 19, 890, 890, 12, 15, Skill('quad pain', 0, 11, 4, 6, 14))
+    robin_1 = Ally('Robin', 9, 54, 18, 1010, 770, 0, 0, Skill('sonic leap', 0, 9, 1, 7, 10), 'robin_1')
+    mickle = Ally('Officer Mickle', 10, 67, 20, 905, 865, 10, 10, Skill('flash forward', 0, 9, 4, 4, 9))
+    reywyn = Ally('Reywyn', 7, 44, 13, 986, 925, 0, 1, Skill('triangular', 0, 5, 3, 5, 8))
+    liliyah_1 = Ally('Liliyah', 7, 50, 15, 830, 810, 0, 0, Skill('parallel sting', 0, 2, 2, 2, 2), 'liliyah_1')
+    dykester = Ally('Dykester', 8, 50, 9, 640, 825, 0, 0, Spall('turquoise blue overdrive', 2, 5, 2, 2, 5))
+    bellman = Ally('Bellman', 8, 52, 17, 950, 710, 12, 0, Skill('negative cycle', 0, 4, 2, 4, 5))
+    ford = Ally('Ford', 8, 52, 17, 950, 710, 0, 12, Skill('loss', 0, 4, 4, 6, 8))
+    huffman = Ally('Huffman', 9, 60, 16, 995, 760, 2, 5, SpellAttack('emerald splash', 1, 9, 9, 5, 6, 0))
+    dagshor = Ally('Dagshor', 9, 64, 20, 1055, 688, 1, 1, Skill('steel press', 0, 8, 4, 4, 5))
 
 
     allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus,
-              bulli,milo_0,gaffer,holt,suphia,electo,hesh,coef,deg,virabela,polly]
+              bulli,milo_0,gaffer,holt,suphia,electo,hesh,coef,deg,virabela,polly,
+              rivek,outh_gurenge,robin_1,mickle,reywyn,liliyah_1,bellman,huffman,
+              dykester,ford,dagshor]
 
     return allies
 

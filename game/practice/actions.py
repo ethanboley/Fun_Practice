@@ -57,7 +57,7 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
             sys.stdout.write(char)
             sys.stdout.flush()
             if story:
-                time.sleep(0.045)
+                time.sleep(0.05)
             else:
                 time.sleep(speed)
         else:

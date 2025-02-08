@@ -27,7 +27,8 @@ dev 0.0.35 (little bit o everything)
 dev 0.0.36 (little big changes)
 dev 0.0.37 (save)
 dev 0.0.39 (carried away)
-dev 0.0.40 (Book 1) current
+dev 0.0.40 (Book 1)
+dev 0.0.41 (stability) current
 ...
 alpha 0.1.0 
 ...
@@ -36,7 +37,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 
-commit notes: Finished book 1; minor adjustemnts to actions; spalls for allies; fixed player.grammer 
+commit notes: first full playtest; balanced gameplay; finished book 2 logic; story dprint; added: mercy rule, alchemy, fix_team; battle item use changes/fixes; fixed training; admin load option at character creation.
 
 
 
@@ -130,11 +131,8 @@ boss is defeated (or if player.world == 2+ or something). That way gaining
 levels by grinding on lower worlds will take much longer. 
 
 Notes after first real play test of book 1 (without these features, the game is essentially unplayable):
-1: Mercy rule for 3 or 4 misses in a row (player attribute called mercy which increments after miss and resets upon reaching 3 or 4)
-2: Inventory fix (Just so that every time you see the inventory, you don't see 50,000 little daggers)
-3: Some way to obtain healing potions without a market (maybe if you have an empty bottle you can convert materials and the bottle into a life potion? World Option)
-    3.5: Also maybe another World Option for meditation or something to provide extra healing between chapters (should still involve some sort of work like a puzzle minigame or something).
-4: Fighter.fix_team() method implementing similar logic to the end of init_parti() in Battle() this will be called in various places around the game like in the load function to ensure that only one of each ally exist int he team. (I'm so freaking done with this issue)
+3: Some way to obtain healing potions without a market (maybe if you have an empty bottle you can convert materials and the bottle into a life potion? World Option) ()Complete()
+4: Fighter.fix_team() method implementing similar logic to the end of init_parti() in Battle() this will be called in various places around the game like in the load function to ensure that only one of each ally exist int he team. (I'm so freaking done with this issue) ()Complete()
 
 Level: 3
 Experience Points: 240/0
@@ -1268,8 +1266,8 @@ plot layer 1:
     The plan of salvation X Hero's journey.
 
 plot layer 2:
-book1: Robin is stolen by kobolds player rescues him.
-book2: player is introduced to the wider world. intro of protagonist group.
+book1: Siblings is stolen by kobolds player rescues him.
+book2: player is introduced to the wider world. intro to protagonist group.
 book3: plot explosion. departure.
 book4: adventrues in a new realm.
 book5: the underdark?
@@ -1349,7 +1347,7 @@ book 2:
 38(5): fam has a chat about Rulid. Conversations resumed following next arc.
     Caravan departs again.
 39(6): Caravan encounters what looks like a battle field full of dead minotaurs.
-    Survivor tells of a 1 man massacre and blames humanity. Tarus fort in a
+    Survivor tells of a 1 man massacre and blames humanity. Tarus fort is in a
     mountain.
 40(7): Player and a few others including Elond, investigate. but ends when the
     mountain wherein the supposed fort was located explodes volcanically.
@@ -1377,7 +1375,7 @@ book 2:
     woods; 2, follow warrant for scetchy barman; 3, enter the hidden cult
     sanctuary in town. 
 53(20): Following Theo's intel pt 3. Catastrophy at some, success at others
-    return less than desireable results but some good informaition none the less. 
+    return less than desireable results but some good information no less. 
 54(21): Review of info, cult of the hand, mention of recent massacre and leader
     change (somethings a'brewin). A day with friends. Nightly assassination
     attempt.
@@ -1402,8 +1400,8 @@ book 2:
 64(31): The cult base.
 65(32): Boss fight with The Hand (fake), fight breaks into open air and dies in
     front of witnesses. Heroes recognized/promoted. Emergency status lifted.
-    Atmosphere generally lightens. 1st Date with Rosalind/Toby. a look into the dark
-    side (the truth revealed).
+    Atmosphere generally lightens. 1st Date with Rosalind/Toby. a look into the
+    dark side (the truth revealed).
 
 book 3:
 67(0): more dates.
@@ -1436,32 +1434,32 @@ book 3:
 93(26): Main group dissembarks to the east. looking for information of that
     kind of magic, the strenge otherworldly monsters, Player's Brother, how it
     came to this, etc.
-94(27): 
-95(28): 
-96(29): 
-97(30): 
-98(31): { sometime between here ... vvv
+94(27): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 1.
+95(28): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 2.
+96(29): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 3.
+97(30): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 4.
+98(31): { sometime between here (1) ... vvv
 99(32): 
 
 book 4:
-100(0):
+100(0): { sometime between here (2) ... vvv
 101(1):
 102(2):
 103(3):
 104(4):
-105(5): and here ... ^^^ Player and Toby/Rosalind are married }
+105(5): and here (1) ... ^^^ Player and Toby/Rosalind are married }
 106(6): 
 107(7):
 108(8): 
 109(9): 
-110(10): { Sometime between here ... vvv
+110(10): { Sometime between here (3) ... vvv
 111(11): 
 112(12):
 113(13): 
 114(14):
 115(15):
 116(16):
-117(17): and here ... ^^^ old sage mage hag revels forbidden secrets of planar traversal without death }
+117(17): and here (3) ... ^^^ old sage mage hag revels forbidden secrets of planar traversal without death }
 118(18):
 119(19):
 120(20):
@@ -1476,7 +1474,7 @@ book 4:
 129(29):
 130(30):
 131(31):
-132(32):
+132(32): and here (2) ... ^^^ acquire spirit pixis }
 
 book 5:
 133(0):

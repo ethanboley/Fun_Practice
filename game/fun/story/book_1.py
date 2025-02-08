@@ -118,7 +118,7 @@ class BookOne:
         if player_lives:
             self.zero_victory()
             self.story_reward()
-            self.story_prep(location='1-1')
+            self.story_prep(location='1-0')
             return True
         else:
             return False
@@ -6649,7 +6649,7 @@ the voice of Lord Kairon.
 young but so ragged and hoarse it sounded like a forced whisper, as though it
 saw very little use, "The slime would be long dead if it was me."
 "What word do you have of the enemy?"
-"Actually this is something else. The Raven Queen. . ."
+"Actually this is something else. It's Kil. . ."
 "Isn't that still the enemy?"
 "Regardless, a servant of hers has recently been thwarted by none but a gaggle
 of human pesants somewhere near the primed horrizon. It was a rather ingenious
@@ -6661,7 +6661,7 @@ succeeded."
 Lord Kairon snorted his disbelief.
 "Fortunately," continued Mozkith, "I know of at least one other similar plot
 happening a little closer to the primed horrizon that will be equally simple to
-stop."
+quash."
 "Very good. Would you like me to keep an eye out for similar plans as well?"
 "As it turns out that was precisely what I was going to ask of you. I need more
 eyes than just my own lately."

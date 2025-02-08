@@ -1,10 +1,10 @@
 
-from actions import *
+# from actions import *
 from players import Fighter
-from monsters import init_enemies, drops
-from misc import Hospital, Marketplace, Gym, Quit
-from book_1 import *
-from book_2 import *
+# from monsters import init_enemies, drops
+from misc import Hospital, Marketplace, Gym, Alchemy, Quit
+from story.book_1 import *
+from story.book_2 import *
 import pickle
 
 
@@ -107,8 +107,12 @@ class WorldOne:
                 pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
             if book == 2:
                 print('In preparation, you need to be leveled properly as follows:')
-                pc = Fighter(pname, pgender, 60, 10, 2650, 10, 750, 100, progress=33)
-                pc.gain_xp_quietly(2650, self.xp_thresholds)
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 710, 100, progress=33)
+                pc.gain_xp_quietly(3000, self.xp_thresholds)
+            if book == 3:
+                print('In preparation, you need to be leveled properly as follows:')
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 720, 100, progress=67)
+                pc.gain_xp_quietly(15000, self.xp_thresholds)
             else:
                 pc = Fighter(pname, pgender, 10000, 5000, 0, 1, 999, 100000)
             return pc
@@ -174,6 +178,7 @@ class WorldOne:
         gym = Gym(self.pc)
         save_load = SaveLoad(self.xp_thresholds)
         quit_game = Quit()
+        alchemy = Alchemy()
         world_options = []
 
         if self.pc.progress == 0:
@@ -194,6 +199,7 @@ class WorldOne:
             world_options.remove(self.book_one)
             world_options.insert(0, self.book_two)
         
+        world_options.append(alchemy)
         world_options.append(save_load)
         world_options.append(quit_game)
         return world_options
@@ -213,10 +219,11 @@ class WorldOne:
             if hasattr(playing, 'title'):
                 self.pc = playing
                 playing = self.pc.is_alive()
-            if playing == None:
+            if playing is None:
                 playing == True
             if not playing:
                 break
+            self.pc.fix_team()
     
     def reset_monsters(self):
         self.mon_list = init_enemies()

@@ -10,10 +10,11 @@ class Battle:
         self.type = 0
         self.active_monsters = []
         self.active_teamates = [self.active_player]
+        self.full_parti = []
         self.name = 'battle'
         self.battle_options = ['attack', 'special', 'item', 'run', 'auto/controlled']
         self.all_monsters = init_enemies()
-    
+
     def run(self, player=None, world=None, xp_thresholds=None):
         return self.regular([monster for monster in self.all_monsters if monster.name in player.monsters_seen])
 
@@ -44,12 +45,14 @@ class Battle:
             ran = self.handle_fighter_turn(seconds, boss_dialog)
             if ran:
                 self.active_monsters.clear()
+                self.full_parti.clear()
             # go through the ally's turns
             self.handle_ally_turns(seconds, boss_dialog)
             # handle the monster's turns
             self.handle_monster_turns(seconds)
             if not self.active_player.is_alive():
                 self.active_teamates.clear()
+                self.full_parti.clear()
                 return False # tell the game the player is dead
             # add monsters to the battle if it lasts too long
             self.handle_additional_monsters(seconds, mon_list)
@@ -57,127 +60,8 @@ class Battle:
             seconds += 1
         
         self.active_teamates.clear()
+        self.full_parti.clear()
         return True # tell the game the player is still alive
-
-    # def boss(self, mon_list:list, dialog=None, collective=True, surprise=False, boss_dialog=['']):
-    #     for mon in mon_list:
-    #         self.active_monsters.append(mon)
-        
-    #     self.active_teamates.append(self.active_player)
-    #     for ally in self.active_player.allies:
-    #         if ally not in self.active_teamates:
-    #             self.active_teamates.append(ally)
-
-    #     seconds = 1
-    #     round_num = 0
-    #     if self.active_player.mag != self.active_player.maxmag:
-    #         self.active_player.mag += 1 + self.active_player.level
-    #         if self.active_player.mag > self.active_player.maxmag:
-    #             self.active_player.mag = self.active_player.maxmag
-        
-    #     dialog
-    #     input('Ready?')
-
-    #     if len(self.active_monsters) > 1:
-    #         dprint(f'The {self.active_monsters[-1].name} {self.active_monsters[-1].title} and its minions attack!')
-    #     else:
-    #         dprint(f'The {self.active_monsters[-1].name} {self.active_monsters[-1].title} attacks!')
-
-    #     while True:
-    #         # handle the rounds
-    #         if seconds % 1000 == 1:
-    #             round_num += 1
-    #             dprint(f'Round {round_num}, FIGHT! ')
-
-    #         # handle the player's turn
-    #         self.handle_fighter_turn(seconds, boss_dialog=boss_dialog)
-    #         # go through the ally's turns
-    #         self.handle_ally_turns(seconds)
-
-    #         if len(self.active_monsters) == 0:
-    #             self.active_teamates.clear()
-    #             return True
-            
-    #         if len(self.active_monsters) == 0:
-    #             self.active_teamates.clear()
-    #             return True
-
-    #         # handle the boss's and minions' turns
-    #         self.handle_monster_turns(seconds)
-    #         if not self.active_player.is_alive():
-    #             self.active_teamates.clear()
-    #             return False # tell the game the player is dead
-    #         self.handle_boss_turns(seconds)
-    #         if not self.active_player.is_alive():
-    #             self.active_teamates.clear()
-    #             return False # tell the game the player is dead
-            
-    #         seconds += 1
-
-    # def story(self, mon_list:list, dialog=None, collective=False, surprise=False, boss_dialog=None):
-    #     to_use_mons = []
-    #     for mon in mon_list:
-    #         to_use_mons.append(mon)
-
-    #     if collective:
-    #         for _ in range(len(to_use_mons)):
-    #             self.active_monsters.append(to_use_mons.pop())
-    #     else:
-    #         self.active_monsters.append(to_use_mons.pop())
-        
-    #     self.active_teamates.append(self.active_player)
-    #     for ally in self.active_player.allies:
-    #         if ally not in self.active_teamates:
-    #             self.active_teamates.append(ally)
-
-    #     seconds = 1
-    #     round_num = 0
-    #     if self.active_player.mag != self.active_player.maxmag:
-    #         self.active_player.mag += 1 + self.active_player.level
-    #         if self.active_player.mag > self.active_player.maxmag:
-    #             self.active_player.mag = self.active_player.maxmag
-
-    #     dialog
-
-    #     if collective:
-    #         dprint('Enemies move in to attack!')
-    #     else:
-    #         dprint(f'A {self.active_monsters[-1].name} moves in to attack!')
-
-    #     while True:
-    #         # handle the rounds
-    #         if seconds % 1000 == 1:
-    #             round_num += 1
-    #             dprint(f'Round {round_num}, FIGHT!')
-
-    #         if surprise:
-    #             dprint('Surprise attack!')
-    #             ran = self.handle_fighter_turn(self.active_player.agi)
-    #             if ran:
-    #                 to_use_mons.clear()
-    #             surprise = False
-
-    #         # handle the player's turn
-    #         ran = self.handle_fighter_turn(seconds)
-    #         if ran:
-    #             to_use_mons.clear()
-    #         # go through the ally's turns
-    #         self.handle_ally_turns(seconds)
-
-    #         if len(to_use_mons) == 0 and len(self.active_monsters) == 0:
-    #             self.active_teamates.clear()
-    #             return True
-    #         if len(self.active_monsters) == 0:
-    #             self.active_monsters.append(to_use_mons.pop())
-    #             dprint(f'A {self.active_monsters[-1].name} closes in!')
-            
-    #         # handle the monster's turns
-    #         self.handle_monster_turns(seconds)
-    #         if not self.active_player.is_alive():
-    #             self.active_teamates.clear()
-    #             return False # tell the game the player is dead
-            
-    #         seconds += 1
 
     def battle(self, mon_list: list, dialog=None, collective=False, surprise=False, boss_dialog=None):
         # Initialize monsters
@@ -229,6 +113,7 @@ class Battle:
                 if ran:
                     to_use_mons.clear()
                     self.active_monsters.clear()
+                    self.full_parti.clear()
                 surprise = False
 
             # Handle player's turn
@@ -236,6 +121,7 @@ class Battle:
             if ran and not is_boss:
                 to_use_mons.clear()
                 self.active_monsters.clear()
+                self.full_parti.clear()
 
             # Handle ally turns
             self.handle_ally_turns(seconds, boss_dialog)
@@ -243,6 +129,7 @@ class Battle:
             # Check win condition
             if len(to_use_mons) == 0 and len(self.active_monsters) == 0:
                 self.active_teamates.clear()
+                self.full_parti.clear()
                 return True
 
             # Add new monsters for story battles
@@ -254,6 +141,7 @@ class Battle:
             self.handle_monster_turns(seconds)
             if not self.active_player.is_alive():
                 self.active_teamates.clear()
+                self.full_parti.clear()
                 return False
 
             # Handle boss turns (boss battles only)
@@ -261,6 +149,7 @@ class Battle:
                 self.handle_boss_turns(seconds)
                 if not self.active_player.is_alive():
                     self.active_teamates.clear()
+                    self.full_parti.clear()
                     return False
 
             seconds += 1
@@ -314,17 +203,14 @@ class Battle:
             
             elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
                 # define the target
-                if len(self.active_monsters) == 1:
-                    target = self.active_monsters[-1]
-                else:
-                    dprint('target which monster')
-                    target = get_list_option(self.active_monsters)
+                dprint('Choose target:')
+                target = get_list_option(self.full_parti)
                 # use item
                 self.active_player.use_item(target, self.xp_thresholds)
                 # update active monsters
                 if not target.is_alive():
                     self.active_monsters.remove(target)
-                if target.has_phases:
+                if hasattr(target, 'phases'):
                     if target.hp <= 0:
                         if target.next_phase(self.active_player, boss_dialog, self.xp_thresholds):
                             self.active_monsters.remove(target)
@@ -346,6 +232,7 @@ class Battle:
                         return False
                 if escape > 0:
                     self.active_monsters.clear()
+                    self.full_parti.clear()
                 return True
 
             else:
@@ -434,5 +321,8 @@ class Battle:
         for ally in self.active_teamates:
             self.active_player.allies.append(ally)
         self.active_player.allies.remove(self.active_player)
+        self.full_parti.extend(self.active_teamates)
+        self.full_parti.extend(self.active_monsters)
+        self.active_player.fix_team()
         return True
 

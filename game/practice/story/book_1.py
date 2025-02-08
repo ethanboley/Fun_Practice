@@ -10,7 +10,7 @@ import copy
 
 class BookOne:
     def __init__(self, player, xp_thresholds):
-        self.name = 'Begin story'
+        self.name = 'Story'
         self.player = player
         self.xp_thresholds = xp_thresholds
         self.monsters = init_enemies()
@@ -80,11 +80,13 @@ class BookOne:
     def story_reward(self):
         self.player.progress += 1
         self.player.hp += (self.player.maxhp - self.player.hp) // 2 if self.player.hp < self.player.maxhp else 0
-        self.player.gain_xp((self.player.level * 2) + (self.player.progress * 2) + 1, self.xp_thresholds)
+        self.player.gain_xp(round(self.player.level * 1.5) + self.player.progress + 10, self.xp_thresholds)
 
     def story_prep(self, location='1-1', name='continue'):
         self.player.location = location
         self.name = name
+        for ally in self.player.allies:
+            ally.hp = ally.maxhp
 
     def adjust_team(self, to_modify:str, add:bool | None = True):
         """
@@ -112,11 +114,11 @@ class BookOne:
         mon_list = self.config_monsters({'brown worm':1,'slime':1})
         # mon_list = self.config_monsters({'test_boss':1})
         self.adjust_team('robin_0')
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.zero_encounter(),collective=True) # changed to boss
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.zero_encounter(), collective=True, surprise=False)
         if player_lives:
             self.zero_victory()
             self.story_reward()
-            self.story_prep(location='1-1')
+            self.story_prep(location='1-0')
             return True
         else:
             return False
@@ -127,7 +129,7 @@ class BookOne:
         dprint('says your little brother Robin pulling out a sword of his own.')
         dprint('"I know you might still be a little out of it but do you best!"')
     
-    def zero_victory(self): # Robin marvles almost too much
+    def zero_victory(self): # Robin marvels almost too much
         input()
         dprint('  .  .  .  ')
         time.sleep(.75)
@@ -144,16 +146,15 @@ class BookOne:
         mon_list2 = self.config_monsters({'greedy badger': 3, 'frenzy boar':1})
         self.adjust_team('robin_0', False)
         self.one_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.one_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.one_encounter0(), collective=True)
         if player_lives:
             self.one_victory0()
             self.adjust_team('robin_0', True)
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.one_encounter1())
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.one_encounter1())
             if player_lives:
                 self.one_victory1()
                 self.story_reward()
                 self.story_prep(location='1-0', name='Continue to the town')
-                self.adjust_team('robin_0', add=False)
                 return True
             else:
                 return False
@@ -206,18 +207,17 @@ class BookOne:
         mon_list2 = self.config_monsters({'refuse':1})
         self.adjust_team('robin_0', True)
         self.two_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.two_encounter0())
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.two_encounter0())
         if player_lives:
             self.two_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.two_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.two_encounter1(), collective=True)
             if player_lives:
                 self.two_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.two_encounter2())
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.two_encounter2())
                 if player_lives:
                     self.two_victory2()
+                    self.story_prep(name='continue')
                     self.story_reward()
-                    self.story_prep()
-                    self.adjust_team('robin_0',False)
                     return True
                 else: 
                     return False
@@ -323,14 +323,13 @@ class BookOne:
         self.adjust_team('robin_0', add=True)
         self.story_prep('1-1')
         self.three_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.three_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.three_encounter0(), collective=True)
         if player_lives:
             self.three_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.three_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.three_encounter1(), collective=True)
             if player_lives:
                 self.three_victory1()
                 self.story_reward()
-                self.adjust_team('robin_0', False)
                 return True
             else:
                 return False
@@ -390,10 +389,9 @@ class BookOne:
         mon_list = self.config_monsters({'little nepenth':1})
         self.four_intro()
         self.adjust_team('robin_0', add=False)
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.four_encounter0())
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.four_encounter0())
         if player_lives:
             self.four_victory0()
-            self.adjust_team('robin_0', add=False)
             self.story_prep(name='first mission')
             self.story_reward()
             return True
@@ -447,33 +445,30 @@ class BookOne:
 
 
     def ch_5(self): # Spring 22nd and 23rd, 3044, 6th age
-        mon_list0 = self.config_monsters({'dire wolf':3, 'small kobold':3, 'kobold slave':2, 'kobold guard':1})
-        mon_list1 = self.config_monsters({'dire wolf':1, 'small kobold':2, 'kobold slave':2, 'kobold soldier':1})
-        mon_list2 = self.config_monsters({'dire wolf':2, 'small kobold':2, 'kobold guard':1})
+        mon_list0 = self.config_monsters({'dire wolf':2, 'small kobold':3, 'kobold slave':2})
+        mon_list1 = self.config_monsters({'dire wolf':1, 'small kobold':2, 'kobold slave':1})
+        mon_list2 = self.config_monsters({'dire wolf':2, 'small kobold':2})
         self.adjust_team('Henry',add=True)
         self.adjust_team('Liliyah',add=True)
         self.adjust_team('Tiffey',add=True)
         self.adjust_team('Kajlo Sohler',add=True)
         self.adjust_team('Officer Jerrimathyus',add=True)
-        self.adjust_team('robin_0', add=False)
         self.five_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.five_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.five_encounter0(), collective=True)
         if player_lives:
             self.five_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.five_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.five_encounter1(), collective=True)
             if player_lives:
                 self.five_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.five_encounter2(), collective=True)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.five_encounter2(), collective=True)
                 if player_lives:
                     self.five_victory2()
-                    self.story_reward()
+                    self.story_prep(location='1-2', name='Hurry home')
                     self.adjust_team('Henry',add=False)
                     self.adjust_team('Liliyah',add=False)
                     self.adjust_team('Tiffey',add=False)
-                    self.adjust_team('Kajlo Sohler',add=False)
                     self.adjust_team('Officer Jerrimathyus',add=False)
-                    self.adjust_team('robin_0', add=False)
-                    self.story_prep(location='1-2', name='Hurry home')
+                    self.story_reward()
                     return True
                 else: 
                     return False
@@ -601,12 +596,12 @@ yourself sprinting with all you have southward back to town. . .
         self.story_prep('1-1')
         self.six_intro()
         self.adjust_team('Kajlo Sohler',add=True)
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.six_encounter0())
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.six_encounter0())
         if player_lives:
             self.six_victory0()
+            self.story_prep(location='1-1', name='The cave')
             self.adjust_team('Kajlo Sohler',add=False)
             self.story_reward()
-            self.story_prep(location='1-0', name='The cave')
             return True
         else:
             return False
@@ -682,8 +677,8 @@ the son of Henry and begins telling you that his mother died of sickness about
 joined the guard to earn more money leaving Han, the eldest child, to care for 
 the family while their father was away. The few times Henry was home he was 
 much more quiet and distant than usual but caring supportive and strong as a 
-father all tha same. At this point Han looks down as tears begin sliding down 
-his face. 
+father all the same. At this point Han looks down as tears begin sliding down 
+his face.
 Before this most recent mission Henry reported that this mission was going 
 to be a dangerous one and asked Han to contact the guard's if anything happened. 
 You promise that you will do what you can and let Captain Gurenge know about 
@@ -715,16 +710,17 @@ Moments later Captain Gurenge peeks his head out the door too and says
 "Ah, {self.player.name}, um, please wait outside for a moment."
 "No need captain, I will be taking my leave now, but please take some time to 
 consider the true import of this matter before you send this boy off. Good day!"
-the man leaves the office places a cap atop his bald head and strolls out the 
-door leaving both you and the Captian with mouths agape. 
-"Um, if now is not a good time..."
+"You don't understand what I'm ask- and hes gone. . ."
+The man had placed a cap upon his bald head and strode quickly out the door
+leaving both you and the captain's mouths agape.
+"Um, if now is not a good time. . ."
 *sigh* "no, no, please come in." 
 With those words you are reminded of the last time someone less than happy 
-asked you to come in and the request of Han reenters your mind at top speed. 
+asked you to come inside and Han's request reenters your mind at top speed.
 You ask about Henry's family but before you finish Captain Gurenge tells you 
 that he cannot do anything until Henry is legally dead and even after that it 
 would be him just sending the request up to Mayor Swendil. "What I can do is 
-give him a big bonus if... when he does come back."
+give him a big bonus when he does come back."
 Thanking your captian in behalf of Henry and his family and detecting that there 
 was nothing more to do on that front, you ask about the man who was just in here 
 and the mission that needed to be done at which point any amount of positivity 
@@ -734,13 +730,13 @@ remains of what looked like an actual organized kobold military camp. No other
 available teams were back yet and no remaining guardsmen were available to go 
 out and investigate further. In other words only you and Kajlo Sohler were 
 available for an emergency reassignment. 
-"I was planning on sending Kajlo, he being somewhat older and more experienced 
-but if you are willing to go, yourself..."
+"That's not entirely why we were arguing but that part's what matters to you. 
+I was planning on sending Kajlo, he being somewhat older and more experienced 
+but if you are willing to go, yourself. . ."
 You ask why he can't send you both to which he says he needs more available 
 back up incase more things like this happen. 
 "Pick your poison in other words."
-The captain gives you 4 hours to think it over before finalizing your choice 
-and sends you off. . .
+The captain gives you 4 hours to think it over before sending you off. . .
 '''
         )
 
@@ -750,13 +746,13 @@ and sends you off. . .
         mon_list1 = self.config_monsters({'awakened shrub':10})
         mon_list2 = self.config_monsters({'cave bear':1})
         self.seven_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.seven_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.seven_encounter0(), collective=False)
         if player_lives:
             self.seven_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.seven_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.seven_encounter1(), collective=True)
             if player_lives:
                 self.seven_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.seven_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.seven_encounter2(), collective=False)
                 if player_lives:
                     self.seven_victory2()
                     self.story_reward()
@@ -829,10 +825,10 @@ Kobolds into a forest. The team sent a report of their findings by pigeon mail
 back to Greentown while they continued following the Kobolds. The original team 
 has yet to come back and the return pigeon came back having failed to deliver 
 his note indicating the scout team has likely been captured and taken off site.
-The mission for {self.player.name} is now to find the scouts and if possible
-look further into the followed kobolds. For this reason this mission is to be
-executed in utmost stealth and caution. Follow the provided map for location
-details and return and report if possible before spring 29th at midday.
+The mission for {self.player.name} is now to find the scouts and if possible look further
+into the followed kobolds. For this reason this mission is to be executed in
+utmost stealth and caution. Follow the provided map for location details and
+return and report if possible before spring 29th at midday.
 Good Luck.
 '''
         )
@@ -849,27 +845,30 @@ You enter the blackness of the wood looking for movement or signs of recent
 kobold or human activity. Soon you find a set of helpfully quite obvious tracks 
 in the forest floor. You, have no experience in tracking but you estimate this 
 trail was made by anywhere between 30 and 50 individual kobolds and humans. 
-Suddenly, the entire tree imediately to your left excluding the trunk drops to 
-the ground and begins scuttling towards you like a 10,000 legged leafy spider! 
+Without warning, the entire tree imediately to your left excluding the trunk
+drops to the ground and begins scuttling towards you like a 10,000 legged leafy
+spider!
  '''
         )
 
     def seven_victory1(self): # Ooh they glow! 
         dprint(
             f'''
-After probably the most heebee geebee worthy fight of your life, minus that big 
-rat you got rid of when you were eleven, you continue onwards. Following the
-trail leads you to a long fissure in the ground. The darkness inside seems all
-consuming as you peer into its depths. After a few breaths of encouragement, 
-you follow the path half walking half sliding downwards into total darkness. 
-After only about 10 seconds crawling blindly you open your supply sack for 
-anything that might help you navigate without giving away your position too 
-much. Immediately upon opening your bag you are greeted with faint light 
-coming from somewhere inside. A quick search reveals that the vermilion life 
-potions your mother gave you give off a faint glow! Not quite enough to fully 
-light your way but enough to barely help you know where the walls and ceiling 
-of this cave are. Silently offering your heart-felt thanks to your omnicient 
-Mother, you carry on deeper and deeper into the void of blackness. . . 
+After probably the most heebee geebee worthy fight of your life (minus that big 
+rat you and your brother Elond got rid of when you were eleven) you continue
+onwards. Following the trail leads you to a long fissure in the ground. The
+darkness inside seems all consuming as you peer into its depths. After a few
+breaths of encouragement, you follow the path half walking half sliding
+downwards into total darkness. After only about 10 seconds crawling blindly
+you open your supply sack for anything that might help you navigate without
+giving away your position too much. If the tracks didn't lead down here, you
+would't go down here anyway, but regardless, upon opening your bag you are
+greeted with faint light coming from somewhere inside. A quick search reveals
+that the vermilion life potions your mother gave you give off a faint glow! Not
+quite enough to fully light your way but enough to barely help you know where
+the walls and ceiling of this cave are. Silently offering your heart-felt
+thanks to your omnicient Mother, you carry on deeper and deeper into the void
+of blackness. . . 
 '''
         )
 
@@ -909,10 +908,10 @@ does not now contain a giant cave bear. . .
         mon_list1 = self.config_monsters({'cave slime':2,'swarm of bats':1})
         mon_list2 = self.config_monsters({'refuse':3})
         self.eight_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.eight_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.eight_encounter0(), collective=True)
         if player_lives:
             self.eight_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.eight_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.eight_encounter1(), collective=True)
             if player_lives:
                 self.eight_victory1()
                 self.story_reward()
@@ -929,7 +928,7 @@ does not now contain a giant cave bear. . .
 . . .
 Mere minutes into this cave, the claustrophobia starts to get to you. The walls 
 are much tighter and the ceiling, much lower. You're not the tallest person 
-ever, a family trait, and yet you still have to duck sometimes to avoid head 
+ever (a family trait) and yet you still have to duck sometimes to avoid head 
 injury. You quickly find that you can't stop either the thought of being 
 surrounded in rock for close to a mile in all directions gets worse. You press 
 forward for another long while before FINALLY, just before you decide to give 
@@ -1003,7 +1002,7 @@ about half of it but after you do put together what you have, it reads:
 "....ver be victorious again. To se .. e th .. you are hereby commanded dir .. tly 
 from the new Boss to gather  ..  one of the 7 gr .. hideouts in the area to meet 
 and recieve further instr .. tions from the new Bos .. ere you and your clan will
-be further infor .. d of Lord Luxkhanna's plan t .. aid the .. earest 3 human 
+be further infor .. d of Lord Luxkhanna's plan t .. raid the .. earest 3 human 
 s .. ments. This will take place imediate .. following the gathe .. g...."
 A lot of the letter is ripped off here but one final small peice says the words 
 "...only human chi .. ren as captives..." and you git the gist. 
@@ -1027,7 +1026,7 @@ turn now to your map for directions for an equally hasty flight back home. . .
     def ch_9(self): # returning home, Spring 25th-26th, 3044, 6th age
         mon_list = self.config_monsters({'frenzy boar':7})
         self.nine_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.nine_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.nine_encounter0(), collective=False)
         if player_lives:
             self.nine_victory0()
             self.story_reward()
@@ -1118,16 +1117,16 @@ barracks and onto the road back home to see your family. . .
         self.adjust_team('Gaffer', add=True)
         self.adjust_team('Holt', add=True)
         self.ten_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.ten_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.ten_encounter0(), collective=True)
         if player_lives:
             self.ten_victory0()
-            self.story_reward()
+            self.story_prep(location='1-0', name='Give chase')
             self.adjust_team('Liliyah', add=False)
             self.adjust_team('Bulli', add=False)
             self.adjust_team('milo_0', add=False)
             self.adjust_team('Gaffer', add=False)
             self.adjust_team('Holt', add=False)
-            self.story_prep(location='1-3', name='Give chase')
+            self.story_reward()
             return True
         else:
             return False
@@ -1157,28 +1156,17 @@ and fireballs into shops and homes, fighting people and dragging a few people
 out of sight. The pair of Kobolds who smashed in your window appear to have 
 just ended a fit of cackling having not expected something to exit the window 
 they just destroyed. 
-''', .05)
-        if self.player.title == 'Fighter':
-            dprint(
-                f'''
+'''
+        , .05)
+        dprint(
+            f'''
 Without more than a second hesitation while you take all this in, you execute 
 the skill, {self.player.known_skills[-1].name} with power somehow far above 
 your normal standard. 
-''', .05)
-        elif self.player.title == 'Mage':
-            dprint(
-                f'''
-Without more than a second hessitation while you take all this in, you cast
-{self.player.known_spells[-1].name} with power somehow far above your normal 
-standard. 
-''', .5)
-        elif self.player.title == 'Pugilist':
-            dprint(
-                f'''
-Without more than a second hessitation while you take all this in, you use
-{self.player.known_spalls[-1].name} with power somehow far above your normal 
-standard.
-''', .05)
+'''
+        , .05)
+
+
 
         dprint(
             f'''
@@ -1198,7 +1186,7 @@ vew of some kind of strange dim room full of old books, papers, strange
 instruments and tools of all kinds, fills your vision. But as if a blindfold 
 was suddenly appled, all goes dark again. 
 '''
-        )
+        , .05)
         dprint(' . . . ', .15)
         dprint(
             f'''
@@ -1241,13 +1229,13 @@ Just as you finish up, you catch a glimse of a pair of Kobolds carying what
 looks like Robin or some other smaller human away. 
 "Alright, now {self.player.name} where you going in such a hurry? Hey! Hey no, 
 slow down! WHEre yoU gOinG . . ?"
-Your already bolting full steam ahead after Robin. Moments later, you hear a 
-distant voice call again, but not to you this time. 
+You were already bolting full steam ahead after Robin. Moments later, you hear
+a distant voice call again, but not to you this time.
 "Oi! Cap! I think {self.player.name}s on to something again!"
 "You two, follow {self.player.grammer['objective']} and help {self.player.grammer['objective']} out! You three stay here!" came the voice of 
 Captian Gurenge. 
 Another minute later, just moments after you pursue the kobolds outside the 
-crumbling Town gates, two figures appear dashing astride you, Milo the boy you 
+crumbling Town gates, two figures appear dashing astride you, Milo, the boy you 
 met with the Captian and a woman you've seen but never really met before. A 
 member of the guard. As the three of you continue to run none speaks a word you
 all just keep running . . . 
@@ -1263,25 +1251,24 @@ all just keep running . . .
         self.adjust_team('milo_0', add=True)
         self.adjust_team('Suphia', add=True)
         self.eleven_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.eleven_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.eleven_encounter0(), collective=False)
         if player_lives:
             self.eleven_victory0()
             self.adjust_team('Electo', add=True)
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.eleven_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.eleven_encounter1(), collective=True)
             if player_lives:
                 self.eleven_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.eleven_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.eleven_encounter2(), collective=False)
                 if player_lives:
                     self.eleven_victory2()
                     self.adjust_team('milo_0', add=False)
-                    player_lives = self.battle.story(mon_list=mon_list3, dialog=self.eleven_encounter3(), collective=True)
+                    player_lives = self.battle.battle(mon_list=mon_list3, dialog=self.eleven_encounter3(), collective=True)
                     if player_lives:
                         self.eleven_victory3()
-                        self.adjust_team('Suphia', add=False)
+                        self.story_prep(location='1-0', name='Rescue your siblings')
                         self.adjust_team('milo_0', add=False)
                         self.adjust_team('Electo', add=False)
                         self.story_reward()
-                        self.story_prep(location='1-0', name='Rescue your siblings')
                         return True
                     else:
                         return False
@@ -1417,10 +1404,10 @@ Let the hunt begin. . .
         mon_list2 = self.config_monsters({'blue worm':1})
         self.twelve_intro()
         self.adjust_team('Suphia', add=True)
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twelve_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twelve_encounter0(), collective=True)
         if player_lives:
             self.twelve_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twelve_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twelve_encounter1(), collective=False)
             if player_lives:
                 self.twelve_victory1()
                 self.story_reward()
@@ -1438,7 +1425,7 @@ A mild glow from the soon to be rising sun casts a red to blue gradiant above
 you to your left. The freezing early wind ruffles your clothing, made more so 
 as your run. Your companion Suphia, continues head of you about 50 feet with 
 long quick strides. The smell of smoke and terror still lingers in both of your 
-minds among far to many things to verbalize. 
+minds among many more things. 
 In your mind you go over the things you heard and discovered about the kobolds
 and their plans, that could have prevented this terrible catastrophy. 
 You heard from the Captain that kobolds had been increasing in activity for 
@@ -1451,16 +1438,16 @@ increase in activity the most concerning of which was the report of an entire
 missing team. 
 Upon further investigation, you discovered possibly erroneus inteligence that 
 the enemy was planning an attack of some sort on nearby human settlments, 
-possibly including greentown, Pompon, Farthe Outpost and Tolbantha or maybe 
+possibly including Greentown, Pompon, Farthe Outpost and Tolbantha or maybe 
 villages in the farther east like Kyoma or Uten. This combined with the lack of 
-concrete evidence and the discovery of contradicting intel at about the same time 
-resulted in indecision and crucial preparation time spent strategising and
-reasoning about next steps. 
-Whether it was a well orcestrated attack strategy, which Suphia pointed out 
-was incongruent with usual kobold nature; or, the work of some human 
-traitor or mole, it had worked and the kobolds had, counter to their normal 
-behavior, orchestrated a combined attack on Greentown and more than likely, 
-several other towns in the area.
+concrete evidence and the discovery of contradicting intel at about the same
+time resulted in indecision and crucial preparation time spent strategizing and
+reasoning about next steps.
+Whether it was a well orcestrated attack strategy (which Suphia pointed out
+was incongruent with usual kobold nature), or the work of some human traitor or
+mole, it had worked and the kobolds had, counter to their normal behavior,
+orchestrated a combined attack on Greentown and more than likely, several other
+towns in the area.
 There was one other important piece of inteligence that you and at least one 
 other source discovered. The kobold called Luxkhanna. That kobold was 
 supposedly the leader who orchestrated all this. 
@@ -1495,7 +1482,7 @@ resting again atop a grassy noll for a view above the thick treeline. From that
 vantage point, and between the 2 of you, you find not 1, nor even 2 but 3 
 interesting things a ways off. The first, to the north close to the way you 
 came, is a glassy lake with an unusually large tree stump at its center. The 
-second is a feint column of smoke to the north-west and last you spot an old 
+second is a faint column of smoke to the north-west and last you spot an old 
 stone tower in the southward distance. After some discussion you decide that your
 time would be best spent moving in the same direction but that any signs of 
 structure or inteligent life should be top priority. For this reason you decide 
@@ -1528,7 +1515,8 @@ anything.
     def ch_13(self): # alone int he woods pt 2, Spring 27th, 3044, 6th age
         mon_list = self.config_monsters({'little nepenth':3})
         self.thirteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.thirteen_encounter0(), collective=False)
+        self.adjust_team(to_modify='Suphia', add=True)
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.thirteen_encounter0(), collective=False)
         if player_lives:
             self.thirteen_victory0()
             self.story_reward()
@@ -1583,11 +1571,12 @@ that, the camp of Capper Luxkhanna.
     def ch_14(self): # alone int he woods pt 3, Spring 28th, 3044, 6th age
         mon_list1 = self.config_monsters({'skeleton':1})
         mon_list2 = self.config_monsters({'refuse':3})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.fourteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fourteen_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.fourteen_encounter0(), collective=False)
         if player_lives:
             self.fourteen_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.fourteen_encounter1(), collective=True)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.fourteen_encounter1(), collective=True)
             if player_lives:
                 self.fourteen_victory1()
                 self.story_reward()
@@ -1616,7 +1605,7 @@ deeper with each level lower the air seems to chill and grow thicker.
             f'''
 Four levels down and about 20 minutes in you enter a chamber with five altars 
 connecting a pentagon in the center of the room. In the far corner is a very 
-human skeleton in a leather cap and clutching a long cutlas in one hand and a 
+human skeleton in a leather cap, clutching a long cutlas in one hand and a 
 round bottle in the other. Each of the altars but one carries a box in the 
 shape of a five sided pyramid. Upon careful inspection, 3 of the 4 remaining 
 boxes have been emptied already but one at the far side of the room holds one 
@@ -1694,8 +1683,8 @@ interesting but a few scraps of old paper.
 "...paper? That wouldn't last long either." Suphia remarks picking up one of 
 the old dry sheets. "I can't read any of these though, they look to be written 
 in kobold tongue. Find one in common!"
-A quick search of the few papers in the room yealded nothing but kobold and one 
-in gobldeeguk of all things, the language of goblins. There was however a rough 
+A quick search of the few papers in the room yielded nothing but kobold and one
+in gobldeeguk of all things (the language of goblins). There was however a rough
 drawing of another map upon which showed several old camp locations in the area
 but at least 2 of which were confirmed to be destroyed since whenever this was 
 drawn up. Alltogether not the most helpful find but it was good to know that 
@@ -1727,14 +1716,15 @@ with your brother and sister.
         mon_list0 = self.config_monsters({'small kobold':3})
         mon_list1 = self.config_monsters({'ruin kobold':1})
         mon_list2 = self.config_monsters({'treent':1, 'ruin kobold':1, 'kobold soldier':3, 'small kobold':1})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.fifteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.fifteen_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.fifteen_encounter0(), collective=True)
         if player_lives:
             self.fifteen_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.fifteen_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.fifteen_encounter1(), collective=False)
             if player_lives:
                 self.fifteen_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.fifteen_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.fifteen_encounter2(), collective=True)
                 if player_lives:
                     self.fifteen_victory2()
                     self.story_reward()
@@ -1778,7 +1768,7 @@ to your right. Just as you had hoped the kobolds stop and a brief silence is
 broken by a quiet murmer in kobold. Then what you didn't quite want happens. 
 After some brief deliberation, the entire troop begins walking towards the 
 sound.
-Withoout a moment's hessitation, you both duck backwards and left to avoid the 
+Without a moment's hessitation, you both duck backwards and left to avoid the 
 path and eyesight of the kobolds. Sheer luck and another well cast stone leads
 you eventually right behind the perplexed troop of five all murmuring softly 
 just loud enough to mask your approaching footsteps. 
@@ -1917,7 +1907,7 @@ like dark confetti as it shakes with anger. An aura of rage emenating from its
 thick bark washes over the entire scene filling you and all present with a deep
 primal fear. The entire tree looms above you its branches, each smaller trees of
 their own moving and swaying with purpose accompanied by a haunting melody of
-creaking groaning wood.
+creaking, groaning wood.
 '''
         )
 
@@ -1953,11 +1943,12 @@ treent with you to face the kobolds instead.
     def ch_16(self): # following the trail pt 2, Spring 30th-31st, 3044, 6th age
         mon_list1 = self.config_monsters({'onikuma':3})
         mon_list2 = self.config_monsters({'small kobold':3})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.sixteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.sixteen_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.sixteen_encounter0(), collective=False)
         if player_lives:
             self.sixteen_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.sixteen_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.sixteen_encounter1(), collective=False)
             if player_lives:
                 self.sixteen_victory1()
                 self.story_reward()
@@ -2074,7 +2065,7 @@ Steadilly, confidantly, you rise from your hiding place and look directly into
 the faces of each kobold group. Neither you nor Suphia are the most
 intimidating people ever, but as you stare them down and draw your weapons, the
 atmosphere in the wood completely changes. Rather than also come out of their
-hiding places, make kobolds slink down further and maybe even take a few silent
+hiding places, the kobolds slink down further and some even take a few silent
 shuffles backward. Suphia brandishes her weapon in the direction of the closest
 group and takes a steady step in their direction. You follow suit at the same
 moment as she takes another and that seems to break them. 
@@ -2109,13 +2100,13 @@ to a tree.
 After a few moments the kobold shook its head back and fourth nervously,
 clearly not realizing that that as good as meant "yes!"
 "Aww man!" Said Suphia in mock exasperation, looking to you with big sad eyes,
-"looks like weve got another dud!" she said bringing a knife to the kobolds
-throat. 
+"looks like we've got another dud!" she said bringing a knife to the kobolds
+throat.
 "Waaiiiet! Waiiet! No, I do, I doo! Don kill mii!" screamed the kobold. 
 "Fantastic! Where's Capper Luxkhanna?! If you don't know or don't tell, I'll
 kill you too!"
 The kobolds looked around for a few moments before nodding. 
-"I yam onli digger...BUT..!" it shouted as suphia sighed and pressed the blade
+"I yam onli digger. . . BUT. . !" it shouted as suphia sighed and pressed the blade
 into the kobolds scaily neck, "But, I tink I may still nou..."
 '''
         )
@@ -2229,7 +2220,7 @@ As Subtly as they can muster, trying to convince you that those woods are a
 fantastic place to camp and stay for a while.
 Next, you ask the kobolds about what they know on the recent attack on
 Greentown. They seem truthfully enough to not know much about it other than
-that it happened and that Pompon to the south-west and Tolbantha to the west
+that it happened and that Pompon to the south-west and Tolbantha to the north-west
 were likely the other two settlements targeted. 
 Just as you suspect from their answers to the previous question you get little
 information about prisoners and prison routes after the attacks leaving you
@@ -2251,25 +2242,26 @@ the briefest emotionless smile before leading the way.
 
     def ch_17(self): # surrounded by nepenths (pre-boss), Spring 31st-32nd, 3044, 6th age
         mon_list0 = self.config_monsters({'little nepenth':1, 'barkling':1, 'windwasp':1, 'little nepenth':1})
-        mon_list1 = self.config_monsters({'little nepenth':2, 'nepenth':1, 'pod nepenth':1})
-        mon_list2 = self.config_monsters({'Pod Nepenth':1, 'flower nepenth':2, 'big nepenth':1, 'nepenth':4, 'little nepenth':3})
-        mon_list3 = self.config_monsters({'flower nepenth':1, 'nepenth':1,'little nepenth':3})
-        mon_list4 = self.config_monsters({'flower nepenth':1, 'big nepenth':1, 'nepenth':2, 'little nepenth':1})
+        mon_list1 = self.config_monsters({'pod nepenth':1})
+        mon_list2 = self.config_monsters({'Pod Nepenth':1, 'big nepenth':1, 'nepenth':2, 'little nepenth':1, 'flower nepenth':2})
+        mon_list3 = self.config_monsters({'flower nepenth':2, 'nepenth':2,'little nepenth':1})
+        mon_list4 = self.config_monsters({'big nepenth':1, 'nepenth':1, 'little nepenth':1, 'flower nepenth':1})
+        self.adjust_team(to_modify='Suphia', add=True)
         self.seventeen_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.seventeen_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.seventeen_encounter0(), collective=False)
         if player_lives:
             self.seventeen_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.seventeen_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.seventeen_encounter1(), collective=False)
             if player_lives:
                 self.seventeen_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.seventeen_encounter2(), collective=True)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.seventeen_encounter2(), collective=True)
                 if player_lives:
                     self.seventeen_victory2()
                     self.adjust_team('Suphia', add=False)
-                    player_lives = self.battle.story(mon_list=mon_list3, dialog=self.seventeen_encounter3(), collective=True)
+                    player_lives = self.battle.battle(mon_list=mon_list3, dialog=self.seventeen_encounter3(), collective=True)
                     if player_lives:
                         self.seventeen_victory3()
-                        player_lives = self.battle.story(mon_list=mon_list4, dialog=self.seventeen_encounter4(), collective=False)
+                        player_lives = self.battle.battle(mon_list=mon_list4, dialog=self.seventeen_encounter4(), collective=False)
                         if player_lives:
                             self.seventeen_victory4()
                             self.story_reward()
@@ -2359,7 +2351,7 @@ would go through Avernus itself for them just as I know you would."
 "You know... it's strange, over the course of our travels, battles, experiences,
 it feels almost like I am traveling with my own brother Electo. I would venture
 into the fires of Avernus itself to liberate him from captivity and I know you
-woud do the same for Robin and Rosie. This mission is not a burden to me, I
+would do the same for Robin and Rosie. This mission is not a burden to me, I
 know Electo is safe in Greentown awaiting our triumphant return, so I will do
 everything in my power to make that happen. But my greatest desire above that
 is the rescue of your siblings, siblings who, in my mind have become my own in
@@ -2403,7 +2395,7 @@ larger and more powerful looking than a common grizzly.
 "No I mean, Nepenths did this. look at the slashes in the bones. Nepenths
 killed this bear and picked it clean. As for the variety of bear... it almost
 looks like a juvenile Ursaring but I'm pretty sure those mostly inhabit the
-mountanous regions in the far east. Whatever it is we should get out of he- 
+mountanous regions in the far east. Whatever it is, we should keep mov-
 WATCH OUT!"
 '''
         )
@@ -2453,7 +2445,7 @@ As you continue to sneak past the monsters, you come to the realization that
 you had better get out of these woods before nightfall or it would turn into a
 drawn out battle until the next dawn and likely beyond and you really didn't
 know how many of these nepenths you could realisticly take. But picking up the
-pace just makes too much noise.
+pace just made too much noise.
 '''
         )
 
@@ -2575,9 +2567,10 @@ faithful heart, cunning mind, and indominable spirit.
 After nearly an hour you begin seeing nepenths again, sleeping as before, as
 well as the same familiar cautious woodland creatures, but it's like the wood
 itself finally understands what is happening. The weight behind this single
-person prosession is far to great to disturb and dispite the smell of death and
-the soft crunching of topsoil and undergrowth at each step, nothing stirs as if
-knowing full well what will most definitely befall them should they do so. 
+person funeral prosession is far to great to disturb and dispite the smell of
+death and the soft crunching of topsoil and undergrowth at each step, nothing
+stirs as if knowing full well what will most definitely befall them should
+they do so. 
 '''
         )
 
@@ -2585,7 +2578,7 @@ knowing full well what will most definitely befall them should they do so.
     def ch_18(self): # scouting the Kosaur's lair, Spring 32nd-34rd, 3044, 6th age
         mon_list = self.config_monsters({'bandit':1})
         self.eighteen_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.eighteen_encounter0())
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.eighteen_encounter0())
         if player_lives:
             self.eighteen_victory0()
             self.story_reward()
@@ -2624,7 +2617,7 @@ actually attended a funeral in living memory but based on the circumstances
 and current situation you felt this was the best you could do.
 After another few moments of silence paying last respects, you again move a bit
 of a ways down the mountain and turn your gaze west, more determined than ever
-before, towards the canyon and what likely lies beyond.
+before, towards the canyon and what likely lay beyond.
 '''
         )
 
@@ -2691,13 +2684,13 @@ The sound you hear as you press your ear against the cold rock seems to vibrate
 and reverberate through the whole earth. A deep boom accompanied by a distant
 rumble.
 The route you picked out along the side of the canyon wall seems to come to an
-end a few hundren feet later but that ends up being all you need. As you peer
+end a few hundred feet later but that ends up being all you need. As you peer
 around your dead end and into the canyon, you see it, more than see it, you
 smell it too, the stench of blood and decay. The bodies of a few dozen human
 bandits, just like the one you fought earlier today, lay strewn across the
 banks of the river. And their killer stalking just beyond. 
 A gigantic orange and brown, scaly biped, with horns like pointed battlements
-along its head and spine, tipping a massive muscular body designed for
+along its head and spine, topping a massive muscular body designed for
 devastation. A set of wings spanning easily thirty feet still seemed almost
 comically small when compared to the rest of its hulking frame, tipped with a
 clubbed tail, huge powerful claws and a disproportionately large
@@ -2719,7 +2712,7 @@ the king of the canyon.
     def ch_19(self): # Kosaur boss fight, Spring 35th, 3044, 6th age
         mon_list = self.config_monsters({'Kosaur':1})
         self.nineteen_intro()
-        player_lives = self.battle.boss(mon_list=mon_list, dialog=self.nineteen_encounter0(), boss_dialog=[self.nineteen_boss0()])
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.nineteen_encounter0, boss_dialog=[self.nineteen_boss0])
         if player_lives:
             self.nineteen_victory0()
             self.story_reward()
@@ -2788,7 +2781,7 @@ the Monster's eyes and it launches after you again!
             f'''
 You stagger back, gasping for air, your heart pounding in your chest like a war
 drum. The canyon walls loom around you, trapping the sound of your labored
-breaths. Before you, the Monster a hulking, dinosaur that seemed indomitable—
+breaths. Before you, the Monster a hulking, dinosaur that seemed indomitable
 collapses to the ground like a toppeling of a great stone tower. Its massive,
 reptilian body lies still on the canyon floor and across the river, large
 enough to dam the river running through it. You can hardly believe it.
@@ -2797,29 +2790,28 @@ trembling, the sword in your hand hanging by the last thread of strength you
 didn't know you still had. Your arms ache from the weight of every swing,
 every desperate attempt to fend off its crushing jaws. You didn't come here to
 fight this thing, you didn't want to, but it left you no choice.
-You were trying to escape, to just get past it, but this monster, this...
+You were trying to escape, to just get past it, but this monster, this. . . 
 Kosaur, as you call it because of its crossed apearance of a Kobold and a
 dinosaur, was relentless. No matter how fast you ran, how cleverly you dodged,
 it was always there, forcing you back into battle. Every roar, every lunge,
 made you feel like you were one mistake away from death. And yet, against the
-odds, here you were, standing over its broken form.
-In the stillness that follows the battle, the canyon seems eerily quiet, as
-though even the wind itself is holding its breath. You can hear the faint echo
+odds, here you were, standing over its broken, decomposing form.
+In the stillness that followed the battle, the canyon seemed eerily quiet, as
+though even the wind itself was holding its breath. You could hear the faint echo
 of your ragged breathing, but nothing else. No more monstrous growls. No more
 thundering footsteps.
-With what little strength you have left, you drag yourself back to the rocky
-walls, pressing your back against them for support. Your legs feel like they
-might give out at any moment, but for now, you have a chance to catch your
-breath. The path ahead lies open now, clear of the terror that stood in your
+With what little strength you had left, you drag yourself back to the rocky
+walls, pressing your back against them for support. Your legs felt like they
+might give out at any moment, but for now, you had a chance to catch your
+breath. The path ahead lay open now, clear of the terror that stood in your
 way. The thought of your siblings, of Luxkhanna's camp just beyond the next
-ridge, flickers in your mind.
-You aren't done yet.
-For now, for this brief moment, you allow yourself to breathe. You allow
-yourself to feel the small, hollow victory of survival. Because despite
-everything that's been taken from you, despite the loss of Suphia, your abducted
+ridge, flickered in your mind.
+You weren't done yet.
+For now though, for this brief moment, you allowed yourself to breathe. You
+allowed yourself to feel the small, hollow victory of survival. Because despite
+everything that had been taken from you, despite the loss of Suphia, your abducted
 siblings and doubtlessly countless others, despite the exhaustion clawing at
-your bones—you're still here.
-With a job still to do.
+your bones, you were still here, with a job still to do.
 '''
         )
 
@@ -2829,13 +2821,13 @@ With a job still to do.
         mon_list1 = self.config_monsters({'bryllyg':1, 'jackelope':1, 'sly shrewman':1})
         mon_list2 = self.config_monsters({'marzeedote':3})
         self.twenty_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
         if player_lives:
             self.twenty_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=False)
             if player_lives:
                 self.twenty_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
                 if player_lives:
                     self.twenty_victory2()
                     self.story_reward()
@@ -2984,20 +2976,18 @@ All goes black.
         mon_list0 = self.config_monsters({'kobold chief':1, 'ruin kobold trooper':1, 'ruin kobold':1, 'condemned goblin':1})
         mon_list1 = self.config_monsters({'goblin':3})
         mon_list2 = self.config_monsters({'goblin king':1})
-        self.twenty_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        self.twenty_one_intro()
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.twenty_one_encounter0(), collective=False)
         if player_lives:
-            self.twenty_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=False)
+            self.twenty_one_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_one_encounter1(), collective=False)
             if player_lives:
-                alt = self.twenty_victory1()
-                if alt == None:
-                    pass
-                else:
+                alt = self.twenty_one_victory1()
+                if alt != None:
                     return False
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_one_encounter2(), collective=False)
                 if player_lives:
-                    self.twenty_victory2()
+                    self.twenty_one_victory2()
                     self.story_reward()
                     self.story_prep(location='1-8', name='escape')
                     return True
@@ -3024,19 +3014,19 @@ and so your attempt to stand resulted in a sort of wobble and flop ending in
 most of your body weight landing onto your now very bruised elbow.
 Biting your gag hard out of pain, you, observe more of your surroundings. You
 see that you're in a sort of giant basket woven out of reeds and carved tree
-branches suspended above, well, nothing as far down as you could see through
+branches suspended above, well, nothing. As far down as you could see through
 the bottom of your prison, you could not make out any bottom. You are relieved
 as you look up to see rather sturdy by comparison supports holding you to the
 ceiling.
 A few moments pass before you make another, more careful attempt to stand,
 sliding upwards along the side of your box. Upon doing so, you make your next
 observation. There was a goblin nearby, sleeping hither to your motion to stand,
-who started awake and scurried off without hessitation. 
+who started awake and scurried off without hessitation upon seeing you. 
 Another minute or so passes in silence during which time, you look around and
 struggle at your bindings managing only to minorly loosen your wrists before
 you hear the sounds of goblins approaching from the apparent only entrance. 
-Moments later, you find your cage being opened by the front of five goblins
-including the one who had left. 
+Moments later, you find your cage being opened by five goblins, including the
+one who had left. 
 After a few moments, the surprisingly strong goblins for their size, begin
 literally dragging your bound form through the stone halls requiring great
 effort not to aggrivate your sore skull. After what seems like miles, the
@@ -3049,6 +3039,7 @@ you make known your discomfort either way. Sure enough, the goblins just laugh
 at what they hear to be simply worried jibberish before cutting the line. . . 
 '''
         )
+        input()
 
     def twenty_one_encounter0(self): # A very strategic battle
         dprint(
@@ -3065,7 +3056,7 @@ way steadily into what is surely some kind of arena. You are unarmed and
 underprepared, but you know you have to survive. Step after step, the sound
 grows louder until a light reaches your eyes beyond one final bend and you see
 the space before you.
-the arena is small and circular only about thirty or fourty feet across with
+The arena is small and circular only about thirty or fourty feet across with
 openings similar to yours every several feet. As you enter the space, the
 volume of the goblin crowd increases drastically mixed with jeers, laughs,
 excited screeches and the like. 
@@ -3093,19 +3084,19 @@ ever grab the weapons no one needed to get hurt and you could all try to
 escape. Well, it really was a short lived thought because as soon as you
 thought this, both the goblin and the Kobolds made an instant break for the
 center weapons, leaving you in the dust and with a severe dissadvantage. 
-"Of course savages like kobolds and goblins woudn't think not to fight at the
-closest opportunity!" you think to yourself as you try to catch up. And now
-because of that moment's hessitation, your life really could be much more on
-the line than it already was.
+"Of course savages like kobolds and goblins would think only to fight given the
+opportunity!" you think to yourself as you try to catch up. And now because of
+that moment's hessitation, your life really could be much more on the line than
+it already was.
 Before you can get anywhere close to the weapon stand, the kobolds appear to
-get there first grabbing weapons and slashing at the goblin and throwing the
+get there first grabbing weapons, slashing at the goblin and throwing the
 entire stand closer to their side of the arena giving them a massive advantage
 in both strength and numbers. The spectating goblins howl their approval at
 this one sided start to the battle.
 The goblin proves to exceed the kobolds in agility, however, as it quickly
 after dives past the defending ruin kobolds and just manages to snatch a
 viscious looking sickle from the scattered weapons. 
-Now it you were the only one unarmed. 
+Now you were the only one unarmed.
 "Tag e lum, ee pikik sha fah ou!" barks the largest of the ruin kobolds clearly
 having abandoned their common tongue for the time being. But it doesn't matter,
 the message is clear as the other two imediately turn towards you grinning
@@ -3139,7 +3130,7 @@ causing the goblin to leap back and to the side placing you within its line of
 sight as well. But a sneak attack wasn't your goal (allthough now that you
 think about it that may also have been a good plan). The goblin turns to defend
 itself from you and you dive to the side rolling behind it again but only after
-splaying your clearly unarmed hands int he goblin's view.
+splaying your clearly unarmed hands in the goblin's view.
 It worked! The goblin was now completely surrounded, its original opponent, on
 one side and the other two kobolds beside him while you were behind. And now
 with the goblin aware that you were unarmed and therefore less of a threat, it
@@ -3233,11 +3224,11 @@ tough fight.
 
     def twenty_one_victory1(self): # this..this is the long one, a little of everything, return
         self.player.weakened = False
-        prompts = ('"And why on earth would I choose all them?!"',
-                   '"Is that supposed to be a fair choice?!"',
-                   '"I\'ll fight you!"',
-                   '"I\'ll fight everyone else!"',
-                   '"Neither!"')
+        prompts = ('And why on earth would I choose all them?!',
+                   'Is that supposed to be a fair choice?!',
+                   'I\'ll fight you!',
+                   'I\'ll fight everyone else!',
+                   'Neither!')
         dprint(
             '''
 You've managed to stay strong through the battle and now at victory, you slide
@@ -3284,7 +3275,7 @@ find its end.
 . . .
 Really what you needed was company. Anything that might know these halls better
 than you did. And you knew they were nearby. 
-You sit downm, cross-legged and close your eyes. Listening for the goblins
+You sit down, cross-legged and close your eyes. Listening for the goblins
 around you. 
 *jitter* *chuckle* *tap tap tap* *shuffle*
 Farther, farther, you needed to hear deeper into the endless caverns.
@@ -3295,33 +3286,33 @@ Monents later, you realize that you don't even have to try very hard to hear
 this new heavy sound. You open your eyes and imediately see the faint but
 growing light of torches around two of the corners available to you.
 You wanted company but not this many! 
-You know that hiding here would be futile and so you make a brea for the third
+You know that hiding here would be futile and so you make a break for the third
 exit. The only one without approaching kobolds. The the next fork you see the
 light coming from all but one path yet again. 
 You count it fortunate that this is also the case at the next two forks but by
-the third you realize the odds of this happening this many times to be greater
+the third you realize the odds of this happening this many times to be smaller
 than coincidental. The goblins were leading you somewhere. They were backing
 you into corners knowing that you wouldn't be foolhardy enough to fight all of
 them at once.
 Bend after bend, fork after fork, chamber after chamber, this continues at
 varying paces for a few minutes before finally, the tunnel opens into a huge
-dark cavern. A cliff about twenty0 feet in prevents you from fleeing any
+dark cavern. A cliff about twenty feet in prevents you from fleeing any
 further and you watch as the hoard files in behind you. Their bright green eyes
 shining in their torch light. After a few moments, about 500 goblins stand upon
 this same cliff edge with you keeping about three paces back, just staring.
-And then, one of the goblins at the edge hurls his torch into the abyss. The
-torch is caught by a hither to unseen hand at the other side of what you
-quickly deduce are mirroring cliff faces. The caught torch is lowered to a
-trough along the ground and the entire cavern is imediately iluminated by fire.
-In the light of the flames you see on the the other side of the cavern, a
-carven throne and a huge armored goblin sitting thereon with an unmistakable
-grin upon his face. 
+And then, one of the goblins at the edge hurls his torch into the abyss across
+the dark fissure. The torch is caught by a hitherto unseen hand at the other
+side of what you quickly deduce are mirroring cliff faces. The caught torch is
+lowered to a trough along the ground and the entire cavern is imediately
+iluminated by fire. In the light of the flames you see on the the other side of
+the cavern, a carven throne and a huge armored goblin sitting thereon with an
+unmistakable grin upon his face.
 "You've caused quite a ruckus, little lum!" says the king in perfect common.
 "There have not been many who have escaped an arena of ours. You must be
 powerful! I desire to see your full strength for myself but unfortunately,
 you're belongings have already been melted down." At this moment the king turns
 to one of the even larger goblins to either side of him and speaks some command
-in gobbldeeguk. The goblin nods and sprints off at top speed while the kind
+in gobbldeeguk. The goblin nods and sprints off at top speed while the king
 gets off his throne and speaks again, adressing you.
 "This does not stay my desire, however," and as he nears the edge of the chasm,
 he hurls a drawn blade across to you. It was a two edged, straight, shorsword
@@ -3339,7 +3330,7 @@ each of the exits.
         if option == 1:
             dprint(
                 '''
-"Ah, of course, you wouldn't know! We goblins elect kings based on thier
+"Ah, of course, you wouldn't know! We goblins elect kings based on their
 strength and skill in battle over all else. It would not be much of a threat to
 me if I fought all my subjects here right now. And I suppose I may have just
 swayed you in your desicion in saying that so I'll make it easy for you and
@@ -3484,12 +3475,12 @@ it out of his grip but loose your sword down the chasm as well.
 With one eye on your enemies, you see out of your pereipheral vision, the light
 of the torch hit a fair sized lip less than sixty feet down before dropping out
 of sight. 
-You could survive 60 feet. If you had some level of cushioning...
+You could survive 60 feet. If you had some level of cushioning. . . 
 In a split second decision, you duck down narrowly avoiding the king's hammer
 and wrap both arms around the goblin Boh, before arching backwards sending both
-you and he over the chasm's edge. 
+you and he over the chasm's edge.
 Seconds later you hear a sickening crunch directly below you and you brace
-for impact. . . 
+for impact. . .
 '''
         )
 
@@ -3498,16 +3489,16 @@ for impact. . .
         mon_list0 = self.config_monsters({'shinigami':1})
         mon_list1 = self.config_monsters({'large cave slime':3})
         mon_list2 = self.config_monsters({'bark golem':1})
-        self.twenty_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        self.twenty_two_intro()
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.twenty_two_encounter0(), collective=False)
         if player_lives:
-            self.twenty_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=True)
+            self.twenty_two_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_two_encounter1(), collective=True)
             if player_lives:
-                self.twenty_victory1()
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                self.twenty_two_victory1()
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_two_encounter2(), collective=False)
                 if player_lives:
-                    self.twenty_victory2()
+                    self.twenty_two_victory2()
                     self.story_reward()
                     self.story_prep(location='1-9', name='to the camp')
                     return True
@@ -3594,7 +3585,7 @@ briefly exit the chamber to find one from outside.
 You return and cast in the larger stone. 
 Again, nothing happens, the liquid is not disturbed in any way. Less even than
 a gas. You don't even hear the stone hit the bottom. . . 
-It coundn't just be an illusion, could it? you ask yourself, staring into its
+It couldn't just be an illusion, could it? you ask yourself, staring into its
 swirling surface. 
 You tear off a small peice of your goblin shoe and dangle it inches above the
 surface. You release, and, just like the inorganic material, nothing happens.
@@ -3733,7 +3724,7 @@ end. This new cavern open before you swirls with wind similar to the last one
 but this time you can see the source. At the far end and about fourty or fifty
 feet up the far wall, you see what is unmistakably daylight trickling in from
 somewhere soon after. 
-You drop you your bruised and cut knees, eyes forward, involuntarily and
+You drop to your bruised and cut knees, eyes forward, involuntarily and
 tearfully thanking open air for a view of the outside world which you start
 towards, beginning with a crawl and as meager strength begins to come back into
 your battered, torn, strained and starved body, that crawl becomes a staggering
@@ -3750,7 +3741,7 @@ bright and sunny spring day outside.
 It took a some work widening the crack and slithering through, but you managed
 it. Instantly the persistant albeit diminishing sensation of cold gripping your
 person ever since destroying that ghost at the edge of the supernatural pool,
-leaves you filling your body with a warmth and a comfort that made all other
+leaves you, filling your body with a warmth and a comfort that made all other
 cares seem to fade away. You collapse flat on your back in the gravel. The sun
 beating down upon you, the warm dry breeze in your hair, the greens and blues
 of leaves a wide sky above you, you may as well have found yourself in the
@@ -3780,6 +3771,7 @@ could see stars and the cresent moon above you.
 With those thoughts you drifted off to sleep. . .
 '''
         )
+        input()
         dprint(
             '''
 *crash*
@@ -3792,7 +3784,7 @@ the cliff you slept under. One of them is smaller and looks to be some kind of
 four legged mammal like a dog or a wolf but somehow different. The second looks
 almost like a small giant, it moves about on two legs and stands upright like
 that of a humanoid but it was as tall as some of the trees around it.
-Then you realize what made the crashing sound. The two seemed to ge fighting
+Then you realize what made the crashing sound. The two seemed to be fighting
 and the humanoid thing was attacking partially by picking up and throwing huge
 boulders at its foe. One such boulder missed the target and ended up soaring
 more than sixty feet colliding and shattering against the cliff wall about
@@ -3800,10 +3792,10 @@ twenty feet from where you sat spying. For risk of becoming an involuntary
 target, you crouch walk closer to the fray for a better look at its
 participants. 
 Only about fourty or fifty feet away now, you can see what is clearly a
-direwolf saddled and armored fighting. . . actually you're still not quite
-certain up close what this thing is. It was tall, wide and humanoid like you
-had seen before but it's ody was composed of strips of bark that seemed to
-stick together and move on their own. 
+direwolf saddled and armored fighting while the other. . . actually you're
+still not quite certain up close what this thing is. It was tall, wide and
+humanoid like you had seen before but it was oddly composed of strips of bark
+that seemed to stick together and move on their own.
 You move still closer, keeping and quiet and indetectable as possible. The
 growling of the direwold was clear in your ears and the strange bark creature
 was making no sounds as it fought. You could see its face, blank with two deep
@@ -3818,13 +3810,13 @@ turning slowly towards your hiding place and then barreling directly for you.
     def twenty_two_victory2(self): # heheh... yeah... were back baby!
         dprint(
             f'''
-The golem began to crumbe before your eyes leaving nothing more than a large
+The golem began to crumble before your eyes leaving nothing more than a large
 pile of inanimate bark scraps. You were greatful that, despite your weakness
 you were able to fight as you normally would, doing so also made you acutely
 aware of what you felt was likely a fractured rib the result of your escape
 from the goblin king.
 You couldn't wait any more, though, during the fight you realized that the
-direwolf who was the pervious foe of the golem was tytpically used as a steed
+direwolf who was the pervious foe of the golem was typically used as a steed
 for Kobolds. Furthermore, that particular direwolf was laden with a saddle of
 sorts as well as wooden armor.
 Without a moment's hessitation save it be a little grimace from your wounds
@@ -3843,9 +3835,9 @@ coming up over the horrizon.
     def ch_23(self): # spying out the kobold camp, Spring 47th-48th, 3044, 6th age
         mon_list = self.config_monsters({'small kobold':1})
         self.twenty_three_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.twenty_three_encounter0(), surprise=True)
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.twenty_three_encounter0(), surprise=True)
         if player_lives:
-            self.six_victory0()
+            self.twenty_three_victory0()
             self.story_reward()
             self.story_prep(location='1-10', name='follow Luxkhanna')
             return True
@@ -3857,17 +3849,17 @@ coming up over the horrizon.
             f'''
 Peering through the trees near the top of a hill, you survey the area below
 you. About half an hour had passed since you left the crumbling pile of bark
-behind. From there you had mad your way towards what you had since sonfirmed to
-be the very kobold stronghold you had been looking for this entire journey thus
-far. Beginning at the bottom of the hill upon which you are perched, structures
-of stone and wood sprawl outward in a veritable city of kobolds before you all
-enclosed in a sturdy, well kept wall or large boulders and tree sized wooden
-pikes which remind you all to well of the wall you encountered before the
-nepenth wood. 
+behind. From there you had made your way towards what you had since confirmed
+to be the very kobold stronghold you had been looking for this entire journey
+thus far. Beginning at the bottom of the hill upon which you are perched,
+structures of stone and wood sprawl outward in a veritable city of kobolds
+before you. All enclosed in a sturdy, well kept wall or large boulders and tree
+sized wooden pikes which remind you all to well of the wall you encountered
+before the nepenth wood.
 You see little dots which you imagine to be kobold civilians and soldiers alike
 trapsing about between the various structures. You don't see too many, likely
 because of the early hour, but you know there will be a significant amount
-more as the day progresses.
+more as the day progresses past noon.
 You wait and patrol, eventually, circling the entire stronghold for what
 becomes the rest of the day before you decide, you had found your ideal
 infiltration point and make your move.
@@ -3876,7 +3868,7 @@ By this point in your adventure you are fully aware that the darkness will only
 inhibit your own perception but you chose the night time simply because you
 knew there would be fewer kobolds about at night. You dart from tree to tree
 about five hundred feet to the right of the eastern entrance. There, you set a
-candle's worth of fire amid some prepared kindling. As soon as you doo and you
+candle's worth of fire amid some prepared kindling. As soon as you do and you
 confirm that the kindling is well lit, you book it north, orienting your
 position closer to the front of the entrance. From there, you wait for the
 flames to catch the attention of the guard upon the wall. The distraction takes
@@ -3900,8 +3892,8 @@ that far.
 Sprinting along the wall, watching both your step and the workings of your
 distraction, you make it to the gate and peer around the corner. Inside, the
 gate passage way is empty of kobolds but a sharp corner prevented you from
-seeing far enough around the other side to make sure there was no guard. 
-You crouch down lower and creep ans silently and quickly as possible through
+seeing far enough around the other side to make sure there was no guard.
+You crouch down lower and creep as silently and quickly as possible through
 the gate house. As you approach the end, you keep your eyes towards the far
 side so as to survey around that corner. You see a few merchant stalls and the
 backs of some stoneworked buildings. You take this to be a good omen, seeing no
@@ -3927,7 +3919,7 @@ There were no barrels or obstructions, you could use to hide yourself. A this
 rate your hessitation had gotten you into yet another fifty-fifty chance with
 now, even higher stakes. Your only option was to duck into the alleyway between
 the first two small stone buildings behind the sleeping kobold and hope that
-there was no kobold in ther as well or on the street beyond who would happen
+there was no kobold in there as well or on the street beyond who would happen
 to look your way.
 '''
         )
@@ -3952,28 +3944,32 @@ collect in their lungs, you knew you only had one chance. . .
     def twenty_three_victory0(self): # sneeeekiing, seen Luxkhanna
         dprint(
             f'''
-Quick, and silent, you take out the danger and carry the body to the darkest
-edge of the alley just as you hear the kobold patrol pass on the other side of
-the building. You take several silent deep breaths through your tattered goblin
-tunic and edge to the outside of the alley. 
+Quick, and silent, you take out your only threat and carry the body to the
+darkest edge of the alley just as you hear the kobold patrol pass on the other
+side of the building. You take several silent deep breaths through your
+tattered goblin tunic and edge to the outside of the alley.
 Seeing the coast clear, you again begin to creep your way along the inside of
-the stronghold wall, ducking into allies when passersy by approach. Soon you
-detect an opening from within one such alley and you use it to slip like a
-shadow across the street and into the greater interior. For here you are much
-more able to traverse undetected as the buildings, alleys, obstructions and
-convenient hiding places are much more common. 
+the stronghold wall, ducking into alleys when passersy by approach, which to
+your alarm, appeared to be quite often. Apparently, kobolds, unlike humans,
+were not at their most inactive at night. this made far too much sense in
+hindsight.
+Soon you detect an opening from within one such alley and you use it to slip
+like a shadow across the street and into the greater interior. From here you
+were much more able to traverse undetected as the buildings, alleys,
+obstructions and convenient hiding places were much more common. 
 After nearly an hour, stalking the city, you see what might look like a town
 map right at the edge of an alley across the street. Your heart again began to
 race knowing that that map would likely show where the stronghold dungeon was
-located. You imagine that would be where they would be keeping the human
+located. You imagine that would be where they would be keeping their human
 prisoners, including your brother and sister. Now, it was no longer the risks
 and the danger increasing your heartrate, it was the thought that they were
 most likely here with you somewhere in the kobold stronghold. They were so
 close!
 You hold your position there for another several minutes before you find an
-opening. With the dark nightly street void of enemy eyes, you slip across right
-inside the alley. After a few more moments of listening just in case, you head
-to the alley entrance and take a look at the map.
+opening. With the dark nightly street unusually void of enemy eyes, you slip
+across right inside between the next two buildings. After a few more moments
+of listening just in case, you head to the alley entrance and take a look at
+the map.
 It's a crude depiction of vague streets and less than accurate building
 locations, but you do see five rather prominent land marks labeled in the
 common tongue: The "you are here" marker labeled out side of a shop you had
@@ -3993,7 +3989,7 @@ greentown and the abduction of your little brother and sister.
 You look to your left and see the dark mass of what could only be the keep.
 Even from here it looked more like a dark stone palace than a keep, massive and
 looming in the darkness complete with towers, battlments and tattered banners
-the twisted heraldry of which you could not make out in tha darkness. 
+the twisted heraldry of which you could not make out in the darkness.
 Another few minutes later you are stalking your way one street behind the main
 causway leading to the keep, when you see something through the alley that
 imediately catches your eye. A prosession of distinguished looking ruin kobolds
@@ -4012,21 +4008,29 @@ Luxkhanna.
     def ch_24(self): # infiltrate, encounter with Illfang Spring 48th, 3044, 6th age
         mon_list = self.config_monsters({'owlbear':1,'kobold chief':1,'ruin kobold trooper':1,'ruin kobold':1,'kobold guard':1,'kobold soldier':1,'kobold slave':1,'small kobold':1})
         self.twenty_four_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.twenty_four_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.twenty_four_encounter0(), collective=False)
         if player_lives:
             self.twenty_four_victory0()
-            self.story_reward(name='Start back to Greentown',location='1-9')
+            self.story_prep(name='Start back to Greentown',location='1-9')
+            self.story_reward()
             return True
         else:
             return False
 
-    def twenty_four_intro(self): # Looooooooooooooorrrrrrrrre! 
+    def twenty_four_intro(self): # Looooooooooooooorrrrrrrrre!
+        loot = self.config_loot({'life potion':1, 'vermilion life potion':1})
+        for l in loot:
+            self.player.inventory.add_item(l)
         dprint(
             f'''
 You know this was a good move to follow the kobold leader you had heard so much
 about. Now that you were on him, you could find out where he stays and you
 might even have a chance to take him out before or after you rescue your
 siblings depending on how things went from here.
+Another fortune had come upon you as well as you snuck through the city. About
+a minute before you saw Luxkhanna, you had found a few life potions poking out
+of a box in one of your hiding places so if any sort of danger came upon you,
+you were a little bit more prepared than before.
 You continue your persuit straining your ears for words the kobolds were
 speaking. You were unsure who's voice was who's but you were somewhat sure at
 this point that the voice of Luxkhanna was the mild tennor you could pick up
@@ -4052,13 +4056,14 @@ back up the street, each in silence.
 You again snuck out of the alley and traveled all the way to the edge of the
 keep entrance. You watched as your target approached and entered. Neither he
 nor anyone else around here seemed to care much about security as, not only
-were there no pedestrians around, there were, as far as you could detect, no
-guards around either. It must have been the dead of night that was giving you
-such a break. All the same though, you took your time and made absolutely sure
-there were no obvious eyes upon the keep exterior. You begin to scale the
-wall using some convenient leverage and a roll of rope you found and clamber
-into a window a short way above the roof line. Inside you quickly sneak to a
-stairwell nearby and head down just in time to see the kobold leader slipping
+were there very few pedestrians around, there were, as far as you could detect,
+no guards around either. It must have been the early hours of the morning that
+was giving you such a break. This must have been about when the kobolds slept.
+All the same though, you took your time and made absolutely sure there were no
+obvious eyes upon the keep exterior. You begin to scale the wall using some
+convenient leverage and a roll of rope you found and clamber into a window a
+short way above the general roof line of the city. Inside, you quickly sneak to
+a stairwell nearby and head down just in time to see the kobold leader slipping
 into a chamber in the center which, for the brief moment you saw inside while
 the door was open, looked like it might be a throne room of sorts.
 You head back up the stairs and in the direction of that center room.
@@ -4079,7 +4084,7 @@ lastly recieve your orders."
 that area."
 "Of course my lord. My initial scouting party still has yet to return. They are
 being presumed dead. The second group, did return having dicovered truths that
-the group that preceeded tham was likely ambushed and captured by goblins-"
+the group that preceeded them was likely ambushed and captured by goblins-"
 "GOBLINS!?" shouted Illfang, "As soon as were done with the humans, they're
 next!"
 "I agree Boss!"
@@ -4099,17 +4104,18 @@ malice.
 "All except that further bandits are coming through the canyon and attacking and
 wresting our supply trains."
 "I can understand their thoughts that I was foolish in my plans to attack the
-human barbarians. I know that like them, you also boubted my strategy to attack
+human barbarians. I know that like them, you also doubted my strategy to attack
 the humans in their towns. Don't deny it! I can see it written in your faces as
 you speak with me. The doubt and even trechery is crystal clear. But now and
 soon you will understand the plan. I have seen our victory as clearly as you
 see me before you. Great Gog, has spoken to me as he has to this point and told
 me that the time is soon to come! Everything, we have worked for and prepared
 for is coming together. The loss of the beast he gave to us, the foolish and
-clumsy escape of your human prisoners, the bandits, the treachery, all of your
-failures have been only minor setbacks. It only means that much less of your
-forces will join us in the conquest soon to come!"
-"Does that mean that we will be making our move soon...my lord?"
+clumsy escape of your human children we worked so tirelessly to capture, the
+bandit uprisings, the treachery, all of your failures have been only minor
+setbacks. It only means that much less of your forces will join us in the
+conquest soon to come!"
+"Does that mean that we will be making our move soon. . . my lord?"
 "You have come to me to discuss my great plan, and this I have done. What I
 have said will be enough to you for now."
 "Of course, my lord Illfang."
@@ -4118,39 +4124,44 @@ No, this time I give orders based on what you have heard of my great plan. You
 know that our attack is near at hand, I want you to gather your forces and make
 your way to my stronghold in the north-east. Now because the beast is dead, you
 have lost your opportunity for greater glory. We will be attacking from my
-own fortress rather than yours. Dissembark no later than two days after I do. I
-Will meet you there and give you and your forces further instructions. It will
-also likely be there that I explain to you all the entire plan as it has been
-given to me. Not only that, but if you do not fail me again, at least you may
-have a chance to meet the great Gog for yourself and recieve instructions at
-his hand even as I have."
+own fortress in the far norther desert rather than yours here. Dissembark no
+later than two days after I do. I Will meet you there and give you and your
+forces further instructions. It will also likely be there that I explain to you
+all the entire plan as it has been given to me. Not only that, but if you do
+not fail me again, at least you may have a chance to meet the great Gog for
+yourself and recieve instructions at his hand even as I have."
 "My lord-"
 "Shut up. . . That is all, leave my presence and do not come back until you see
-me at my fortress. I expect you and your forces no more than twenty days from
+me at my fortress. I expect you and your forces no later than twenty days from
 this night."
 ". . . "
 Without another word, Luxkhanna stood, turned and strode out of the hall,
-leaving Illfang in a room full of tension and leaving you reeling.
-You had heard that it was not only the settled humans under thier threat but
+leaving Illfang in a room full of tension and leaving you frozen in silent
+shock.
+You had heard that it was not only the settled humans under their threat but
 the barbaric bandit tribes of humans in tha area as well. You had heard that,
 the true boss and leader of the Kobolds was a kobold called Illfang a fact you
-might have deduced if you knew that the kobold title of capper was below that
-of boss in their heirarchy. Not only that, but there might even be a greater
-mastermind leading Illfang along. 
+might have deduced if you knew that the kobold title of Capper was below that
+of Boss in their heirarchy. Not only that, but there might even be a greater
+mastermind leading Illfang along.
 You had also heard about the Kobold's great war beast in the canyon that they
 thought had been slain by bandits, but the two things that you heard that shook
-you the most, was that Luxkhanna's human captives had escaped. Meaning that you
-had no more reason to be here. And secondly, the kobolds had not planned to
-stop at their initial attacks. They were planning something much bigger, much
-worse and it would be happening soon. 
+you the most, was firstly that Luxkhanna's human captives had escaped, the
+children they had taken from their raids on Greentown and others had escaped
+somehow, meaning that you had really no more reason to be here. And secondly,
+the kobolds had not planned to stop at their initial attacks. They were
+planning something else. Something sounding much bigger and much worse than
+before and it would be happening soon, somewhere around twenty days from now.
 In other words, not only did you have no more need to be in this stronghold any
 longer, but you also needed now to hurry home as fast as possible, to warn your
-home of the impending attack.
+home of the impending attack. A somewhat familiar feeling of deep dread began
+to fill your mind, a heavy pit in your stomach that lingered and grew as you
+continued to think of what was now at stake.
 Without thinking you stand up and back right into the spear stand sending it
 crashing down with a deafening clatter. Moments later, you hear the soft but
 clear taunting voice of Illfang address you from within the throne room.
 "More treacherous scum under the rule of Luxkhanna, I wish you luck outrunning
-the guards heh heh heh!"
+the guards, heh heh heh!"
 Almost instantly after Illfang stopped speaking, two kobold guards rounded the
 corner at the end of the hall at top speed. One, weilding a short bow, fired at
 you right as you dove out the window from which you entered.
@@ -4261,10 +4272,10 @@ can't help but let out a chuckle.
         mon_list1 = self.config_monsters({'kobold soldier':2, 'dire wolf':2})
         mon_list2 = self.config_monsters({'irrawrtzus':1})
         self.twenty_five_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_five_encounter0(), collective=True)
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_five_encounter0(), collective=True)
         if player_lives:
             self.twenty_five_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_five_encounter1(), collective=False)
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_five_encounter1(), collective=False)
             if player_lives:
                 self.twenty_five_victory1()
                 self.story_reward()
@@ -4283,20 +4294,20 @@ the lord of the kobolds was planning a large scale attack on the humans of the
 region including the inhabitants of Greentown. It would happen as soon as a few
 weeks from today and you absolutely had to get back home before then. You're
 not sure how long it's been since you left, you had lost track of the days long
-ago, not to mention you had no idea how long youu ere under the Amn mountains.
+ago, not to mention you had no idea how long you were under the Amn Mountains.
 The weight of the task bore down on you once again just as it had when you left
-to find Robin and Rosie. 
+to find Robin and Rosie.
 '''
         )
 
     def twenty_five_encounter0(self): # just like good old times huh
         dprint(
             f'''
-You again glance behind you making sure you were correctin your assumption that
-the kobolds could not possibly pursue you. What you saw imediately proved you
-wrong. Dashing through the trees were two heavily armed kobold riders chansing
-you down on their steeds. You had overlooked the fact that the kobolds had
-mounts now. 
+You again glance behind you making sure you were correct in your assumption
+that the kobolds could not possibly pursue you. What you saw imediately proved
+you wrong. Dashing through the trees were two heavily armed kobold riders
+chansing you down on their steeds. You had overlooked the fact that the kobolds
+had mounts now.
 '''
         )
 
@@ -4306,11 +4317,11 @@ mounts now.
 There was no time to waste, you had to keep going as fast as possible. You were
 aware now that you were under persuit and also increasingly more aware of how
 quickly time seemed to move when you wanted it to stand still.
-A growing seed of dread began to grow within you knowing that after all this
-time you had failed to rescue your siblings, although, that was fine because
-they had apparently somehow managed to escape for themselves. The dread really
-came in knowing that there was a chance then, that they had also made it home
-and were now, yet again in grave danger and you were the one with the
+A growing seed of dread once again began to grow within you knowing that after
+all this time you had failed to rescue your siblings, although, that was fine
+because they had apparently somehow managed to escape for themselves. The dread
+really came in knowing that there was a chance then, that they had also made it
+home and were now, yet again in grave danger and you were the one with the
 information that could save them.
 '''
         )
@@ -4353,7 +4364,7 @@ of true motivation comes from your focus. With that in mind, its always best to
 focus your life on things that really matter. And then, poor circumstances will
 mean very little to you."
 It was difficult to keep going physically, but you knew where you were going,
-why and that if you stopped, a lot of people were likely yo die. Whith that
+why and that if you stopped, a lot of people were likely to die. With that
 focus in the forefront of your mind, and the mouth of the canyon less than a
 few feet before you, you grit your teeth and move in. . . 
 '''
@@ -4363,13 +4374,13 @@ few feet before you, you grit your teeth and move in. . .
     def ch_26(self): # rush back to warn the town, Spring 48th-49th, 3044, 6th age
         mon_list1 = self.config_monsters({'greedy badger':1,'letiche':1})
         mon_list2 = self.config_monsters({'treent':1})
-        self.twenty_five_intro()
-        player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_five_encounter0(), collective=True)
+        self.twenty_six_intro()
+        player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_six_encounter0(), collective=True)
         if player_lives:
-            self.twenty_five_victory0()
-            player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_five_encounter1(), collective=False)
+            self.twenty_six_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_six_encounter1(), collective=False)
             if player_lives:
-                self.twenty_five_victory1()
+                self.twenty_six_victory1()
                 self.story_reward()
                 self.story_prep(location='1-7', name='Continue')
                 return True
@@ -4396,12 +4407,12 @@ remember the times when that was all that was in this canyon.
             f'''
 As the first evening approaches, you decide to turn in early due to the
 increasing soreness in your chest (and really everywhere else).
-You clamber up to a shelf atop which you saw a shallow pocket int he cliff side
+You clamber up to a shelf atop which you saw a shallow pocket in the cliff side
 which looks to be a perfect hiding spot. As you near the top, you draw your
-weapon almost out of habbit before even seeing the edge yet.
+weapon almost out of habbit before even seeing the top.
 As you emerge over the top, you see, a creature you recognize and a creature
 you do not, clearly battling to the death for dominance over the cliff self. 
-They bath turn to you as you appraoch, weapon drawn.
+They both turn to you as you appraoch with your weapon drawn.
 '''
         )
 
@@ -4416,10 +4427,11 @@ the glow still fading from your blade.
 You raise your weapon and charge screaming a battle cry at the top of your
 lungs, but before you get more than a half step forward, the creature had
 already, turned tail and zipped out of sight. 
-Chuckling at your little bluff, you settle in for the evening atop this ledge.
+Chuckling at your little bluff, then wincing at the pain the laugh caused, you
+settle in for the evening atop this ledge.
 The night comes quickly and the clear skies and surprising lack of monster
-visitors allow you to quickly drift off to the bast sleep you had had in a long
-time. You finally woke as the warmth of the spting sunshine was beginning to
+visitors allow you to quickly drift off to the best sleep you had had in a long
+time. You finally woke as the warmth of the spring sunshine was beginning to
 iluminate the canyon before you. You rise and strech but recoil as your injured
 rib is agrovated. Fully awake now, you take the next exactly three seconds to
 break camp and begin heading your way back down and through the canyon. 
@@ -4437,6 +4449,10 @@ cautiously, towards the monster. Your eyes meet again. You bend your knees
 slightly and hold forward your hand. The dog's eyes widen again and, like
 yesterday it fled with surprising speed.
 "No wait!" You call after it, but its already long gone.
+The Deer, wolf, dog thing had shown behaviour unlike any monster you had
+encountered before, maybe it was intimidated or impressed with your show of
+power yesterday evening. Either way, it was somehow rather endearing.
+"I'll call him Buck," you say.
 '''
         )
 
@@ -4444,22 +4460,22 @@ yesterday it fled with surprising speed.
         dprint(
             f'''
 Hours pass with little event, you suspect that for some reason your unexpected
-protector is still ahead of you ravaging all obstacles in your path. You hadn't
+protector was still ahead of you ravaging all obstacles in your path. You hadn't
 seen bahaviour like that from monsterous creatures before and you spent your
-time contemplating why it might have acted that way. It looked like it was
-going to attack you before you scared it off and after that it seemed to want
-to protect you. Maybe it was trying to kill the creature you ended up defeating
-and this was merely its way of thanking you? Maybe the creature was trying to
-fight other monsters until it found one that could take you on? Maybe it was
-something else entirely but either way, you had to take advantage of this while
-you could and maybe you could further befrend the monster if you found it
-again.
+time comming up with more reasons Buck might have acted that way. It looked
+like it was going to attack you before you scared it off, and after that, it
+seemed to want to protect you. Maybe it was trying to kill the creature you
+ended up defeating and this was merely its way of thanking you? Maybe the
+creature was trying to fight other monsters until it found one that could take
+you on? Maybe it was something else entirely, but you had to take advantage of
+this while you could and maybe you could further befrend the monster if you
+found it again.
 Your thoughts were interrupted as your eyes are met with a wonderful sight, a
 fruit tree laden with what appeared to be bright red cherries perfrectly ripe
 for picking. The sight made your mouth water, you had been keeping back the
 hunger pangs with terrible river water but the sight of real food brought it
 all back like a bolt of lightning. Most plant food in the canyon had already
-been picked off by all the other creatures that have come before you. It was
+been picked off by all the other creatures that had come before you. It was
 surprising to see such a large and full cherry tree still mostly untouched. As
 you draw near, you do see a few broken branches and marks on the tree
 indicating that the tree had been used before by at least some creatures and on
@@ -4505,28 +4521,28 @@ to move forward, and nothing in this canyon was going to stand in your way.
         mon_list0 = self.config_monsters({'windwasp':3, 'black worm':1})
         mon_list1 = self.config_monsters({'big nepenth':1,'nepenth':3,'little nepenth':1})
         mon_list2 = self.config_monsters({'ruin kobold trooper':1,'ruin kobold':4,'kobold soldier':6})
-        self.twenty_intro()
-        player_lives = self.battle.story(mon_list=mon_list0, dialog=self.twenty_encounter0(), collective=False)
+        self.twenty_seven_intro()
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.twenty_seven_encounter0(), collective=False)
         if player_lives:
-            self.twenty_victory0()
-            player_lives = self.battle.story(mon_list=mon_list1, dialog=self.twenty_encounter1(), collective=True)
+            self.twenty_seven_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_seven_encounter1(), collective=True)
             if player_lives:
-                self.twenty_victory1()
+                self.twenty_seven_victory1()
                 self.adjust_team('Hesh', add=True)
                 self.adjust_team('Coef', add=True)
                 self.adjust_team('Deg', add=True)
                 self.adjust_team('Virabela', add=True)
                 self.adjust_team('Polly', add=True)
-                player_lives = self.battle.story(mon_list=mon_list2, dialog=self.twenty_encounter2(), collective=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.twenty_seven_encounter2(), collective=False)
                 if player_lives:
-                    self.twenty_victory2()
+                    self.twenty_seven_victory2()
+                    self.story_prep(location='1-4', name='Return Home')
                     self.adjust_team('Hesh', add=False)
                     self.adjust_team('Coef', add=False)
                     self.adjust_team('Deg', add=False)
                     self.adjust_team('Virabela', add=False)
                     self.adjust_team('Polly', add=False)
                     self.story_reward()
-                    self.story_prep(location='1-3', name='Return Home')
                     return True
                 else: 
                     return False
@@ -4547,9 +4563,9 @@ Monsters were so much more viscious and violent than non-monstrous animals
 that very few animals would actually be able to make it alive through the
 canyon. The large mountain goat you had found had infact just been killed by a
 dire wolf so you were able to slay the wolf and take the goat for yourself.
-On the morning of the ninth day in the canyon, you are walking along the river
+On the morning of the ninth day in the canyon, you were walking along the river
 bank when you see something you wish you hadn't in the grass.
-The half dissolved corpse of the antlered dog monster that had been defending
+The half dissolved corpse of the antlered dog Buck that had been defending
 you. Based on its rate of decay and how much of it was gone, you suppose it had
 been less than a few hours since it had been killed. This meant that you were
 about to have a much harder time getting through the canyon. Up until this point
@@ -4571,8 +4587,8 @@ must have been the Kosaur's first challengers. Recognizing the scene you look
 far above you and see the ledge from which you had spied out the Kosaur's lair.
 You thought the air would be thick with the smell of death and decay but the
 monsters and beasts roaming through here must have done a good job leaving the
-humans with nothing but bones. One near the back you see still has a decent
-looking sword that looks and feels a fair bit like your original sword you had
+humans with nothing but bones. One near the back you see still had a decent
+looking sword that looked and felt a fair bit like your original sword you had
 lost to the goblins. You take it off his skeletal hands.
 '''
         )
@@ -4621,8 +4637,11 @@ the rolling Amn foothills all the way up to the horrizon. As you look, you see
 the first faint blue glow of morning fill the sky to your right and decide
 to head back down and get as much rest as possible. 
 By mid morning you would say you had at least gotten a few hours of sleep and
-call it good enough to head out again. You pay your last respects to suphia and
-begin your way speedily towards the Nepenth wood.
+call it good enough to head out again. You pay your last respects to Suphia,
+using a little dagger to carve a message into the foremost stone. A phrase she
+had used frequently on your journey together that you felt perfectly fit:
+"Help and hope until it hurts; then help greater."
+After this, you begin your way speedily towards the Nepenth wood once again.
 If there was one thing of benefit that came from the desaster that was your
 last crossing of these woods, it was that you knew how to do it right.
 1: Cross during the day; 2: Stay quiet; 3: Move quickly; and, 4: Avoid the Pod
@@ -4653,7 +4672,7 @@ slumbering nepenth, the memory of that night floods unbidden into your mind's
 eye. 
 You could see it so clearly, blood soaked leaves, the stench of death, the
 sound of screams and tearing flesh. You fall to your hands knees, each breath
-coming in rapid shallow gulps. Despite you popping eyes, your vision narrows. A
+coming in rapid shallow gulps. Despite your popping eyes, your vision narrows. A
 dread and panic begins clawing its way up your throat.
 Out of the corner of your eye you see dark shapes moving through the trees,
 creeping closer. You become acutely aware of how loud each gasp for breath is.
@@ -4683,7 +4702,7 @@ back then brought your mind to that same night but moments after Suphia had
 died. You remember feeling that pain, the thorned lashings on you back, wash
 away in a new emotion that once again begins to fill you now. 
 Rage.
-The shaking of you limbs stabilize but your breathing does not. You glance
+The shaking of your limbs stabilize but your breathing does not. You glance
 behind you just in time to see the smaller nepenth winding up again. You
 knuckles are white on the hilt of your crude sword and right as it brings
 its barbbed coiling vine down, you pitch your blade upwards with more force and
@@ -4717,7 +4736,7 @@ passing by the old stone tower you had explored and soon after that, you found
 yourself in the familiar landscape of the southern greentown wilds, complete
 with low rolling hills wide plains and occasional patches of trees or little
 ponds, the sight was briefly welcoming to the eyes before you remembered the
-battle field they would become in, by now, little over a few week's time if you
+battle field they would become in, by now, little under a week's time if you
 didn't keep up the pace. You had made excellent time, well beyond what you
 could have expected, but even if you could have traveled instantly somehow, you
 would have called it too little time to work with to save your home from the
@@ -4736,7 +4755,7 @@ humans you had seen since that barbarian just before entering the Kosaur's
 canyon. Even better, these looked like the kind of humans that wouldn't attack
 you on sight. 
 About a thousand feet away, one of their number appeared to have noticed you as
-the rest of the group truns in your direction, considers you for a few moments
+the rest of the group turns in your direction, considers you for a few moments
 and apparently decides you to be friendly as one of them waves after you.
 Shortly after returning the hail, you come within recognizable distance and
 earshot at which time several member of the party gasp and comment at your
@@ -4759,7 +4778,7 @@ your older brother Elond. His name was Coef and dispite being, besides
 yourself, the youngest in the group, he seemed to radiate with authority and
 strength. 
 On his left was a woman who seemed to be taking up the mantle of second in
-command. She introduced herself as Virabela. Behind COef and Virabela walked a
+command. She introduced herself as Virabela. Behind Coef and Virabela walked a
 man called Hesh and a woman called Polly. Last in line were yourself and Deg.
 The six of you strode quickly in this formation for nearly an hour by which
 time you were getting impatient and you told the group at large that you
@@ -4768,11 +4787,10 @@ group had been the most intrested in where you had come from, asked again to
 which, just as you had before, responded by saying that the story wasn't
 important and that he had some urgent information to give to the mayor and the
 captain as soon as possible. Coef interrupted Deg's reply aknowledging your
-request and telling the rest of the group to slow down and get down and hush
-up. 
+request and telling the rest of the group to stop, get down, and hush up.
 Less than a quarter mile away, the kobolds had stopped and two in their rear
 were looking out while the rest began to set up a fire and some of their
-provisions. It didn't looks like a full camp was being set but this would
+provisions. It didn't look like a full camp was being set but this would
 surely be a major stop for the next while. As you watched, Coef spoke up. 
 "We need to mount an attack but if they see us appraoching them they'll most
 likely flee. Execute attack pattern Antima. We'll use that little clump of
@@ -4780,13 +4798,13 @@ trees as the critical point. {self.player.name.capitalize()}, just follow Deg an
 any of the rest of us don't do."
 With that, the group began to army crawl backwards in to the taller grasses
 nearby you followed suit wondering what was about to happen. 
-Once you achieve the camoflauge of the grass, you follow the group as they sneak
-father backwards for several minutes before Coef makes some strange hand signal
+Once you achieved the camoflauge of the grass, you followed the group as they snuck
+father backwards for several minutes before Coef made some strange hand signal
 and you, with the rest make a sharp right turn, almost completely turning
-around. After about a minute in this direction, Coef raises a chenched fist at
+around. After about a minute in this direction, Coef raised a chenched fist at
 which the group stops. 
 "Approach the critical point at one point five." says Coef after a few moments
-of silence. 
+of silence.
 The group begins trotting forward through the grass, still hunched low,
 directly towards the clump of trees slightly to your left. as soon as you enter
 the treeline, Coef hold up two fingers in a v shape follwed by a fist, an o, a
@@ -4799,9 +4817,9 @@ trajectory. By this time you were very confused. How was this any kind of
 attack strategy? Were you in stealth or not? 
 You emerge from the treeline. Looking behind you and to your left, you see the
 troup of kobolds, noticeably closer and still on the watch for intruders just
-like yourselves, still not bothering to sneak in any way before you can get a
+like yourselves, still not bothering to sneak in any way. Before you can get a
 better look though, Deg lifts his arm and blocks your view giving you a look
-that you took to mean something like. Don't make eye contact. 
+that you took to mean something like. Don't make eye contact.
 With that, some little fragment of comprehension comes into your mind. The
 kobolds were bound to see you and were very likely to come at you. Your not
 certain how all you'd done led you to this and you thought it a bit unnecessary
@@ -4831,7 +4849,7 @@ detected the difference.
 and unawares and all and as soon as they get close my favorites are the ones
 with the almonds though. Its just the perfect combination of soft and crunchy
 in my opinion but I mean, my opinion isn't too far from fact..."
-Teh sudden change of topic must have meant that the kobolds would likely be
+The sudden change of topic must have meant that the kobolds would likely be
 within earshot soon and the converstion had to be something innocent, like in
 Deg's case, a description of his favorite pastry.
 But you were hardly paying attention, Coef's hands while he blabbed nonsesically
@@ -4866,20 +4884,21 @@ to leave, having packed up a few last provisions Coef insisted you take, you
 realized thay these people would probably know the date and you ask. 
 "Iss the morning of the 62nd of Spring, 3044," answered polly, "And I don' at
 all blame yer for wan'in to know. Being through what you have. Fact, 'snot the
-fers time I've herd that question recently. Not one week ago back home, a whole
-bigol crowd of kids turned up from the south-west, all in about the state you
+fers time I've herd that question recently. Not one week ago back 'ome, an whole
+bigol crowd o kids turned up from the south-west, all in about the state you
 were in, covered in rags and injuries. Course I wasn't- oi, whashrong!"
 You had stood up very quickly and suddenly. The contents of your, bag which had
 been on your lap spilled onto the floor. A memory of a part of the conversation
 between Illfang and his leutinent came rocketing into your mind.
-"...Your foolish and clumsy escape of the human prisoners..."
-The humans who were being help captive in the south had escaped! They might
+". . . Your foolish and clumsy escape of the human children we worked so tirelessly
+to capture. . ."
+The humans who were being held captive in the south had escaped! They might
 have been the ones taken from Greentown.
-"Did they say where they had come from?" you almost shout as Polly, the others
-were paying attention now. 
-"Well, I say... I wasn't on duty then so... spose it wasn't my business to
+"Did they say where they had come from?" you almost shout at Polly, the others
+were paying attention now.
+"Well, I say. . . I wasn't on duty then so. . . spose it wasn't my business to
 ask."
-Without further elaboration, you leap down tot eh ground, scrambling to get
+Without further elaboration, you leap down to the ground, scrambling to get
 everything back into your bag. 
 "What's up {self.player.name}?"
 You make no answer, your mind was filled with only one thought cycling through
@@ -4887,12 +4906,13 @@ your head like lines you were trying to memorize.
 Your siblings, Robin and Rosie, had somehow escaped kobold prison on their own, 
 without outside help, and had somehow also made it home.
 It wasn't certain, they had come in from the south-west rather than the true
-south, and you hadn't heard anything more that would suggest they cam from the
+south, and you hadn't heard anything more that would suggest they came from the
 same place you had. But still, a large group of kids all arriving at greentown
-at once? It was far from impossible. All things considered it was highly likely
-that your siblings were with them. The only reason in your mind that they would
-not be would be if the group had escaped from another unknown kobold place
-somewhere to the south-west, only a slight variation. 
+at once? and covered in rags no less? It was far from impossible. All things
+considered it was highly likely that your siblings were with them. The only
+reason in your mind that they would not be would be if the group had escaped
+from another unknown kobold place somewhere to the south-west (only a slight
+variation).
 The only other thing that caused some doubt in your mind was your unsurety that
 had remained with you all along so far, that all stemmed from the night they
 had been taken. You had started out following them directly south and just
@@ -4915,19 +4935,20 @@ You didn't care and you told them so backing out of the camp and apologizing
 before saying goodbye and sprinting north at top speed, leaving them still
 rather confused. Just within earshot, you hear Virabela call after you saying
 farewell. 
-You extend your arm with your back still turned and continued, full speed, to
-greentown. . .
+You extend your arm with your back still turned and continued, full speed,
+towards home. . .
 '''
         )
 
 
     def ch_28(self): # plan is to attack first, Spring 62nd, 3044, 6th age
         mon_list = self.config_monsters({'windwasp':6, 'cykloone':2, 'windworm':3})
-        self.twenty_four_intro()
-        player_lives = self.battle.story(mon_list=mon_list, dialog=self.twenty_four_encounter0(), collective=True)
+        self.twenty_eight_intro()
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.twenty_eight_encounter0(), collective=True)
         if player_lives:
-            self.twenty_four_victory0()
-            self.story_reward(name='',location='1-0')
+            self.twenty_eight_victory0()
+            self.story_reward()
+            self.story_prep(name='commence preemtive',location='1-3')
             return True
         else:
             return False
@@ -4982,7 +5003,7 @@ by now were less than a dozen or so feet from the gate by the time he came
 around. 
 When he did so, you recognized the face of a neighbor from down your street.
 "Mr. Tullets?"
-"Yeremenber!" He responts, delighted, and you begin walking with him into town.
+"Yeremember!" He responts, delighted, and you begin walking with him into town.
 "Hey listen here, you've been presumed dead officialy, but last week a bunch of
 Greentown kids the Kobolds kidnapped came back, an so we've suspended a few of
 those presumtions because more'n half of 'em were on that list. Weh? Yer
@@ -4992,19 +5013,20 @@ you in full force and you asked about your family. Upon telling their names,
 Mr. Tullets puts his hand on his chin and puts on a contemplative face for a
 few seconds before, slowly, like the rising of the sun, his eyes widen and his
 face breaks into a grin.
-"You know what...? Robin, yeah, Robin was with em', in fact, yeah, how could I
+"You know what. . ? Robin, yeah, Robin was with em', in fact, yeah, how could I
 have forgotten 'im! He was all in the front and takin charge an' the like!"
 It was like a volcano of relief and energy had erupted inside you. You couldn't
 help yourself from laughing, bouncing on the tips of your feet and saying
 things like "YES!" and "REALLY!" and "WHERE" over and over again.
 Mr. Tullets was laughing too now, "Heh heh, Hi'm not sure where he might be but
 my best guess would be either back at home r the barracks- Ahh go on, I can
-tell you wanna go..! Go, heheheh!"
+tell you wanna go. . ! Go, heheheh!"
 Thanking Mr. Tullets and once again assuming a full sprint, you head for the
 barracks. If he was there he could reunite with Robin and warn the Captain in
-one trip. The barracks were alse a bit closer to the south gate than home was. 
+one trip. The barracks were also a bit closer to the south gate than home was. 
 '''
         )
+        input()
         dprint(
             f'''
 The town looked very different from the time you left. All sorts of new
@@ -5012,7 +5034,7 @@ structures had been erected and there were tents all over the place, lining the
 streets, filling lawns, and even pitched on level roof tops. What was more, the
 population of greentown seems to have doubled or even trippled since the last
 time you were here. These people, understandably, turned and starred as you, a
-strange boy clad in a filthy, tettered animal skin and covered head to foot in
+strange child clad in a filthy, tattered animal skin and covered head to foot in
 cuts, scars, dirt and sweat sprints at top speed past them. The people and
 change about the town was a bit dissorienting but you managed to find your way
 to the barracks.
@@ -5022,8 +5044,8 @@ move towards the main entrance and step inside to see, not Robin, nor even the
 captain, but Tiffey talking gloomily to a man Rulid did not recognize.
 As you enter, their conversation is cut and Tiffey, looks around to see who
 had entered.
-"Theres no way..." she says upon seeing you. She strolls around and toward you,
-her mouth slightly agape, "But, you... you were..."
+"Theres no way. . ." she says upon seeing you. She strolls around and toward you,
+her mouth slightly agape, "But, you. . . you were. . ."
 "Dead?" you finish for her.
 "I suppose, you would like the see the captain." she said. 
 She gave you a little smile, rested her hands on her knife hilts considering
@@ -5036,10 +5058,10 @@ Electo the brother of Suphia. The moment your eyes meet, his expression shifts,
 a flicker of hopeful expectation dimming as he registers the empty space beside
 you. He doesn't ask, or demand any explanation; he simply stands, fists
 clenched at his sides, and stares into your face as if searching for any sign
-that this isn't real.
+that it wasn't real.
 You open your mouth to speak, to offer some explanation that will never be
 enough. But the words don't come. The only thing that makes it past your
-constricted throat is a hoarse, "I'm s-s-rry..." feeble and quivering.
+constricted throat is a hoarse, "I'm s-s-rry. . ." feeble and quivering.
 All you wanted to do was look away but you couldn't bring yourself to do it.
 Electo's face was stoney, blank and expressionless, but his eyes were shining
 with tears. At this point you couldn't help yourself. The memory of her death
@@ -5052,6 +5074,7 @@ With a sting you realize that you had gone out to reunite a family, and in the
 process torn one appart.
 '''
         )
+        input()
         dprint(
             f'''
 It was a long time before you were able to calm down and sit up. The excitement
@@ -5059,18 +5082,19 @@ and relief of mere minutes ago had vanished completely, but you could at least
 think straight again, focus, speak and listen. The Captain took notice of this
 as you began to tell him of your journey and so began to tell stories of his
 own knowing that you would understand.
-The Kobolds had raided Greentown, Pompon to the west and Tolbantha to the north
-all in one night during a single coordinated attack. During the attack, the
-Kobold's main goals seemed to be the following: 1, the wreak havoc; 2, to tear
-down and destory town defenses including walls and towers; and 3, to capture
-and abduct specifically children of each settlment. Because of the nature of
-their attacks, the kobolds had had massive success in all three of those
-objectives. Shortly following the attack, the remaining populations of Pompon
+The Kobolds had raided Greentown, Pompon to the south-west and Tolbantha to the
+north-west all in one night during a single coordinated attack. During the
+attack, the Kobold's main goals seemed to be the following: 1, the wreak havoc;
+2, to tear down and destory town defenses including walls and towers; and 3, to
+capture and abduct specifically children of each settlment. Because of the
+nature of their attacks, the kobolds had had massive success in all three of
+those objectives.
+Shortly following the attack, the remaining populations of Pompon
 and Tolbantha gathered to Greentown to recover and prepare for the future. 
 Shortly following that, a powerful force of soldiers and scouts went north-east
 following the path many of the kobolds took upon their retreat from Tolbantha.
 about ten days ago, they returned having discovered the location of a powerful
-and hitherto unknown fortress in the northern desert badlands. The left quickly
+and hitherto unknown fortress in the northern desert badlands. They left quickly
 so as to remain un-discovered but saw ominous signs that the kobolds were not
 done and were possibly planning something else big in the near future. 
 At this point, you found your voice again and unloaded everything that you had
@@ -5088,29 +5112,29 @@ the kobolds raiders after your siblings.
 "Ahh, I thought you were going after a leader you had spotted or something.
 Well, none the less, I'm still glad I sent people with you. You probably
 wouldn't have made it very far after them on your own."
-With another jold of sorrow, you think you would hafe prefered it but you do
+With another jolt of sorrow, you think you would have prefered it but you do
 not voice this and merely grit your teeth and nod.
 The captian watches you for a moment before saying, "You know, {self.player.name}, I've
-seen that look before...It belonged to my face... A long time ago, when I was a
-younger man on the front lines. We were... reckless. Too young to know what we
+seen that look before. . . It belonged to my face. . . A long time ago, when I was a
+younger man on the front lines. We were. . . reckless. Too young to know what we
 were doing, what we could lose."
 He pauses, his gaze drifting past you, as if seeing his past playing out before
 him. "We were stationed in hostile territory with a friend, Rheyven. Closest
 thing to a brother I ever had. He saved my life more than once out there and I
-his. One night..." The Captain's voice hitches slightly, though he composes
+his. One night. . ." The Captain's voice hitches slightly, though he composes
 himself. "One night, we were ambushed. I made it out. He didn't."
 He lets the silence sit between you both, his eyes heavy. "And you know, for a
 long time, I carried that like a curse. Blamed myself. There wasn't a day I
 didn't replay it in my head, imagining how I might've done things differently."
 He sighs, the weight of old sorrow clear on his face, "But there came a time
-when I realized carrying the dead with me... wouldn't keep them alive, bring
+when I realized carrying the dead with me. . . wouldn't keep them alive, bring
 them back or make them happy. It only drags me down."
 The Captain places a firm hand on your shoulder, his grip grounding. "{self.player.name},
 you did what you could. Suphia's choice to come, her bravery, it was her own.
 And it's up to you to honor that. To live the life she wanted to see you live.
 That's how you carry them forward; not by holding the weight, but by letting
 their memory, their sacrifice, make you stronger."
-"She's still out alive {self.player.name}. At the very least inside you. And if you only
+"She's still alive {self.player.name}. At the very least inside you. And if you only
 remember her dead then she can no longer help you."
 You remember her final act in life. To strengthen you and help you move
 forward. It was she who had allowed you to make it through to Luxkhanna's
@@ -5121,6 +5145,7 @@ You felt a new strength emerge within you. You look the Captain in the eyes and
 you both nod.
 '''
         )
+        input()
         dprint(
             f'''
 With new found motivation within you and once again, that urgency coming back
@@ -5128,19 +5153,19 @@ into your mind. You ask the Captain what we could do about the impending
 attack. 
 "Well, under normal circumstances, I would wait for a bit more evidence that
 such an attack is inevetable, but I'm reminded of the last time you returned
-with word of an attack as we did nothing about it, I would hate to make that
+with word of an attack that we did nothing about, I would hate to make that
 mistake again."
 Within only a few minutes, you change into some better clothes and find
 yourself you are surrounded by the most powerful and influencial people in
-greentown, gathered around the confrencing table in the barracks for an
+Greentown, gathered around the confrencing table in the barracks for an
 emergency meeting to discuss the recent and alarming new evidence.
 As the meeting progressed, Mayor Swendil, and his cabinet, raised some
-scepticism about the credibility of the evidence recieved. The scepticism was
-imediately shot down by the urgency of the matter. Guards members including
-Officer Jerrimathyus posed plans that would best enable defense of the town. 
+skepticism about the credibility of the evidence recieved. The skepticism was
+imediately shot down by the urgency of the matter. Guard members including
+Officer Jerrimathyus posed plans that would best enable defense of the town.
 A visiting officer from the Kedren Main Patrol Force by the name of Officer
 Mickle, then posed a possible preemptive counter strike which was quickly shot
-down due tot he overwhelming defensive advantage the kobolds would have. The
+down due to the overwhelming defensive advantage the kobolds would have. The
 captain of the Tolbantha Guard named Aluah then proposed an evacuation which
 was strongly considered before being eventually rejected due to the
 catastrophic consequenses of failure. Up until this point the meeting had
@@ -5152,143 +5177,1504 @@ way here, gasping for breath, was Robin.
 You nearly fall out of your chair in your haste and for a brief moment before
 you reach him, you hessitate, considering his bandages. But the look Robin
 gives you tell you it wouldn't matter. Completely ignoring the important eyes
-upon you, you stand in embrace for nearly a full minute before you part eyes
-stinging and feeling more pure joy than you had felt in months. You part and
-both simultaneously look each other up and down before also saying in perfect
-unison "What happened to you?"
+upon you, you stand in embrace for a long time before you part eyes stinging
+and feeling more pure joy than you had felt in months. You part and both
+simultaneously look each other up and down before, saying in perfect unison
+"What happened to you?"
 You laugh and hug again before Robin apparently notices the bemused onlookers.
 "Oh, so whats this?" he asks.
 "You may join if you would like Robin," Said Captain Gurenge, "We're discussing
 the new evidence your brother has just brought to light of a large scale attack
 by the kobolds."
-"What?!" said Robin.
-They then filled Robin in on what has been proposed thus far. By the time they
-get to the Counter attack idea and it's rejection, robin says, "Well, why not?"
-Robin then enumerated details about the Kobold stronghold he had beed held in,
-each part being confirmed by your first hand account as well.
-The kobold stronghold there had weaknesses, openings and blind spots. Robin
-proposed that a small elite force might be able to head to the Kobold
-stronghold in the north-east and infiltrate during inactive hours. Following
-this proposal, an officer from Pompon named Dykester added more to the plan
-saying that the kobolds could be easilly fooled by simple distractions. This
-was again confirmed by both you and your brother. He also noted that the
-Kobolds would likely not be expecting an attack on the eve of their own.
+"Oh, yeah, thats absolutely a thing!" said Robin.
+"You knew of this too, Robin? And you didn't bother telling anyone?" asked an
+older cabinet member.
+"Well, I mean," responded Robin with a awkward look at the ground, "I kinda
+thought either you might have known already or maybe it wasn't my place or
+maybe I . . . just . . . . . . . . . . . . . . forgot."
+His final word was so quiet you were sure you were the only one who could have
+heard it. 
+Moving quickly on from this, they then filled Robin in on what has been
+proposed thus far. By the time they get to the counter attack idea and it's
+rejection, robin says, "Well, why not?" Robin then enumerated details about the
+Kobold stronghold he had beed held in, each part being confirmed by your first
+hand account as well. The kobold stronghold there had weaknesses, openings and
+blind spots which you recall you had exploited to break in yourself, had you
+been stronger or had there been more with you, you might have had a good shot
+at taking out Illfang there and then. Robin quickly agreed and proposed that a
+small elite force might be able to head to the Kobold stronghold in the north-
+east and infiltrate during inactive hours.
+Following this proposal, an officer from Pompon named Dykester added more to
+the plan saying that the kobolds could be easilly fooled by simple
+distractions. This was again confirmed by both you and your brother as in far
+too many instances you recalled merely tossing pebbles as successful
+distractions. He also noted that the Kobolds would likely not be expecting an
+attack on the eve of their own.
 A few expressed concerns but overall, it was decided that a separate defensive
-strategy would be employed while the counterstrike mission was to be carried
-out concurrently. 
-Officer Dikester, and three others in the group, volunteered to be in the task
+strategy would be employed and the counterstrike mission was to be carried
+out concurrently.
+Officer Dykester, and three others in the group, volunteered to be in the task
 force including Officer Mickle from Kedren Main and the head guard to the
-mayor, a woman called reywyn, then both you and Robin were asked to be in it as
+mayor, a woman called Reywyn, then both you and Robin were asked to be in it as
 well. Lastly, Captain Gurenge joined and said that he would recruit five others
 of the town guard he knew would be useful on the team. This brought the total
-number of members of this Advance Attack Force to twelve. 
+number of members of this Advance Attack Force to twelve.
 Finally, all present members of the task force were invited to leave the
 meeting to prepare. Except town guard captains which only applied to Captain
 Gurenge who seemed a little put out.
 You leave with Robin, a violent spring in your step but a deep forboding of the
 mission to come. Despite this you and Robin talk and laugh and worry and wonder
 and conspire all the way home where you mother. Thrilled to her core, sinks to
-her knees out of relief before welcoming you back home. . . 
+her knees out of relief before welcoming you back home at last. . .
 '''
         )
 
 
-    def ch_29(self):
-        pass # heading out
+    def ch_29(self): # heading out again, Spring 62nd-66th, 3044, 6th age
+        mon_list = self.config_monsters({'bullbous bow':1})
+        self.adjust_team(to_modify='Rivek', add=True)
+        self.twenty_nine_intro()
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.twenty_nine_encounter0(), collective=False)
+        if player_lives:
+            self.twenty_nine_victory0()
+            self.story_prep(name='Enter the Stronghold', location='1-11')
+            self.adjust_team(to_modify='robin_1', add=True)
+            self.adjust_team(to_modify='Captain Gurenge', add=True)
+            self.adjust_team(to_modify='Dykester', add=True)
+            self.adjust_team(to_modify='Ford', add=True)
+            self.adjust_team(to_modify='Rivek', add=True)
+            self.adjust_team(to_modify='Officer Mickle', add=True)
+            self.adjust_team(to_modify='Reywyn', add=True)
+            self.adjust_team(to_modify='liliyah_1', add=True)
+            self.adjust_team(to_modify='Bellman', add=True)
+            self.adjust_team(to_modify='Huffman', add=True)
+            self.adjust_team(to_modify='Dagshor', add=True)
+            self.story_reward()
+            return True
+        else:
+            return False
 
-    def twenty_nine_intro(self): #
+    def twenty_nine_intro(self): # returns, preps, reviews, lessons, departures
         dprint(
             f'''
-
+The tale Robin had told you was thrilling more so, you thought, that yours had
+been. The night of the attack he had woken early to the first sounds of battle
+inside the town. He had run outside armed with his sword and commenced defense
+of his and other nearby homes. Not long after, though he was cornered by four
+soldiers and overpowered. They bound him, broke into the house, and abducted
+Rosie before exiting and heading towards the south gate, leaving your mother
+screaming behind them. 
+You recall that this was about where you woke and began pursuit. 
+When Robin came to, he was in the back of a caged cart no larger than a bed
+frame, piled in with twenty or so other boys and girls all about his age or
+younger. Over a week of pain, discomfort and torment at the hands of their
+monstrous captures, they arrived at the kobold stronghold to the south where
+they were thrown, with no rhyme, reason or order, about ten kids a piece into
+small, black iron prison cells equipped with four, round, kobold sized cots and
+a bucket per cell. Robin reported that he had lost track of where Rosie had
+been taken and had not seen her since the day of the attack. In total there
+were about sixty kids in this stronghold dungeon and the prospect of escape was
+slim; however, less than a full day in, something of an opportunity presented
+itself. Each day, all the prisoner children were allowed to go into the more
+open area underneath the stronghold to labor in mining and other tasks for the
+kobolds. Robin shared a cell with a very inteligent and pursuasive eleven year
+old boy called Charlie and together with a few other prisoners managed by day
+five to pursuade the taks masters and relevant the jailers to allow some of
+them to work in construction and even smithing labors which were hitherto kept
+far from prisoners. Over the next week, colaborating now with the entire body
+of prisoners, small metal items had been smuggled into each cell and each were
+taught the basics of lock picking by Charlie and simple combat by Robin.
+Within the mines one of the oldest prisoners, a fifteen year old girl named
+Clara came back with a small pouch of poudered limestone, coal and some other
+strange dust which, when mixed with water would weaken the joints and locks of
+the prison cells. The kobolds used it for cleaning tools. By day nine, they
+had collectively devised an elaborate plan and a somewhat detailed map of the
+stronghold pieced together from whispered conversations with other children
+who had worked in different parts of the complex.
+The jailers and goings on in the dungeon were strict and cruel but predictable. 
+The same two guards patrolled the cells every night, and every third day, a
+larger shipment of ore was sent out, requiring the bulk of the kobold labor
+force to be preoccupied above ground.
+That third day had come again, and they were ready.
+The plan began when in the early morning labor, a boy by the name of Kale,
+feigned injury. He collapsed dramatically, clutching his leg and howling in
+pain. The task masters barked in their guttural tongue, irritated and
+unsympathetic but all the same, allowing Charlie, who had strategically
+positioned himself close to Kale and another child, Abby, to escort Kale back
+to the cells.
+Once there, a quiet and tiny girl called Eidatha picked the lock of her cell
+used the limestone powder on the much more powerful lock on the storage room
+door just outside while the guards were distracted by the masterful howling
+act put on by Kale in the cell farthest to the end of the hall.
+A few hours later in the mid morning when most of the civilian and working
+kobolds were asleep, the children were brought back to their cells. By the time
+the last kobolds had left, they were allready at work. Under Charlie's
+direction, the best lockpicks had been deployed, and the cells were popping
+open one by one. Robin emerged just in time to lead the first group into the
+storage room. By now, a simple shove was enough to break the lock. Inside were
+not only mining tools and confiscated paraphernailia, but also an assortment of
+kobold armaments, swords, javelins, shields and the like which the advance
+group, led by Robin armed themselves with. Robin's advance group was to carve a
+path silently through the lower levels of the dungeon until they arrived at a
+mining vent discovered in their first few days. Another advance group was to
+split off from them and head to the highly visible dungeon entrance where they
+would simultaneously try to escape for themselves and cause enough well timed
+chaos as to allow the rest to escape through the mining vent. 
+Armed and emboldened, the children moved with unsurprising stealth through the
+stronghold's lower levels, silencing kobold guards in their path. The element
+of surprise worked in their favor, their timing was perfect. By now the second
+advance group and the main group had also departed for the surface. 
+Robin and another good fighter by the name of Sib led this two-pronged assault,
+while Charlie organized and led the main group in the rear.
+About half way through the vent, however, a clear kobold horn blast sounded in
+the distant open air above them, the second advance group must have been
+discovered early. No more than a moment of urgent deliberation passed before
+Robin decided to split the first advance group into two groups of four each,
+one to finish clearing the escape route, and the other to head back and assist
+Sib and the others. 
+Robin headed back and found Sib fighting alongside only four other sunviving
+prisoners against a Kobold Captain and five subordinate guards. Six children
+members of Sib's group lay clearly dead behind them, and beyond approached
+still more kobold reinforcements. The captain with his guards and Sib and Robin
+with their fighters commenced a fierce but surprisingly short battle where
+Robin, took on the captain alone and won before joining the fray with what was
+now more than ten Kobolds against only six surviving fighters.
+Soon after, upon seeing still more enemies on their way, Robin ordered a swift
+and sudden retreat which took their enemies off guard and gave them a solid
+head start back into the dungeons depths. Their pursuers jeered and mocked
+about them fleeing back into the prison they were trying to escape but that
+quickly changed to cries of shock and rage upon seeing the open vent shaft. 
+Robin, and two others stayed behind to defend the entrance while the rest
+carried on. 
+At this point in Robins tale, he paused and looked down at the floor of his
+room were you were talking. 
+"I was so stupid," He said shaking his head side to side, "I thought we were
+doing alright holding the entrance but then they pulled out these strange
+sticks which turned out to be some kind of bolt throwers."
+He lifted his shirt and revealed a large patch of fresh scar tissue just above
+his left hip. 
+"They got me good and. . . got Coelia worse. She got hit square in the face
+and. . ."
+There was a bit of a longer pause.
+"She was cool," Robin finished, an expression of more then just sorrow filling
+his face.
 '''
         )
-
-    def twenty_nine_encounter0(self): #
+        input()
         dprint(
             f'''
-
+The vent led to a point just outside the wall where most of the main group,
+headed and defended by Charlie and the rest of the fighters from the first
+advance group, had managed to flee into the woods to the East. 
+A dozen or so were left fighting a small army of Kobolds who had likely been
+tipped off by the group Robin had left behind the the main entrance. Robin was
+fighting weakened and injured but still somehow managed to dispatch a few
+kobolds before making the luckiest and narrowest escape he could have ever
+imagined possible. Running through the east woods, pursued by kobold laiden
+wolves and accompanied by only ten other liberated prisoners, Robin used a
+clever combination of diversions, combat, adrenaline boosted speed and a good
+amount of trickery and dumb luck to lose their followers and eventually (more
+than two days later) meet up with the rest of the group. who were struggling to
+survive in the wilderness. They had escaped, miraculously, but they were now in
+the middle of nowhere, with over fourty mouths to feed, and less than half of
+them were above the age of ten. After less than two days of this, Robin decided
+to head back to the kobold stronghold with a few others and see if they
+couldn't get a good amout of food stolen from them.
+To their great relief and surprise, they were met with a very manageably small
+caravan of kobolds heading towards the stronghold from the east. Once the
+Kobolds were all asleep except for the watchers. Robin and his crew struck down
+the watch and bound and gagged the others before packing up the caravan and
+heading out back east with most of its cargo still intact.
+"I've obviously never tried banditry before, but I gotta tell you, I can see
+why they do it. We got off with so much for only a little planning stealth,
+timing, and all that. Spose I'm still not very good at it though. Some of our
+captives managed somehow to set fire to a few of the carts. We had to abandon
+those ones and run for it with whatever else we could manage before the smoke
+signal reached any enemies!"
+With the addition of three carts full of assorted food items, some of which
+were unfortunately kobold only, the escapees, began their journey back in
+ernest, first East clinging to the foothills of the Amn mountain range which
+slowly began curving more northwards before allowing them to head North-West, 
+through a comfortable river pass. By this time a week since the escape had
+elapsed and the food was again becoming alarmingly scarce. Despite rationing
+and intermingled hunting and gathering efforts the food was nearly gone and they
+were all at once beginning to starve again. It wasn't until four days later,
+that another solution was found. A hunter by the name of Withiam and his two
+partners Yale and Sannie had found and bested a huge and rather rare Goliath
+Brorth basically a giant wild boar better identified by one of the children
+later. It didn't have very tasty meat but it was enough at least to feed the
+whole group for a while after.
+After that the pace quickened significantly and before too long, the group had
+managed to come within striking distance of Greentown and dispite the food
+again becoming scarce, their pace increased yet again as spirits were high with
+the prospect of getting back home, before long they had arrived to the great
+surprise and joy of the people of Greentown.
+"And only a few days after that, you got back!"
 '''
         )
-
-    def twenty_nine_victory0(self): #
+        input()
         dprint(
             f'''
-
+You explained your side of the story to Robin as you both finished your
+preparations an headed out back towards the barracks. 
+He was perplexed to hear of your strange hillucination just before you left;
+shocked to hear about the evidence you had found along the way; distraught at
+how Suphia had perished. He quivered at the sound of the Kosaur and wondered at
+your fight with it. He listened with bated breath as you relived your escape
+from the Goblin infested mountain. He seemed quite curious about the strange
+supernatural pool you encountered in the deep and marveled at your clever
+entry into the Kobold stronghold. 
+Many parts of your adventure were difficult to relive but it was made much
+easier with your brother as your audience. By the time you arrived at the
+barracks, the tale had come to a close and you realized really how surreal it
+all had been, how you would not believed for a second at the beginning of this
+season that you would be the subject of such a perrilous tale. 
+What really had changed, what had happened that would allow this to happen. Not
+that you could complain, had you still been the person you were a season ago
+there likely would have been no chance of saving Greentown, rescuing Rosie, and
+bringing Illfang the Kobold Lord to justice. All three of which tasks, you were
+both about to leave for.
+These thoughts seemed to lengthen your stride as you entered the rear side of
+the barracks where the departing company would hold their final preparation
+meeting before heading out. This was to be the final push that would determine
+victory or defeat. Your small team of twelve would be primarilly responsible
+for rescuing the remaining captives, dispatching their leader, and as much of
+the enemy force as possible before they have any chance of a successful attack.
+A plan of attack was briefly discussed before you all finally leave, marching
+north-northeast at full pace as the sun began once again to set.
 '''
         )
 
-
-    def ch_30(self):
-        pass # the boss' lair
-
-    def thirty_intro(self): #
+    def twenty_nine_encounter0(self): # Cows!
         dprint(
             f'''
-
+Fourty eight hours later, surrounded in the orange sandy wastes of the far
+north, strewn with dead trees, cactus, dried shrubs, grasses and reeds,
+illuminated only by the half moon, you stroll one hundred paces from camp along
+side Rivek, you're campanion for tonight's first watch. 
+The sound of desert crickets and sand drifting on the chilled breeze is broken
+by a deep rithmic thump drawing closer with time. You both peer through the
+darkness and see, rising over a ridge of sand, the hulking form of a common
+desert dweller, a Bullbous Bow. Standing on all fours and still over ten feet
+tall, eyes a gleaming, swampy green, angry steam escaping its nostrills, it
+stood there glaring at the both of you before pawing the silty ground once and
+changing forward. 
 '''
         )
 
-    def thirty_encounter0(self): #
+    def twenty_nine_victory0(self): # The entrance
         dprint(
             f'''
-
+This was a more regular battle in these northern parts of the region, as the
+climate became more arid and more especially in the savanna grasslands to your
+immediate north and west, more of these monstrous bull creatures appeared. the
+last day had been full of fights with them, but now, monsters in general were
+thinning as you were drawing extremely close to your destination, the northern
+kobold stronghold.
+The morning sun rose sweeping away the cold night air. Captain Gurenge ordered
+a quick break of camp and departure. Your travels had been well coordinated.
+This morning you were within only a few hours of the enemy stronghold. You
+would arrive just as planned right at the most inactive period of the kobolds,
+that being mid morning. You all knew that the light would be a dead give away,
+but you also knew that darkness would be no different when dealing with these
+dark-seeing monsters. 
+Your greatest advantage would be the physical cover of the natural landscape.
+Surrounding you now was something of a winding twisting labyrinth of steep
+shallow canyons carved into red and yellow sandstone. The combination of
+magnifacent natural rock formations and the colors they bore, together with
+occasional pools of oasis water and desert plantlife would, under different
+circumstances, make these northern badlands quite a beautifull sight, but the
+looming thought of the task ahead drove any natural wonder out of your mind,
+replaced with a constant feeling of anticipation, fear, unease, and of being
+watched from somewhere just out of sight. Left, right, over, under back and
+forth you wended your way, led on by a surprisingly detailed map provided in
+the planning meeting days before until. . .
+"Stop here," said the captian, raising a fist and jerking a thumb around the
+next corner, "It appears we have arrived. . . and right on time."
+One by one you peer around the corner and see a few bleary-eyed kobolds
+preparing armored wagons right outside a gigantic structure, carved into the
+side of the red cliff face before you. 
+"There is, as far as we know, only one entrance, and that's the one right back
+there," continued Captain Gurenge, once everyone had had a good look, "We've
+got one chance for plan A, if that falls through, stealth will no longer be our
+main objective. Now, I know we've all been over this about fifty times by now,
+but I just wanted to keep it fresh in our heads as we begin. So, team one: the
+five of us," reviewed the Captain, gesturing to himself, you, Robin, a hatchet
+weilder named Ford and something of a martial artist by the name of Dykester,
+"Will head in first following the edge of the cliff face. Once we're in, the
+seven of you in team two," he said gesturing to the rest, "will follow by the
+same path. As we know we have no knowledge of what we will find inside so it
+will be up to each group to figure that out as you go. Team 1: your task is to
+locate, and if possible, neutralize enemy leaders without raising alarm within
+the stronghold, team 2, your task is to find the dungeon and liberate human
+captives and secondarily sabataoge any war machinery or otherwise
+implementations of battle the kobolds have prepared. Both team 1 and team 2,
+all of our primary goal above all else is the preservation of human life.
+Prioritize this above any other motivation or objective. We have one shot at
+this so lets not screw this up! We are the first barrier to a kobold victory.
+Behind us are the lives of everyone in Greentown, who will face a much harder
+battle if we fail here. So let's not screw this up!" His voice steadied, a mix
+of firm resolve and encouragement. "We've trained for this, prepared for this,
+and now we act. Stay sharp, trust your team, and remember, today, we hold the
+line. For Greentown. For humanity. Let's get it done!"
+With those words, he repeatedly waved his hand forward in a silent forward
+march command for team one, and with that and one final glance of apprehension
+at Robin, you and your team make your move.
 '''
         )
 
-    def thirty_victory0(self): #
+
+    def ch_30(self): # the boss' lair, Spring 66th, 3044, 6th age
+        mon_list0 = self.config_monsters({'kobold soldier':4})
+        mon_list1 = self.config_monsters({'kobold guard':2, 'ruin kobold':4, 'kobold slave':4})
+        mon_list2 = self.config_monsters({'ruin kobold trooper':15})
+        self.adjust_team(to_modify='robin_1', add=True)
+        self.adjust_team(to_modify='Captain Gurenge', add=True)
+        self.adjust_team(to_modify='Dykester', add=True)
+        self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='Rivek', add=False)
+        self.adjust_team(to_modify='Officer Mickle', add=False)
+        self.adjust_team(to_modify='Reywyn', add=False)
+        self.adjust_team(to_modify='liliyah_1', add=False)
+        self.adjust_team(to_modify='Bellman', add=False)
+        self.adjust_team(to_modify='Huffman', add=False)
+        self.adjust_team(to_modify='Dagshor', add=False)
+        self.thirty_intro()
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.thirty_encounter0(), collective=True, surprise=True)
+        if player_lives:
+            self.thirty_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.thirty_encounter1(), collective=False)
+            if player_lives:
+                self.thirty_victory1()
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.thirty_encounter2(), collective=False)
+                if player_lives:
+                    self.thirty_victory2()
+                    self.story_prep(location='1-12', name='Continue')
+                    self.adjust_team(to_modify='Captain Gurenge', add=False)
+                    self.adjust_team(to_modify='Ford', add=False)
+                    self.story_reward()
+                    return True
+                else: 
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def thirty_intro(self): # The beginning of the end of the beginning
         dprint(
             f'''
-
+Single file, you edge your way along the gritty cliff face towards the opening
+of the stronghold. The early morning sun already beating down on you for what
+you knew would be the last time in a long while, and what might even be the
+last time, but you quickly drove that thought from your mind. When you thought
+about it, this preventative attack was only happening because of the
+information you returned with, which really ended up being the only really good
+thing that came of your adventure because Robin had managed to escape on his
+own. Were this mission to fail, it would all be for nothing and your sister
+Rosie would be lost forever.
+By the time these thoughts were through your head and you returned full focus
+on the task at hand, your team was mere feet from the entrance, obscured
+partially by a patch of shrubbery. After about ten seconds, team two used a
+small mirror to signal the entry way to be empty and the coast, therefore,
+clear.
+The captain led the way into the dimly lit entrance corridor and quickly after,
+the rest of you followed. The inside was similar in appearance to the outside
+except for a few crude kobold furnishings like braziers and splintery doors.
+Your first thought upon looking around was that you had entered some kind of
+sandstone ruin or an ancient tomb that got almost supernaturally dark very
+quickly the deeper into the winding passages one went. The walls were tall,
+chiseled with patterns, fortified with dark wooden beams and rose to a pointed
+ceiling. As far as you could peer down one fork, you could only see deepening
+darkness.
 '''
         )
 
-
-    def ch_31(self):
-        pass # the boss' lair pt 2
-
-    def thirty_one_intro(self): #
+    def thirty_encounter0(self): # Quick and quiet first fights
         dprint(
             f'''
-
+Dykester tugged lightly on your sleave and pointed the opposite direction,
+where Captain Gurenge, having apparently seen something the other way, was
+urging the team behind a corner. Not even a second later you heard the patting
+and scratching of kobold feet on stone. After about a minute, four patrolling
+soldiers came into the full light of the sun pouring through the entry way.
+They paused, shielding their eyes from the dazzling sun to peer into the
+outside. 
+That was the moment and you all knew it. All at once five humans leaped from
+their hiding place and into the attack. 
 '''
         )
 
-    def thirty_one_encounter0(self): #
+    def thirty_victory0(self): # sneaking
         dprint(
             f'''
-
+It was a fight well faught, no less than a grunt escaped the defending monsters
+and the captain signaled to the watching team two that the entrance was free of
+patrols and that any more would be moving from right to left.
+With that and after hiding the bodies, the five of you moved as one down the
+left path. Everything was going smoothly, both teams were now well on their way
+to successfully infiltrating the kobold's stronghold. 
+All was silent and dark except for a small light provided by a luminous stone
+held be Ford until you and the team round a corner and see a large and spacious
+cavern supported by stone pillars interspersed randomly throught. Several lit
+brasiers provided a small steady light upon one of the most horrble scenes you
+had ever laid your eyes upon.
+Rows a rows of armored wagons filled the cavern and strapped to the front of
+each one was clearly meant to be a shield, made of a lattice of wood, bound
+to each by between four and six living human children. They were definitely
+alive, you could tell by the slight sounds and movements within the room, but
+it was clear that they were all dangerously malnourished and abused to the
+breaking point.
+Unable to fully comprehend the evil that led to this course of action, using
+captured human children as battle shields, the five of you simply stare until
+a distant pattering bring you all back to reality. 
+Team two was coming down the hall after you. The thought brought a painful idea
+into your head, Rosie, almost guaranteed, was in the room with you, but there
+were hundreds of wagons and it was team two's task to free the prisoners
+anyway. You turn with your team and head back towards the entrance. 
+As you pass team two, Captain Gurenge mutters something inaudible in to the ear
+of Officer Mickle who led the team. After a short pause, Officer Mickle nods
+and he and his team continue past them towards the captives, while Captain
+Gurenge leads you and the team the rest of the way back up to the entrance and
+beyond in continued silence. 
+Just then a faint rumble reaches your ears and the ground quivers slightly. A
+moment later two doors none of which you had noticed before open. Out onto the
+path both before you and behind you poors what sounds like over a dozen kobolds
+all in conversational tones. You could only hear them because right at that
+moment, Dykester tossed a strange smokey powder into the air which seemed to
+render anything it enveloped, completely transparent. A silence slowly decended
+over the invisible kobolds as they too realized they were vanishing one by one.
+You could not see one another but you knew that you were all holding your
+breath as the complete silence fell.
+*pat* *pat* *pat*
+It was clearly the sound of footsteps just twenty paces back towards the exit.
+Someone invisible had made a run for it. 
+There was a murmur, a chatter, a screech and then the sound of a dozen or more
+kobolds scampering confusedly back up the passage. In that moment a human hand
+grasped your wrist and you were half led, half dragged into deeper darkness. 
+When you were finally clear of the strange smoke, four team mates stood before
+you in the dim light once again brought out by Ford. 
+"But, who-" began Robin asking the question that had just popped into your head
+too. 
+"Nobody ran off," answered Dykester, who once again pulled from his pockets a
+strange device that looked like a cross between a tiny trombone and a wooden
+flute with odd flaps at the end. He raised it to his mouth and blew extending
+the adjustable end as he did. You couldn't stop yourself from looking behind
+you as the same sound of footsteps echoed off the walls.
+"little pocket knife you are," remarked Captain Gurenge.
+After that narrow escape you continued with your team still farther and deeper
+into the mountain stronghold. Every now and then you encounter more kobolds,
+but never resulting in a fight. After nearly a quarter of an hour full of blind
+navigation and backtracking, you find your path barred by what seems to be some
+kind of sleeping quarters guarded by only two guards, Dykester had expended the
+last of his dissapowder a few minutes ago so and this was the last unchecked
+path forward.
 '''
         )
 
-    def thirty_one_victory0(self): #
+    def thirty_encounter1(self): # It all goes wrong
         dprint(
             f'''
-
+A plan of action was silently discussed in which a surprise attack on the
+guards would be carried out while any who might wake from the attack would also
+be silenced as they do so. It was almost inevetable, that some of the sleeping
+would wake so it would have to be a quick and quiet battle but one that could
+possibly be drawn out for a long period of time.
+Dykester used his Petapeser again to draw the guards' gaze to the sound of
+footsteps and once it had, you attack.
 '''
         )
 
-
-    def ch_32(self):
-        pass # Illfang boss fight
-
-    def thirty_two_intro(self): #
+    def thirty_victory1(self): # It all goes wrong pt2
         dprint(
             f'''
-
+You had failed, it was just too much noise, more and more kobolds all around
+you were waking and seeing the battle errupting all across the chamber. You had
+to leave. The Captain called an audible retreat command which was effective at
+both getting his team out of the room and also waking the rest of the kobolds.
+By the time you were all clear of the doorway you were being chased by no less
+than thirty kobolds of all shapes and sizes all screeching and hollering after
+you. 
+There was a bright side to this though: your pace had now increased abut ten
+fold. Only a few minutes into the chase, you estimate your had traveled twice
+as far as you had when the chase had started. The problem was that each new
+chamber, corridor, crossroads or cavern you entered or passed, more were added
+to the numbers of the enemy, by this point you had a small army in hot pursuit
+led chiefly by the biggest and fastest kobolds who were gaining on you at an
+alarming rate.
 '''
         )
 
-    def thirty_two_encounter0(self): #
+    def thirty_encounter2(self): # getting to the inner sanctum
         dprint(
             f'''
-
+One bend later, you, the team, and about a hundred and fifty kobolds charge
+into a spacious and mostly empty cavern. A huge, massively wide and endlessly
+deep fissure divided the cavern in half. Clearly visible on the other side,
+illuminated by large fires and accessable only by a norrow, railess, stone
+bridge across the cavern stood a giant, ornate, open door about the size of the
+entrance to the stronghold itself. The sight reminded you horribly of the
+Goblin throne room under the Amn Mountains where you had nearly lost your life
+in several ways.
+Each step you took towards the bridge, the kobolds drew nearer until finally,
+at almost exactly the same moment, the first kobold, now within striking
+distance, took its first swing and you reached the end of the bridge.
 '''
         )
 
-    def thirty_two_victory0(self): #
+    def thirty_victory2(self): # into the deep keep
         dprint(
             f'''
-
+Right as you reached the end and the next few kobolds were lining up ready to
+fight, Captain Gurenge shouted "Together NOW!" and the pale light of three
+skills filled the air Robin blasted forward with Sonic Leap throwing three
+kobolds screeming over the edge of the bridge. Ford and the Captain both
+executed skills as well aimed not at kobolds but at the bridge. Ford executed
+his signatire Loss, while the Captain performed a new single hit skill which
+seemed to add weight to the air itself. When both skills hit the bear rock the
+end of the bridge cracked and burst appart falling bit by bit into the abyss.
+With no hessitation, you and the team rush for the door and leap through it
+sprinting with abandon for anywhere to hide while the enemy figures out a way
+to get accross the half crumbled access point.
+Fortunately, you see a good spot and point it out. It was a deep sort of shelf
+in the wall near the much more ornately carved ceiling, it was large enough for
+at least three of you to fit into. Captain Gurenge and Ford volunteer to find a
+different place to hide nearby. 
+Upon them departing you get a closerlook at your surroundings. More detailed,
+carefully built kobold furnishings lined the walls here, you hadn't noticed
+before but occasional torches were lit and held in brackets at evenly spaced
+intervals. The floor seemed much less dusty and more smooth and even. You
+deduce from all this that you had entered some sort of central stronghold. A
+place of higher class among this vast tunneling system of a base. You felt
+yourself growing closer and closer with each step toward Illfang.
 '''
         )
+
+
+    def ch_31(self): # the boss' lair pt 2, Spring 66th, 3044, 6th age
+        mon_list0 = self.config_monsters({'ruin kobold trooper':4})
+        mon_list1 = self.config_monsters({'dire wolf':8, 'kobold guard':2})
+        mon_list2 = self.config_monsters({'dire wolf':1, 'ruin kobold trooper':1})
+        mon_list3 = self.config_monsters({'kobold guard':8, 'dire wolf':2})
+        self.adjust_team(to_modify='Captain Gurenge', add=True)
+        self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='robin_1', add=True)
+        self.adjust_team(to_modify='Dykester', add=True)
+        self.thirty_one_intro()
+        player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.thirty_one_encounter0(), collective=True)
+        if player_lives:
+            self.thirty_one_victory0()
+            player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.thirty_one_encounter1(), collective=False)
+            if player_lives:
+                self.thirty_one_victory1()
+                self.adjust_team(to_modify='Dykester', add=False)
+                self.adjust_team(to_modify='robin_1', add=False)
+                self.adjust_team(to_modify='Ford', add=False)
+                self.adjust_team(to_modify='Captain Gurenge', add=False)
+                player_lives = self.battle.battle(mon_list=mon_list2, dialog=self.thirty_one_encounter2(), collective=True)
+                if player_lives:
+                    self.thirty_one_victory2()
+                    self.adjust_team(to_modify='Dykester', add=True)
+                    self.adjust_team(to_modify='robin_1', add=True)
+                    self.adjust_team(to_modify='Ford', add=True)
+                    self.adjust_team(to_modify='Captain Gurenge', add=True)
+                    player_lives = self.battle.battle(mon_list=mon_list3, dialog=self.thirty_one_encounter3(), collective=True)
+                    if player_lives:
+                        self.thirty_one_victory3()
+                        self.story_reward()
+                        self.story_prep(location='1-12', name='Destroy Illfang')
+                        return True
+                    else:
+                        return False
+                else: 
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    def thirty_one_intro(self): # back to a short-lived stealth
+        dprint(
+            f'''
+It took the hoard another about ten minutes to figure out a way across and in
+all the chaos of them passing you thought your hiding spot to be a little
+overkill. With the noise, the numbers, the lack of focus and coordination among
+them, you probably could have just flattened yourself against the wall and been
+just fine. 
+After the last of them passed by it became fairly easy to tell how much smaller
+this inner area was in proportion to the rest, because now that its population
+had just increased significanly, it became almost impossible to go far and stay
+undetected. Fortunately for you, this area seemed to be somewhat off limits for
+most ordinary kobolds. On multiple occasions over the next half hour. Groups of
+smaller kobolds were seen fleeing from one of the enormous ruin kobold troops.
+Having made little progress during that time only to reunite and hunker down in
+a small offshooting room, you decide with the team to wait it out and hope that
+the number of kobolds reduce to something a little more managable.
+Roughly an hour later however, the inferior kobold cleanup had concluded but it
+appeared to be about time to wake up for the rest in the stronghold. The
+labyrinth was once again crawling with enemies and movement was just as
+difficult as before. Something of a pattern had been found in the kobold's
+movements so you decide that now was the time to act. 
+'''
+        )
+
+    def thirty_one_encounter0(self): # first inner guards
+        dprint(
+            f'''
+Robin and Dykester led the way being the smallest and most agile among the
+team. On the signal you bolted for the crossroads a hundred feet ahead and
+waited as Robin peered around the corner. He pulled back quickly and reported
+another large door guarded by four. 
+There was nothing for it. There was no way to sneak up, no distraction you
+could make. It was simply a straight hallway ending in a large peaked wooden
+door. It seemed you were all thinking this too as the Captian simply shrugged
+his shoulders and strolled around the corner as if he were back in the
+Greentown barracks. 
+"THERE THEY ARE!" shouted a guard in a whiny voice. 
+He pulled something that looked like half a beating heart from a bucket beside
+the wall and raised it above his head. Captain Gurenge raised his sword and arm
+guard in a defensive stance and shouted, "Get back!" to his team. 
+But when the kobold released, he aimed not for his enemy, but for the floor
+about ten feet ahead of him. 
+The instant it hit the stones it burst appart sickeningly and a wave, like a
+ripple through water, of red light washed over the floor and continued up the
+walls and ceiling. The smell a mixture of blood and something metalic filled
+the air and then all was silent and still. 
+"Was that meant fo-" began the Captain, but he was interrupted by a deafening,
+bloodcurdling scream which rent the air and carried on and on never growing
+louder or quieter. In the din, four kobolds drew their weapons and charged.
+'''
+        )
+
+    def thirty_one_victory0(self): # forget stealth!
+        dprint(
+            f'''
+The scream stopped about halfway through the fight, but near the end you could
+hear more skittering scraping foot steaps approaching from around the corner. 
+Just as you made it through the door, you saw five or more kobolds round the
+corner alearted by the strange object the first guard had thrown. 
+You, Robin and Dykester push one side and Ford and the Captain push the other
+side of the door closed just in time to hear several armored reptilian bodies
+collide with the other side. Barring it from the inside you turn and feel your
+mouth fall open. 
+The largest, most endless-looking cavern yet lay before you and at its center,
+well illuminated by thousands and thousands of luminant stones and fires
+glittering like a sky full of stars causing it to stand like a beakon in the
+darkness, was unmistakeably a palace. Tall spires streched into the blackness
+above it and actual glass windows decorated many of its walls. It stood almost
+completely alone in this huge cave like a sentinel daring its intruders to
+approach and face the consequences. Were it not for the context, it would truly
+be a magnifacent sight.
+The only other thing in the space before you was a well over one hundred foot
+wide, circular pool of bubbling, gurgling, and steaming water of a dark
+turquise hue. 
+*BOOM*
+The banging on the door behind you brought you back to your senses. 
+"Left around the hotspring!" ordered Captain Gurenge.
+As you and the others obeyed, running clockwise past the huge pool. You noticed
+something strange, the water level seemed to rise and fall in a steady rhythm
+that seemed as you watched to increase its pace, like a collosal liquid chest
+rising and falling with each increasingly rapid and deep breath. Now, about
+three quarters of the way around, the rate and displacement of each cycle was
+becoming somewhat alarming.
+"D'you think that'll be a problem?" called Ford over the gurgling frothing
+pool. It seemed he had noticed too. 
+Just then the turquoise of the pool seemed to brighten steadilty from deep
+below the surface.
+"Uh, yes! Get back, quick! RUN!"
+You joined your team in a hasty about face and sprinted from the geyser and
+turned back just in time to see the water level drop well over twenty feet
+before slowly, starting in the center, a bulge grew, rising the water level
+quickly past its breaking point spilling boiling water over the sides of the
+pool where you had just been running. 
+The ground shook with the sudden violent eruption of the geyser. A cloud of hot
+steam rushed past you blurring your vision. Moments later, a deafening rushing
+sound filled your ears, you knew what was coming but had no time to brace
+yourself. 
+All at once you were showered in a rain of boiling water. The pain at first was
+endurable but less and less so as more and more water was dumped over you. What
+seemed like an age of the world later, you found youself hunched and cowering,
+drenched from head to foot in hot water. Blistered hands rolled a half drunk
+red bottle of healing potion towards you. After considerable effort, you
+managed to pry the lid open with both hands and your teeth and down the rest
+of it in one gulp.
+As the steady warm sensation of healing washed slowly over your blistered skin,
+you also feel greater awareness come over you as well. Your ears pick up an
+alarming sound and your eyes follow to see the big wooden door you had barred
+earlier had burst open and your enemies were once again in pursuit, laughing at
+the sorry state their quarry found themselves in.
+They were approaching fast and most of your team had noticed as well.
+"Get up! Quick!"
+It was taking far too long to get moving again and by the time you got to a
+good pace again and werent slipping and sliding on the soaked stone floor, the
+closest kobold was fewer than twenty paces away.
+'''
+        )
+
+    def thirty_one_encounter1(self): # from one fight to another
+        dprint(
+            f'''
+Before the main gate to the castle like structure before you, there was a
+lowered draw bridge over a river of boiling water. The moment you stepped onto
+the bridge the advancing kobolds slowed to a halt. Despite being so close to
+their goal, they seemed unable to advance farther. It seemed this was another
+limited access point for the kobolds. The bridge was short and wide, made
+mostly of black iron and some strange rubbery material. The kobolds behind you
+looked ready to throw their weapons after you but couldn't seem to even do
+that.
+As soon as you were completely across, a howling sound introduced your next
+obstacle. The main gaurd of the palace in the form of a pack of dire wolves. 
+'''
+        )
+
+    def thirty_one_victory1(self): # scatter!
+        dprint(
+            f'''
+As soon as the main guard was dispatched, you found yourselves entering the
+actual interior of the kobold palace. The entrance chamber was a large, high
+ceiling, room with doors lining the walls through which, almost immediately
+upon entering, came more palace guards. The time had come, the best option was
+clear to each of you. In order to make the best time and avoid being overrun,
+the solution for now was the scatter each for a different door and find some
+way later to reunite if the opportunity presented itself.
+'''
+        )
+
+    def thirty_one_encounter2(self): # fight for silence
+        dprint(
+            f'''
+Narrowly avoiding the approaching guards, you burst into the first, most
+convenient room and don't stop. The key to success now was to regain some
+amount of stealth. It would be much more difficult now though. The walls were
+thinner, every kobold in the structure would be in high alert, including, and
+the thought gave you a sudden jolt of apprehension, Illfang himself and his
+closest guards.
+It seemed like each corner you rounded, there was another pair of guards
+waiting for you. It was somewhat feable, but you were working out something of
+a plan to escape the senses of the enemy. As soon as you shook your pursuers
+down to a manageable number. You turned on the spot at an opportune location
+where some kind of vent opened up into the celing. This would only work if you
+were able to dispatch your enemies before they figured out where you were
+going.
+'''
+        )
+
+    def thirty_one_victory2(self): # meeting back up, pre-boss heal
+        loot = self.config_loot({'rose life potion':1})
+        dprint(
+            f'''
+It seemed a miracle, one of many in the last few hours, but you were now free,
+able to once again move undetected through the palace. Long before you or any
+human entered here today, you and the others had agreed that it was more likely
+than not that at some point, you would be separated. In that event, you agreed
+that the best course of action would be to continue forward to the best of each
+one's ability and meet up somewhere close to wherever Illfang was. Determining
+where that would be was the task now. Nearly half an hour later, sneaking
+through the halls and vents to little avail, you found two things in close
+succession. The first was a note written in the captain's handwriting stowed
+inside one of the vents you were crawling through. 
+The note had written on it, a somewhat cryptic message directing you down the
+hall directly below you and across a chamber down its right fork. They were
+simple directions but it was definitely easier to say than to do. Between you
+and your destination stood kobolds which themselves wouldn't pose much of a
+problem but you had worked so hard remaining somewhat steathy all this time and
+if one of those many kobolds sent for others, you and everyone else would
+likely be in for a drawn out battle with the entire kobold population in this
+cave which you doubted any of you could survive. It was up to you to keep the
+lowest profile possible to avoid that.
+Less than a minute later, as you were contemplating your next steps, your heard
+a soft scraping behind you in the vent. You jerk around to spot the intruder,
+and see, coming round the bend, not a little kobold or other enemy, but Robin.
+He was covered in blood. Whether it was his own or an enemy's, brother or not,
+he was a terrible sight. 
+"Oh hey!" he said as if he wasn't drenched in blood, "Man these guys are rough,
+huh!"
+You could think of nothing to say except "Robin!" 
+"Oh, uh, yeah, I'm gonna need a bath when we get back."
+He spoke looking back on his appearance in mild interest before returning to
+the situation at hand. He told you that he had also been exploring the ducts,
+pipes and vents as you had been and that this place was the closest he was able
+to come to the meeting spot, he held out a stained note just like the one you
+had found mere moments ago.
+"I think the place is just back there but. . . "
+As he spoke, a pair of gigantic kobolds charged into the chamber below you as
+if they had been chasing something. They looked around briefly before the
+unmistakable footstepping sounds of a Petapeser. Resuming the chase, the two
+kobolds bolted out of the room down the next hallway. Seconds later, Dykester
+emerged from the hallway creaping forward on his way to the other side. 
+Before he did, though, you popped your head out of the vent and whispered his
+name he froze briefly before turning to you.
+Dykester explained that he had found the captain and together had used
+distractions like the Petapeser to sneak around, find likely hiding places and
+hide notes to Ford and you two as to a good meeting place near Illfang's throne
+room, which, upon mentioning, Robin nearly blew your cover exclaiming, "YOU
+FOUND IT!" at the top of his lungs. After his explanation he led you down the
+hall and through a set of open doors and into a room in which stood a large
+wooden crate the size of a walk in closet. The door was nothing more than a
+wall of the box that swung outwards upon Dykester giving a quick rap on the
+side. It was black as tar inside, but once the crate shut again, a small candle
+was lit near the back illuminating a blood stained Ford and the rest of the box
+interior. Upon the floor were three motionless kobolds, a wide assortment of
+bits and bobs more than half of which appeared to be more than one hundred col
+in value. It appeared that this was once some sort of treasure box for the
+kobolds before you and the team comandeered it for your hiding place. There
+were no shelves or cubbards of any kind, nor were there any places to sit, but
+there was a strange sort of order to the chaos of this treasure box. As you
+continued to scan the room, you began to observe that certain parts of the room
+had piles of similar things. From somewhere near the middle of the room,
+Captain Gurenge grabbed a bottle of a strange, bright, reddish-purple color and
+tossed it to you and another to Robin. 
+"Those'll heal you up good, I've only ever seen a few in my life, usually in
+the hands of elite wariors and nobles from Kedren Main. Not your average life
+potion there. They're called Rose Life Potions and they're pretty effective. I
+always knew Kobolds were thieves but how they got their hands of half the loot
+in here beats me."
+As your drank, any ailments you had seemed to wash away even faster than when
+you used your mother's vermillion life potions. You felt completely whole
+before you even had very much of the potion's contents. Looking over, it seemed
+Robin felt the same, though he and the others were all still covered in blood.
+"Alright, listen up," began the captain again, in a serious tone, "The Throne
+room is just on the far side of the next chamber. Our whole goal coming here
+was to destroy Illfang. And this is our one shot. If we don't act quickly and
+efficiently we could be in for the fight of our lives to get out of here and
+back home."
+"Just to jump into another fight to the death with the rest of the kobolds
+there," piped in Ford.
+"Exactly. For this reason we have no room for big mistakes here. His guards are
+likely going to be many in number and also the biggest and toughest any of us
+have fought yet, but that's not the problem. Over the last few months while
+this whole kobold thing has been happening, I've done some reading up on kobold
+hirearchy and such. Turns out that almost exclusively, the most powerful kobold
+in a kobold society becomes the Boss or the Kobold Lord. Its the same thing
+with goblins, orcs, giants you get the picture. So in the fight that is about to
+happen, Illfang, the Kobold Lord will be the main problem, his guards will be
+to him more like cannon fodder. Which is not to say his guards will be nothing
+to pay attention to though. Basically this is going to be a really rough fight
+if were not all coordinated and on our game, clear?"
+The team nodded their ascent.
+"Right, honestly, I can think of no better plan at this point other than barge
+in head first and roll with the punches as they come. But I will say one last
+thing before we head out. I know by now were all familiar with the strange new
+mutant Kobolds calling themselves Ruin Kobolds, or at least I hope so as
+they've been about all we've faced for the last hour. But just before we met
+here, I saw a new kind of kobold, they were about the size of regular kobolds
+but. . . they had wings. They looked like real little dragons out there. I
+expect we'll have to fight them too so be careful. . ."
+There was a moment's pause while The captain walked quietly to the door of the
+treasure box and opened it slightly.
+"This will be the final push for everything we fight for, for Greentown, Pompon
+and Tolbantha, for humanity, for our lives, our families, our friends, our
+livelihoods, for honor, glory, justice and most of all for peace!"
+Captain Gurenge burst through the door and with him you, Ford, Dykester, and
+Robin, charged into the final battles. 
+'''
+        )
+        if self.player.hp < self.player.maxhp:
+            self.player.hp = self.player.maxhp
+        for l in loot:
+            self.player.inventory.add_item(l)
+
+    def thirty_one_encounter3(self): # the final push
+        dprint(
+            f'''
+. . . 
+Your first obstacle was just as you had expected and just what Captain Gurenge
+had observed. Standing before the largest and most ornate arching double doors
+yet, were something of a brigade of guards, standing ready to defend the five
+humans who had managed somehow to penetrate so far into the keep of their Boss.
+'''
+        )
+
+    def thirty_one_victory3(self): # Let's freaking do this thing!
+        dprint(
+            f'''
+The last guard was defeated, the doors, carved in black stone and laced with
+gold, lay before you. All necessary words and preparations had been said and
+made. Now was the time to end the tyrany of a monster. You all noded to each
+other, a shared final thought between you. As you all placed your hands on
+the doors and pushed. 
+"Let's end this!"
+'''
+        )
+
+
+    def ch_32(self): # Illfang boss fight, Spring 66th-67th, 3044, 6th age
+        mon_list = self.config_monsters({'Illfang':1,'ruin kobold sentinel':4,'flying kobold':2})
+        self.adjust_team(to_modify='Captain Gurenge', add=True)
+        self.adjust_team(to_modify='Ford', add=True)
+        self.adjust_team(to_modify='robin_1', add=True)
+        self.adjust_team(to_modify='Dykester', add=True)
+        self.thirty_two_intro()
+        player_lives = self.battle.battle(mon_list=mon_list, dialog=self.thirty_two_encounter0, collective=True, boss_dialog=[self.thrity_two_boss])
+        if player_lives:
+            self.thirty_two_victory0()
+            self.story_prep(name='Continue', location='1-3')
+            self.adjust_team(to_modify='Captain Gurenge', add=False)
+            self.adjust_team(to_modify='Ford', add=False)
+            self.adjust_team(to_modify='robin_1', add=False)
+            self.adjust_team(to_modify='Dykester', add=False)
+            self.story_reward()
+            return True
+        else:
+            return False
+
+    def thirty_two_intro(self): # entrance and pre-fight monologue
+        dprint(
+            f'''
+The door swung open with little resistance. The chamber before you was dark and
+cold. Nothing stirred within. Then, all at once, torches of blue flame burst to
+life along the sides of what, illuminated, you saw to be a grand black marble
+throne room complete with red and purple banners hanging from the ceiling.
+Suits of golden and silver armor fit for kobolds lined the chamber. Round,
+smooth pillars supported a painted, glittering ceiling, and dark panes of
+stained glass leading to nowhere adorned the back wall, which descended to a
+massive white and gold throne large enough to fit the whole team comfortably.
+Sitting alone upon it, with a dazzling nearly six-foot-long curved longsword in
+his hand and grinning evilly at his guests, was Illfang himself. Sliding from
+his seat, he stood nearly seven feet tall, clearly of the Ruin kobold variety
+but built so powerfully he might have defined another subrace himself. He was
+clad in metal splint, dyed crimson and laced, like much of his throne room, in
+gold. The grin slowly faded from his reptilian snout as he addressed his
+intruders in the same perfect Common you had heard what seemed like so long ago
+back in the southern stronghold.
+"Well. . . done!"
+There was a clunk behind you, and for the first time, you saw winged kobolds,
+two of them, barring the door behind you and crawling across the ceiling like
+bats toward their master.
+"I was hoping to meet you here. I'm glad you made it. You've proved to me that
+this will not have been a waste of my time. That you may yet entertain me. I
+made sure you had an easy entrance. I made sure to send only a few of my
+subjects after you. I challenged you only enough to prove you had what it took
+to face me. Yes, I've known for a long while of your scheme, and it changes
+nothing. I saw that you would strike here, I let you in, I allowed you to see
+the children and our war engines. I assure you they didn't make it far."
+With a wave of his hand, Illfang produced a cloud of dark smoke, which was
+quickly filled with dancing lights forming an image that seemed to fill your
+mind and capture your full attention.
+You saw Team Two, half of them dead just outside the badlands, surrounded by
+kobolds. A cold wave of despair swept over you, your breath hitching as the
+grim image burned itself into your mind. The gasps and muffled cries of your
+companions told you they felt the same, an unbearable mix of guilt and anger
+welled within the group, threatening to consume you. But the sight of Rosie's
+broken, bruised face struck like a dagger to the heart, igniting a fierce
+determination amidst the anguish. You clenched your fists, vowing that her
+suffering would not be in vain. The captive children were being rounded up and
+thrown back into kobold wagons. Rosie's tiny face stood out especially
+prominently among the rest, deeply gashed and bruised into near
+unrecognizability.
+"You've failed in the most profound way possible! And now you're ready to die
+at my hand. I hope the prowess, skill, cunning, and strength you have shown
+against my servants thus far was not mere chance. All I really wanted from you
+was a good fight. I'm afraid my own subjects no longer satisfy me. I confess, I
+have forgotten the thrill of a real battle."
+Through the still fading cloud of illusions walked the Kobold Lord, brandishing
+his weapon, a dazzling longsword etched with glowing runes that pulsed faintly
+with an ominous crimson light. Its blade shimmered like molten steel, radiating
+an unnatural heat that seemed to warp the air around it.
+'''
+        )
+
+    def thirty_two_encounter0(self): # The first (non-field) Boss
+        dprint(
+            f'''
+"Ah," Illfang purred, gesturing lazily with his blade. "I almost forgot to
+introduce my most loyal sentinels. They've been dying to meet you." The edge of
+his mouth curled once again into a sneer as the four suits of armor groaned and
+shifted unnaturally, their golden and silver plating clinking against itself.
+With a jarring clatter, they sprang to life, revealing not hollow shells but
+kobolds encased in intricate, shining armor. Their glowing visors flared with a
+crimson light, and the sound of grinding metal filled the room as they moved
+with an eerie precision. "But don't worry," Illfang hissed, his voice dripping
+with malice, "they'll leave just enough of you for me to enjoy."
+'''
+        )
+
+    def thrity_two_boss(self): # that's not a talwar, that's an odachi!
+        dprint(
+            f'''
+"GUUUHHH!" Illfang suddenly bellowed in what was clearly pain and frustration,
+"You told me they were weak! You said they would DIE!"
+Illfang stood, heaving and staring at some point in the ceiling.
+"It doesn't matter. Lum ra kreek tem ee TAKAK uo bagath . . . agashii ee
+takak UO . . . heheheheheHEHEHEHE!"
+In a movement faster than any Illfang had done previously, he flipped
+backwards towards his throne tossing his Talwar asside as he did. Reaching
+behind his throne he grabbed a new, similar but longer weapon that radiated
+with even more energy and something else that felt like pure malice. He spun it
+briefly in his hand making it clear that he was stronger with this weapon than
+the last.
+'''
+        )
+
+    def thirty_two_victory0(self): # The end of the beginning
+        dprint( # Battle end and escape
+            f'''
+Launching yourself forward, your blade cutting through the air with unrelenting
+force, you aim a killing blow at the enemy. Almost too fast to percieve,
+Illfang raises his Odachi to parry, but the impact of a second strike shatters
+his guard, sending sparks and half of his blade cascading like falling stars to
+the glittering floor. Robin and the Captain, coming in for a combined strike,
+had blasted his defense appart at just the right moment. Glancing your
+grattitude towards the two, you add all the strength you have left into the
+follow through. The final blow strikes true, cleaving through his crimson armor
+and sinking deep into his chest. The Kobold Lord lets out a guttural cry, his
+towering form crumbling to his knees before collapsing in a thunderous crash.
+The unnatural glow fades from the two halves of his blade, leaving only silence
+and the smell of fresh blood and brimstone in the air.
+"Y-u. . . *Gasp* y-ou, lied. We, were . . . nothing *pant* to you . . .
+Great . . . Gog . . ."
+*Shiii*
+The Captain, in a sudden stroke, had decapitated the dying Illfang. You turned
+to him and for the briefest moment and as you did you could have swarn you saw
+his eyes flash ominously, but then, As quick as it had come it was gone. The
+rest of the team turned too. The look on the captain's face was a strange mix
+of bewilderment and frustration, but he quickly turned again to the rest of the
+team.
+"Greentown!" He said simply, "we have to save. . . find the others and get back
+home as fast as possible! Take his head!"
+Everyone seemed to snap out of a kind of stupor. The reminder of the vision
+Illfang had shown seemed to be burned into their retinas and a familiar urgency
+mixed with deep dread bagan to boil up inside you once again as you joined the
+team sprinting back up the passages through which you came so stealthily
+before.
+It made perfect sense why all the passages leading back to the entrance were
+mostly empty, in the vision, the kobold forces were heading to battle at about
+the same time you were sneaking through to Illfang's throne room. Strangely
+enough Robin seemed to have an excellent memory of the route back to the
+entrance and was leading he way with great efficiency, past familir landmarks
+like the resting quarters and hiding places you had all found along the way.
+Hardly twenty minutes and two small scuffles with kobold stragglers later, you
+felt the sun on your skin once again as you passed the exit heading for the
+sort of hangar where you had found the prisoner children. Just as you
+suspected, they were not there. The attacking kobolds were following through
+with their plans to use the children as shields in their siege of Greentown.
+'''
+        )
+        input()
+        dprint( # kobold spying
+            f'''
+Soon you were again outside under the blazing afternoon desert sun. The heat
+seemed to be another more unintentional strategy of the kobolds as running
+through this, even implementing the technique old Kajlo had taught you, was
+akin to torture. Hours passed before the sky finally began to darken and the
+air became more bearable. But now came the real challenge. In order to make any
+real headway on the kobolds, you knew they would likely have to stop and rest
+to stay strong for their attack. Which meant you would not have that luxury. 
+On the upside, though, you knew that you were less than an hour or so behind
+them so as soon as the kobolds stopped, you would almost immediately catch up.
+Sure enough, the next morning, soon after the sun appeared over the horizon,
+Ford, gazing bleary-eyed over the top of a ridge, still with the wrapped up
+head of the Kobold Lord, announced that he could see them distantly.
+They had stopped, predictably, in the morning, and had set up a temporary camp,
+in a circular formation surrounding themselves in watchful eyes. That was
+alright, though, you didn't need to attack yet. For now your only objective was
+to observe and find out the current state of any human left alive among them.
+After nearly three hours of spying and watching from various different angles
+and vantage points, one problem became very apparent. No matter how you looked
+at it, there simply were no humans in the entire camp, child or otherwise. The
+camp was large and you had counted nearly three thousand combattants but every
+single one was clearly kobold.
+This observation as good as confirmed a hopefull suspicion that the vision
+Illfang had planted in your minds had been more illusory than factual. You were
+first tipped off near the exit of the stronghold, where, upon arriving at the
+scene of the vision hoping to help the fallen and injured of Team Two, you had
+found absolutely no evidence of a battle of any kind.
+This also provided a perfect opportunity for some kind of strategy. As you
+gathered again at the end of hour three, you could see Captain Gurenge's gears
+turning with something like excitement as a wonderful opportunity had now
+presented itself. The biggest risk to a counter efforts had been eliminated
+with the absence of human hostages.
+'''
+        , .0405)
+        input()
+        dprint( # Turning the kobold army
+            f'''
+At this point there were a lot of different ways to turn the army, each as
+risky as the last. Over the next half hour you and the team concocted a
+strategy that would result in the fewest big risks while also having the
+greatest effect. The plan came in two phases. Phase one was a stealth and
+sabatoge effort where you, Robin, Ford and Dykester would enter the camp
+through a weak point in their watch and cause a few key disruptions to their
+progress towards Greentown. The objective then would be to make a clean
+escape which, based on your collective observations, was determined to be
+rather simple so long as you escape quietly and through the same way you
+entered.
+Phase two involved the captain, who would run back to Greentown report, and
+request for aid. He was selected for this phase because he was the fastest long
+term, besides Ford the least stealthy and also the one with the most authority
+in the team. He could get back to greentown in twenty four hours or less from
+here and once there the plan was to shift to something of an intimidation play
+where a small number of reinforcements would join your team and assist in
+sabatoge and gurrilla tactics before the final play if the kobolds sill managed
+to make it to Greentown.
+In ten minutes, the plan was in full effect. Captain Gurrenge had bolted off to
+Greentown with Illfang's head, and the rest of you were less than a few feet
+from your watch targets. The plan to neutralize the watch men had to be quick,
+accurate and, most importantly, silent, but that didn't make it any less easy.
+Dykester used his ever useful Petepeser to draw the eyes of the two drowzy
+watchmen for only a fraction of a second during which time Robin launched
+himself forward like a giant crossbow bolt with his skill Sonic Leap impailing
+them both. From there, you waited with the rest of your team for any sign that
+you had been detected before slipping, like a nightly draft of wind into the
+camp.
+You split up here and snuck off to find a wagon full of food you had picked out
+earlier as a target. The watchmen had with them some paper explosives which
+were easy enough to break open and extract the powder inside to start a good
+strong fire. Snatching a few crackers for yourself, you set a trail of fuses
+leading to a pile of fire powder and lit it at that very moment, you heard a
+commotion a few hundred feet across the camp indicating to you that one of your
+comrades had been discovered. It was fine, you had prepared for this. 
+Peering over the top of the food cart, you saw that it was in Ford's area,
+which meant that you were to leave the camp and meet up with Robin imediately
+while Dykester went to Ford's aid to escape as well. 
+Right near the exit, you met with Robin, who nearly decapitated you, thinking
+that you were a kobold. Shortly thereafter, you were once again perched atop a
+burm watching the increasingly chaotic escape of Dykester and Ford. You weren't
+too worried. Dykester had the edge on stealth while Ford could probably handle
+fifty kobolds at once. Another minute later you saw three large fires blossom
+one after the other within the camp. After about five minutes you started to
+get a little worried for your allies but just before you were about to go
+against the plan and head back in for a rescue. They appeared bounding the
+rudimentary wall of carts and bolting towards you with a look of urgency
+written on their faces. 
+You back away and begin running back farther from the burm and the camp with
+Dykester and Ford in hot pursuit trailing a score of kobolds in their wake. 
+Fortunately, you were still just on the edge of the major badlands, so the
+landscape was favorable. Only a minute later, you managed to duck into a
+rivine and lose your pursuers.
+Another minute of silence later, you all shared a laugh. Phase one of the plan
+had worked.
+'''
+        , .041)
+        input()
+        dprint( # turning the kobold army pt 2
+            f'''
+The rest of that day passed with a feeling of triumphant smugness as you
+watched the kobolds struggle to return order in their camp and dapart several
+hours later than they would have normally. You could almost see the worry in
+their eyes as they had only a little over half the food the started off with,
+three hours less sleep than they would have liked, two less of their higher up
+leaders and about a dozen less troops which they had woken to find dead in the
+middle of their camp. Not to mention they still had yet to see their Boss who
+would be leading the attack and they were all now wary of a remarkably steathy
+band of bandits still on the loose likely watching their every move, waiting
+for another moment of weakness.
+The night came and went quick as ever, your tasks reamined the same as planned
+for the end of phase one: keep your eyes on the kobolds, stay hidden and keep
+them paranoid. As the morning rose again you took you chance to sleep for a few
+hours before the beginning of phase two which would happen soon.
+'''
+        , .041)
+        input()
+        dprint( # turning the kobold army pt 3
+            f'''
+Right on time, Ford woke you and the others from his watch. On the horrizon,
+you could see a small mass approaching from the south. It took you all of
+about ten seconds to pack up and you head south to meet the approaching group
+which turns out within clearer eye sight to be the captain again and ninety
+other people all clad in thick armor and large heavy weapons. According to plan
+it was all the heaviest and most intimidating fighters set to the defense of
+Greentown. Each individual person had a handcart with them. making the group
+look a lot larger than just less than one hundred people.
+For maximum intimidation, the plan was to get one smaller group of about twenty
+or so to the back of the camp and make it look like something of a coordinated
+pincer attack. If worst came to worst, that would indeed be the role it would
+play, but that was unlikely. Another hour and a half later, both groups were in
+position and the signal was given to aproach the camp. Mere moments later, the
+groups were spotted by the kobold watchmen and an alarm was raised.
+After a while, a messenger envoy was sent to the larger forward group. Captain
+Gurenge and fifteen other soldiers met the solitary messenger half way. Near
+the end of their negotiation, the captain ordered a volley of fire arrows to be
+fired into the camp. Upon returning the captain reported on the conversation:
+"basically, the messenger told us that we were vastly outnumbered and out
+matched in every way and so on not looking alltogether convinced himself. After
+continued insistance that we would attack if they did not retreat, he
+threatened that they would kill all the human child prisoners they had within
+their camp. Well that was easy enough to counter, essentially, I imediately
+called his bluf and ordered that fire arrow barrage just to show that we really
+have no qualms with just blowing them to smithereens. Well, he didn't like that
+and negotiations ended pretty soon after. Last thing he told me was that he
+would report and come back with his leader's reply."
+'''
+        , .0415)
+        input()
+        dprint( # turning the kobold army pt 4
+            f'''
+It took a while, nearly four hours, but finally the messenger reapeared, this
+time accompanied by fifty or more other kobolds all armed. 
+"Oh boy," remarked the captain as he prepared with his envoy to depart again,
+"this otta be interesting."
+Again meeting somewhere in the middle so as not to reveal your true numbers,
+the captain this time brought you and the rest of team one with you to the
+negotiations as well.
+The kobold messenger hailed you and started simply with a short reply from his
+leaders, "We have recieved your conditions and have decided that they mean very
+little to us! We will commence our attack on you as we have recieved direct
+orders from our great Boss to forestall the attack for nothing!"
+"A little intresting hearing that, seeing as little Illfang still has yet to
+show his ugly face."
+The kobolds looked visibly shaken by this remark.
+"How," began the messenger, but he was interrupted by one who was clearly the
+highest ranking kobold present.
+"Lort Boss, will arrife on the tay we siege of your puny fillage! In the mean
+time he has ortered us to stop for nothin or no one." as he said this, he and
+soon after those around him drew their weapons and brindished them theateningly
+towards you.
+"Oh yeah!?" shouted Captain Gurenge, "I dissagree, I think he's here right
+now!"
+At those words and awave of the captian's hand, a cloth was pulled from
+somewhere nearby revealing, Illfang's severed head, mounted on a pike.
+"Is he comming?! Will he continue those orders?! Illfang is dead! He was weak!
+It took only a few of us to get to him and kill him! You're all no different so
+by all means if you wish to die keep coming! Attack!"
+By this time, blades were being drawn on the human side as well and the entire
+kobold envoy was physically staggering eyes shifting between the head of their
+leader. 
+"Charge towards death with all the speed and power you can muster! It'll make
+it more entertaining to strike you back into the dirt! Give them their Boss
+Dovin, we've got too many pikes anyway!"
+Just as the Kobolds were now phisically backing away, the pike bearer, a
+massively built man called Dovin lifted the pike and with a roar, hurled the
+pike, head first into the center of the kobold envoy. The kobold's were now in
+full retreat with the human envoy shouting after them joined by the battle
+cries of all their reinforcements far behind them. 
+Within twenty minutes your tiny by comparison human force was marching towards
+the camp. The kobolds were already in retreat but upon seeing this, they made
+it less of a "pack up and go" retreat and more of a an "abandon all and run"
+retreat. The kobolds army had been turned without a single drop of human blood
+spilt.
+'''
+        , .042)
+        input()
+        dprint( # thirty two victory 0
+            f'''
+Broken weapons, discarded supplies, and hastily abandoned tents and carts
+littered the ground, a testament to their hasty flight. The successful human
+force stood victorious, their cheers reverberating through the air, a rallying
+cry of triumph and unity. 
+Some time later as you were on your way back to Greentown at last, Captain
+Gurenge turned to you, his voice low and steady despite the jubilant sounds
+around him. "I won't lie to you," he said, his gaze fixed on the horizon where
+the kobolds had fled. "I knew we had a good chance of success but you know,
+I've never actually been very good at this whole 'negotiating' thing. I was
+terrified facing all that at once. But seeing their faces when they realized
+Illfang was defeated. . . that was worth every second, I'd do that again in a
+heartbeat. . . Well, actually, no, I really don't want anything like this to
+ever happen again," he finished with a wry smile.
+"You seemed fairly confident to me!" you chuckle back.
+"You can talk!" exclaimed the captain, having never actually seen you're words
+in dialogue before, "By the way, I should tell you, we already know that the
+vision Illfang showed us was just a false illusion but you'll be happy to know
+that I saw your sister back at Greentown, what was her name? R- uh, ra re ro
+ra. . . I know it starts with an R, your family seems to have a thing for that.
+Well, either way she looked in good health! I know that was your main motive
+for heading south in the first place, so I figured that'd make your day even
+better. . . if at all possible!"
+'''
+        , .043)
+        input()
+        dprint( # thirty two victory 0 pt 2
+            f'''
+Over all, it was a cheerfull and triumphant journey back, better especially
+after hearing that piece of news from Captain Gurenge. You walked with a little
+more spring in your step all the way until you saw the walls in the distance
+when, unable to help yourselves, you Robin and a few others ran all the way
+there.
+At some point a messenger must have let the town know the results of the
+previous day, and so, when you arrived, the defenses were unmanned, the watch
+was down and the whole town was waiting just about the walls for their heroes
+to return.
+The first eyes and arms to reach yours were those of your family. Your whole
+family too. You were surprised and somewhat upset to see that your father Rulid
+Sr. and older brother Elond had risked their safeties to come back home to see
+things through for Greentown. But that didn't matter anymore, the danger had
+passed, the enemy had been defeated and you were all back together for the
+first time in a long time that now seemed to span years. So much had happened
+that you didn't want or care to remember now as the arms of those you cared
+most about of all of humanity enveloped you. 
+The rest of that evening passed by in a blurr of joy and celebration. There
+wasn't a ton of food left in the town for a feast of any kind or a big party
+but there was hardly any need for such things. What the three youngest children
+of the Rulid family had been through over the last nearly full season, just the
+time spent together was more joyful, fulilling and comfortable, than the most
+expensive party ever. 
+'''
+        , .044)
+        input()
+        dprint( # adventure transition
+            '''
+Another few days passed while the town concluded the last reparations from the
+events of what was now becoming known as the kobold war. Refugees from
+Tolbantha and Pompon were making there last preparations to head back and
+reclaim their abandoned villages. 
+One morning, you were asked to give an official report on everything that you
+had seen and done while investigating the kobolds and hunting your siblings and
+Luxkhanna who you thought at the time was the kobold Boss. Upon hearing your
+story, you were officially given, with several others including the members of
+the advance team who went up to defeat Illfang and rescue the captives, a
+special award recognizing service to the southern region of Mainenkedren, and
+Suphia was given a Mithril Prism a special and rare medal of high honor in the
+Mainenkedren military for great heroism in the field of battle. Electo,
+recieved it and would later present it at her grave within Greentown.
+That night after the ceremonies, You recieved a summons once more to the town
+hall, willingly but by now rather reluctantly, you made your way there and met
+the Captain Outh Gurenge with about a dozen other people including three very
+short individuals you suspected were not human. 
+"Hey, Bro, over here!" called the familiar voice of Elond. He was bouncing
+towards you in his usual exitable manner, you father looking to you as well
+from farther behind.
+"Excellent! Your here!" called the Captain as well.
+"What's this all about?" you ask puzzled and slightly amused at the somewhat
+rag-tag group after such formalities earlier. 
+"Well, after everything that's happened with the kobold war, I've got to go up
+the the capital and give an official report to my higher-ups. As it turns out,
+your father's caravan here are heading up to Kedren Main next anyway and I
+figured I'd come along."
+"Right. . . so. . ." you prompt.
+"So, we both know that you gave your full report already, but it would be most
+beneficial for everyone involved if you would join me in this report as well,
+you being a key player in all this after all. I will perfectly understand if
+you wouldn't want to leave again especially after only being back for a few
+days now."
+You looked at your father, who smiled before saying, "I already talked with
+your mother about it, you're only a little over two seasons from eighteen and
+you've done more than most my age could say! Plus, you'll be with the whole
+crew and heading up the the capital is, frankly, a once in a lifetime
+opportunity for a lot of people. I mean, unless you're in the shipping business
+like your brother and I in which case, its usually at least once a year if not
+more, which unfortunately leaves us less available to go home. Ah, but that
+makes reunions all the better right-"
+"The point is," cut in Elond with a smile, who, like you, knew you Father had
+always been somewhat long winded, "Mom, and a bunch of other people say your cut
+out for this. So if you're not all adventured out. You would add a lot to the
+Outh's report. And who knows, maybe you could find you're future somewhere out
+there. . ."
+He held his shoulders in a shrug and gestured to you in a "what do you say?"
+sort of manner.
+"Absolutely, that sounds fantastic!" you answer having thought it through in
+only a second or two, "Just in case, though, I want to talk to mom myself about
+this."
+Elond and your father noded understandingly.
+"And also, when are you planning on heading out."
+"Last week." murmured a gruff voice in the back of the group, it was one of the
+shorter non-humans you had spotted earlier. Looking closer now, you saw that
+it was unmistakably a dwarf. You had seen only a few in living memory but each
+time left such a lasting and distinct impression that you could recall their
+general apearance quite well.
+"Uh, heh heh, yeah, the sooner the better if possible." said Elond.
+"O. . . K. . ? And one more thing, how long have you been on a first name basis
+with the captain?"
+'''
+        , .0465)
+        input()
+        dprint( # adventure transition pt 2
+            f'''
+It was decided.
+Once more you were going to head out and by the sounds of it, it could be for a
+long time. You had enjoyed the past several days with your family reunited. The
+joy, relief and general positivity of that time had left the family trademark
+single dimple on your right cheek sore from smiling and laughing. But you knew
+also that with Robin at home and the threat of monsters mostly abaited, and
+especially with more work to be done, you couldn't sit idly forever. There was
+more to do, more lives to change, help and save, and no matter the cost, you
+had decided long ago along your adventure, that if that was a possibility, you
+would not hessitate to take it.
+The events of the Kobold War had changed you. No longer were you bound by the
+comforts of home and the familiarities of your life in Greentown. Maybe it was
+only temporary, but you had a feeling that this next adventure, just as Elond
+had said, would lead into the future of your life. After what you had been
+through, the ups and downs would hardly matter. The road ahead was uncertain,
+but you welcomed it with open arms. You had faced the unimaginable and come out
+stronger.
+Whatever lay beyond the horizon, you were more than prepared.
+'''
+        , .0485)
+        input()
+        dprint('. . . . . . . . . ', .1) # lore (a look into the dark side)
+        dprint(
+            f'''
+Complete, absolute, all consuming darkness was the only fitting description of
+this place. All was still, almost afraid to disturb the cold, dead silence.
+The darkness and stillness was suddenly split by a shpere of blinding orange
+light and a crack like a discharge of lightning. The light quickly faded but
+before the sound fully echoed into silence, a young voice replaced it. 
+"What is it sorcerer?"
+The voice that responded was older and thick with the irregularities of a
+second language.
+"My Lord Kairon, he is dead."
+"Yet, I detect that you have not procured the spell you were also set out to
+find for me."
+"Yes lord, I have failed."
+A certain shift in the air made the atmosphere seem heavier.
+The older voice continued, "Might I suggest you give this task to lord T-"
+"DO not dare utter his name here. As you well know he has much to do of his own
+still!"
+The young voice of Lord Kairon dropped to a whisper so dangerous it seemed to
+phisically freeze the air.
+"Do you know why you have failed so miserably, slaadpole?"
+"I confess, I do not."
+"Obviously!" Spat lord Kairon, "I want you to hear and listen to my words now
+with every cell of your pathetic mind, becuase starting now, your life depends
+on it."
+There was dragging moment of silence following these words that seemed to
+penetrate deeper than before.
+"Good. Now, the reason for your failure is simple and pointless. You, are fully
+capable of performing this task being as powerful as you are. But you simply
+refuse to do it yourself. You rely pointlessly on your underlings and that cult
+as if it was YOU they worship! I now command you, with the same task as before,
+but this time to do it YOURSELF! Time is running thin for the both of us. There
+will be no more room for failure this time. And. . . once you're done, go to
+Lord Dakamos at the primed horrizon. He will need to examine the spell along
+with his other preparations long before it is cast. Are your commands perfectly
+clear?"
+"Yes."
+"Yes," repeated lord Kairon in a voice dripping with wrath and mockery, "Now,
+your god does not completely overlook your successes. Before you return, go to
+the Temple Of The Hand, there you will find your reward, and remember, leave
+none alive. This gift should be FULLY appriciated."
+There was another ear splitting crack, another flash and there was silence once
+again.
+'''
+        , .05)
+        input()
+        dprint( # lore (a look into the dark side) pt 2
+            f'''
+A few moment's passed and an new light appeared, faint and blue but just
+bright enough to somewhat illuminate the figure holding this new light. The
+tattered black hood still obscured the face underneath except for a few strands
+of wavy hair and two pin points of crimson light. The voice under the hood was
+the voice of Lord Kairon.
+"Appologies, Mozkith, the slaad came to call at just the wrong moment."
+"How do you put up with them," replied a voice from the light, sounding equally
+young but so ragged and hoarse it sounded like a forced whisper, as though it
+saw very little use, "The slime would be long dead if it was me."
+"What word do you have of the enemy?"
+"Actually this is something else. It's Kil. . ."
+"Isn't that still the enemy?"
+"Regardless, a servant of hers has recently been thwarted by none but a gaggle
+of human pesants somewhere near the primed horrizon. It was a rather ingenious
+strategem on her part all things considered. She used a force and a race so
+insignificant that it completely passed under my gaze yet still nearly
+succeeded."
+"What force? What race?"
+"Wild Kobolds."
+Lord Kairon snorted his disbelief.
+"Fortunately," continued Mozkith, "I know of at least one other similar plot
+happening a little closer to the primed horrizon that will be equally simple to
+quash."
+"Very good. Would you like me to keep an eye out for similar plans as well?"
+"As it turns out that was precisely what I was going to ask of you. I need more
+eyes than just my own lately."
+"And you question why I have servants."
+Mozkith scoffed loudly but continued, "Any word from Dakamos?"
+"I hear very little, but he is where he needs to be. The time is close now,"
+answered Lord Kairon.
+"Yes. . . I can feel it in the air. Well, see you somewhat soon then, Kairon."
+"Yes, I think so, Mozkith."
+The light faded and silence and darkness once again filled the air, as in the
+same moments, an impossible distance away, the young hero {self.player.name} settled into
+bed awaiting a morning departure on {self.player.grammer['altposs']} next great adventure.
+'''
+        , .051)
+        input() # the end.
 

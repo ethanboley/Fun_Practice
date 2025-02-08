@@ -749,3 +749,4 @@ udomain = input('Choose your Domain \n1: Fighter \n2: Mage \n3: Pugilist\n')
                 else:
                     dprint(f'{self.active_player.name} failed their escape attempt.')
 
+

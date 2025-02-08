@@ -15,12 +15,12 @@ from things_stuff import Skill, Spell, Spall
 
 
 def define_xp_thresholds():
-    """
+    '''
     Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
 
     Returns:
         dict: Dictionary containing level-based XP thresholds.
-    """
+    '''
 
     base_xp = 100
     xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
@@ -38,39 +38,43 @@ def choose_monster(player, monsters):
     return random.choice(worthies)
 
 
-def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\n') -> None:
-    """
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n', story:bool | None = False) -> None:
+    '''
     Writes text to the terminal one character at a time at a specified speed.
 
     Args:
         text (str | None): The text to be printed. Defaults to an empty string.
         speed (float | None): The delay in seconds between characters, defaults to 0.035.
         end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+        story (bool | False): story mode or not. 
 
     Returns: None
-    """
+    '''
     skip_slow_display = False
 
     for char in text:
         if not skip_slow_display:
             sys.stdout.write(char)
             sys.stdout.flush()
-            time.sleep(speed) # lower value is faster
+            if story:
+                time.sleep(0.05)
+            else:
+                time.sleep(speed)
         else:
-            sys.stdout.write(char) # really puts in perspective how fast .write() is
+            sys.stdout.write(char)
 
-        if msvcrt.kbhit():  # Check if a key is pressed
+        if msvcrt.kbhit(): # Check if a key is pressed
             key = msvcrt.getch().decode('utf-8')
-            if key == '\r':  # Press Enter to skip
+            if key == '\r': # Press Enter to skip
                 skip_slow_display = True
 
-    sys.stdout.write(end)  # Add the correct end when done
+    sys.stdout.write(end) # Add the correct end when done
+    if story:
+        input()
 
 
 def display_health(player):
-    percent = (player.hp / player.maxhp) * 100 # __ what about a situation where the player max = 33 and the hp = 7?
-    # that would make percent = 21.2121212121212121...
-    # Therefore the next line would do some funky things because it is not working with int. 
+    percent = (player.hp / player.maxhp) * 100
 
     if 50 < percent <= 100:
         ansi_code = '\033[38;2;0;160;10m' # Green RGB:0,160,10
@@ -116,9 +120,13 @@ def get_validated_input(prompt, options):
             if isinstance(option, Skill):
                 print(f'{i}: {option.name}; cost: {option.cost}, cooldown: {option.cooldown}, power: {option.damage}')
             else:
-                print(f'{i}: {option.name}')
-        
-        user_in = input("Enter the number: ").strip()
+                try:
+                    print(f'{i}: {option.name}')
+                except AttributeError:
+                    option = option[0]
+                    print(f'{i}: {option.name}')
+
+        user_in = input('Enter the number: ').strip()
         
         if user_in == '':
             user_in = '1'  # Default to the first option
@@ -203,7 +211,7 @@ def attack_timing_window(monster, player) -> int:
     chwnd = wg.GetForegroundWindow()
     
     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
-    shell = wcc.Dispatch("WScript.Shell")
+    shell = wcc.Dispatch('WScript.Shell')
     shell.SendKeys(' ') # I have actually no idea why this works but it does
     wg.SetForegroundWindow(hwnd)
 
@@ -372,7 +380,7 @@ def basic_player_prompt(*prompts):
         for i in range(len(prompts)):
             dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
 
-        user_in = input("Enter the number: ").strip()
+        user_in = input('Enter the number: ').strip()
 
         if user_in == '':
             user_in = '1'  # Default to the first option
@@ -384,7 +392,7 @@ def basic_player_prompt(*prompts):
 
 
 def ascci_fireworks():
-    dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!')
+    dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!', .05)
     dprint(
         '''
                                                                         *,                  _`Y,           
@@ -416,6 +424,6 @@ def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False
     if special:
         specv = 1.15
     rand = random.randint(95,105) / 100
-    base_damage = (2.1 + level / 2.718) * (atk ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
-    return int(final_damage)
+    return round(final_damage)
