@@ -1,6 +1,6 @@
 
 from actions import *
-from monsters import init_enemies
+from monsters import init_enemies, Ally
 
 
 class Battle:
@@ -14,6 +14,19 @@ class Battle:
         self.name = 'battle'
         self.battle_options = ['attack', 'special', 'item', 'run', 'auto/controlled']
         self.all_monsters = init_enemies()
+
+    def check_revived_allies(self):
+        candidates = list(self.full_parti) + [a for a in self.active_player.allies if a not in self.full_parti]
+        for ally in candidates:
+            if isinstance(ally, Ally):
+                if ally.hp > 0 and ally not in self.active_teamates:
+                    self.active_teamates.append(ally)
+                    if ally not in self.active_player.allies:
+                        self.active_player.allies.append(ally)
+                    if ally not in self.full_parti:
+                        self.full_parti.append(ally)
+                    dprint(f'{ally.name} rejoins the battle!')
+        self.active_player.fix_team()
 
     def run(self, player=None, world=None, xp_thresholds=None):
         return self.regular([monster for monster in self.all_monsters if monster.name in player.monsters_seen])
@@ -135,6 +148,8 @@ class Battle:
             # Add new monsters for story battles
             if not is_boss and len(self.active_monsters) == 0 and to_use_mons:
                 self.active_monsters.append(to_use_mons.pop())
+                if self.active_monsters[-1] not in self.full_parti:
+                    self.full_parti.append(self.active_monsters[-1])
                 dprint(f'A {self.active_monsters[-1].name} closes in!')
 
             # Handle monster turns
@@ -200,6 +215,7 @@ class Battle:
                     if target.hp <= 0:
                         if target.next_phase(self.active_player, boss_dialog, self.xp_thresholds):
                             self.active_monsters.remove(target)
+                self.check_revived_allies()
             
             elif option in ['3', 'item', 'Item', 'i', 'I', 'bag', 'Bag', 'b', 'B']:
                 # define the target
@@ -209,11 +225,14 @@ class Battle:
                 self.active_player.use_item(target, self.xp_thresholds)
                 # update active monsters
                 if not target.is_alive():
-                    self.active_monsters.remove(target)
+                    if target in self.active_monsters:
+                        self.active_monsters.remove(target)
                 if hasattr(target, 'phases'):
                     if target.hp <= 0:
                         if target.next_phase(self.active_player, boss_dialog, self.xp_thresholds):
-                            self.active_monsters.remove(target)
+                            if target in self.active_monsters:
+                                self.active_monsters.remove(target)
+                self.check_revived_allies()
             
             elif option in ['4','run','Run','RUN','rUN','r','R','4: run','four','nigero','flee']:
                 escape = sum(1 for _ in self.active_monsters if self.active_player.run())
@@ -232,6 +251,7 @@ class Battle:
                         return False
                 if escape > 0:
                     self.active_monsters.clear()
+                    self.active_teamates.clear()
                     self.full_parti.clear()
                 return True
 
@@ -240,10 +260,10 @@ class Battle:
 
     def handle_ally_turns(self, seconds, boss_dialog):
         for ally in self.active_player.allies:
-            if seconds % ally.agi == 0 and len(self.active_monsters):
+            if ally in self.active_teamates and seconds % ally.agi == 0 and len(self.active_monsters):
                 target = ally.choose_target(self.active_monsters)
                 ally.take_turn(target, self.active_player)
-                if target.has_phases:
+                if getattr(target, 'has_phases', False):
                     if target.hp <= 0:
                         if target.next_phase(self.active_player, boss_dialog, self.xp_thresholds):
                             self.active_monsters.remove(target)
@@ -251,6 +271,7 @@ class Battle:
                     if target in self.active_monsters:
                         self.active_monsters.remove(target)
                     self.active_player.gain_xp(ceil(target.xp / (len(self.active_teamates))), self.xp_thresholds)
+                self.check_revived_allies()
 
     def handle_monster_turns(self, seconds):
         for monster in self.active_monsters:
@@ -260,32 +281,30 @@ class Battle:
                     break
                 monster.attack(target)
                 if not target.is_alive():
+                    if target.hp < 0:
+                        target.hp = 0
                     if target in self.active_teamates:
                         self.active_teamates.remove(target)
-                    try:
-                        self.active_player.allies.remove(target)
-                    except ValueError as value_error:
-                        self.active_player.allies.append(target) # do nothing agi
-                        self.active_player.allies.remove(target)
     
     def handle_boss_turns(self, seconds):
         for monster in self.active_monsters:
             if monster.has_phases:
                 if seconds % monster.agi == 0:
                     target = monster.choose_target(self.active_teamates)
+                    if target is None:
+                        break
                     monster.fight(target)
                     if not target.is_alive():
+                        if target.hp < 0:
+                            target.hp = 0
                         if target in self.active_teamates:
                             self.active_teamates.remove(target)
-                        try:
-                            self.active_player.allies.remove(target)
-                        except ValueError as value_error:
-                            self.active_player.allies.append(target) # do nothing
-                            self.active_player.allies.remove(target)
 
     def handle_additional_monsters(self, seconds, mon_list):
         if seconds % 6000 == 0:
             self.active_monsters.append(choose_monster(self.active_player,mon_list))
+            if self.active_monsters[-1] not in self.full_parti:
+                self.full_parti.append(self.active_monsters[-1])
             dprint('The sound of battle and the smell of blood atracts')
             dprint(f'a {self.active_monsters[-1].name} which joins the fight!')
 
@@ -294,10 +313,12 @@ class Battle:
             dprint('You have no idea how to fight!')
             return False
         
-        self.active_teamates.append(self.active_player)
+        self.active_monsters.clear()
+        self.active_teamates = [self.active_player]
         for ally in self.active_player.allies:
-            if ally not in self.active_teamates:
+            if ally.is_alive() and ally not in self.active_teamates:
                 self.active_teamates.append(ally)
+
         if rand:
             self.active_monsters.append(choose_monster(self.active_player, mon_list))
         else:
@@ -309,20 +330,17 @@ class Battle:
                 # Add one monster at a time for regular story battles
                 self.active_monsters.append(to_use_mons.pop())
 
-        # remove any duplicates that may have possibly occured at any point ever
-        # (I'm so freaking done with this issue)
-        unique_teamates = set()
         for ally in self.active_teamates:
-            unique_teamates.add(ally)
-        final_team = list(unique_teamates)
-
-        self.active_teamates = final_team
-        self.active_player.allies.clear()
-        for ally in self.active_teamates:
-            self.active_player.allies.append(ally)
-        self.active_player.allies.remove(self.active_player)
-        self.full_parti.extend(self.active_teamates)
-        self.full_parti.extend(self.active_monsters)
+            if ally != self.active_player and ally not in self.active_player.allies:
+                self.active_player.allies.append(ally)
         self.active_player.fix_team()
+
+        self.full_parti = [self.active_player]
+        for ally in self.active_player.allies:
+            if ally not in self.full_parti:
+                self.full_parti.append(ally)
+        for mon in self.active_monsters:
+            if mon not in self.full_parti:
+                self.full_parti.append(mon)
         return True
 

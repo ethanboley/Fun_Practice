@@ -6,6 +6,8 @@ from misc import Hospital, Marketplace, Gym, Alchemy, Quit
 from story.book_1 import *
 from story.book_2 import *
 import pickle
+import glob
+import datetime
 
 
 skills = init_skills()
@@ -18,7 +20,7 @@ class SaveLoad:
         self.xp_thresholds = xp_thresholds
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        if os.path.exists('save_file.pkl') and player != None:
+        if self.list_saves() and player != None:
             dprint('1: Save\n2: Load\n3: Erase save\n4: Return\n')
             user = input().strip().lower()
             if user in ['','s','save','1','o','one','w','d','x','z','a','q','1: save']:
@@ -38,8 +40,8 @@ class SaveLoad:
                     dprint(' . . . ',.085)
                     dprint('Returning . . .')
                     return True
-            elif user in ['e','3','erase','es','erase save','three','t','del','3: erase save']:
-                os.remove('save_file.pkl')
+            elif user in ['e','3','erase','es','erase save','three','del','3: erase save']:
+                self.delete_save()
                 return True
             else:
                 return True
@@ -48,41 +50,114 @@ class SaveLoad:
             return True
         else:
             return True
+
+    def list_saves(self):
+        return sorted(glob.glob('*.pkl'), key=os.path.getmtime, reverse=True)
             
-    def save(self, filename='save_file.pkl', player:Fighter=None):
+    def save(self, filename='', player:Fighter=None):
+        dprint('Name your file (or hit enter for a default): ', end='')
+        user = input().strip().lower()
+        filename = user if user != '' else 'save_file'
+        filename = filename + '.pkl'
+        dprint(f'Your file is called: {filename}')
         with open(filename, 'wb') as file:
             pickle.dump(player, file)
         return True
 
-    def load(self, filename='save_file.pkl'):
+    def load(self):
+        # Newest saves first
+        saves = self.list_saves()
+        if not saves:
+            dprint('No save files found.')
+            return None
+
+        dprint('Available save files:')
+        for i, path in enumerate(saves, start=1):
+            name = os.path.splitext(path)[0]
+            dprint(f'{i}: {name}')
+
+        while True:
+            dprint('Enter a number or file name to load (or hit enter to cancel): ', end='')
+            choice = input().strip().lower()
+
+            if choice == '':
+                return True
+            if choice.isdigit() and 1 <= int(choice) <= len(saves):
+                filename = saves[int(choice) - 1]
+                break
+            if choice + '.pkl' in saves:
+                filename = choice + '.pkl'
+                break
+            dprint('That is not one of the listed save files. Try again.')
+
         try:
             with open(filename, 'rb') as file:
                 return pickle.load(file)
+        except (pickle.UnpicklingError, EOFError, AttributeError):
+            dprint('The file was currupted!')
+            return True
         except FileNotFoundError:
-            print(f'No save file found at {filename}.')
+            dprint(f'No save file found at {filename}.')
+            return True
+
+    def delete_save(self):
+        saves = self.list_saves()
+        if not saves:
+            dprint('No save files found.')
+            return
+        for i, path in enumerate(saves, start=1):
+            dprint(f'  {i}. {os.path.splitext(path)[0]}')
+        dprint('Enter a number to delete (or hit enter to cancel): ', end='')
+        choice = input().strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(saves):
+            os.remove(saves[int(choice) - 1])
+            dprint('Save deleted.')
+
+    def choose_save(self):
+        """Show available saves and return the chosen filename, or None."""
+        saves = self.list_saves()
+        if not saves:
             return None
+
+        dprint('Available save files:')
+        for i, path in enumerate(saves, start=1):
+            name = os.path.splitext(path)[0]
+            dprint(f'{i}: {name}')
+
+        while True:
+            dprint('Enter a number or file name to load (or hit enter to cancel): ', end='')
+            choice = input().strip().lower()
+
+            if choice == '':
+                return None
+            if choice.isdigit() and 1 <= int(choice) <= len(saves):
+                return saves[int(choice) - 1]
+            if choice + '.pkl' in saves:
+                return choice + '.pkl'
+            dprint('That is not one of the listed save files. Try again.')
 
 
 class WorldOne:
-    def __init__(self, name, xp_thresholds):
+    def __init__(self, name):
         self.name = name
         self.number = 1
         self.mon_list = init_enemies()
         self.world_monsters = [monster for monster in self.mon_list if 1 in monster.world]
-        self.xp_thresholds = xp_thresholds
+        self.xp_thresholds:dict = define_xp_thresholds()
+        self.save_system = SaveLoad(self.xp_thresholds)
         self.pc = self.create_character()
         self.book_one = BookOne(self.pc, self.xp_thresholds)
         self.book_two = BookTwo(self.pc, self.xp_thresholds)
         self.world_options = self.update_world_options()
 
     def create_character(self):
-        if os.path.exists('save_file.pkl'):
+        if self.save_system.list_saves():
             dprint('You have a save file available. \nLoad? \n1: Y \n2: N')
             uload = input().strip().lower()
             if uload in ['0','1','','!',')','q','`','y','t','g','h','u','6','7','yes','l','load','?','1: y','1: yes','1:y','sure','s','i would like to load the file thank you','one','uno','e','w','3','load? 1: y']:
-                pc = self.load('save_file.pkl')
+                pc = self.load()
                 if pc != None:
-                    return pc                    
+                    return pc
         dprint('What is your name: ')
         pname = input()
         dprint(f'Is {pname} male or female?')
@@ -123,36 +198,27 @@ class WorldOne:
             pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
             return pc
 
-    def save(self, filename='save_file.pkl'):
-        if os.path.exists(filename):
-            os.remove(filename)
-        with open(filename, 'wb') as save_file:
-            pickle.dump(self.pc, save_file)
-        print(f'Game saved to {filename}.')
+    def load(self):
+        filename = self.save_system.choose_save()
+        if filename is None:
+            print('No save file selected.')
+            return None
 
-    def load(self, filename):
         try:
-            with open('save_file.pkl', 'rb') as save_file:
-                try:
-                    player_data = pickle.load(save_file)
-                except EOFError as err:
-                    dprint('The file was currupted!')
-                    print(f'{err}\n\n')
-                    dprint(' . . . ',.085)
-                    dprint('Creating new character . . .')
-                    return None
-                except pickle.UnpicklingError as err:
-                    dprint('The file was currupted!')
-                    print(f'{err}\n\n')
-                    dprint(' . . . ',.085)
-                    dprint('Creating new character . . .')
-                    return None
-
-                print(f'Game loaded from {filename}.')
-                return player_data
+            with open(filename, 'rb') as save_file:
+                pc = pickle.load(save_file)
+        except (EOFError, pickle.UnpicklingError, AttributeError) as err:
+            dprint('The file was corrupted!')
+            print(f'{err}\n\n')
+            dprint(' . . . ', .085)
+            dprint('Creating new character . . .')
+            return None
         except FileNotFoundError:
             print(f'No save file found at {filename}.')
             return None
+
+        print(f'Game loaded from {filename}.')
+        return pc
 
     def introdction(self):
         if self.pc.xp <= 0:

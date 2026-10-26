@@ -9,6 +9,7 @@ import win32gui as wg
 import win32com.client as wcc
 import os
 import json
+import re
 
 from things_stuff import Skill, Spell, Spall
 
@@ -38,39 +39,145 @@ def choose_monster(player, monsters):
     return random.choice(worthies)
 
 
-def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n', story:bool | None = False) -> None:
-    '''
-    Writes text to the terminal one character at a time at a specified speed.
 
-    Args:
-        text (str | None): The text to be printed. Defaults to an empty string.
-        speed (float | None): The delay in seconds between characters, defaults to 0.035.
-        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
-        story (bool | False): story mode or not. 
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n',
+           story:bool | None = False, dialog:tuple | None = None, wrap:bool = False) -> None:
+    """
+    Writes text to the terminal one character at a time at a specified
+    speed with dynamic tags
 
-    Returns: None
-    '''
-    skip_slow_display = False
+    ### Args:
+        *text* (`str` | `None`): The text to be printed. Defaults to an empty string.
+        *speed* (`float` | `None`): The delay in seconds between characters, defaults to 0.035.
+        *end* (`str` | `None`): The string appended after the text is fully printed. Defaults to a newline.
+        *story* (`bool` | `False`): story mode or not.
+        *dialog* (`tuple` (`mid_text_sleep`, `end_sleep`, `end_str`) | `None`): specific settings for quoting.
+        *wrap* (`bool` | `False`) line wrap at col 60 if True. 
 
-    for char in text:
-        if not skip_slow_display:
-            sys.stdout.write(char)
-            sys.stdout.flush()
-            if story:
-                time.sleep(0.05)
+    ### Returns: None
+
+    ### Tags: 
+         - `[#]` wait # seconds
+         - `[w]` wait 1 second
+         - `[s:#]` set speed to # seconds
+         - `[s]` reset speed
+         - `[p]` pause+newline
+         - `[r]` pause
+         - `[n]` newline
+    """
+    # Early exit for empty text
+    if not text: 
+        sys.stdout.write(end)
+        return
+
+    # Text precessing, normalize to unix and replace only single newlines
+    text = text.replace('\r\n', '\n')
+    if wrap: text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+
+    # Dialog setup, pause map adds time value to current_speed
+    stops = {'.':.05, ',':.02, '\n':.0008, '"':.035, '\'':.026, ';':.02, '?':.06,
+             '!':.045, '(':.0005, ')':.005, '*':.0015, '-':.001}
+    mid_text_sleep, end_sleep, dialog_end = dialog if dialog else (0, 0, end)
+    if dialog: end, story = dialog_end, False
+
+    base_speed = current_speed = 0.05 if story else speed
+    skip = False
+
+    # Tokenizer: define what tags look like, split text on them
+    tag_pat = re.compile(r'(\[(?:n|p|r|w|s|s:\d*\.?\d+|\d*\.?\d+)\])', re.IGNORECASE)
+    tokens = []
+    for part in tag_pat.split(text):
+        if not part: continue
+        # if tag, it becomes one token; otherwise, each character becomes its own token.
+        # 'Hi[w]!' becomes: [{'type': 'char', 'val': 'H'}, {'type': 'char', 'val': 'i'}, {'type': 'tag', 'val': '[w]'}, {'type': 'char', 'val': '!'}]
+        tokens += [{'type': 'tag', 'val': part}] if tag_pat.match(part) else [{'type': 'char', 'val': c} for c in part]
+
+    def _wait_enter():
+        while msvcrt.getch() not in (b'\r', b'\n'): pass
+
+    # Word wrap pass: replace text in tokens such that each line wraps at col 60
+    if wrap:
+        col, limit = 0, 60
+        def _next_word_len(i):
+            n = 0
+            for t in tokens[i:]:
+                if t['type'] == 'char' and t['val'] in (' ', '\n'): 
+                    break
+                if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'): 
+                    break
+                if t['type'] == 'char': 
+                    n += 1
+            return n
+        i = 0
+        while i < len(tokens):
+            t = tokens[i]
+            if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'):
+                col = 0
+            elif t['type'] == 'char':
+                c = t['val']
+                if c == '\n': 
+                    col = 0
+                elif c == ' ':
+                    # THE FIX: If we are at the start of a line, delete the space token
+                    if col == 0:
+                        t['val'] = ''
+                    elif col + 1 + _next_word_len(i+1) > limit:
+                        t['val'] = '\n'
+                        col = 0
+                    else:
+                        col += 1
+                elif c == '-':
+                    col += 1
+                    if col + _next_word_len(i+1) > limit:
+                        tokens.insert(i+1, {'type': 'char', 'val': '\n'})
+                else: 
+                    col += 1
+            i += 1
+
+    # Main render loop: process tag behavior, write all else apropriately
+    for tok in tokens:
+        if tok['type'] == 'tag':
+            tag = tok['val'].lower()
+            if   tag == '[n]':
+                sys.stdout.write('\n')
+            elif tag == '[p]':
+                # The `(not skip) and func()` pattern is a short-circuit evaluation,
+                # only calls func() if skip is False
+                (not skip) and _wait_enter()
+                sys.stdout.write('\n')
+            elif tag == '[r]':
+                (not skip) and _wait_enter()
+            elif tag == '[s]':
+                current_speed = base_speed
+            elif tag == '[w]':
+                (not skip) and time.sleep(1.0)
+            elif tag.startswith('[s:'):
+                current_speed = float(tag[3:-1])
             else:
-                time.sleep(speed)
-        else:
-            sys.stdout.write(char)
+                (not skip) and time.sleep(float(tag[1:-1]))
+            continue
+        
+        # write c tokens to the screen
+        c = tok['val']
+        if not c: 
+            continue
+        sys.stdout.write(c); sys.stdout.flush() if not skip else None
+        if not skip:
+            if dialog:
+                time.sleep(mid_text_sleep + stops.get(c, 0))
+            elif c != '\n':
+                time.sleep(current_speed)
+        if msvcrt.kbhit() and msvcrt.getch().decode('utf-8') == '\r':
+            skip = True
 
-        if msvcrt.kbhit(): # Check if a key is pressed
-            key = msvcrt.getch().decode('utf-8')
-            if key == '\r': # Press Enter to skip
-                skip_slow_display = True
+    # add proper end chaacter and exit
+    sys.stdout.write(end)
+    if dialog:
+        time.sleep(end_sleep)
+    if story and not skip:
+        _wait_enter()
+        sys.stdout.write('\n')
 
-    sys.stdout.write(end) # Add the correct end when done
-    if story:
-        input()
 
 
 def display_health(player):
@@ -177,7 +284,9 @@ def attack_timing_window(monster, player) -> int:
 
     # initialize starting values
     rail_size, hit_dc, speed, chances = monster.ac
-    difficulty_mod = abs(player.level - monster.level) * 2
+    delta_level = max(0, player.level - monster.level)
+    raw_bonus = 80 * (delta_level / (delta_level + 10))
+    difficulty_mod = round(raw_bonus / 2) * 2
 
     # initialize fps to the passed speed value and the slider speed to 1
     fps = speed
@@ -237,8 +346,8 @@ def attack_timing_window(monster, player) -> int:
 
     # Target area properties
     target_width = hit_dc + difficulty_mod
-    if target_width + (ceil(target_width * sub_factor) * 2) > window_width:
-        target_width = 30
+    if target_width + (ceil(target_width * sub_factor) * 2) > bar_length:
+        target_width = 180
     target_x = bar_x + (bar_length - target_width) // 2
     target_y = bar_y - 5
     target_height = bar_height + 10

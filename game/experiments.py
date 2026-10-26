@@ -5,144 +5,262 @@ import sys
 import msvcrt
 import random
 from colorama import ansi, Fore, Style
-import pygame as pg
 import sys
 from math import ceil
 from fractions import Fraction
 import win32gui as wg
 import win32com.client as wcc
 from pynput import keyboard as kb
+import turtle
+import datetime
+import matplotlib.pyplot as plt
+import re
+import pygame as pg
 
 
 
+# # ---------- player (fighter) stats by level -------------
 
-# ---------- player (fighter) stats by level -------------
+# def random_point_allocation(level):
+#     points = 5 + (level // 10)
+#     statses = {'hpp':0, 'atkp':0, 'acup':0, 'magp':0, 'agip':0, 'sklp':0}
+#     for i in range(points):
+#         stat = random.choice(list(statses.keys()))
+#         statses[stat] += 1
+#     return tuple(statses.values())
 
-def random_point_allocation(level):
-    points = 5 + (level // 10)
-    statses = {'hpp':0, 'atkp':0, 'acup':0, 'magp':0, 'agip':0, 'sklp':0}
-    for i in range(points):
-        stat = random.choice(list(statses.keys()))
-        statses[stat] += 1
-    return tuple(statses.values())
+# # Set Initial Stats
+# def display_stats():
+#     max_hp = 10
+#     atk = 2
+#     accuracy = 750
+#     skill_slots = 1
+#     max_mag = 10
+#     agi = 999
+#     prog = 0
+#     tsklp = 0
+#     # Iterate through levels 1-n
+#     for level in range(1, 101):
+#         # Update stats for each level
+#         hpp, atkp, acup, magp, agip, sklp = random_point_allocation(level)
+#         max_hp += 4 + round(1.03 ** level) + hpp
+#         atk += 1 + round((1.03 ** level) / 5) + atkp if level % 8 == 0 else round((1.03 ** level) / 5) + atkp
+#         accuracy += 2 * acup if accuracy < 998 else 0
+#         tsklp += sklp
+#         skill_slots = 1 + int(math.log(level, 1.85) + (sklp * 0.015))
+#         max_mag += 1 + (level // 40) + magp if level % 5 == 0 else (level // 40) + magp
+#         agi -= 1 + agip if agi > 400 else ceil(agip / 1.5)
+#         prog += 2 if level % 3 == 0 else 3
 
-# Set Initial Stats
-def display_stats():
-    max_hp = 10
-    atk = 2
-    accuracy = 750
-    skill_slots = 1
-    max_mag = 10
-    agi = 999
-    prog = 0
-    tsklp = 0
-    # Iterate through levels 1-n
-    for level in range(1, 101):
-        # Update stats for each level
-        hpp, atkp, acup, magp, agip, sklp = random_point_allocation(level)
-        max_hp += 4 + round(1.03 ** level) + hpp
-        atk += 1 + round((1.03 ** level) / 5) + atkp if level % 8 == 0 else round((1.03 ** level) / 5) + atkp
-        accuracy += 2 * acup if accuracy < 998 else 0
-        tsklp += sklp
-        skill_slots = 1 + int(math.log(level, 1.85) + (sklp * 0.015))
-        max_mag += 1 + (level // 40) + magp if level % 5 == 0 else (level // 40) + magp
-        agi -= 1 + agip if agi > 400 else ceil(agip / 1.5)
-        prog += 2 if level % 3 == 0 else 3
-
-        # Print the stats for the current level
-        print(f'Level {level + 1}:')
-        print(f'\tMax HP: {max_hp}; ATK: {atk}; Accuracy: {accuracy}; Skill Slots: {skill_slots}; Max MAG: {max_mag}; AGI: {agi}; story progress: {prog}')
-
-
-
-
-
-# -------------- dprint ------------------
-
-
-
-def dprint(text='', speed:float | None = 0.035, end:str | None = '\n'):
-    skip_slow_display = False
-
-    for char in text:
-        if not skip_slow_display:
-            sys.stdout.write(char)
-            sys.stdout.flush()
-            time.sleep(speed) # lower value is faster
-        else:
-            sys.stdout.write(char) # really puts in perspective how fast .write() is
-
-        if msvcrt.kbhit():  # Check if a key is pressed
-            key = msvcrt.getch().decode('utf-8')
-            if key == '\r':  # Press Enter to skip
-                skip_slow_display = True
-
-    sys.stdout.write(end)  # Add the correct end when done
+#         # Print the stats for the current level
+#         print(f'Level {level + 1}:')
+#         print(f'\tMax HP: {max_hp}; ATK: {atk}; Accuracy: {accuracy}; Skill Slots: {skill_slots}; Max MAG: {max_mag}; AGI: {agi}; story progress: {prog}')
 
 
 
 
 
-
-# ---------------------- xp thresholds testing ---------------
-
+# # -------------- dprint ------------------
 
 
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n',
+           story:bool | None = False, dialog:tuple | None = None, wrap:bool = False) -> None:
+    """
+    Writes text to the terminal one character at a time at a specified
+    speed with dynamic tags
 
-# def define_xp_thresholds():
+    ### Args:
+        *text* (`str` | `None`): The text to be printed. Defaults to an empty string.
+        *speed* (`float` | `None`): The delay in seconds between characters, defaults to 0.035.
+        *end* (`str` | `None`): The string appended after the text is fully printed. Defaults to a newline.
+        *story* (`bool` | `False`): story mode or not.
+        *dialog* (`tuple` (`mid_text_sleep`, `end_sleep`, `end_str`) | `None`): specific settings for quoting.
+        *wrap* (`bool` | `False`) line wrap at col 60 if True. 
+
+    ### Returns: None
+
+    ### Tags: 
+         - `[#]` wait # seconds
+         - `[w]` wait 1 second
+         - `[s:#]` set speed to # seconds
+         - `[s]` reset speed
+         - `[p]` pause+newline
+         - `[r]` pause
+         - `[n]` newline
+    """
+    # Early exit for empty text
+    if not text: 
+        sys.stdout.write(end)
+        return
+
+    # Text precessing, normalize to unix and replace only single newlines
+    text = text.replace('\r\n', '\n')
+    if wrap: text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+
+    # Dialog setup, pause map adds time value to current_speed
+    stops = {'.':.05, ',':.02, '\n':.0008, '"':.035, '\'':.026, ';':.02, '?':.06,
+             '!':.045, '(':.0005, ')':.005, '*':.0015, '-':.001}
+    mid_text_sleep, end_sleep, dialog_end = dialog if dialog else (0, 0, end)
+    if dialog: end, story = dialog_end, False
+
+    base_speed = current_speed = 0.05 if story else speed
+    skip = False
+
+    # Tokenizer: define what tags look like, split text on them
+    tag_pat = re.compile(r'(\[(?:n|p|r|w|s|s:\d*\.?\d+|\d*\.?\d+)\])', re.IGNORECASE)
+    tokens = []
+    for part in tag_pat.split(text):
+        if not part: continue
+        # if tag, it becomes one token; otherwise, each character becomes its own token.
+        # 'Hi[w]!' becomes: [char:'H', char:'i', tag:'[w]', char:'!']
+        tokens += [{'type': 'tag', 'val': part}] if tag_pat.match(part) else [{'type': 'char', 'val': c} for c in part]
+
+    def _wait_enter():
+        while msvcrt.getch() not in (b'\r', b'\n'): pass
+
+    # Word wrap pass: replace text in tokens such that each line wraps at col 60
+    if wrap:
+        col, limit = 0, 60
+        def _next_word_len(i):
+            n = 0
+            for t in tokens[i:]:
+                if t['type'] == 'char' and t['val'] in (' ', '\n'): 
+                    break
+                if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'): 
+                    break
+                if t['type'] == 'char': 
+                    n += 1
+            return n
+        i = 0
+        while i < len(tokens):
+            t = tokens[i]
+            if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'):
+                col = 0
+            elif t['type'] == 'char':
+                c = t['val']
+                if c == '\n': 
+                    col = 0
+                elif c == ' ':
+                    # THE FIX: If we are at the start of a line, delete the space token
+                    if col == 0:
+                        t['val'] = ''
+                    elif col + 1 + _next_word_len(i+1) > limit:
+                        t['val'] = '\n'
+                        col = 0
+                    else:
+                        col += 1
+                elif c == '-':
+                    col += 1
+                    if col + _next_word_len(i+1) > limit:
+                        tokens.insert(i+1, {'type': 'char', 'val': '\n'})
+                else: 
+                    col += 1
+            i += 1
+
+    # Main render loop: process tag behavior, write all else apropriately
+    for tok in tokens:
+        if tok['type'] == 'tag':
+            tag = tok['val'].lower()
+            if   tag == '[n]':
+                sys.stdout.write('\n')
+            elif tag == '[p]':
+                # The `(not skip) and func()` pattern is a short-circuit evaluation,
+                # only calls func() if skip is False
+                (not skip) and _wait_enter()
+                sys.stdout.write('\n')
+            elif tag == '[r]':
+                (not skip) and _wait_enter()
+            elif tag == '[s]':
+                current_speed = base_speed
+            elif tag == '[w]':
+                (not skip) and time.sleep(1.0)
+            elif tag.startswith('[s:'):
+                current_speed = float(tag[3:-1])
+            else:
+                (not skip) and time.sleep(float(tag[1:-1]))
+            continue
+        
+        # write c tokens to the screen
+        c = tok['val']
+        if not c: 
+            continue
+        sys.stdout.write(c); sys.stdout.flush() if not skip else None
+        if not skip:
+            if dialog:
+                time.sleep(mid_text_sleep + stops.get(c, 0))
+            elif c != '\n':
+                time.sleep(current_speed)
+        if msvcrt.kbhit() and msvcrt.getch().decode('utf-8') == '\r':
+            skip = True
+
+    # add proper end chaacter and exit
+    sys.stdout.write(end)
+    if dialog:
+        time.sleep(end_sleep)
+    if story and not skip:
+        _wait_enter()
+        sys.stdout.write('\n')
+    # dprint(str(tokens), wrap=True) # debreaking
+
+# # ---------------------- xp thresholds testing ---------------
+
+
+
+
+# # def define_xp_thresholds():
+# #     base_xp = 100
+# #     xp_thresholds = []
+# #     for i in range(105):
+# #         xp_thresholds.append(base_xp)
+# #         thresh = round((base_xp * 1.25) + (100 + (i + 1))) # 100, 125 + 101, ...
+# #         base_xp = thresh
+# #     return xp_thresholds
+
+
+# def define_xp_thresholds_d():
+#     """
+#     Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
+
+#     Returns:
+#         dict: Dictionary containing level-based XP thresholds.
+#     """
+
 #     base_xp = 100
-#     xp_thresholds = []
-#     for i in range(105):
-#         xp_thresholds.append(base_xp)
-#         thresh = round((base_xp * 1.25) + (100 + (i + 1))) # 100, 125 + 101, ...
-#         base_xp = thresh
+#     xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
+
+#     for i in range(1, 104):  # Iterate from 1 to 104 (inclusive) for 104 levels
+#       thresh = round((base_xp * 1.25) + (100 + i))
+#       xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
+#       base_xp = thresh
+
 #     return xp_thresholds
 
 
-def define_xp_thresholds_d():
-    """
-    Calculates and returns a dictionary mapping level (1 to n) to XP thresholds.
+# def display_xp_thresholds_d(xp_thresholds:dict):
+#     for key, value in xp_thresholds.items():
+#         print(f'level: {key}, \n\tthreshold: {value}')
+#     for key, value in xp_thresholds.items():
+#         print(f'({key},{value}),', end='')
 
-    Returns:
-        dict: Dictionary containing level-based XP thresholds.
-    """
+# # def display_xp_thresholds(xp_thresholds:list):
+# #     for i in range(len(xp_thresholds)):
+# #         print(f'level: {i + 1}, \n\tthreshold: {xp_thresholds[i]}          requirement: {xp_thresholds[i] - xp_thresholds[i - 1]}')
 
-    base_xp = 100
-    xp_thresholds = {1:base_xp}  # Use a dictionary to store level-XP pairs
-
-    for i in range(1, 104):  # Iterate from 1 to 104 (inclusive) for 104 levels
-      thresh = round((base_xp * 1.25) + (100 + i))
-      xp_thresholds[i + 1] = thresh  # Set level (i+1) as key, XP threshold as value
-      base_xp = thresh
-
-    return xp_thresholds
-
-
-def display_xp_thresholds_d(xp_thresholds:dict):
-    for key, value in xp_thresholds.items():
-        print(f'level: {key}, \n\tthreshold: {value}')
-    for key, value in xp_thresholds.items():
-        print(f'({key},{value}),', end='')
-
-# def display_xp_thresholds(xp_thresholds:list):
-#     for i in range(len(xp_thresholds)):
-#         print(f'level: {i + 1}, \n\tthreshold: {xp_thresholds[i]}          requirement: {xp_thresholds[i] - xp_thresholds[i - 1]}')
-
-# def display_both_thresh(xp_thresholds:list, xp_thresholds_dict:dict):
-#     for key, value in xp_thresholds_dict.items():
-#         print(f'dict level: {key}          dict thresh: {value}')
-#         print(f'list level: {key}          list thresh: {xp_thresholds[key - 1]}')
+# # def display_both_thresh(xp_thresholds:list, xp_thresholds_dict:dict):
+# #     for key, value in xp_thresholds_dict.items():
+# #         print(f'dict level: {key}          dict thresh: {value}')
+# #         print(f'list level: {key}          list thresh: {xp_thresholds[key - 1]}')
 
 
 
 
-# ---------- fun colored health bars --------------------
+# # ---------- fun colored health bars --------------------
 
 class Player:
     def __init__(self):
         self.hp = 112
         self.maxhp = 100
-        self.level = 3
+        self.level = 8
         self.name = 'Rulid'
         self.acu = 700
         self.accuracy = 80
@@ -215,270 +333,300 @@ class Player:
 
 tpc = Player()
 
-# def display_health(player):
-#     percent = (player.hp / player.maxhp) * 100 # __ what about a situation where the player max = 33 and the hp = 7?
-#     # that would make percent = 21.2121212121212121...
-#     # Therefore the next line would do some funky things because it is not working with int. 
+# # def display_health(player):
+# #     percent = (player.hp / player.maxhp) * 100 # __ what about a situation where the player max = 33 and the hp = 7?
+# #     # that would make percent = 21.2121212121212121...
+# #     # Therefore the next line would do some funky things because it is not working with int. 
 
-#     if 50 < percent <= 100:
-#         ansi_code = '\033[38;2;0;160;10m' # Green RGB:0,160,10
-#     elif 25 < percent <= 50:
-#         ansi_code = '\033[38;2;255;200;0m' # Yellow RGB:255,200,0
-#     elif 10 < percent <= 25:
-#         ansi_code = '\033[38;2;255;90;0m' # Orange RGB:255,90,0
-#     elif 0 < percent <= 10:
-#         ansi_code = '\033[38;2;160;0;30m' # Red RGB:160,0,30
-#     else:
-#         ansi_code = '\033[38;2;60;0;180m' # Blue RGB:60,0,180
-#     ansi_end = '\033[0m'
+# #     if 50 < percent <= 100:
+# #         ansi_code = '\033[38;2;0;160;10m' # Green RGB:0,160,10
+# #     elif 25 < percent <= 50:
+# #         ansi_code = '\033[38;2;255;200;0m' # Yellow RGB:255,200,0
+# #     elif 10 < percent <= 25:
+# #         ansi_code = '\033[38;2;255;90;0m' # Orange RGB:255,90,0
+# #     elif 0 < percent <= 10:
+# #         ansi_code = '\033[38;2;160;0;30m' # Red RGB:160,0,30
+# #     else:
+# #         ansi_code = '\033[38;2;60;0;180m' # Blue RGB:60,0,180
+# #     ansi_end = '\033[0m'
 
-#     bars_to_print = u'\u2588' * int(percent // 2)
+# #     bars_to_print = u'\u2588' * int(percent // 2)
 
-#     if percent % 2 == 0: # the percentage is even
-#         if percent > 0: # even and greater than 0
-#             fitting_end = ' ' * int(50 - (percent // 2)) + u'\u258f'
-#         elif percent > 100 or percent <= 0: # even and greater than 100
-#             fitting_end = ''
-#     else: # the percentage is odd
-#         if 0 < percent <= 100: # odd and between (0,100]
-#             fitting_end = u'\u258c' + ' ' * int((50 - (percent // 2)) - 1) + u'\u258f'
-#         elif percent < 0: # odd and below 0
-#             fitting_end = ''
-#         else: # odd and above 100
-#             fitting_end = u'\u258c'
+# #     if percent % 2 == 0: # the percentage is even
+# #         if percent > 0: # even and greater than 0
+# #             fitting_end = ' ' * int(50 - (percent // 2)) + u'\u258f'
+# #         elif percent > 100 or percent <= 0: # even and greater than 100
+# #             fitting_end = ''
+# #     else: # the percentage is odd
+# #         if 0 < percent <= 100: # odd and between (0,100]
+# #             fitting_end = u'\u258c' + ' ' * int((50 - (percent // 2)) - 1) + u'\u258f'
+# #         elif percent < 0: # odd and below 0
+# #             fitting_end = ''
+# #         else: # odd and above 100
+# #             fitting_end = u'\u258c'
 
-#     numeric_representation = f'{player.hp}/{player.maxhp}'
+# #     numeric_representation = f'{player.hp}/{player.maxhp}'
     
-#     print(ansi_code + bars_to_print + fitting_end + ansi_end, end='')
-#     print(f'{numeric_representation:>10}   {player.name}')
+# #     print(ansi_code + bars_to_print + fitting_end + ansi_end, end='')
+# #     print(f'{numeric_representation:>10}   {player.name}')
 
 
 
-# print(Fore.LIGHTMAGENTA_EX + "This text is printed in red color!" + Style.RESET_ALL)
+# # print(Fore.LIGHTMAGENTA_EX + "This text is printed in red color!" + Style.RESET_ALL)
 
-# print("\033[38;2;0;255;40mThis text is a custom green\033[0m")
-# print("\033[38;2;255;235;0mThis text is a custom yellow\033[0m")
-# print("\033[38;2;255;105;50mThis text is a custom orange\033[0m")
-# print("\033[38;2;255;0;60mThis text is a custom red\033[0m")
-
-
+# # print("\033[38;2;0;255;40mThis text is a custom green\033[0m")
+# # print("\033[38;2;255;235;0mThis text is a custom yellow\033[0m")
+# # print("\033[38;2;255;105;50mThis text is a custom orange\033[0m")
+# # print("\033[38;2;255;0;60mThis text is a custom red\033[0m")
 
 
-# ------- Pygame stuffs --------
 
-# class Monster:
-#     def __init__(self) -> None:
-#         self.ac = (600, 130, 480, 20) # rail size, hit dc, speed, chances
-#         self.level = 3
 
-# tmon = Monster()
+# # ------- Pygame stuffs --------
 
-# # Initialize Pygame
-# pg.init()
+class Monster:
+    def __init__(self) -> None:
+        self.ac = (600, 5, 480, 20) # rail size, hit dc, speed, chances
+        self.level = 3
 
-# def attack_timing_window(monster, player) -> int:
-#     '''
-#     Creates a Pygame window that simulates an attack timing challenge. Closes
-#     and returns with enter key or after closing the window.
+tmon = Monster()
 
-#     Args:
-#         monster: an Enemy or other object with ac and level attributes
-#         player: a Player object with acu and level attributes
+# Initialize Pygame
+pg.init()
+
+
+def attack_timing_window(monster, player) -> int:
+    '''
+    Creates a Pygame window that simulates an attack timing challenge. Closes
+    and returns with enter key or after closing the window.
+
+    Args:
+        monster: an Enemy or other object with ac and level attributes
+        player: a Player object with acu and level attributes
     
-#     Returns:
-#         hit_v (int, between 0 and 1000 inclusive): A hit value representing how
-#         close the user came to hitting the target.
-#     '''
+    Returns:
+        hit_v (int, between 0 and 1000 inclusive): A hit value representing how
+        close the user came to hitting the target.
+    '''
 
-#     # initialize starting values
-#     rail_size, hit_dc, speed, chances = monster.ac
-#     difficulty_mod = abs(player.level - monster.level) * 2
+    # initialize starting values
+    rail_size, hit_dc, speed, chances = monster.ac
+    delta_level = max(0, player.level - monster.level)
+    raw_bonus = 80 * (delta_level / (delta_level + 10))
+    difficulty_mod = round(raw_bonus / 2) * 2
 
-#     # initialize fps to the passed speed value and the slider speed to 1
-#     fps = speed
-#     adjusted_speed = 1
+    # initialize fps to the passed speed value and the slider speed to 1
+    fps = speed
+    adjusted_speed = 1
 
-#     # decrease fps until it is between 120 and 240 doubling speed each time
-#     while fps > 240:
-#         fps //= 2
-#         adjusted_speed *= 2
+    # decrease fps until it is between 120 and 240 doubling speed each time
+    while fps > 240:
+        fps //= 2
+        adjusted_speed *= 2
     
-#     # set the true speed of the slider
-#     speed = round(adjusted_speed)
+    # set the true speed of the slider
+    speed = round(adjusted_speed)
 
-#     # initialize the hit condition
-#     hit_v = 1000
+    # initialize the hit condition
+    hit_v = 1000
 
-#     # Set the width and height of the window
-#     window_width = 1000
-#     window_height = 100
+    # Set the width and height of the window
+    window_width = 1000
+    window_height = 100
 
-#     # Panic timer
-#     passes = 0
+    # Panic timer
+    passes = 0
 
-#     # Create the window
-#     window = pg.display.set_mode((window_width, window_height))
-#     pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
+    # Create the window
+    window = pg.display.set_mode((window_width, window_height))
+    pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
 
-#     # window control 
-#     # Find the window handle
-#     hwnd = pg.display.get_wm_info()['window']
-#     chwnd = wg.GetForegroundWindow()
+    # window control 
+    # Find the window handle
+    hwnd = pg.display.get_wm_info()['window']
+    chwnd = wg.GetForegroundWindow()
     
-#     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
-#     shell = wcc.Dispatch("WScript.Shell")
-#     shell.SendKeys(' ') # I have actually no idea why this works but it does
-#     wg.SetForegroundWindow(hwnd)
+    # Bring the window to the foreground using some butt janky scripting found on stackoverflow
+    shell = wcc.Dispatch('WScript.Shell')
+    shell.SendKeys(' ') # I have actually no idea why this works but it does
+    wg.SetForegroundWindow(hwnd)
 
-#     # Define colors
-#     BLACK = (80, 80, 80) # value to be used for testing
-#     BROWN = (150, 85, 60) # value to be used for testing
-#     WHITE = (200, 200, 200) # value to be used for testing
-#     PURPLE = (35, 0, 60)
-#     RED_ORANGE = (255, 55, 0)
-#     YELLOW_ORANGE = (255, 180, 0)
-#     GREEN = (0, 225, 50)
-#     YELLOW = (220, 255, 0)
-#     RED = (200, 0, 40)
-#     BLUE = (40, 100, 255)
+    # Define colors
+    BLACK = (80, 80, 80) # value to be used for testing
+    BROWN = (150, 85, 60) # value to be used for testing
+    WHITE = (200, 200, 200) # value to be used for testing
+    PURPLE = (35, 0, 60)
+    RED_ORANGE = (255, 55, 0)
+    YELLOW_ORANGE = (255, 180, 0)
+    GREEN = (0, 225, 50)
+    YELLOW = (220, 255, 0)
+    RED = (200, 0, 40)
+    BLUE = (40, 100, 255)
 
-#     sub_factor = .65
+    sub_factor = .65
 
-#     # Bar properties
-#     bar_length = rail_size if rail_size < window_width else 600
-#     bar_height = 20
-#     bar_x = (window_width - bar_length) // 2
-#     bar_y = (window_height - bar_height) // 2
+    # Bar properties
+    bar_length = rail_size if rail_size < window_width else 600
+    bar_height = 20
+    bar_x = (window_width - bar_length) // 2
+    bar_y = (window_height - bar_height) // 2
 
-#     # Target area properties
-#     target_width = hit_dc + difficulty_mod
-#     if target_width + (ceil(target_width * sub_factor) * 2) > window_width:
-#         target_width = 30
-#     target_x = bar_x + (bar_length - target_width) // 2
-#     target_y = bar_y - 5
-#     target_height = bar_height + 10
+    # Target area properties
+    target_width = hit_dc + difficulty_mod
+    if target_width + (ceil(target_width * sub_factor) * 2) > bar_length:
+        target_width = 180
+    target_x = bar_x + (bar_length - target_width) // 2
+    target_y = bar_y - 5
+    target_height = bar_height + 10
 
-#     # Sub-target areas properties'
-#     sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
-#     sub1_x = target_x - sub1_width
-#     sub1_y = bar_y - 3
-#     sub1_height = bar_height + 6
+    # Sub-target areas properties'
+    sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
+    sub1_x = target_x - sub1_width
+    sub1_y = bar_y - 3
+    sub1_height = bar_height + 6
     
-#     sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
-#     sub2_x = target_x + target_width
-#     sub2_y = bar_y - 3
-#     sub2_height = bar_height + 6
+    sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
+    sub2_x = target_x + target_width
+    sub2_y = bar_y - 3
+    sub2_height = bar_height + 6
 
-#     # slider properties
-#     slider_width = 2
-#     slider_height = 30
-#     slider_speed = speed if speed < target_width else target_width // 2
+    # slider properties
+    slider_width = 2
+    slider_height = 30
+    slider_speed = speed if speed < target_width else target_width // 2
 
-#     # Initialize the slider position and direction
-#     slider_x = bar_x
-#     slider_direction = slider_speed
+    # Initialize the slider position and direction
+    slider_x = bar_x
+    slider_direction = slider_speed
 
-#     # Initialize the clock
-#     clock = pg.time.Clock()
+    # Initialize the clock
+    clock = pg.time.Clock()
 
-#     # Main loop
-#     running = True
-#     while True:
-#         for event in pg.event.get():
-#             if event.type == pg.QUIT:
-#                 hit_v = 1000
-#                 running = False
-#                 break
-#             elif event.type == pg.KEYDOWN:
-#                 if event.key == pg.K_RETURN:
-#                     if target_x <= slider_x <= target_x + target_width:
-#                         # Center field
-#                         distance = abs(slider_x - (target_x + target_width / 2))
-#                         hit_v = round((distance / (target_width / 2)) * player.accuracy)
-#                         running = False
-#                         break
-#                     elif sub1_x <= slider_x < target_x:
-#                         # Left subfield
-#                         distance = abs(sub1_x + sub1_width - slider_x)
-#                         normalized_distance = distance / sub1_width
-#                         hit_v = round(player.accuracy + normalized_distance * player.acu)
-#                         running = False
-#                         break
-#                     elif target_x + target_width < slider_x <= sub2_x + sub2_width:
-#                         # Right subfield
-#                         distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
-#                         normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
-#                         hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
-#                         running = False
-#                         break
-#                     else:
-#                         # Outer field
-#                         if slider_x < sub1_x:
-#                             # Beyond the left subfield
-#                             distance = abs(slider_x - sub1_x)
-#                             maxdist = sub1_x - bar_x
-#                         else:
-#                             # Beyond the right subfield
-#                             distance = abs(slider_x - (sub2_x + sub2_width))
-#                             maxdist = bar_x + bar_length - (sub2_x + sub2_width)
-#                         normalized_distance = min(distance / maxdist, 1)
-#                         hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
-#                         running = False
-#                         break
+    # Main loop
+    running = True
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                hit_v = 1000
+                running = False
+                break
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_RETURN:
+                    if target_x <= slider_x <= target_x + target_width:
+                        # Center field
+                        distance = abs(slider_x - (target_x + target_width / 2))
+                        hit_v = round((distance / (target_width / 2)) * player.accuracy)
+                        running = False
+                        break
+                    elif sub1_x <= slider_x < target_x:
+                        # Left subfield
+                        distance = abs(sub1_x + sub1_width - slider_x)
+                        normalized_distance = distance / sub1_width
+                        hit_v = round(player.accuracy + normalized_distance * player.acu)
+                        running = False
+                        break
+                    elif target_x + target_width < slider_x <= sub2_x + sub2_width:
+                        # Right subfield
+                        distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
+                        normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
+                        hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
+                        running = False
+                        break
+                    else:
+                        # Outer field
+                        if slider_x < sub1_x:
+                            # Beyond the left subfield
+                            distance = abs(slider_x - sub1_x)
+                            maxdist = sub1_x - bar_x
+                        else:
+                            # Beyond the right subfield
+                            distance = abs(slider_x - (sub2_x + sub2_width))
+                            maxdist = bar_x + bar_length - (sub2_x + sub2_width)
+                        normalized_distance = min(distance / maxdist, 1)
+                        hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
+                        running = False
+                        break
 
-#         # result found; set focus back to console, kill window, return result, do not draw again, do not pass go, do not collect $200.
-#         if not running:
-#             wg.SetForegroundWindow(chwnd)
-#             pg.quit()
-#             return hit_v
+        # result found; set focus back to console, kill window, return result, do not draw again, do not pass go, do not collect $200.
+        if not running:
+            wg.SetForegroundWindow(chwnd)
+            pg.quit()
+            return hit_v
 
-#         # Move the slider
-#         slider_x += slider_direction
+        # Move the slider
+        slider_x += slider_direction
 
-#         # Reverse the direction if the slider reaches the bar ends
-#         if slider_x <= bar_x or slider_x + slider_width >= bar_x + bar_length:
-#             slider_direction = -slider_direction
+        # Reverse the direction if the slider reaches the bar ends
+        if slider_x <= bar_x or slider_x + slider_width >= bar_x + bar_length:
+            slider_direction = -slider_direction
 
-#             # keep track of the number of times this has occured
-#             passes += 1
+            # keep track of the number of times this has occured
+            passes += 1
         
-#             # Update the displayed timer
-#             pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
+            # Update the displayed timer
+            pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
         
-#         # Check if the player has run out of chances
-#         if passes >= chances:
-#             hit_v = 1000
-#             running = False
+        # Check if the player has run out of chances
+        if passes >= chances:
+            hit_v = 1000
+            running = False
 
-#         # Clear the window
-#         window.fill(PURPLE)
+        # Clear the window
+        window.fill(PURPLE)
 
-#         # Draw the bar
-#         pg.draw.rect(window, RED, (bar_x, bar_y, bar_length, bar_height))
+        # Draw the bar
+        pg.draw.rect(window, RED, (bar_x, bar_y, bar_length, bar_height))
         
-#         # Draw the sub_target areas
-#         pg.draw.rect(window, RED_ORANGE, (sub1_x, sub1_y, sub1_width, sub1_height))
-#         pg.draw.rect(window, RED_ORANGE, (sub2_x, sub2_y, sub2_width, sub2_height))
+        # Draw the sub_target areas
+        pg.draw.rect(window, RED_ORANGE, (sub1_x, sub1_y, sub1_width, sub1_height))
+        pg.draw.rect(window, RED_ORANGE, (sub2_x, sub2_y, sub2_width, sub2_height))
 
-#         # These bars are just to add a bit more color
-#         pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
-#         pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
+        # These bars are just to add a bit more color
+        pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
+        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
 
-#         # Draw the target area
-#         pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
+        # Draw the target area
+        pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
 
-#         # Draw the slider
-#         pg.draw.rect(window, BLUE, (slider_x, bar_y - (slider_height - bar_height) // 2, slider_width, slider_height))
+        # Draw the slider
+        pg.draw.rect(window, BLUE, (slider_x, bar_y - (slider_height - bar_height) // 2, slider_width, slider_height))
 
-#         # Update the display
-#         pg.display.flip()
-
-
-#         # Set the frame rate to 120 FPS
-#         clock.tick(fps)
+        # Update the display
+        pg.display.flip()
 
 
-# ----- level up fireworks ------
+        # Set the frame rate to 120 FPS
+        clock.tick(fps)
+
+
+def play_BGM():
+    pg.mixer.music.load('game\_music\mus_date_fight.mp3')
+
+
+def basic_player_prompt(*prompts):
+    '''
+    
+    '''
+    input()
+
+    while True:
+        
+        dprint('Select response: ')
+
+        for i in range(len(prompts)):
+            dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
+
+        user_in = input('Enter the number: ').strip()
+
+        if user_in == '':
+            user_in = '1'  # Default to the first option
+
+        if user_in.isdigit():
+            user_int = int(user_in)
+            if 1 <= user_int <= len(prompts):
+                return user_int
+
+# # ----- level up fireworks ------
 
 # def ascci_fireworks():
 #     dprint('    COOOOONGRAAAAAAAAAAADUUULATIOOOOOOONNNSS!!!')
@@ -500,77 +648,75 @@ tpc = Player()
 #               \    /                      //     `                                        /`      \V
 # '''
 #     ,.0005)
-#     dprint('           YAAAAAAAAAAAAY!!!')
+# dprint('           YAAAAAAAAAAAAY!!!')
 
-# --------- dictionary stuff ---------
+# # --------- dictionary stuff ---------
 
-# def get_validated_input(prompt, options):
-#     print(prompt)
-#     for i in range(len(options)):
-#         print(f'{i + 1}: {options[i]}')
-#     return int(input())
+# # def get_validated_input(prompt, options):
+# #     print(prompt)
+# #     for i in range(len(options)):
+# #         print(f'{i + 1}: {options[i]}')
+# #     return int(input())
 
-# def get_list_option(options):
-#     ans = get_validated_input('Choose an option:', options)
-#     if ans == None:
-#         print('No options available.' )
-#         return
-#     return options[ans - 1]
+# # def get_list_option(options):
+# #     ans = get_validated_input('Choose an option:', options)
+# #     if ans == None:
+# #         print('No options available.' )
+# #         return
+# #     return options[ans - 1]
 
-# def get_dict_option(options:dict):
-#     ans = get_list_option(list(options.keys()))
-#     if ans == None:
-#         return
-#     key = ans
-#     return key
+# # def get_dict_option(options:dict):
+# #     ans = get_list_option(list(options.keys()))
+# #     if ans == None:
+# #         return
+# #     key = ans
+# #     return key
 
-# ------ math --------
+# # ------ math --------
 
-# def calculate_hp_and_attack(cons: float | None = 1.0, level: int | None = 1) -> tuple[int, int]:
-#     '''
-#     if the cons == 1:
-#         atk = level and hp = level * 20 (hp_mod)
-#     elif the cons == 0:
-#         atk = level * 2 and hp = level * 10
+# # def calculate_hp_and_attack(cons: float | None = 1.0, level: int | None = 1) -> tuple[int, int]:
+# #     '''
+# #     if the cons == 1:
+# #         atk = level and hp = level * 20 (hp_mod)
+# #     elif the cons == 0:
+# #         atk = level * 2 and hp = level * 10
     
-#     hp_mod = some int from 10-20 (20 - (cons * 10))
-#     atk_mod = 2 - cons
+# #     hp_mod = some int from 10-20 (20 - (cons * 10))
+# #     atk_mod = 2 - cons
 
-#     '''
-#     if level == 1:
-#         hp_mod = cons * 10
-#     elif level < 5:
-#         hp_mod = (level * 2) + (cons * 10)
-#     else:
-#         hp_mod = 10 + (cons * 10)
-#     atk_mod = 2 - cons
+# #     '''
+# #     if level == 1:
+# #         hp_mod = cons * 10
+# #     elif level < 5:
+# #         hp_mod = (level * 2) + (cons * 10)
+# #     else:
+# #         hp_mod = 10 + (cons * 10)
+# #     atk_mod = 2 - cons
 
-#     # Multiply the ratio by level
-#     hp = 2 if int(hp_mod * level) < 2 else int(hp_mod * level)
-#     atk = int(atk_mod * level)
+# #     # Multiply the ratio by level
+# #     hp = 2 if int(hp_mod * level) < 2 else int(hp_mod * level)
+# #     atk = int(atk_mod * level)
 
-#     return hp, atk
+# #     return hp, atk
 
-# ------ damage ------
-
-
-def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, mon=0.0, other=1) -> int:
-    critv = 1
-    specv = 1
-    if num_targets > 9:
-        num_targets = 9
-    if crit:
-        critv = 1.5
-    if special:
-        specv = 1.15
-    rand = random.randint(95,105) / 100
-    base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
-    final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
-    return round(final_damage)
+# # ------ damage ------
 
 
-# ------ tests -------
+# def damage_calculator(atk, level=1, power=0, f=0, d=0, num_targets=1, crit=False, special=False, condition=1, mon=0.0, other=1) -> int:
+#     critv = 1
+#     specv = 1
+#     if num_targets > 9:
+#         num_targets = 9
+#     if crit:
+#         critv = 1.5
+#     if special:
+#         specv = 1.15
+#     rand = random.randint(95,105) / 100
+#     base_damage = (2.1 + atk / 2.718) * (level ** .25) * ((1 + (f / 100)) / (1 + (d / 100)))
+#     final_damage = base_damage * (1.1 - num_targets / 10) * critv * specv * condition * (1 - (mon / 200)) * rand * other + power
+#     return round(final_damage)
 
-xps = define_xp_thresholds_d()
-display_xp_thresholds_d(xps)
-# display_stats()
+
+### ------ tests -------
+
+print(int(input()))

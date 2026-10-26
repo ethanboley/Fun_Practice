@@ -37,9 +37,9 @@ class Player:
         self.energized = energized # +mag
         self.auto_battle = auto_battle
         if self.gender == 'Female':
-            self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself', 'altposs':'her'}
-        else: 
-            self.grammer = {'subjective':'he', 'objective':'him', 'possessive':'his', 'reflexive':'himself', 'altposs':'his'}
+            self.grammer = {'subjective':'she', 'objective':'her', 'possessive':'hers', 'reflexive':'herself', 'altposs':'her', 'what_young':'girl', 'what_old':'woman', 'sibling':'sister', 'sibshort':'sis'}
+        else:
+            self.grammer = {'subjective':'he', 'objective':'him', 'possessive':'his', 'reflexive':'himself', 'altposs':'his', 'what_young':'boy', 'what_old':'man', 'sibling':'brother', 'sibshort':'bro'}
 
 
     def attack(self, enemy, xp_thresholds):
@@ -124,9 +124,9 @@ class Fighter(Player):
                          frightened, enraged, focused, defended, empowered,
                          weakened, energized, auto_battle)
         self.title = title
-        self.acu = acu # attack acuracy modifier
-        self.agi = agi # used for battle order like a speed stat (out of 20?)
-        self.mag = mag # used to calculate skill cost
+        self.acu = acu
+        self.agi = agi
+        self.mag = mag
         self.total_points = 0
         self.points = 0
         self.hpp = 0

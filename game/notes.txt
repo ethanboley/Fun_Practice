@@ -664,6 +664,17 @@ standards. These will eventually culminate in a final 2 part book 19 and 20 in
 which the player chases down and confronts the one who has been pulling the 
 strings over the entire story and emerges victorious.
 
+A letter to the content assistent #2 (after book 1):
+In the story I'm working on, theres a sort of extradimentional afterlife sort of thing and the laws of magic and nature typically forbid traversal to and from the worlds unless its done through death. Either way, somewhere the protagonist loses their love and decides to basically do whatever it takes to reunite, etc. So they have to find all these dark forbidden ritualistic type magics to be able to cross to the next world without dying.
+I want them to succeed, but only sort of. Their love will have changed slightly but it will be mostly a happy reunion. I have a pretty solid idea of the general shape (for lack of a better term) of the multiverse. The price required to leave the mortal world is supposed to be very high and guarded by a bunch of different entities meant to protect the veils between worlds. also its won't be enough to simply cross over, the next world is multitudes larger and more complex than the entire mortal plane ever was so it will be quite a task finding them. Also thats just one aspect of the plot, theres a lot of other stuff going on at the same time. That part just happens to be the part I'm working on the most right now.
+I haven't quite flushed out a lot of plot aspects yet, but as for the idea of other souls who have crossed over, there are a few. One of the main antagonists is a being called Vecna who succeeded in this by actually dying but then (essentially) resurrecting himself partially to be able to still "live" in the afterlife (he's basically a lich) making his process pretty much the exact opposite of the one the player will use.
+Anyway, Rowan/Reyna starts out in a little hometown called Greentown where he/she becomes involved in some kobold trouble which eventually escalates into a small war starting with a raid on Greentown and the abduction of his brother Robin and his sister Rosie. The rest of book 1 goes over his/her efforts trying to find and rescue them while also trying to figure out whats going on with the kobolds. This ends when he/she and his/her rescued little brother along with a small band of other good fighters find and destroy the Kobold Lord. The final chapter of the book gives the player a look into one of the main antagonists doing business in the shadowfell equivalent realm I haven't come up with a name for yet. It lets the player in on the idea that there is likely something much bigger than they think going on. I have only just started book 2 but it starts with Rowan/Reyna's older brother Elond and his/her father Rulid taking him/her to the capital of Kedren Main where they might have a chance to maybe start a life there (or maybe just see the sights and go home (that's not what happens but thats the sentiment going into this book)). Either way, the second book I think will be one of the least consequential to the plot but will be the one where Rowan/Reyna is introduced to all the other main characters including Rosalind/Toby, who will become Rowan/Reyna's spouse. During this book though, the player will be introduced briefly and somewhat criptically of more powerful forces at play in the form of the Cult Of The Hand which will end up playing the main antagonist role in this book in reference to the lich Vecna mentioned earlier who's hand draws significant lore.
+Book 3 I only really have vague ideas for but it will have what I'm temporarily calling The Plot Explosion which will take place about half way through in which after a somewhat mild first half of the book Rowan/Reyna's long lost oldest brother Rulid (named after his father) basically blows up the entire capital city resulting in tens of thousands of casualties and the city's remains crawling with all sorts of monsters brought over from the afterlife, specifically the part of the afterlife called Avernus (the bad place). Rulid jr, who the player (not Rowan/Reyna) now knows to be called Lord Kairon is a powerful being who just broke the laws of nature by creating a massive one way portal to the mortal plane from Avernus which caused this terrible catastrophe. The rest of book 3 and going into book 4 will be Rowan/Reyna and the protaginist group trying to figure out answers and find out more about the planes and other things in an attempt to stop what is quickly becoming a worldwide problem. In the process, some time after book 4 the player will find an old hag or sage or someone who will tell them of these dark rituals that will get them to the other side unscathed. Rowan/Reyna almost immediately rejects the idea of such horrible rituals until, sometime later Rosalind/Toby is involved in a fatal accident after which Rowan/Reyna begins to reconsider the horrors of the dark magic. After this point, my ideas really begin to be vague and scratchy but after some last adventures in the mortal world, the protagonists finally agree on breaking the fundamental laws of nature and by maybe book 6 find themselves in the next life starting in the elemental planes of earth, then water before finding there way into Avernus where eventually they will find Rosalind/Toby and reunite her/his spirit with her/his body. The plot only continues in large vague chunks after this where they need to find and destroy the evils that caused all this in the first place and end up finding even greater evils and powers in the multiverse. Fighting them and eventually, maybe even winning (IDK I haven't really thought that far yet).
+As of right now, I only have some general ideas from the stories inception including the shape of the multiverse which I want the player, at some point to traverse a lot of. Basically, at the center, you've got Earth/the mortal world/the material plane/etc, then you've got the elemental planes of water, earth, fire and air. These connect to the shadowfell and faywild equivalents which in turn link with Avernus and Elysum (the heaven equivalent). both of these connect once again to a final plane I'm temporarily calling The Nowere where its somewhat like the material plane in the sense that laws of physics apply almost normally here but its also pretty much the only thing between existence and the void. The void currently called Lho in lore is where the final boss will take place but thats so far distant that I haven't even come up with a name for the final boss yet, essentially he's going to be like a cross between Melkor from the Tolkien lore and Lucifer from Christianity. He will be the source of a kind of energy found throughout the multiverse that makes monsters monsterous. Therefore killing him will besically remove all monsters from the multiverse. Also thats all the most important parts, theres a bit more to the multiverse than that. 
+The relationship between Lho and The Nowere is not completely flushed out but I think its will be the only place in the universe with an access point to Lho. Also It'll be pretty fun because I plan on working a lot of sci-fi aspects there in contrast to the game’s hitherto fantasy style. 
+I have a whole lore thing for monsters asside from everything else. Basically, monster energy (I call it malice in like code variables but I'm not sure I'll keep that name forever) is a force that naturally permeates the universe and animates things formerly inanimate and monterizes things that were already animate like select animals and such. For example, a slime without malice would just be a puddle of water. A dire wolf would just be a really big regular wolf. A kobold would be a little more civil and less violent. All entities have some amount of malice from 0 to 100 percent concentration. For the above examples, a slime would be an example of a monster with 100 percent malice because without it it would be nothing, just some water or some other liquid for other slimes. The wolf would have something like 40 to 60 percent malice and the kobold would have about 20 percent. Malice in higher quantities also has the power to phisically shift the form of an entity. This is actually an idea for how Rosalind/Toby could be changed upon her/his rescue, she/he would have been monsterized slightly with something like 5 or less percent malice giving her/him mild phisical changes like sharper teeth or oddly colored eyes, idk. Remember Rosalind/Toby is part monster, and destroying the final boss could remove monsters from the multiverse, this will likely be one of the final threats the Boss gives as he nears his last leg. This, however will be an empty threat as monster energy would likely not kill Rosalind/Toby but merely remove all the mental aspects of their monsterism (their phisical traints would likely remain).
+Also I should say, Kairon is a part of a big old network/hierarchy of antagonists. Kairon is one of three Heirs of Vecna as I'm currently calling them. The kobolds from book 1 however were under orders from a being under the command of another main antagonist called Kil. The Heirs of Vecna have been in existence for thousands of years as a part of an experiment on immortality magic by Vecna. Originally the heirs were 3 young children taken to the shadowfell and inducted/brainwashed to do Vecna’s bidding. As each heir would die, a new one would be reborn Avatar the Last Airbender style into a new body. From there, they would grow normally until they were old enough to resume the role of Heir at which point Vecna’s magic would kick in again. Long lore dump short, Kairon, in his 300th reincarnation or somewhere along those lines decided he didn't like being a genocide slave to Vecna and so developed a counter curse that split his reincarnation among not just one child but the siblings of said child as well and also forcing that family to be the final iteration of the cycle. That family would be Rulid (who would later become the last Kairon), Elond, Rowan/Reyna (the player), Robin and Rosie. The final boss of one of the later books down the line will be the player versus his/her brother Rulid assuming the role of Kairon. Only after the final blow is dealt will Rulid tell his younger brother/sister that his death was the final step in the counter curse and now Rulid’s spirit would be free. I haven't written that part yet but its supposed to be one of the more sad moments of the entire series as Kairon, now 100 percent Rulid, no longer an heir, dies in the arms of his brother/sister who had just dealt the killing blow.
+
 There are at least 2 kinds of betrayal fast and slow: first, X suddenly betrays 
 Y resulting in questions and heartbreak; second, Y observes X make choices and 
 decisions that eventually lead them to a betrayal moment, arguably more sad 
@@ -705,7 +716,7 @@ don't necessarily hate each other but each has certain outside motivations to
 kill the other. They have been together for many years and they travel the
 planes in search of an object, location, condition or a combination of those
 things that would allow one to kill the other. Over the course of the player
-knowing them, the two grow closer for realizes, not just pretend. Near the end
+knowing them, the two grow closer for realzes, not just pretend. Near the end
 of the book, the conditions are met and a moment very similar to the ending of
 little nightmares 2 takes place but with a lit more regret involved, resulting
 in one of their deaths. The survivor, sticks around for a bit seeming utterly
@@ -790,7 +801,7 @@ have power over will be given strength and a desire to oppose you."
 who follow me will take the treasures of your worlds, and with gold and with
 silver we will buy up armies and navies, tyrants who opress and
 monsters who destroy! 
-AND I WILL REIGN WITH BLOOD AND HORROR UPON ALL CREATION!!!"
+AND REIGN WITH BLOOD AND HORROR UPON ALL CREATION!!!"
 "Depart."
 ". . . My son, be at peace, let these things be so. You, your fallen brother,
 and all will see that my works cannot be done away or altered in the least
@@ -873,118 +884,13 @@ where the beginning happened, where all father organized the Archlhos and the
 war in heaven occured.
 
 
-Species: Humans, Elves, Dwarves, Kobolds, Goblins, Orks, Meanderthralls, Gremlins, Minions, Gargoyles, Chupacabra, Colossi, Hodag, 
-Indrid Colds, Mothmen, Irrwartzi, Letiche, Melonheads, Brineies, Piazas, Rowgarous,
-Simbi, Snallygaster, Snipes, Tailypos, Wendigos, Basilisks, Dragons, Centaurs, shinigami,
-Chimeras, Vampires, Dwarves, Coacatrices, Lycanthropes, Ghouls, Griffin, Goblins,
-Hydras, Golems, Manticores, Cypactli, Sprites, Hags, Melusines, Grims, Satyrs,
-Scrats, Tarands, Yuxa, Elementals, Gnomes, Nymphs, Sylphs, Pygmies, Salamanders, 
-Undines, Trolls, Giants, Ogres, Ents, Kelpies, Akalikas, Cairngorms, Banshees, Phantoms,
-Biroks, Bluecaps, Redcaps, Boggarts, Bugganes, Cait-shith, Cu-shith, Changeling, Pixie,
-Dullahani, Whisps, Wil O Wisps, Broonies, Nine-tailed Fox, Fuaithes, Gwyllions,
-Hobs, Ly-Ergan, Merrows, Ollipheists, Philliwiggins, Pucas, Dryads, Seelies, Selkies,
-Sluaghs, Incubi, Succubi, Revenants, Zombies, Unicorns, Bicorns, Tricorns, Alerions,
-Dipsas, Pegasi, Jakali, Jackals, Monoceros, Nonoceros, Biceros, Triceros, Monocerotops,
-Nonocerotops, Bicerotops, Tricerotops, Woodwose, Fauns, Pegacorns, psudodragons,
-Wyverns, Ypotrills, Hinkypunks, Pumpkin heads, Ekans, Sandshrews, Clefairies, Vulpixes,
-Polywags, Doduos, Dotrios, Cloysters, Laprases, Eevees, Omanites, Kabutos, Xatus,
-Sudowoodos, Vaporeons, Jolteons, Flareons, Espeons, Umbreons, Leafeons, Glaceons,
-Sylveons, Drakeons, Terreons, Buldeons, Galveons, Brawleons, Entomeons, Toxeons,
-Whispeons, Eveons, Lumeons, Soneons, Chroneons, Serapheons, Shuckleses, Ursarings,
-Donphans, Mudkips, Wurmples, Arons, Raltses, Tyranosaurus Rexes, Tricerotopses,
-Veloceraptors, Quetzalcoatli, Ankylosauri, Postosuchi, Stegosauri, Diplodoci, Archaeopteryxs,
-Compsognathi, Dromaeosaurs, Blood Wolves, Bullbous Bows, Dark Dwarves, Drunk Apes,
-Glancers, Feathered Little Dragons, Feral Warders, Ruthless Warders, Garish Gerberas, Geocrawlers,
-Giantics, Guardian Knights, Killer Mantises, Land Anemones, Lesser Tarus Strikers, Lesser Tarus Breakers,
-Lesser Tarus Casters, Lesser Taruses, Greater Tarus Strikers, Greater Tarus Breakers,
-Greater Tarus Casters, Greater Taruss, Tarus Strikers, Tarus Breakers, Tarus Casters,
-Taruses, Lizardmen, Magnatheriums, Nephilias, Roaring Wolves, Scavenge Toad, Scuttle Crab,
-Four Armed Giants, Lake Kings, Skull Reapers, Thicket Spiders, Trembling Oxen, Marble Golems,
-Granite Golems, Limestone Golems, Basalt Golems, Sandstone Golems, Slate Golems, Talc Golems,
-Obsidian Golems, Amythest Golems, Diamond Golems, Coal Golems, Quartz Golems, Alluminum Golems,
-Tin Golems, Copper Golems, Black Iron Golems, Pig Iron Golems, Cast Iron Golems,
-White Iron Golems, Steel Golems, Brass Golems, Bronze Golems, Sodium Golems, Tungsten Golems,
-Titanium Golems, Platinum Golems, Silver Golems, Gold Golems, Electrum Golems, Mithril Golems,
-Alabastine Golems, Beryl Golems, Iridium Golems, Orichalcum Golems, Samite Golems, Vibranium Golems,
-Adamantite Golems, Carbonite Golems, Unobtainum Golems, Beskar Steel Golems, Dimetrium Golems,
-True Silver Golems, True Gold Golems, Duranium Golems, Necrodermis Golems, Dragonite Golems,
-Netherite Golems, Enderite Golems, Snow Golems, Ice Golems, Flower Golems, Dirt Golems,
-Clay Golems, Silt Golems, Gravel Golems, Mushroom Golems, Bone Golems, Ice golems,
-Glass Golems, Paper Golems, Bark Golems, Aromatic Golems, Zonaite Golems, Oak Golems,
-Teak Golems, Balsa Golems, Basswood Golems, Chestnut Golems, Sycamore Golems, Birch Golems,
-Maple Golems, Cherry Golems, Walnut Golems, Beech Golems, Ash Golems, Cypress Golems,
-Bamboo Golems, Hornbeam Golems, Blackwood Golems, Purpleheart Golems, Mahogany Golems,
-Ebony Golems, Ironwood Golems, Moabi Golems, Ipe Golems, Lignum Vitae Golems, Hay Golems,
-Brick Golems, Concrete Golems, Wool Golems, Slime Golems, Honey Golems, Flesh Golems,
-Rubber Golems, Plastic Golems, Water Golems, Fire Golems, Porcelain Golems, Leather Golems,
-Moss Golems, Asphault Golems, Tar Golems, Lava Golems, Wax Golems, Plush Golems,
-Coin Golems, Linen Golems, Foam Golems, Trash Golems, Lightning Golems, Wind Golems,
-Harpies, Octorocks, Keese, Fire Keese, Electric Keese, Ice Keese, Gloom Keese, 
-Wizzrobes, Blizzarobes, Thrunderobes, Meteorobes, Dodongos, Aquamentus, 
-Bokoblins, Moblins, Lizalfos, Chuchus, Armos, Ghomas, Lynels, Darknuts, Stalfos,
-Beamos, Bubles, Gibdos, Lanmolas, Likelikes, Peahats, River Zora, Ocean Zora, Lake Zora,
-Vires, Wallmasters, Zols, Magos, Bone Cuccos, Eyegores, Gorya, Helmasaurs, Hinoxen,
-Hokboks, Octoballoon, Pikit, Poes, Snap Dragon, Tektites, Goombas, Thwamps, Big Poes,
-Grand Poes, Business Scrubs, Deku Scrubs, Deku Babas, ReDeads, Mad Scrubs, Bombchus,
-Cheep-cheeps, Pokeys, Bob-ombs, Kargaroks, Helmaroks, Lakitus, Latikus, Bulblins,
-Gyorgs, Froaks, Decayed Guardian Scouts, Decayed Guardian Stalkers, Decayed Guardian Skywatchers, 
-Decayed Guardian Turrets, Decayed Guardian Sentries, Guardian Scout Mk1, Guardian Scout Mk2, 
-Guardian Scout Mk3, Guardian Scout Mk4, Guardian Scout Mk5, Guardian Scout Mk6, Guardian Scout Mkx, 
-Guardian Stalkers, Guardian Skywatchers, Guardian Turrets, Guardian Sentries, Ice-Breath Lizalfos, 
-Fire-Breath Lizalfos, Peblits, Soldier Constructs, Captain Constructs, Commander Constructs, 
-Moth Gibdos, Horriblins, Armored Gloom Lynels, Evermeans, Froxlets, Froxen, Gloomspawn,
-Taluses, Moldugas, Gleeoks, King Gleeoks, Flux Constructs, Molgeras, Colgeras, Moragias, 
-Seized Constructs, Gohdans, Divine Dragons, Chain Chomp, Piranha Plant, Blooper, Koopa Troopa, 
-Koopa Paratroopa, Dry Koopa, Boos, Teresas, Shyguys, Kinopios, Paragoomba, Wattle Dee,
-Wattle Doo, Bronto Burt, Metroids, E.M.M.I.s, Creepers, Endermen, Piglins, Blazes, Magma Cubes, 
-Shulkers, Silverfish, Withers, Wither Skeletons, Acromantuli, Blast-ended Screwt, 
-Bowtruckle, Doxies, Giant Squids, Wyrms, Drakes, Dragons, Leviathans, Kazuryus, Oroboros, 
-Giant Jellyfish, Graphorns, Grindylows, Hippocampi, Hippogriffs, Jackelopes, Jabberwokies, 
-Knolls, Kappas, Murtlaps, Nifflers, Nargles, Oni, Phoenixes, Plimpies, Pigmypuffs, 
-Pigmy Krakens, Sphinxen, Cerberi, Thestrals, Yetis, Animagi, blibbering humdingers, 
-Capricorns, Crumple-horned Snorkack, Hydras, Bugbears, Gorgons, Mummies, Mumphs, Wraxpurts, 
-Dragon Turtle Preemies, Dragon Turtle Bairns, Dragon Turtle Juveniles, Young Dragon Turtle, 
-Adult Dragon Turtle, Elder Dragon Turtle, Ancient Dragon Turtle, Lion Turtle, Beholders, 
-Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials,
-Maiar, Valar, Ainur, Animated Armor, Flying Carpets, Lemon Heads, 
-Cyclops, Death Knights, Balrogs, Wargs, Nazgul, Wraiths, Great Eagles, Maneses, Lemures,
-Dopplegangers, Shadowdragons, Air Elementals, Earth Elementals, Fire Elementals, Water Elementals,
-Plant Elementals, Thunder Elementals, Ettins, Fairy Dragons, Green Hags, Black Hags, Wood Hags, 
-Night Hags, Sea Hags, Annis Hags, Bheur Hags, Hel Hounds, Homunculi, Dust Mephits, 
-Ice Mephits, Magma Mephits, Mud Mephits, Smoke Mephits, Steam Mephits, Swamp Mephits,
-Chaos Mephits, Pete Mephits, Robo Mephits, Charcoal Mephits, Plasma Mephits, Pollen Mephits, 
-Storm Mephits, Mimics, Ilithids, Modrons, Modrones, Owlbears, Scarecrows, Slaadi, Spectres,
-Tarrasques, Troglodytes, Wights, Phase Spiders, Juggernaughts, Dreadnaughts,
-Elder Tempests, Zaratans, Inevetables, Oblexes, Wood Woads, Moamwraths, Bryllygs, Slythy Toves,
-Borogoves, Marzeedotes, Doezeedotes, Little Amzedivies, Amzidivies, Great Amzedivies, 
-Kiddleydivies, Woodenchews. 
-Inteligent races (humanoidish): Humans, Elves, Dwarves, Goblins, Halflings, Orks, Gnomes, Goliaths, 
-Firbolds, Kobolds, Giants, Taruses, Hylians, Gerudo, Gorons, Rito, Zora, Kokiri,
-Pikori, Zonai, Koroks, Hobgoblins.
-Named Side Entities: Warforged Collossus (Collossus), Marut (Inevetable), Jack (Pumpkin Head), 
-Straad (Vampire), Rudy (Tyranosaurus Rex), Pina (Feathered Little Dragon), Tonkii
-(Lake King), Arceus, The Netherite Golem (Netherite Golem), The True Gold Golem (True Gold Golem), 
-The Spirit Golem (Golem), King Dodongo (Dodongo), Queen Gibdo (variant moth gibdo), 
-Dorephan (Ocean Zora), The Eldest Kin (Hinox), Guardian Scout Prototype (Guardian Scout Mk 1),
-Flux Pavilion (Flux Construct), King Boo (Boo), Perfect EMMI (E.M.M.I.), The Whither (Wither),
-The Ender Dragon (Ancient Shadowdragon), Ungoliant (Acromantula), Shelob (Acromantula),
-Aragog (Acromantula), Mimim (Acromantula), Fire (Lion Turtle), Air (Lion Turtle),
-Water (Lion Turtle), Earth (Lion Turtle), Lightning (Lion Turtle), Life (Lion Turtle),
-The Kraken (Kraken), Xanathar (Beholder), Balor (Balrog), The Nine (Wraith(s)),
-Torterra (Zaratan). 
-Ancient Dragons: Mushussu, Apep, Vrtra, Gragoule, Ladon, Kulshedra, Unchegila, Jormungrander,
-Nithhoger, Fafnir, Azazi, Zahhak, Usumgal, Orochi, 
-Chinese dragon, Japanese Dragons, 
-Named Main Entities (-): Kil (Corrupted Seraph), Vecna (Human>Lich), The Raven Queen (Dragon/Elder Oblex), 
-Eboros (Goliath), Illfang The Kobold Lord (Ruin Kobold), Asterios The Tarus King (Greater Tarus),
-The Hand (Elf lich), The Eye (Human lich), Kairon (variant Human), Dakamos (variant Human),
-Mozkith (variant Human), Tae-Thomin The Portal King (variant Elf), Ali N'Soun (Human/Death Slaad),
-Vlig 'O Wilv (variant Black Hag), Scatha (Ancient Dragon), Kas The bloody Handed (Vampire),
-Acerak (Vampire), Raven Jasper (?), Raven Kxixi (?), Zephyr (Giant).
-Named Main Entities (+): Player Character (Human), Rulid Sr. (Human), Elond (Human),
-Robin (Human), Rosie (Human), Rulid* (variant Human), Milo (Human), Theo (Human),
-Toby (Halfling), Outh (Human), Rosalind (Human>variant Human), Ideal (Hobgoblin), Nora (Dwarf), 
-Chloe (Hylian), Wendy (Human), Callybon (Gnome), Suphia (Human), ...
+Species: Humans, Elves, Dwarves, Kobolds, Goblins, Orks, Meanderthralls, Gremlins, Minions, Gargoyles, Chupacabra, Colossi, Hodag, Indrid Colds, Mothmen, Irrwartzi, Letiche, Melonheads, Brineies, Piazas, Rowgarous, Simbi, Snallygaster, Snipes, Tailypos, Wendigos, Basilisks, Dragons, Centaurs, shinigami,Chimeras, Vampires, Dwarves, Coacatrices, Lycanthropes, Ghouls, Griffin, Goblins,Hydras, Golems, Manticores, Cypactli, Sprites, Hags, Melusines, Grims, Satyrs, Scrats, Tarands, Yuxa, Elementals, Gnomes, Nymphs, Sylphs, Pygmies, Salamanders,  Undines, Trolls, Giants, Ogres, Ents, Kelpies, Akalikas, Cairngorms, Banshees, Phantoms, Biroks, Bluecaps, Redcaps, Boggarts, Bugganes, Cait-shith, Cu-shith, Changeling, Pixie, Dullahani, Whisps, Wil O Wisps, Broonies, Nine-tailed Fox, Fuaithes, Gwyllions, Hobs, Ly-Ergan, Merrows, Ollipheists, Philliwiggins, Pucas, Dryads, Seelies, Selkies, Sluaghs, Incubi, Succubi, Revenants, Zombies, Unicorns, Bicorns, Tricorns, Alerions, Dipsas, Pegasi, Jakali, Jackals, Monoceros, Nonoceros, Biceros, Triceros, Monocerotops, Nonocerotops, Bicerotops, Tricerotops, Woodwose, Fauns, Pegacorns, psudodragons, Wyverns, Ypotrills, Hinkypunks, Pumpkin heads, Ekans, Sandshrews, Clefairies, Vulpixes, Polywags, Doduos, Dotrios, Cloysters, Laprases, Eevees, Omanites, Kabutos, Xatus, Sudowoodos, Vaporeons, Jolteons, Flareons, Espeons, Umbreons, Leafeons, Glaceons, Sylveons, Drakeons, Terreons, Buldeons, Galveons, Brawleons, Entomeons, Toxeons, Whispeons, Eveons, Lumeons, Soneons, Chroneons, Serapheons, Shuckleses, Ursarings, Donphans, Mudkips, Wurmples, Arons, Raltses, Tyranosaurus Rexes, Tricerotopses, Veloceraptors, Quetzalcoatli, Ankylosauri, Postosuchi, Stegosauri, Diplodoci, Archaeopteryxs, Compsognathi, Dromaeosaurs, Blood Wolves, Bullbous Bows, Dark Dwarves, Drunk Apes, Glancers, Feathered Little Dragons, Feral Warders, Ruthless Warders, Garish Gerberas, Geocrawlers, Giantics, Guardian Knights, Killer Mantises, Land Anemones, Lesser Tarus Strikers, Lesser Tarus Breakers, Lesser Tarus Casters, Lesser Taruses, Greater Tarus Strikers, Greater Tarus Breakers, Greater Tarus Casters, Greater Taruss, Tarus Strikers, Tarus Breakers, Tarus Casters, Taruses, Lizardmen, Magnatheriums, Nephilias, Roaring Wolves, Scavenge Toad, Scuttle Crab, Four Armed Giants, Lake Kings, Skull Reapers, Thicket Spiders, Trembling Oxen, Marble Golems, Granite Golems, Limestone Golems, Basalt Golems, Sandstone Golems, Slate Golems, Talc Golems, Obsidian Golems, Amythest Golems, Diamond Golems, Coal Golems, Quartz Golems, Alluminum Golems, Tin Golems, Copper Golems, Black Iron Golems, Pig Iron Golems, Cast Iron Golems, White Iron Golems, Steel Golems, Brass Golems, Bronze Golems, Sodium Golems, Tungsten Golems, Titanium Golems, Platinum Golems, Silver Golems, Gold Golems, Electrum Golems, Mithril Golems, Alabastine Golems, Beryl Golems, Iridium Golems, Orichalcum Golems, Samite Golems, Vibranium Golems, Adamantite Golems, Carbonite Golems, Unobtainum Golems, Beskar Steel Golems, Dimetrium Golems, True Silver Golems, True Gold Golems, Duranium Golems, Necrodermis Golems, Dragonite Golems, Netherite Golems, Enderite Golems, Snow Golems, Ice Golems, Flower Golems, Dirt Golems, Clay Golems, Silt Golems, Gravel Golems, Mushroom Golems, Bone Golems, Ice golems,Glass Golems, Paper Golems, Bark Golems, Aromatic Golems, Zonaite Golems, Oak Golems, Teak Golems, Balsa Golems, Basswood Golems, Chestnut Golems, Sycamore Golems, Birch Golems, Maple Golems, Cherry Golems, Walnut Golems, Beech Golems, Ash Golems, Cypress Golems, Bamboo Golems, Hornbeam Golems, Blackwood Golems, Purpleheart Golems, Mahogany Golems, Ebony Golems, Ironwood Golems, Moabi Golems, Ipe Golems, Lignum Vitae Golems, Hay Golems, Brick Golems, Concrete Golems, Wool Golems, Slime Golems, Honey Golems, Flesh Golems, Rubber Golems, Plastic Golems, Water Golems, Fire Golems, Porcelain Golems, Leather Golems, Moss Golems, Asphault Golems, Tar Golems, Lava Golems, Wax Golems, Plush Golems, Coin Golems, Linen Golems, Foam Golems, Trash Golems, Lightning Golems, Wind Golems, Harpies, Octorocks, Keese, Fire Keese, Electric Keese, Ice Keese, Gloom Keese, Wizzrobes, Blizzarobes, Thrunderobes, Meteorobes, Dodongos, Aquamentus, Bokoblins, Moblins, Lizalfos, Chuchus, Armos, Ghomas, Lynels, Darknuts, Stalfos, Beamos, Bubles, Gibdos, Lanmolas, Likelikes, Peahats, River Zora, Ocean Zora, Lake Zora, Vires, Wallmasters, Zols, Magos, Bone Cuccos, Eyegores, Gorya, Helmasaurs, Hinoxen, Hokboks, Octoballoon, Pikit, Poes, Snap Dragon, Tektites, Goombas, Thwamps, Big Poes, Grand Poes, Business Scrubs, Deku Scrubs, Deku Babas, ReDeads, Mad Scrubs, Bombchus, Cheep-cheeps, Pokeys, Bob-ombs, Kargaroks, Helmaroks, Lakitus, Latikus, Bulblins, Gyorgs, Froaks, Decayed Guardian Scouts, Decayed Guardian Stalkers, Decayed Guardian Skywatchers, Decayed Guardian Turrets, Decayed Guardian Sentries, Guardian Scout Mk1, Guardian Scout Mk2, Guardian Scout Mk3, Guardian Scout Mk4, Guardian Scout Mk5, Guardian Scout Mk6, Guardian Scout Mkx, Guardian Stalkers, Guardian Skywatchers, Guardian Turrets, Guardian Sentries, Ice-Breath Lizalfos, Fire-Breath Lizalfos, Peblits, Soldier Constructs, Captain Constructs, Commander Constructs, Moth Gibdos, Horriblins, Armored Gloom Lynels, Evermeans, Froxlets, Froxen, Gloomspawn, Taluses, Moldugas, Gleeoks, King Gleeoks, Flux Constructs, Molgeras, Colgeras, Moragias, Seized Constructs, Gohdans, Divine Dragons, Chain Chomp, Piranha Plant, Blooper, Koopa Troopa, Koopa Paratroopa, Dry Koopa, Boos, Teresas, Shyguys, Kinopios, Paragoomba, Wattle Dee, Wattle Doo, Bronto Burt, Metroids, E.M.M.I.s, Creepers, Endermen, Piglins, Blazes, Magma Cubes, Shulkers, Silverfish, Withers, Wither Skeletons, Acromantuli, Blast-ended Screwt, Bowtruckle, Doxies, Giant Squids, Wyrms, Drakes, Dragons, Leviathans, Kazuryus, Oroboros, Giant Jellyfish, Graphorns, Grindylows, Hippocampi, Hippogriffs, Jackelopes, Jabberwokies, Knolls, Kappas, Murtlaps, Nifflers, Nargles, Oni, Phoenixes, Plimpies, Pigmypuffs, Pigmy Krakens, Sphinxen, Cerberi, Thestrals, Yetis, Animagi, blibbering humdingers, Capricorns, Crumple-horned Snorkack, Hydras, Bugbears, Gorgons, Mummies, Mumphs, Wraxpurts, Dragon Turtle Preemies, Dragon Turtle Bairns, Dragon Turtle Juveniles, Young Dragon Turtle, Adult Dragon Turtle, Elder Dragon Turtle, Ancient Dragon Turtle, Lion Turtle, Beholders, Spectators, Angels, Archangels, Kokaubim, Cherubim, Seraphim, Primordials, Maiar, Valar, Ainur, Animated Armor, Flying Carpets, Lemon Heads, Cyclops, Death Knights, Balrogs, Wargs, Nazgul, Wraiths, Great Eagles, Maneses, Lemures, Dopplegangers, Shadowdragons, Air Elementals, Earth Elementals, Fire Elementals, Water Elementals, Plant Elementals, Thunder Elementals, Ettins, Fairy Dragons, Green Hags, Black Hags, Wood Hags, Night Hags, Sea Hags, Annis Hags, Bheur Hags, Hel Hounds, Homunculi, Dust Mephits, Ice Mephits, Magma Mephits, Mud Mephits, Smoke Mephits, Steam Mephits, Swamp Mephits, Chaos Mephits, Pete Mephits, Robo Mephits, Charcoal Mephits, Plasma Mephits, Pollen Mephits, Storm Mephits, Mimics, Ilithids, Modrons, Modrones, Owlbears, Scarecrows, Slaadi, Spectres, Tarrasques, Troglodytes, Wights, Phase Spiders, Juggernaughts, Dreadnaughts, Elder Tempests, Zaratans, Inevetables, Oblexes, Wood Woads, Moamwraths, Bryllygs, Slythy Toves, Borogoves, Marzeedotes, Doezeedotes, Little Amzedivies, Amzidivies, Great Amzedivies, Kiddleydivies, Woodenchews.
+Inteligent races (humanoidish): Humans, Elves, Dwarves, Goblins, Halflings, Orks, Gnomes, Goliaths,
+Firbolgs, Kobolds, Giants, Taruses, Hylians, Gerudo, Gorons, Rito, Zora, Kokiri, Pikori, Zonai, Koroks, Hobgoblins.
+Named Side Entities: Warforged Collossus (Collossus), Marut (Inevetable), Jack (Pumpkin Head), Straad (Vampire), Rudy (Tyranosaurus Rex), Pina (Feathered Little Dragon), Tonkii (Lake King), Arceus, The Netherite Golem (Netherite Golem), The True Gold Golem (True Gold Golem), The Spirit Golem (Golem), King Dodongo (Dodongo), Queen Gibdo (variant moth gibdo), Dorephan (Ocean Zora), The Eldest Kin (Hinox), Guardian Scout Prototype (Guardian Scout Mk 1), Flux Pavilion (Flux Construct), King Boo (Boo), Perfect EMMI (E.M.M.I.), The Whither (Wither), The Ender Dragon (Ancient Shadowdragon), Ungoliant (Acromantula), Shelob (Acromantula), Aragog (Acromantula), Mimim (Acromantula), Fire (Lion Turtle), Air (Lion Turtle), Water (Lion Turtle), Earth (Lion Turtle), Lightning (Lion Turtle), Life (Lion Turtle), The Kraken (Kraken), Xanathar (Beholder), Balor (Balrog), The Nine (Wraith(s)), Torterra (Zaratan).
+Ancient Dragons: Mushussu, Apep, Vrtra, Gragoule, Ladon, Kulshedra, Unchegila, Jormungrander, Nithhoger, Fafnir, Azazi, Zahhak, Usumgal, Orochi, Scatha, Tiamat, Bahamut, 
+Named Main Entities (-): Kil (Corrupted Seraph), Vecna (Human/Hag>Lich), The Raven Queen (Dragon/Elder Oblex), Eboros (Goliath), Illfang The Kobold Lord (Ruin Kobold), Asterios The Tarus King (Greater Tarus), The Hand (Elf lich), The Eye (Human lich), Kairon (variant Human), Dakamos (variant Human), Mozkith (variant Human), Tae-Thomin The Portal King (variant Elf), Ali N'Soun (Human/Death Slaad), Vlig 'O Wilv (variant Black Hag), Scatha (Ancient Dragon), Kas The bloody Handed (Vampire), Acerak (Vampire), Raven Jasper (?), Raven Kxixi (?), Zephyr (Giant).
+Named Main Entities (+): Player Character (Human), Rulid Sr. (Human), Elond (Human), Robin (Human), Rosie (Human), Rulid* (variant Human), Milo (Human), Theo (Halfling), Toby (Human>variant human), Outh (Human), Rosalind (Human>variant Human), Ideal (Hobgoblin), Nora (Dwarf), Chloe (Hylian), Wendy (Human), Callybon (Gnome), Suphia (Human), ...
 
 
 Dragons & Angels:
@@ -1034,8 +940,8 @@ guardian spirits or lesser deities throughout the universe. They are capable of
 cohesive thought and speach by their adulthood but simply lack the pyisiology
 to do so and so use their magic to convey ideas. Oroboros are very often Good
 in allignment but some have become corrupted and Evil.
-All types of dragons, if they have magical capability usually only weild
-illusory magic but gain the ability to shapeshift into cretures whose language
+All types of dragons, if they have magical capability usually only wield
+illusory magic but gain the ability to shapeshift into creatures whose language
 they have learned to speak. Dragons that have achieved this are usually
 considered the pinacle of draconic life and power some even being considered
 lesser deities.
@@ -1056,54 +962,115 @@ Sees/hears disturbance in the right direction and veers slightly to see whats up
 Enters a side street and sees fleeing people one or a few get shot down by magic.
 Player exits side street just in time to see...
 A figure in a tattered dark hood clearly evading capture. A
-bolt of magic energy sails over his hood causing it to fly
-back revealing the face underneath. 
-You stagger as recognition washed over you. Under the hood
-is the face of a young man less than a decade older than
-yourself. The oak brown wavy hair, the bright eyes, the
-short but powerful build and the single dimple on the right
-cheek. Your mind flashes back to your childhood for the
-briefest moment and you see the exact same face twelve
+bolt of magic energy sailed over his hood which flew back
+revealing the face underneath. 
+You staggered as recognition washed over you. Under the hood
+was the face of a young man little over 5 years older than
+yourself. At the sight of the oak brown wavy hair, the bright
+eyes, the short but powerful build and the single dimple on
+the right cheek, your mind flashed back to your childhood and
+for the briefest moment, you saw the exact same face twelve
 years younger.
-The face of your long missing brother, Rulid.
-Time seems to slow down as he passes. The screams of
-pedestrians and shouts of officers fade into the
+It was unmistakably the face of your long dead, oldest
+brother, Rulid.
+Time seemed to slow down as he passed. The screams of
+pedestrians and shouts of officers faded into the
 background.
-Slowly, your brother turns to you as he passes. Your eyes
-meet and you see not the light hazel brown color he
+Slowly, your brother turned to you as he passed. Your eyes
+met and you saw not the light hazel brown color he
 inherited from your parents, but a dark blood red.
-In the split second your eyes are locked, you see what
-might also be recognition dawn upon him as he gives you a
-shadow of a smile.
-Time resumes.
-His turn toward you became a twisting leap through the air,
-two more bolts of energy streaking past him. At the apex of
-his jump, he spread his arms wide and spoke an incantation
-in a voice that was only just above a whisper. Yet, despite
-the soft tone, the sound struck like the crack and roll of
-thunder, powerful and deafening, shaking all present to
-their bones and leaving ears ringing. It was as if, rather
-than speaking, he had projected his voice directly into the
-minds of you and all present, reverberating inside you with
+In the split second your eyes were locked, you saw what
+might have also been recognition dawn upon him. His scarlet
+eyes wided and he gave you a shadow of a smile.
+Time resumed.
+His turn towards you became a twisting leap through the air.
+two more bolts of energy came streaking over his shoulder.
+At the apex of his jump, he spread his arms wide and spoke
+an incantation in a voice only just above a whisper. Yet,
+despite the soft tone, the voice of your brother struck like
+the crack and roll of thunder, powerful and deafening,
+shaking you to your bones and leaving your ears ringing. It
+was as if, rather than simply speaking, he had projected his
+voice directly into your mind, reverberating inside you with
 crushing intensity.
 "Ugokuna"
-A circle of crackling purple energy forms between his
-hands. For an instant, the world holds its breath, and
-then, with an earth-splitting blast, the entire street
-erupts in a storm of fire and debris.
-The shock of the explosion blasts you off your feet and
-clear through the corner shop's front window. . .
-Player appears to have been inexplicably magically protected in the blast.
-Gets to his feet, exits the shop and surveys the damage.
-Rulid is gone and Player is only survivor for at least 2 or 3 blocks.
+A circle of crackling purple energy formed between his
+hands. For an instant, the world held its breath. And then,
+with an earth-shattering blast, the entire street erupted in
+a storm of fire and debris.
+The shock of the explosion blasted you off your feet and
+clear through the window of corner shop. You had died, surely.
+There was no way you could possibly have survived an
+explosion of that destructive power. But then, how were you
+still thinking? How were you still aware of the world around
+you?
+You opened your eyes but could see little more than dust and
+distant wavering flames through the haze. Somehow, as you
+began to consider your situation, you had not only survived,
+you were completely unscathed as well. As you stood on
+perfectly whole legs you saw through the dust and smoke,
+that you didn't have a single cut on your skin. The most
+harm to you now was the corrosive air filling your lungs. . .
+Player exits the shop and surveys the damage.
+Rulid is gone the blast leveled buildings and left Player the only survivor for at
+least 2 or 3 blocks.
 After some search and rescue duty, dark mass appears above the palace pinnacle.
 Big ol magical orb pulsating in the sky.
 scan of the sky again reveals Rulid, clearly conjuring (or whatever) the orb.
 The city tries and fails counter measures before initiating evacuation order.
 Before another hour or so, the orb begins releasing monsters and lethal energy into the city.
-Tens of thousands perish.
+Hundreds of thousands perish.
 Many become zombies (Meanderthralls?)
 Player and new main character cast begin jurney east following the path of Rulid.
+
+The_Death():
+
+
+Before_The_Veil():
+The moment just before Player and the protagonists cross the veil into the outer
+planes, Player has a moment of introspection.
+Just before this moment, the protagonists had just finished a rather dark ritual
+the would tear a hole in the fabric of reality allowing them to enter the
+primordial planes of the elements. The ritual required some rather scarring acts
+but to Player at least, it was well worth it. Moments after the rift appears
+before them, they all gather knowing they only have a few minutes to enter.
+The others fell Silent now. Even Milo, usually so full of
+things to say stood with the rest eyes forward towards the
+odd shifting haze that could mean instant death or worse,
+success.
+Wendy stood at his side, sachel in one hand and Milo's
+hand grasped tightly in the other as if to ancher herself
+to this world. Nori and Oliver stood beyond them still and
+silent. 
+On your other side stood Toby, Chloe, Theo and Callybon
+waiting silently like the others. Toby's head was bowed.
+You knew what this would mean for him, but he was willing
+all the same and you were greatful to him for that.
+You stood in line with the others for a long while in
+silence before the veil, visible like heat on a stone. In
+that moment you let your eyes close. A solt breeze brushed
+your hair, no danger, no magic, just air and for the first
+time in a long time, you realized just how wonderful and
+full of vitality your body was. In the silence you could
+hear your heart beating as if in protest of it's hosts next
+move. You felt each muscle, each bone, every inch of your
+skin, the structure, the vitality, the chaotic perfection
+of life, the precious memories in your head worth more than
+kingdoms, each full of firelit nights under beautiful starry
+skies, of Toby's stupid jokes, and stories told of a better
+life long ago. Milo's laugh. Theo's quiet determination.
+Oliver's steady hand on your shoulder when it all felt like
+too much. Even Callybon with her unpredictable timing and
+infinite well of kindness.
+You thought of your friends, your family, and all that was
+on the line here and now, maybe moments away from being
+lost forever.
+You thought of Rosalind. Gone, but not far, and closer
+soon.
+You opened your eyes and took a deep breath. Nothing, not
+even death would keep her from you. Your heart beat faster
+in your chest, soft, insistent, alive. You stepped forward
+and through the veil. . .
 
 What's going on behind the scenes (antagonists' stories):
 The moment Player wakes up, somewhere in the depths of the Underdark Casting a
@@ -1186,7 +1153,7 @@ Outh:{To main: ;
     Char dev: }
 Callybon:{To main: ; 
     Relationships: ;
-    class: ;
+    class: Tank;
     Personality: ;
     Race: Gnome;
     Char dev: }
@@ -1275,11 +1242,11 @@ book6: into the planes?
 
 
 plot layer 3:
-(important plot points are included not specific fights (with some exceptions))
+(important plot points are included not specific fights (with exceptions))
 book 1: 
 0: player wakes up with increased power and memory loss
 1: player and Robin fight their way back to town
-2: player is 3rd of 5 children born to a wholesome family, something odd about 
+2: player is 3rd of 5 children born to a wholesome family, something odd about
     missing oldest brother Rulid (24 now). They are attacked by kobolds.
 3: Robin and player go out to fight and are attacked by kobolds again. 
 4: player proves his worth and joins a kobold counter measure task force. 
@@ -1404,86 +1371,221 @@ book 2:
     dark side (the truth revealed).
 
 book 3:
-67(0): more dates.
-68(1): 
-69(2): 
-70(3): 
-71(4): 
-72(5): 
-73(6): 
-74(7): 
-75(8): 
-76(9): 
-77(10): 
-78(11): 
-79(12): 
-80(13): 
-81(14): 
-82(15): *Vecna mentioned: "What in the name of Vecna's blackest left eye" or
-    something*
-83(16): 
-84(17): 
-85(18): 
-86(19): 
-87(20): 
-88(21): 
+67(0): more dates and a new mission.
+68(1): Foreign affairs arc beginning.
+69(2): A journey to the north. 
+70(3): Traveling, camping, side-questing, hangin out pt1.
+71(4): Traveling, camping, side-questing, hangin out pt2.
+72(5): A pit stop.
+73(6): Pit side quest.
+74(7): Departure again.
+75(8): Traveling, camping, side-questing, hangin out pt3.
+76(9): Northeastern destination. 
+77(10): *Vecna mentioned: "What in the name of Vecna's blackest left eye" or
+    something* another urban adventure.
+78(11): urban adventure pt2. clues to the east.
+79(12): Heading east. 
+80(13): Leaving Kedren, entering Kaer Runwell. 
+81(14): Outpost town. 
+82(15): Traveling to Kreeboar.
+83(16): The city of Kreeboar.
+84(17): Introducing Eboros (servant of the servant of Kil, boss of Illfang (who
+    referred to him as Great Gog) and Asterios)
+85(18): Eboros leaves (easily). Mid-Boss against the servant of Eboros. 
+86(19): Rush back with intel pt 1: urgent business.
+87(20): Rush back with intel pt 2: return and report.
+88(21): The calm. A brief new job back on guard duty. Stuff going on in town.
 89(22): Player goes to reported disturbance downtown. The_Rulid()
 90(23): Finding friends, firefighter duty, seeking Brother (Kairon).
-91(24): Rulid (Kairon casts the spell), city imediately engulfed. 
+91(24): Rulid (Kairon) casts the spell, city imediately engulfed. 
 92(25): Rescue and evacuation efforts.
 93(26): Main group dissembarks to the east. looking for information of that
-    kind of magic, the strenge otherworldly monsters, Player's Brother, how it
-    came to this, etc.
-94(27): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 1.
-95(28): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 2.
-96(29): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 3.
-97(30): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc) pt 4.
-98(31): { sometime between here (1) ... vvv
-99(32): 
+    kind of magic, the strange otherworldly monsters, Player's Brother, how it
+    came to this, is Eboros to blame, etc.
+94(27): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc)
+    pt 1: Firefightering and escape.
+95(28): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc)
+    pt 2: Escape and recovering.
+96(29): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc)
+    pt 3: Recovering and seeking answers to the east.
+97(30): Clean up, recovery, fleeing, rescue, lore seeking, etc. (refugee arc)
+    pt 4: traveling east and the Kreeboar again.
+98(31): How to become local heroes in 2 chapters pt 1: The Hinox.
+99(32): How to become local heroes in 2 chapters pt 2: Victory and who to blame.
 
-book 4:
-100(0): { sometime between here (2) ... vvv
-101(1):
-102(2):
-103(3):
-104(4):
-105(5): and here (1) ... ^^^ Player and Toby/Rosalind are married }
-106(6): 
-107(7):
-108(8): 
-109(9): 
-110(10): { Sometime between here (3) ... vvv
-111(11): 
-112(12):
-113(13): 
-114(14):
-115(15):
-116(16):
-117(17): and here (3) ... ^^^ old sage mage hag revels forbidden secrets of planar traversal without death }
-118(18):
-119(19):
-120(20):
-121(21):
-122(22):
-123(23):
-124(24):
-125(25):
-126(26):
-127(27):
-128(28):
-129(29):
-130(30):
-131(31):
-132(32): and here (2) ... ^^^ acquire spirit pixis }
+book 4: 
+100(0): Marriage arc pt 1: encounter with a dating sim.
+101(1): Marriage arc pt 2: An adventure together.
+102(2): Marriage arc pt 3: just lunch.
+103(3): Marriage arc pt 4: Couples training.
+104(4): A quick life threatening interruption or something.
+105(5): Marriage arc pt 5: Yay!
+106(6): ?? Interrupted by new information
+107(7): Into the wilderness pt 1: The mountains.
+108(8): Into the wilderness pt 2: Leaving the mountains.
+109(9): Into the wilderness pt 3: The forest.
+110(10): Into the wilderness pt 4: The swamp.
+111(11): The witch's hut.
+112(12): Mid-Boss against the Witch. She agrees to explain the plot.
+113(13): The plot pt 1: The magic of the plot explosion, the afterlife, the
+    planes and the laws of nature.
+114(14): The plot pt 2: Who/what/why/where is Eboros and everything else. Where
+    to go from here.
+115(15): Into the jungle temple.
+116(16): Into the earliest, shallowest part of the deep.
+117(17): Acquire spirit pixis.
+118(18): Back to the Hag.
+119(19): What does this thing do? How does it work? Answer: You'll have to find
+    that out for yourselves. Here's where you can look though.
+120(20): Finding the Underdark, pt 1: The wilderness.
+121(21): Finding the Underdark, pt 2: The Mountains.
+122(22): Finding the Underdark, pt 3: The Hollow Peaks.
+123(23): Finding the Underdark, pt 4: Old mining town. 
+124(24): Finding the Underdark, pt 5: Clues to the foothills.
+125(25): Finding the Underdark, pt 6: Wait a minute!
+126(26): Finding the Underdark, pt 7: Back to the mine. 
+127(27): Finding the Underdark, pt 8: The cave spiders den. 
+128(28): Finding the Underdark, pt 9: The town again. 
+129(29): Finding the Underdark, pt 10: Into darkness.
+130(30): Finding the Underdark, pt 11: The depths of the earth. 
+131(31): Days without the sky. 
+132(32): The farthest reaches of the surface and the border between the surface
+    and the Underdark. Border guardian boss. 
 
 book 5:
-133(0):
-134(1):
-135(3):
- . . .  { sometime after this point Player spouse tragically dies Clannad style and player commits to forbidden planar traversal ritual }
+133(0): City of lights.  
+134(1): Wars. but mostly rumors of wars. 
+135(2): Guard duty again. 
+136(3): The cloak aproaches. 
+137(4): Battle of lights and shadows pt1.
+138(5): Battle of lights and shadows pt2.
+139(6): A new threat, The Cloak.
+140(7): Surprise! A mission!
+141(8): A stake out that goes very wrong.
+142(9): Midboss with The Hood.
+143(10): The enemy falls into Players's' hands.
+144(11): Priorities, The Cloak or Eboros and the Pixis (encounter with an
+    eboros clue).
+145(12): Next stop, The Core.
+146(13): Adventuring deep, pt1.
+147(14): Adventuring deep, pt2.
+148(15): Village of the living and city of the dead.
+149(16): What a lovely village, isn't this lovely, so lovely, such a lovely
+    little village, lets stay here a while, it'll be fun, here in this lovely
+    little village.
+150(17): The lovely village is . . . too . . ? lovely?
+151(18): Yeah something's definitely not right here (you've been how old for
+    how long, eternaly pregnant women, never growing infants, truman show
+    rutines). 
+152(19): A visit to the city of the dead. 
+153(20): Wait, astral monsters can talk? Yeah theres definitely something fishy
+    about that lovely village. 
+154(21): Ghost person comes along to prove it. Ghost person enters the city and
+    kills a villager without warning. Crap imediately happens. Ghost person
+    evaporates. Protagonists ejected from village (no longer lovely). 
+155(22): Fight back to the village. 
+156(23): Villagers beg and scream for the world to right itself or death. 
+157(24): mercy.
+158(25): How to save the last villager. Battle with a city.
+159(26): The newest party member! Recovering from the shock of murdering an
+    entire village. 
+160(27): Into the core. 
+161(28): Strange feelings and goings on. A heavy presence. A voice. A vision.
+162(29): Reached Gog, the dark temple of Eboros.
+163(30): Through the temple and encounter with a REAL boss Eboros.
+164(31): Battle with Eboros, get absolutely handled.
+165(32): Introducing Tae Thomin. Lore. Yeah, you've kinda attracted the wrong
+    kind of attention. A fair fight turns not fair at all. Split recollection.
+    No escape. Newest party member saves the day by almost dying. Protagonists
+    wake somewhere on the surface. 
 
+book 6:
+166(0): Delirium. Recovery. Something's wrong. Spouse gravely injured. 
+167(1): We must save my family!
+168(2): Never moved harder and faster in my life. Never wished I could move
+    more so. 
+169(3): Finally, civilization! Town of Iarn Brue hundreds of miles from the
+    realm of Kedren near the edge of a jungle in the southern hemisphere. 
+170(4): Iarn Brue is in some serious trouble. Jungle beasts and natives. But
+    toby/rosalind take precedence. 
+171(5): Solve our problems and we solve yours. Player anger nearly boils over.
+172(6): Working for a life, pt1: the fury.
+173(7): Working for a life, pt2: the worry.
+174(8): Working for a life, pt3: the grindstone.
+175(9): Working for a life, pt4: into the jungle.
+176(10): Working for a life, pt5: the sunken road.
+177(11): Working for a life, pt6: vilery.
+178(12): Working for a life, pt7: better help.
+179(13): Abandon Iarn Brue for the jungle village of Klaage.
+180(14): You solve our problems and we solve yours. Protagonists including
+    Spouse discuss the dilema. 
+181(15): Help comes in the night, another village, dangerous territorry,
+    similar help can be found there. 
+182(16): Abandon Klaage for the deep forest village of Kio.
+183(17): Strange magics here. You know what? lovely village new protagonist
+    gives spirit pixis vibes. 
+184(18): Killing time awaiting medical results. lore? looking more into spirit
+    pixis. 
+185(19): Spouse has been on and off comatose but wakes now looking much better
+    and tell of her/his vision. Its spirit pixis time! 
+186(20): Lore dump on the pixis excluding the whys and the whos. 
+187(21): Into the pot. Preliminary pixis battles and miniboss.
+188(22): Information is your reward (lore dump 2)! The laws of planar travel.
+    Life and death, ressurection and undeath, imortality and true death. And
+    . . . the 5 rituals of the planes (2 are impossible as they are, 1 is
+    basically suicide and the last 2 are pretty dang heinous).
+189(23): Fight to escape and establishing an entry point to the pixis. Now
+    discuss. 
+190(24): As thanks to Kio, fight for them, solve their problems. 
+191(25): problem solving and pixis grinding pt1.
+192(26): problem solving and pixis grinding pt2.
+193(27): problem solving and pixis grinding pt-PSYCH! Spouse has a relapse.
+194(28): The poison/spell/curse/aftereffectsofthefight/whatever brings spouse
+    to glowing pain mid battle, Player steps out to care and watch it get worse,
+    The_Death().
+195(29): I've had a change of heart. Lets become the monster. 
+196(30): Back to Kio. "Ok Kio, lets solve all of your problems." gethering up
+    the entire town as an army. 
+197(31): Most of Iarn Brue and Klaage meet and comence a surprise 4 way battle
+    with Kio and Pumpkin-head monsters at Megt-outp-iee-p’blulp. (Ib v Kl+Pm,
+    Kl v Ib+Ki+Pm, Ki v Kl+Pm, Pm v Ib+Kl+Ki+Pm)
+198(32): Final fight against everyone the big pumpkin and time as the rutual is
+    performed. Everyone dies as the ritual is cast giving the team less than 1
+    minute before the veil closes, Before_The_Veil(). A look at the darkside:
+    The troubles of Tae Thomin, his master and their next moves.
 
-epilogueueue:
+book 7:
+199(0): The end of an era. First impressions of the Faewild.
+200(1): The beginning.
+201(2): 
+202(3): 
+203(4):
+204(5): 
+205(6): 
+
+Plane/world traversal in order: 
+Material: 1-4, 6
+    Kedren: 1, 3
+    the east: 4, 6
+The Underdark: 5
+The Faewild: 7
+Elemental planes: 8-10
+    Earth: 8
+    Water: 9, 10
+    Air: 10
+Elemental Chaos: 11
+Avernus: 11-14
+Elemental Chaos: 15
+Primus: 15
+The Elemental planes: 15
+    Air: 15
+The Shadowfell: 16
+The Ethereal Veil: 17
+The Nowere: 17-18
+Lho: 19-20
+Material: 20
+
+epilogueueue something remotely similar to the following:
 . . . 
 . . . 19 Spring, 85, 7th age . . . 
 . . .

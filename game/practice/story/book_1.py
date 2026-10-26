@@ -104,10 +104,13 @@ class BookOne:
             return
     
         if add:
+            if ally_to_modify.hp <= 0:
+                ally_to_modify.hp = ally_to_modify.maxhp
             if ally_to_modify not in self.player.allies:
                 self.player.allies.append(ally_to_modify)
         else:
             self.player.allies = [ally for ally in self.player.allies if ally.designation != to_modify]
+        self.player.fix_team()
 
 
     def ch_0(self): # Spring 11th, 3044, 6th age
