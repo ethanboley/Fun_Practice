@@ -261,11 +261,11 @@ class WorldOne:
                     world_options.append(hospital) if hospital not in world_options else None
                     world_options.append(market) if hospital not in world_options else None
                     pass
+                world_options.append(alchemy)
         if self.pc.progress >= 33:
             world_options.remove(self.book_one)
             world_options.insert(0, self.book_two)
         
-        world_options.append(alchemy)
         world_options.append(save_load)
         world_options.append(quit_game)
         return world_options
@@ -286,7 +286,7 @@ class WorldOne:
                 self.pc = playing
                 playing = self.pc.is_alive()
             if playing is None:
-                playing == True
+                playing = True
             if not playing:
                 break
             self.pc.fix_team()

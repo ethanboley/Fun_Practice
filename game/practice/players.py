@@ -246,6 +246,12 @@ class Fighter(Player):
         self.learn_skill()
 
     def point_allocation(self):
+        try:
+            from gui_windows import run_point_allocation_gui
+            return run_point_allocation_gui(self)
+        except Exception:
+            import traceback
+            traceback.print_exc()
         self.points += 5 + (self.level // 10)
         self.total_points += 5 + (self.level // 10)
         allocations = {'Hit Points': 0, 'Attack Power': 0, 'Accuracy': 1,

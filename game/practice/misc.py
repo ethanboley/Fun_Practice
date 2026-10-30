@@ -4,6 +4,7 @@ from monsters import init_doctors
 from stuffs_that_do import init_items
 from players import Fighter
 from things_stuff import init_skills
+from gui_windows import run_hospital_gui, run_marketplace_gui
 
 items = init_items()
 
@@ -13,7 +14,10 @@ class Hospital:
         self.quality = quality
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        return self.resolve(player,xp_thresholds, world)
+        try:
+            return run_hospital_gui(self, player, world, xp_thresholds)
+        except Exception:
+            return self.resolve(player, xp_thresholds, world)
 
     def welcome(self):
         options = ['healing', 'superheal', 'information', 'nothing']
@@ -158,7 +162,10 @@ class Marketplace():
         self.world = world
     
     def run(self, player=None, world=None, xp_thresholds=None):
-        return self.resolve(player)
+        try:
+            return run_marketplace_gui(self, player, world, xp_thresholds)
+        except Exception:
+            return self.resolve(player)
 
     def stock_inventory(self):
         for item in self.salable:
