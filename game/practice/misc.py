@@ -17,6 +17,12 @@ class Hospital:
         try:
             return run_hospital_gui(self, player, world, xp_thresholds)
         except Exception:
+            import traceback, pygame as pg
+            traceback.print_exc()
+            try:
+                pg.display.quit()
+            except Exception:
+                pass
             return self.resolve(player, xp_thresholds, world)
 
     def welcome(self):
@@ -165,6 +171,12 @@ class Marketplace():
         try:
             return run_marketplace_gui(self, player, world, xp_thresholds)
         except Exception:
+            import traceback, pygame as pg
+            traceback.print_exc()
+            try:
+                pg.display.quit()
+            except Exception:
+                pass
             return self.resolve(player)
 
     def stock_inventory(self):

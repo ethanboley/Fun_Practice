@@ -250,8 +250,12 @@ class Fighter(Player):
             from gui_windows import run_point_allocation_gui
             return run_point_allocation_gui(self)
         except Exception:
-            import traceback
+            import traceback, pygame as pg
             traceback.print_exc()
+            try:
+                pg.display.quit()
+            except Exception:
+                pass
         self.points += 5 + (self.level // 10)
         self.total_points += 5 + (self.level // 10)
         allocations = {'Hit Points': 0, 'Attack Power': 0, 'Accuracy': 1,

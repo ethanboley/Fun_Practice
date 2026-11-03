@@ -1144,7 +1144,7 @@ def init_enemies():
     kobold_soldier = Koboldoid('kobold soldier', 25, 24, 4, 15, 4, 750, 2, 950, 1, 0, [1], (800, 12, 240, 4))
     Kobold_guard = Koboldoid('kobold guard', 25, 23, 4, 15, 4, 800, 3, 850, 2, 0, [1], (800, 13, 250, 4))
     shrubent = Plant('shrubent', 85, 40, 3, 18, 5, 685, 0, 1100, 0, 0, [1], (600, 11, 280, 10))
-    cave_bear = Beast('cave bear', 20, 34, 5, 17, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
+    cave_bear = Beast('cave bear', 20, 54, 5, 17, 5, 650, 1, 1150, 1, 0, [1], (900, 64, 700, 6))
     pre_pod_nepenth = Nepenth('pod nepenth', 85, 8, 2, 0, 5, 600, 0, 710, 0, 0, [1], (400, 120, 190, 2))
     post_pod_nepenth = Nepenth('Pod Nepenth', 85, 27, 2, 20, 5, 600, 0, 710, 0, 0, [1], (400, 18, 190, 2))
     flower_nepenth = Nepenth('flower nepenth', 85, 35, 2, 21, 5, 600, 0, 725, 0, 0, [1], (400, 18, 190, 2))

@@ -167,8 +167,9 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
                 time.sleep(mid_text_sleep + stops.get(c, 0))
             elif c != '\n':
                 time.sleep(current_speed)
-        if msvcrt.kbhit() and msvcrt.getch().decode('utf-8') == '\r':
-            skip = True
+        ch = msvcrt.getch() if not skip and msvcrt.kbhit() else b'' # b'' fails both following checks (doesn't matter, ch is not used until next iteration)
+        skip |= ch in (b'\r', b'\n') # |= is a bitwise or operator equivalent to skip = skip or ch in (...)
+        ch in (b'\x00', b'\xe0') and msvcrt.kbhit() and msvcrt.getch() # another sort circuit calling getch to clear the 2nd bit if the first 2 are true
 
     # add proper end chaacter and exit
     sys.stdout.write(end)

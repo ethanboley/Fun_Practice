@@ -60,21 +60,44 @@ COLOR_BORDER_DISABLED = (50, 58, 72)
 _FONT_CACHE = {}
 
 def ensure_pygame():
-    """Ensure pygame and font modules are initialized."""
+    """Ensure pygame display and font modules are freshly initialized."""
+    _FONT_CACHE.clear()
     if not pg.get_init():
         pg.init()
+    if not pg.display.get_init():
+        pg.display.init()
     if not pg.font.get_init():
         pg.font.init()
 
 def get_font(size: int, bold: bool = False):
-    """Retrieve a cached font instance."""
+    """Retrieve a cached font instance, validating and auto-recreating if needed."""
     key = (size, bold)
-    if key not in _FONT_CACHE:
+    if key in _FONT_CACHE:
         try:
-            _FONT_CACHE[key] = pg.font.SysFont('segoeui', size, bold=bold)
+            _FONT_CACHE[key].render(' ', True, (0, 0, 0))
+            return _FONT_CACHE[key]
         except Exception:
-            _FONT_CACHE[key] = pg.font.Font(None, size)
+            pass
+    try:
+        font = pg.font.SysFont('segoeui', size, bold=bold)
+        font.render(' ', True, (0, 0, 0))
+        _FONT_CACHE[key] = font
+    except Exception:
+        _FONT_CACHE[key] = pg.font.Font(None, size)
     return _FONT_CACHE[key]
+
+def safe_render(font, text, antialias=True, color=(255, 255, 255)):
+    """Safely render text, ensuring empty strings or dead fonts never crash SDL_ttf with zero-width error."""
+    s = str(text) if (text is not None and str(text) != "") else " "
+    try:
+        return font.render(s, antialias, color)
+    except Exception:
+        try:
+            clean_font = pg.font.Font(None, getattr(font, 'get_height', lambda: 20)() or 20)
+            return clean_font.render(s, antialias, color)
+        except Exception:
+            surf = pg.Surface((1, 1), pg.SRCALPHA)
+            return surf
 
 def flush_terminal_input():
     """Drain any pending keys from terminal buffer so they do not bleed into GUI or next prompt."""
@@ -100,43 +123,40 @@ def get_terminal_hwnd():
             pass
     return 0
 
-def bring_window_to_front(target_hwnd):
-    """
-    Clean Win32 API window activation.
-    Does NOT use WScript.Shell SendKeys, preventing mouse loading wheels
-    and avoiding phantom keystrokes in terminal or Pygame.
-    """
-    if not target_hwnd:
+def focus_pygame_window(pg_hwnd):
+    """Bring the Pygame window to front cleanly without blocking threads or sending keystrokes."""
+    if not pg_hwnd:
         return
     try:
         user32 = ctypes.windll.user32
-        kernel32 = ctypes.windll.kernel32
-        foreground_hwnd = user32.GetForegroundWindow()
-        if foreground_hwnd != target_hwnd:
-            cur_thread = kernel32.GetCurrentThreadId()
-            fg_thread = user32.GetWindowThreadProcessId(foreground_hwnd, None)
-            if cur_thread != fg_thread and fg_thread != 0:
-                user32.AttachThreadInput(fg_thread, cur_thread, True)
-                user32.SetForegroundWindow(target_hwnd)
-                user32.BringWindowToTop(target_hwnd)
-                user32.AttachThreadInput(fg_thread, cur_thread, False)
-            else:
-                user32.SetForegroundWindow(target_hwnd)
-                user32.BringWindowToTop(target_hwnd)
-        user32.ShowWindow(target_hwnd, 5) # SW_SHOW
-    except Exception:
+        user32.ShowWindow(pg_hwnd, 5)  # SW_SHOW
+        user32.BringWindowToTop(pg_hwnd)
         if wg:
-            try:
-                wg.SetForegroundWindow(target_hwnd)
-            except Exception:
-                pass
-
-def focus_pygame_window(pg_hwnd):
-    bring_window_to_front(pg_hwnd)
+            wg.SetForegroundWindow(pg_hwnd)
+        else:
+            user32.SetForegroundWindow(pg_hwnd)
+    except Exception:
+        pass
 
 def refocus_terminal(terminal_hwnd):
+    """Restore focus to the Windows console window and cleanly close the Pygame display."""
     flush_terminal_input()
-    bring_window_to_front(terminal_hwnd)
+    _FONT_CACHE.clear()
+    if terminal_hwnd:
+        try:
+            user32 = ctypes.windll.user32
+            user32.ShowWindow(terminal_hwnd, 5)  # SW_SHOW
+            user32.BringWindowToTop(terminal_hwnd)
+            if wg:
+                wg.SetForegroundWindow(terminal_hwnd)
+            else:
+                user32.SetForegroundWindow(terminal_hwnd)
+        except Exception:
+            pass
+    try:
+        pg.font.quit()
+    except Exception:
+        pass
     try:
         pg.display.quit()
     except Exception:
@@ -194,7 +214,7 @@ class Button:
         border_width = 2 if self.is_focused else 1
         pg.draw.rect(surface, border_col, self.rect, width=border_width, border_radius=self.border_radius)
 
-        txt_surf = font.render(self.text, True, txt_color)
+        txt_surf = safe_render(font, self.text, True, txt_color)
         txt_rect = txt_surf.get_rect(center=self.rect.center)
         surface.blit(txt_surf, txt_rect)
 
@@ -306,12 +326,12 @@ def run_point_allocation_gui(player):
         pg.draw.line(window, COLOR_PANEL_BORDER, (0, 70), (win_width, 70), 1)
 
         title_font = get_font(24, bold=True)
-        title_surf = title_font.render("CHARACTER LEVEL UP - POINT ALLOCATION", True, COLOR_TEXT_MAIN)
+        title_surf = safe_render(title_font, "CHARACTER LEVEL UP - POINT ALLOCATION", True, COLOR_TEXT_MAIN)
         window.blit(title_surf, (30, 12))
 
         sub_font = get_font(15)
         sub_text = f"Player: {player.name}   |   Current Level: {player.level}   |   Gained: +{points_gained} Points"
-        sub_surf = sub_font.render(sub_text, True, COLOR_TEXT_MUTED)
+        sub_surf = safe_render(sub_font, sub_text, True, COLOR_TEXT_MUTED)
         window.blit(sub_surf, (32, 42))
 
         # Big Remaining Points Card (Above the options)
@@ -320,7 +340,7 @@ def run_point_allocation_gui(player):
         pg.draw.rect(window, COLOR_PANEL_BORDER, rem_card_rect, width=1, border_radius=8)
 
         rem_lbl_font = get_font(15, bold=True)
-        rem_lbl = rem_lbl_font.render("REMAINING AVAILABLE POINTS", True, COLOR_TEXT_MUTED)
+        rem_lbl = safe_render(rem_lbl_font, "REMAINING AVAILABLE POINTS", True, COLOR_TEXT_MUTED)
         window.blit(rem_lbl, (rem_card_rect.centerx - rem_lbl.get_width() // 2, 92))
 
         # Large points number display box
@@ -329,7 +349,7 @@ def run_point_allocation_gui(player):
         pg.draw.rect(window, COLOR_TEXT_GOLD, num_box_rect, width=1, border_radius=6)
 
         num_font = get_font(24, bold=True)
-        num_surf = num_font.render(str(remaining_points), True, COLOR_TEXT_GOLD)
+        num_surf = safe_render(num_font, str(remaining_points), True, COLOR_TEXT_GOLD)
         window.blit(num_surf, num_surf.get_rect(center=num_box_rect.center))
 
         # Render 6 Stat Columns
@@ -361,20 +381,20 @@ def run_point_allocation_gui(player):
             # Stat Name & Subtitle
             name_parts = key.split(' ')
             if len(name_parts) == 1:
-                name_surf = stat_name_font.render(key, True, COLOR_TEXT_MAIN)
+                name_surf = safe_render(stat_name_font, key, True, COLOR_TEXT_MAIN)
                 window.blit(name_surf, (card_rect.centerx - name_surf.get_width() // 2, card_y + 12))
             else:
-                line1 = stat_name_font.render(name_parts[0], True, COLOR_TEXT_MAIN)
-                line2 = stat_name_font.render(' '.join(name_parts[1:]), True, COLOR_TEXT_MAIN)
+                line1 = safe_render(stat_name_font, name_parts[0], True, COLOR_TEXT_MAIN)
+                line2 = safe_render(stat_name_font, ' '.join(name_parts[1:]), True, COLOR_TEXT_MAIN)
                 window.blit(line1, (card_rect.centerx - line1.get_width() // 2, card_y + 8))
                 window.blit(line2, (card_rect.centerx - line2.get_width() // 2, card_y + 26))
 
-            sub_surf = stat_sub_font.render(stat_subtitles[key], True, COLOR_TEXT_MUTED)
+            sub_surf = safe_render(stat_sub_font, stat_subtitles[key], True, COLOR_TEXT_MUTED)
             window.blit(sub_surf, (card_rect.centerx - sub_surf.get_width() // 2, card_y + 48))
 
             # Current Base Value
             base_val = get_current_base(key)
-            base_surf = base_font.render(f"Base: {base_val}", True, COLOR_TEXT_MUTED)
+            base_surf = safe_render(base_font, f"Base: {base_val}", True, COLOR_TEXT_MUTED)
             window.blit(base_surf, (card_rect.centerx - base_surf.get_width() // 2, card_y + 72))
 
             # Draw + button
@@ -390,7 +410,7 @@ def run_point_allocation_gui(player):
 
             alloc_str = f"+{alloc_val}" if alloc_val > 0 else "0"
             alloc_color = COLOR_TEXT_GREEN if alloc_val > 0 else COLOR_TEXT_MUTED
-            box_surf = stat_num_font.render(alloc_str, True, alloc_color)
+            box_surf = safe_render(stat_num_font, alloc_str, True, alloc_color)
             window.blit(box_surf, box_surf.get_rect(center=box_rect.center))
 
             # Draw - button
@@ -399,7 +419,7 @@ def run_point_allocation_gui(player):
             # Projected new total
             if alloc_val > 0:
                 new_tot = base_val + (alloc_val * 2 if key == 'Accuracy' else alloc_val)
-                proj_surf = base_font.render(f"-> {new_tot}", True, COLOR_TEXT_GOLD)
+                proj_surf = safe_render(base_font, f"-> {new_tot}", True, COLOR_TEXT_GOLD)
                 window.blit(proj_surf, (card_rect.centerx - proj_surf.get_width() // 2, card_y + 252))
 
         # Bottom Buttons
@@ -408,8 +428,8 @@ def run_point_allocation_gui(player):
 
         # Keyboard Navigation Hint
         hint_font = get_font(13)
-        hint_str = "Use mouse or [Left/Right] Select Stat   [Up/Down] Add/Sub Point   [Enter] Confirm"
-        window.blit(hint_font.render(hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 35))
+        hint_str = "Mouse or [Left/Right] Select Stat   [Up/Down/Enter] Add/Sub Point   [C / Click Confirm] Save   [R] Reset"
+        window.blit(safe_render(hint_font, hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 35))
 
         pg.display.flip()
 
@@ -487,34 +507,37 @@ def run_point_allocation_gui(player):
         )
         buttons.extend([confirm_btn, reset_btn])
 
+        # Always draw screen before processing events so frame is visible immediately
+        draw_screen(stat_plus_btns, stat_minus_btns, confirm_btn, reset_btn)
+        clock.tick(60)
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
                 break
 
             elif event.type == pg.KEYDOWN:
-                # 0.4s debounce: ignore Enter/Escape immediately on open so that
-                # holding Enter during level-up / fireworks does not auto-confirm
+                # 0.4s debounce: ignore immediate keystrokes from skipping fireworks
                 if elapsed < 0.4 and event.key in [pg.K_RETURN, pg.K_ESCAPE, pg.K_SPACE]:
                     continue
 
-                if event.key == pg.K_RETURN:
-                    running = False
-                    break
-                elif event.key == pg.K_ESCAPE:
-                    reset_allocations()
-                    running = False
-                    break
-                elif event.key == pg.K_LEFT:
+                if event.key == pg.K_LEFT:
                     selected_stat_idx = (selected_stat_idx - 1) % len(stat_keys)
                 elif event.key == pg.K_RIGHT:
                     selected_stat_idx = (selected_stat_idx + 1) % len(stat_keys)
-                elif event.key in [pg.K_UP, pg.K_KP_PLUS, pg.K_PLUS, pg.K_EQUALS]:
+                elif event.key in [pg.K_UP, pg.K_KP_PLUS, pg.K_PLUS, pg.K_EQUALS, pg.K_RETURN, pg.K_SPACE]:
+                    # Enter, Space, Up, or Plus all increment the currently selected stat
                     increment_stat(selected_stat_idx)
                 elif event.key in [pg.K_DOWN, pg.K_KP_MINUS, pg.K_MINUS]:
                     decrement_stat(selected_stat_idx)
                 elif event.key == pg.K_r:
                     reset_allocations()
+                elif event.key == pg.K_c:
+                    running = False
+                    break
+                elif event.key == pg.K_ESCAPE:
+                    running = False
+                    break
 
             # Handle mouse clicks
             for btn in buttons:
@@ -525,9 +548,6 @@ def run_point_allocation_gui(player):
 
         if not running:
             break
-
-        draw_screen(stat_plus_btns, stat_minus_btns, confirm_btn, reset_btn)
-        clock.tick(60)
 
     # Clean up and refocus terminal
     refocus_terminal(terminal_hwnd)
@@ -764,13 +784,13 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
                     elif current_tab == 1 and potion_btn and potion_btn.enabled:
                         do_superheal()
 
-        for i, b in enumerate(buttons):
-            if b.handle_event(event, mouse_pos):
-                if b is leave_btn:
-                    running = False
-                    break
-                elif i < len(tabs):
-                    state['tab'] = i
+            for i, b in enumerate(buttons):
+                if b.handle_event(event, mouse_pos):
+                    if b is leave_btn:
+                        running = False
+                        break
+                    elif i < len(tabs):
+                        state['tab'] = i
 
         if not running:
             break
@@ -784,10 +804,10 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
         pg.draw.line(window, COLOR_PANEL_BORDER, (0, 70), (win_width, 70), 1)
 
         title_font = get_font(22, bold=True)
-        window.blit(title_font.render(hospital.name.title(), True, COLOR_TEXT_MAIN), (30, 12))
+        window.blit(safe_render(title_font, hospital.name.title(), True, COLOR_TEXT_MAIN), (30, 12))
 
         sub_font = get_font(14)
-        window.blit(sub_font.render(f"Medical Facility  *  Class {hospital.quality}", True, COLOR_TEXT_MUTED), (32, 40))
+        window.blit(safe_render(sub_font, f"Medical Facility  *  Class {hospital.quality}", True, COLOR_TEXT_MUTED), (32, 40))
 
         # Header Status: Health Bar & Col
         status_x = win_width - 440
@@ -800,10 +820,10 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
             pg.draw.rect(window, COLOR_TEXT_GREEN, (status_x, 22, fill_w, 24), border_radius=4)
         pg.draw.rect(window, COLOR_PANEL_BORDER, bar_rect, width=1, border_radius=4)
 
-        hp_txt = sub_font.render(f"HP: {player.hp}/{player.maxhp}", True, COLOR_TEXT_MAIN)
+        hp_txt = safe_render(sub_font, f"HP: {player.hp}/{player.maxhp}", True, COLOR_TEXT_MAIN)
         window.blit(hp_txt, hp_txt.get_rect(center=bar_rect.center))
 
-        col_txt = get_font(17, bold=True).render(f"{player.col} Col", True, COLOR_TEXT_GOLD)
+        col_txt = safe_render(get_font(17, bold=True), f"{player.col} Col", True, COLOR_TEXT_GOLD)
         window.blit(col_txt, (win_width - 230, 24))
 
         # Draw Tab Buttons
@@ -820,11 +840,11 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
             h_font = get_font(19, bold=True)
             body_font = get_font(15)
 
-            window.blit(h_font.render("General Treatment Clinic", True, COLOR_TEXT_MAIN), (50, 150))
+            window.blit(safe_render(h_font, "General Treatment Clinic", True, COLOR_TEXT_MAIN), (50, 150))
             desc1 = "Our trained physicians will examine and treat your wounds until you are fully restored."
             desc2 = f"Service fee: {clinic_cost} Col (scaled with facility class and player level)."
-            window.blit(body_font.render(desc1, True, COLOR_TEXT_MUTED), (50, 182))
-            window.blit(body_font.render(desc2, True, COLOR_TEXT_GOLD), (50, 206))
+            window.blit(safe_render(body_font, desc1, True, COLOR_TEXT_MUTED), (50, 182))
+            window.blit(safe_render(body_font, desc2, True, COLOR_TEXT_GOLD), (50, 206))
 
             if treat_btn:
                 treat_btn.draw(window)
@@ -838,7 +858,7 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
                 status_note = "Your legendary battle prowess intimidates the medical staff!"
 
             if status_note:
-                note_surf = body_font.render(status_note, True, COLOR_TEXT_RED)
+                note_surf = safe_render(body_font, status_note, True, COLOR_TEXT_RED)
                 window.blit(note_surf, (content_rect.centerx - note_surf.get_width() // 2, 310))
 
         # TAB 1: Superheal Booth
@@ -846,11 +866,11 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
             h_font = get_font(19, bold=True)
             body_font = get_font(15)
 
-            window.blit(h_font.render("Experimental Superheal Booth", True, COLOR_TEXT_MAIN), (50, 150))
+            window.blit(safe_render(h_font, "Experimental Superheal Booth", True, COLOR_TEXT_MAIN), (50, 150))
             desc1 = "Fast and volatile potion therapy administered directly by eccentric potioneers."
             desc2 = f"Potion cost: {super_cost} Col. Highly potent, but unpredictable results may occur!"
-            window.blit(body_font.render(desc1, True, COLOR_TEXT_MUTED), (50, 182))
-            window.blit(body_font.render(desc2, True, COLOR_TEXT_GOLD), (50, 206))
+            window.blit(safe_render(body_font, desc1, True, COLOR_TEXT_MUTED), (50, 182))
+            window.blit(safe_render(body_font, desc2, True, COLOR_TEXT_GOLD), (50, 206))
 
             if potion_btn:
                 potion_btn.draw(window)
@@ -859,7 +879,7 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
         elif current_tab == 2:
             h_font = get_font(18, bold=True)
             stat_f = get_font(14)
-            window.blit(h_font.render(f"Medical Record: {player.name}", True, COLOR_TEXT_MAIN), (50, 145))
+            window.blit(safe_render(h_font, f"Medical Record: {player.name}", True, COLOR_TEXT_MAIN), (50, 145))
 
             next_xp = xp_thresholds[player.level] if (xp_thresholds and player.level in xp_thresholds) else "N/A"
             stats_left = [
@@ -875,40 +895,40 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
 
             for idx, s in enumerate(stats_left):
                 col_c = COLOR_TEXT_GOLD if "Wealth" in s else (COLOR_TEXT_GREEN if "Hit Points" in s else COLOR_TEXT_MAIN)
-                window.blit(stat_f.render(s, True, col_c), (55, 175 + idx * 24))
+                window.blit(safe_render(stat_f, s, True, col_c), (55, 175 + idx * 24))
 
             # Right Column: Skills & Inventory summary
-            window.blit(h_font.render("Known Skills:", True, COLOR_TEXT_MAIN), (380, 145))
+            window.blit(safe_render(h_font, "Known Skills:", True, COLOR_TEXT_MAIN), (380, 145))
             if player.known_skills:
                 for idx, sk in enumerate(player.known_skills[:5]):
                     sk_txt = f"- {sk.name.title()}: Cost {sk.cost} MP | Power {sk.damage}"
-                    window.blit(stat_f.render(sk_txt, True, COLOR_TEXT_MUTED), (385, 175 + idx * 24))
+                    window.blit(safe_render(stat_f, sk_txt, True, COLOR_TEXT_MUTED), (385, 175 + idx * 24))
             else:
-                window.blit(stat_f.render("No skills learned yet.", True, COLOR_TEXT_MUTED), (385, 175))
+                window.blit(safe_render(stat_f, "No skills learned yet.", True, COLOR_TEXT_MUTED), (385, 175))
 
-            window.blit(h_font.render("Inventory Overview:", True, COLOR_TEXT_MAIN), (660, 145))
+            window.blit(safe_render(h_font, "Inventory Overview:", True, COLOR_TEXT_MAIN), (660, 145))
             if player.inventory.contents:
                 for idx, (item, count) in enumerate(list(player.inventory.contents.items())[:5]):
                     inv_txt = f"{count}x {item.name} ({item.sell_price} col)"
-                    window.blit(stat_f.render(inv_txt, True, COLOR_TEXT_MUTED), (665, 175 + idx * 24))
+                    window.blit(safe_render(stat_f, inv_txt, True, COLOR_TEXT_MUTED), (665, 175 + idx * 24))
             else:
-                window.blit(stat_f.render("Pockets are currently empty.", True, COLOR_TEXT_MUTED), (665, 175))
+                window.blit(safe_render(stat_f, "Pockets are currently empty.", True, COLOR_TEXT_MUTED), (665, 175))
 
         # TAB 3: Specialized Ward (Modular placeholder for future features)
         elif current_tab == 3:
             h_font = get_font(19, bold=True)
             body_font = get_font(15)
 
-            window.blit(h_font.render("Specialized Surgery & Enchantment Ward", True, COLOR_TEXT_MAIN), (50, 150))
+            window.blit(safe_render(h_font, "Specialized Surgery & Enchantment Ward", True, COLOR_TEXT_MAIN), (50, 150))
             desc1 = "Notice: This medical ward is currently undergoing renovations by the Greentown builders."
             desc2 = "Advanced organ transplants, permanent condition cures, and blessing wards will arrive here soon."
-            window.blit(body_font.render(desc1, True, COLOR_TEXT_MUTED), (50, 185))
-            window.blit(body_font.render(desc2, True, COLOR_TEXT_MUTED), (50, 215))
+            window.blit(safe_render(body_font, desc1, True, COLOR_TEXT_MUTED), (50, 185))
+            window.blit(safe_render(body_font, desc2, True, COLOR_TEXT_MUTED), (50, 215))
 
             placeholder_box = pg.Rect(50, 260, 400, 60)
             pg.draw.rect(window, COLOR_PANEL_ALT, placeholder_box, border_radius=6)
             pg.draw.rect(window, COLOR_PANEL_BORDER, placeholder_box, width=1, border_radius=6)
-            window.blit(body_font.render("[ Feature Expansion Slot - Ready For New Wards ]", True, COLOR_TEXT_GOLD), (70, 280))
+            window.blit(safe_render(body_font, "[ Feature Expansion Slot - Ready For New Wards ]", True, COLOR_TEXT_GOLD), (70, 280))
 
         # Activity Log Panel (Bottom)
         log_panel_rect = pg.Rect(30, 455, win_width - 60, 125)
@@ -916,17 +936,17 @@ def run_hospital_gui(hospital, player, world=None, xp_thresholds=None):
         pg.draw.rect(window, COLOR_PANEL_BORDER, log_panel_rect, width=1, border_radius=8)
 
         log_h_font = get_font(14, bold=True)
-        window.blit(log_h_font.render("HOSPITAL ACTIVITY LOG", True, COLOR_TEXT_MUTED), (45, 462))
+        window.blit(safe_render(log_h_font, "HOSPITAL ACTIVITY LOG", True, COLOR_TEXT_MUTED), (45, 462))
 
         log_font = get_font(13)
         for idx, line in enumerate(reversed(hospital_logs[-4:])):
             txt_color = COLOR_TEXT_GOLD if "MIRACLE" in line or "complete" in line else (COLOR_TEXT_RED if "Ouch" in line or "dud" in line else COLOR_TEXT_MAIN)
-            window.blit(log_font.render(f"- {line}", True, txt_color), (45, 485 + idx * 20))
+            window.blit(safe_render(log_font, f"- {line}", True, txt_color), (45, 485 + idx * 20))
 
         # Bottom Hints
         hint_font = get_font(12)
         hint_str = "[1-4 / Left-Right]: Switch Tabs   [Enter]: Perform Service   [Esc]: Leave Hospital"
-        window.blit(hint_font.render(hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 25))
+        window.blit(safe_render(hint_font, hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 25))
 
         pg.display.flip()
         clock.tick(60)
@@ -1196,13 +1216,13 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                         if item_r.collidepoint(event.pos):
                             state['sell_idx'] = state['sell_scroll'] + idx
 
-        for i, b in enumerate(buttons):
-            if b.handle_event(event, mouse_pos):
-                if b is leave_btn:
-                    running = False
-                    break
-                elif i < len(tabs):
-                    state['tab'] = i
+            for i, b in enumerate(buttons):
+                if b.handle_event(event, mouse_pos):
+                    if b is leave_btn:
+                        running = False
+                        break
+                    elif i < len(tabs):
+                        state['tab'] = i
 
         # Re-sync items after any buy/sell action
         buyable_items = [it for it in marketplace.inventory.keys() if marketplace.inventory.get(it, 0) > 0]
@@ -1228,15 +1248,15 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
         pg.draw.line(window, COLOR_PANEL_BORDER, (0, 70), (win_width, 70), 1)
 
         title_font = get_font(22, bold=True)
-        window.blit(title_font.render(marketplace.name.title(), True, COLOR_TEXT_MAIN), (30, 12))
+        window.blit(safe_render(title_font, marketplace.name.title(), True, COLOR_TEXT_MAIN), (30, 12))
 
         sub_font = get_font(14)
         inv_total = sum(player.inventory.contents.values())
         sub_str = f"Class {marketplace.level} Central Market   |   Adventurer: {player.name}   |   Pockets: {inv_total} items"
-        window.blit(sub_font.render(sub_str, True, COLOR_TEXT_MUTED), (32, 40))
+        window.blit(safe_render(sub_font, sub_str, True, COLOR_TEXT_MUTED), (32, 40))
 
         # Balance display
-        col_txt = get_font(20, bold=True).render(f"{player.col} Col", True, COLOR_TEXT_GOLD)
+        col_txt = safe_render(get_font(20, bold=True), f"{player.col} Col", True, COLOR_TEXT_GOLD)
         window.blit(col_txt, (win_width - 200, 22))
 
         # Draw Tab Buttons
@@ -1256,11 +1276,11 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
             stat_f = get_font(13)
 
             count_str = f"({len(buyable_items)} items available)"
-            window.blit(h_font.render(f"Available Market Stock {count_str}", True, COLOR_TEXT_MAIN), (50, 145))
-            window.blit(stat_f.render("Click or [Up/Down] to select an item. Press [Enter] or 'Buy Item' to purchase.", True, COLOR_TEXT_MUTED), (50, 170))
+            window.blit(safe_render(h_font, f"Available Market Stock {count_str}", True, COLOR_TEXT_MAIN), (50, 145))
+            window.blit(safe_render(stat_f, "Click or [Up/Down] to select an item. Press [Enter] or 'Buy Item' to purchase.", True, COLOR_TEXT_MUTED), (50, 170))
 
             if not buyable_items:
-                window.blit(item_font.render("All stock has been purchased for today!", True, COLOR_TEXT_MUTED), (60, 220))
+                window.blit(safe_render(item_font, "All stock has been purchased for today!", True, COLOR_TEXT_MUTED), (60, 220))
             else:
                 visible_slice = buyable_items[state['buy_scroll']: state['buy_scroll'] + 7]
                 for idx, it in enumerate(visible_slice):
@@ -1273,19 +1293,19 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                         pg.draw.rect(window, COLOR_BTN_FOCUS, row_r, width=2, border_radius=5)
 
                     name_col = COLOR_TEXT_GOLD if is_sel else COLOR_TEXT_MAIN
-                    window.blit(item_font.render(it.name.title(), True, name_col), (60, 201 + idx * 36))
+                    window.blit(safe_render(item_font, it.name.title(), True, name_col), (60, 201 + idx * 36))
 
                     stock_cnt = marketplace.inventory.get(it, 0)
                     stock_str = f"Stock: {stock_cnt}"
-                    window.blit(stat_f.render(stock_str, True, COLOR_TEXT_MUTED), (380, 202 + idx * 36))
+                    window.blit(safe_render(stat_f, stock_str, True, COLOR_TEXT_MUTED), (380, 202 + idx * 36))
 
                     price_str = f"{it.sell_price} Col"
-                    window.blit(val_font.render(price_str, True, COLOR_TEXT_GOLD), (530, 201 + idx * 36))
+                    window.blit(safe_render(val_font, price_str, True, COLOR_TEXT_GOLD), (530, 201 + idx * 36))
 
                 # Scroll indicator
                 if len(buyable_items) > 7:
                     scroll_info = f"Viewing {state['buy_scroll'] + 1}-{min(len(buyable_items), state['buy_scroll'] + 7)} of {len(buyable_items)}"
-                    window.blit(stat_f.render(scroll_info, True, COLOR_TEXT_MUTED), (490, 148))
+                    window.blit(safe_render(stat_f, scroll_info, True, COLOR_TEXT_MUTED), (490, 148))
 
                 # Right Details Panel for Selected Item
                 details_r = pg.Rect(680, 150, 260, 220)
@@ -1293,7 +1313,7 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                 pg.draw.rect(window, COLOR_PANEL_BORDER, details_r, width=1, border_radius=8)
 
                 sel_item = buyable_items[state['buy_idx']]
-                window.blit(h_font.render(sel_item.name.title(), True, COLOR_TEXT_GOLD), (695, 165))
+                window.blit(safe_render(h_font, sel_item.name.title(), True, COLOR_TEXT_GOLD), (695, 165))
 
                 details = [
                     f"Item Level: {sel_item.level}",
@@ -1309,7 +1329,7 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                     details.append("Alchemical Ingredient: Yes")
 
                 for d_idx, d_line in enumerate(details):
-                    window.blit(stat_f.render(d_line, True, COLOR_TEXT_MAIN), (695, 200 + d_idx * 22))
+                    window.blit(safe_render(stat_f, d_line, True, COLOR_TEXT_MAIN), (695, 200 + d_idx * 22))
 
                 if buy_action_btn:
                     buy_action_btn.draw(window)
@@ -1322,11 +1342,11 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
             stat_f = get_font(13)
 
             count_str = f"({len(sellable_items)} unique items)"
-            window.blit(h_font.render(f"Your Inventory Spoils {count_str}", True, COLOR_TEXT_MAIN), (50, 145))
-            window.blit(stat_f.render("Select an item to sell. Merchants pay fair col for all valid wares.", True, COLOR_TEXT_MUTED), (50, 170))
+            window.blit(safe_render(h_font, f"Your Inventory Spoils {count_str}", True, COLOR_TEXT_MAIN), (50, 145))
+            window.blit(safe_render(stat_f, "Select an item to sell. Merchants pay fair col for all valid wares.", True, COLOR_TEXT_MUTED), (50, 170))
 
             if not sellable_items:
-                window.blit(item_font.render("Your inventory is currently empty! Slay monsters to acquire loot.", True, COLOR_TEXT_MUTED), (60, 220))
+                window.blit(safe_render(item_font, "Your inventory is currently empty! Slay monsters to acquire loot.", True, COLOR_TEXT_MUTED), (60, 220))
             else:
                 visible_slice = sellable_items[state['sell_scroll']: state['sell_scroll'] + 7]
                 for idx, it in enumerate(visible_slice):
@@ -1339,18 +1359,18 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                         pg.draw.rect(window, COLOR_BTN_FOCUS, row_r, width=2, border_radius=5)
 
                     name_col = COLOR_TEXT_GOLD if is_sel else COLOR_TEXT_MAIN
-                    window.blit(item_font.render(it.name.title(), True, name_col), (60, 201 + idx * 36))
+                    window.blit(safe_render(item_font, it.name.title(), True, name_col), (60, 201 + idx * 36))
 
                     cnt = player.inventory.contents.get(it, 0)
-                    window.blit(stat_f.render(f"Quantity: {cnt}", True, COLOR_TEXT_MUTED), (380, 202 + idx * 36))
+                    window.blit(safe_render(stat_f, f"Quantity: {cnt}", True, COLOR_TEXT_MUTED), (380, 202 + idx * 36))
 
                     total_v = it.sell_price * cnt
-                    window.blit(val_font.render(f"{it.sell_price} col ea ({total_v} tot)", True, COLOR_TEXT_GOLD), (490, 201 + idx * 36))
+                    window.blit(safe_render(val_font, f"{it.sell_price} col ea ({total_v} tot)", True, COLOR_TEXT_GOLD), (490, 201 + idx * 36))
 
                 # Scroll indicator
                 if len(sellable_items) > 7:
                     scroll_info = f"Viewing {state['sell_scroll'] + 1}-{min(len(sellable_items), state['sell_scroll'] + 7)} of {len(sellable_items)}"
-                    window.blit(stat_f.render(scroll_info, True, COLOR_TEXT_MUTED), (490, 148))
+                    window.blit(safe_render(stat_f, scroll_info, True, COLOR_TEXT_MUTED), (490, 148))
 
                 # Right Details Panel for Selected Item
                 details_r = pg.Rect(680, 150, 260, 200)
@@ -1358,7 +1378,7 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                 pg.draw.rect(window, COLOR_PANEL_BORDER, details_r, width=1, border_radius=8)
 
                 sel_item = sellable_items[state['sell_idx']]
-                window.blit(h_font.render(sel_item.name.title(), True, COLOR_TEXT_GOLD), (695, 165))
+                window.blit(safe_render(h_font, sel_item.name.title(), True, COLOR_TEXT_GOLD), (695, 165))
 
                 item_cnt = player.inventory.contents.get(sel_item, 0)
                 details = [
@@ -1368,7 +1388,7 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                     f"Item Level: {sel_item.level}"
                 ]
                 for d_idx, d_line in enumerate(details):
-                    window.blit(stat_f.render(d_line, True, COLOR_TEXT_MAIN), (695, 200 + d_idx * 24))
+                    window.blit(safe_render(stat_f, d_line, True, COLOR_TEXT_MAIN), (695, 200 + d_idx * 24))
 
                 if sell_one_btn:
                     sell_one_btn.draw(window)
@@ -1379,7 +1399,7 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
         elif current_tab == 2:
             h_font = get_font(18, bold=True)
             stat_f = get_font(14)
-            window.blit(h_font.render(f"Adventurer Dossier: {player.name}", True, COLOR_TEXT_MAIN), (50, 145))
+            window.blit(safe_render(h_font, f"Adventurer Dossier: {player.name}", True, COLOR_TEXT_MAIN), (50, 145))
 
             next_xp = xp_thresholds[player.level] if (xp_thresholds and player.level in xp_thresholds) else "N/A"
             stats_left = [
@@ -1394,10 +1414,10 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
             ]
             for idx, s in enumerate(stats_left):
                 col_c = COLOR_TEXT_GOLD if "Col" in s else COLOR_TEXT_MAIN
-                window.blit(stat_f.render(s, True, col_c), (55, 180 + idx * 24))
+                window.blit(safe_render(stat_f, s, True, col_c), (55, 180 + idx * 24))
 
             # Center Column: Market Classification & Location
-            window.blit(h_font.render("Market Information:", True, COLOR_TEXT_MAIN), (380, 145))
+            window.blit(safe_render(h_font, "Market Information:", True, COLOR_TEXT_MAIN), (380, 145))
             m_info = [
                 f"Location: {marketplace.name.title()}",
                 f"Market Class: Level {marketplace.level}",
@@ -1405,25 +1425,25 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
                 f"Current Progress: {player.progress}/32"
             ]
             for idx, m in enumerate(m_info):
-                window.blit(stat_f.render(m, True, COLOR_TEXT_MUTED), (385, 180 + idx * 24))
+                window.blit(safe_render(stat_f, m, True, COLOR_TEXT_MUTED), (385, 180 + idx * 24))
 
         # TAB 3: Black Market (Extensible placeholder for future shady features)
         elif current_tab == 3:
             h_font = get_font(19, bold=True)
             body_font = get_font(15)
 
-            window.blit(h_font.render("Greentown Underground Syndicate", True, COLOR_TEXT_GOLD), (50, 150))
+            window.blit(safe_render(h_font, "Greentown Underground Syndicate", True, COLOR_TEXT_GOLD), (50, 150))
             desc1 = "A hooded merchant leans forward from the shadows..."
             desc2 = "\"Psst... The underground market is not trading with novices today.\""
             desc3 = "\"Prove your reputation further into the story, and our black market catalog will open.\""
-            window.blit(body_font.render(desc1, True, COLOR_TEXT_MUTED), (50, 185))
-            window.blit(body_font.render(desc2, True, COLOR_TEXT_MAIN), (50, 215))
-            window.blit(body_font.render(desc3, True, COLOR_TEXT_MUTED), (50, 245))
+            window.blit(safe_render(body_font, desc1, True, COLOR_TEXT_MUTED), (50, 185))
+            window.blit(safe_render(body_font, desc2, True, COLOR_TEXT_MAIN), (50, 215))
+            window.blit(safe_render(body_font, desc3, True, COLOR_TEXT_MUTED), (50, 245))
 
             placeholder_box = pg.Rect(50, 285, 450, 60)
             pg.draw.rect(window, COLOR_PANEL_ALT, placeholder_box, border_radius=6)
             pg.draw.rect(window, COLOR_PANEL_BORDER, placeholder_box, width=1, border_radius=6)
-            window.blit(body_font.render("[ Black Market Expansion Slot - Ready For Exotic Items ]", True, COLOR_TEXT_GOLD), (70, 305))
+            window.blit(safe_render(body_font, "[ Black Market Expansion Slot - Ready For Exotic Items ]", True, COLOR_TEXT_GOLD), (70, 305))
 
         # Bottom Activity Log Panel
         log_panel_rect = pg.Rect(30, 480, win_width - 60, 130)
@@ -1431,17 +1451,17 @@ def run_marketplace_gui(marketplace, player, world=None, xp_thresholds=None):
         pg.draw.rect(window, COLOR_PANEL_BORDER, log_panel_rect, width=1, border_radius=8)
 
         log_h_font = get_font(14, bold=True)
-        window.blit(log_h_font.render("MARKET DEALING SUMMARY & ACTIVITY LOG", True, COLOR_TEXT_MUTED), (45, 488))
+        window.blit(safe_render(log_h_font, "MARKET DEALING SUMMARY & ACTIVITY LOG", True, COLOR_TEXT_MUTED), (45, 488))
 
         log_font = get_font(13)
         for idx, line in enumerate(reversed(market_logs[-4:])):
             txt_color = COLOR_TEXT_GOLD if "Purchased" in line or "Sold" in line else (COLOR_TEXT_RED if "expensive" in line else COLOR_TEXT_MAIN)
-            window.blit(log_font.render(f"- {line}", True, txt_color), (45, 510 + idx * 20))
+            window.blit(safe_render(log_font, f"- {line}", True, txt_color), (45, 510 + idx * 20))
 
         # Bottom Hints
         hint_font = get_font(12)
         hint_str = "[1-4 / Left-Right]: Switch Tabs   [Up/Down]: Select Item   [Enter]: Buy / Sell   [Esc]: Leave Market"
-        window.blit(hint_font.render(hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 25))
+        window.blit(safe_render(hint_font, hint_str, True, COLOR_TEXT_MUTED), (30, win_height - 25))
 
         pg.display.flip()
         clock.tick(60)
