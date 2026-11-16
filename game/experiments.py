@@ -15,7 +15,7 @@ import turtle
 import datetime
 import matplotlib.pyplot as plt
 import re
-import pygame as pg
+# import pygame as pg
 
 
 
@@ -257,82 +257,82 @@ def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n
 
 # # ---------- fun colored health bars --------------------
 
-class Player:
-    def __init__(self):
-        self.hp = 112
-        self.maxhp = 100
-        self.level = 8
-        self.name = 'Rulid'
-        self.acu = 700
-        self.accuracy = 80
-        self.allies = []
-        self.asleep = False
-        self.poisoned = False
-        self.blessed = False
-        self.confused = False
-        self.frightened = False
-        self.enraged = False
-        self.focused = False
-        self.defended = False
-        self.empowered = False
-        self.weakened = False
-        self.energized = False
+# class Player:
+#     def __init__(self):
+#         self.hp = 112
+#         self.maxhp = 100
+#         self.level = 8
+#         self.name = 'Rulid'
+#         self.acu = 700
+#         self.accuracy = 80
+#         self.allies = []
+#         self.asleep = False
+#         self.poisoned = False
+#         self.blessed = False
+#         self.confused = False
+#         self.frightened = False
+#         self.enraged = False
+#         self.focused = False
+#         self.defended = False
+#         self.empowered = False
+#         self.weakened = False
+#         self.energized = False
     
-    def test(self):
-        # for _ in range(120):
-        #     display_health(self)
-        #     self.hp -= 1
-        # # display_health(self)
-        # display_health(self)
-        pass
+#     def test(self):
+#         # for _ in range(120):
+#         #     display_health(self)
+#         #     self.hp -= 1
+#         # # display_health(self)
+#         # display_health(self)
+#         pass
 
-    def get_cond_mod(self) -> float:
-        if self.asleep:
-            return 0
+#     def get_cond_mod(self) -> float:
+#         if self.asleep:
+#             return 0
 
-        modifier = 1.0
+#         modifier = 1.0
 
-        if self.poisoned:
-            modifier *= 0.95
-        if self.blessed:
-            modifier *= 1.1
-        if self.confused:
-            modifier *= 1.05
-        if self.frightened:
-            modifier *= 0.85
-        if self.enraged:
-            modifier *= 1.2
-        if self.focused:
-            modifier *= 1.35
-        if self.defended:
-            modifier *= 0.98
-        if self.empowered:
-            modifier *= 1.5
-        if self.weakened:
-            modifier *= 0.75
-        if self.energized:
-            modifier *= 1.05
+#         if self.poisoned:
+#             modifier *= 0.95
+#         if self.blessed:
+#             modifier *= 1.1
+#         if self.confused:
+#             modifier *= 1.05
+#         if self.frightened:
+#             modifier *= 0.85
+#         if self.enraged:
+#             modifier *= 1.2
+#         if self.focused:
+#             modifier *= 1.35
+#         if self.defended:
+#             modifier *= 0.98
+#         if self.empowered:
+#             modifier *= 1.5
+#         if self.weakened:
+#             modifier *= 0.75
+#         if self.energized:
+#             modifier *= 1.05
 
-        return modifier
+#         return modifier
 
-    def is_crit(self, hit_val):
-        crit_val = (
-            (2 if self.focused else 0) +
-            (1 if self.enraged else 0) +
-            (1 if self.blessed else 0) -
-            (1 if self.confused else 0) +
-            (1 if self.empowered else 0) -
-            (2 if self.frightened else 0) -
-            (1 if self.weakened else 0) +
-            (1 if (self.accuracy + self.acu) / 8 > hit_val else 0) +
-            (1 if hit_val <= 0.04 else 0))
+#     def is_crit(self, hit_val):
+#         crit_val = (
+#             (2 if self.focused else 0) +
+#             (1 if self.enraged else 0) +
+#             (1 if self.blessed else 0) -
+#             (1 if self.confused else 0) +
+#             (1 if self.empowered else 0) -
+#             (2 if self.frightened else 0) -
+#             (1 if self.weakened else 0) +
+#             (1 if (self.accuracy + self.acu) / 8 > hit_val else 0) +
+#             (1 if hit_val <= 0.04 else 0))
 
-        crit_thresholds = {0: 95, 1: 84, 2: 66, 3: 50}
-        threshold = crit_thresholds.get(crit_val, 34)
-        return random.randint(1, 100) > threshold if crit_val >= 0 else False
+#         crit_thresholds = {0: 95, 1: 84, 2: 66, 3: 50}
+#         threshold = crit_thresholds.get(crit_val, 34)
+#         return random.randint(1, 100) > threshold if crit_val >= 0 else False
 
 
-tpc = Player()
+# tpc = Player()
 
 # # def display_health(player):
 # #     percent = (player.hp / player.maxhp) * 100 # __ what about a situation where the player max = 33 and the hp = 7?
@@ -385,247 +385,247 @@ tpc = Player()
 
 # # ------- Pygame stuffs --------
 
-class Monster:
-    def __init__(self) -> None:
-        self.ac = (600, 5, 480, 20) # rail size, hit dc, speed, chances
-        self.level = 3
+# class Monster:
+#     def __init__(self) -> None:
+#         self.ac = (600, 5, 480, 20) # rail size, hit dc, speed, chances
+#         self.level = 3
 
-tmon = Monster()
+# tmon = Monster()
 
 # Initialize Pygame
-pg.init()
+# pg.init()
 
 
-def attack_timing_window(monster, player) -> int:
-    '''
-    Creates a Pygame window that simulates an attack timing challenge. Closes
-    and returns with enter key or after closing the window.
+# def attack_timing_window(monster, player) -> int:
+#     '''
+#     Creates a Pygame window that simulates an attack timing challenge. Closes
+#     and returns with enter key or after closing the window.
 
-    Args:
-        monster: an Enemy or other object with ac and level attributes
-        player: a Player object with acu and level attributes
+#     Args:
+#         monster: an Enemy or other object with ac and level attributes
+#         player: a Player object with acu and level attributes
     
-    Returns:
-        hit_v (int, between 0 and 1000 inclusive): A hit value representing how
-        close the user came to hitting the target.
-    '''
+#     Returns:
+#         hit_v (int, between 0 and 1000 inclusive): A hit value representing how
+#         close the user came to hitting the target.
+#     '''
 
-    # initialize starting values
-    rail_size, hit_dc, speed, chances = monster.ac
-    delta_level = max(0, player.level - monster.level)
-    raw_bonus = 80 * (delta_level / (delta_level + 10))
-    difficulty_mod = round(raw_bonus / 2) * 2
+#     # initialize starting values
+#     rail_size, hit_dc, speed, chances = monster.ac
+#     delta_level = max(0, player.level - monster.level)
+#     raw_bonus = 80 * (delta_level / (delta_level + 10))
+#     difficulty_mod = round(raw_bonus / 2) * 2
 
-    # initialize fps to the passed speed value and the slider speed to 1
-    fps = speed
-    adjusted_speed = 1
+#     # initialize fps to the passed speed value and the slider speed to 1
+#     fps = speed
+#     adjusted_speed = 1
 
-    # decrease fps until it is between 120 and 240 doubling speed each time
-    while fps > 240:
-        fps //= 2
-        adjusted_speed *= 2
+#     # decrease fps until it is between 120 and 240 doubling speed each time
+#     while fps > 240:
+#         fps //= 2
+#         adjusted_speed *= 2
     
-    # set the true speed of the slider
-    speed = round(adjusted_speed)
+#     # set the true speed of the slider
+#     speed = round(adjusted_speed)
 
-    # initialize the hit condition
-    hit_v = 1000
+#     # initialize the hit condition
+#     hit_v = 1000
 
-    # Set the width and height of the window
-    window_width = 1000
-    window_height = 100
+#     # Set the width and height of the window
+#     window_width = 1000
+#     window_height = 100
 
-    # Panic timer
-    passes = 0
+#     # Panic timer
+#     passes = 0
 
-    # Create the window
-    window = pg.display.set_mode((window_width, window_height))
-    pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
+#     # Create the window
+#     window = pg.display.set_mode((window_width, window_height))
+#     pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
 
-    # window control 
-    # Find the window handle
-    hwnd = pg.display.get_wm_info()['window']
-    chwnd = wg.GetForegroundWindow()
+#     # window control 
+#     # Find the window handle
+#     hwnd = pg.display.get_wm_info()['window']
+#     chwnd = wg.GetForegroundWindow()
     
-    # Bring the window to the foreground using some butt janky scripting found on stackoverflow
-    shell = wcc.Dispatch('WScript.Shell')
-    shell.SendKeys(' ') # I have actually no idea why this works but it does
-    wg.SetForegroundWindow(hwnd)
+#     # Bring the window to the foreground using some butt janky scripting found on stackoverflow
+#     shell = wcc.Dispatch('WScript.Shell')
+#     shell.SendKeys(' ') # I have actually no idea why this works but it does
+#     wg.SetForegroundWindow(hwnd)
 
-    # Define colors
-    BLACK = (80, 80, 80) # value to be used for testing
-    BROWN = (150, 85, 60) # value to be used for testing
-    WHITE = (200, 200, 200) # value to be used for testing
-    PURPLE = (35, 0, 60)
-    RED_ORANGE = (255, 55, 0)
-    YELLOW_ORANGE = (255, 180, 0)
-    GREEN = (0, 225, 50)
-    YELLOW = (220, 255, 0)
-    RED = (200, 0, 40)
-    BLUE = (40, 100, 255)
+#     # Define colors
+#     BLACK = (80, 80, 80) # value to be used for testing
+#     BROWN = (150, 85, 60) # value to be used for testing
+#     WHITE = (200, 200, 200) # value to be used for testing
+#     PURPLE = (35, 0, 60)
+#     RED_ORANGE = (255, 55, 0)
+#     YELLOW_ORANGE = (255, 180, 0)
+#     GREEN = (0, 225, 50)
+#     YELLOW = (220, 255, 0)
+#     RED = (200, 0, 40)
+#     BLUE = (40, 100, 255)
 
-    sub_factor = .65
+#     sub_factor = .65
 
-    # Bar properties
-    bar_length = rail_size if rail_size < window_width else 600
-    bar_height = 20
-    bar_x = (window_width - bar_length) // 2
-    bar_y = (window_height - bar_height) // 2
+#     # Bar properties
+#     bar_length = rail_size if rail_size < window_width else 600
+#     bar_height = 20
+#     bar_x = (window_width - bar_length) // 2
+#     bar_y = (window_height - bar_height) // 2
 
-    # Target area properties
-    target_width = hit_dc + difficulty_mod
-    if target_width + (ceil(target_width * sub_factor) * 2) > bar_length:
-        target_width = 180
-    target_x = bar_x + (bar_length - target_width) // 2
-    target_y = bar_y - 5
-    target_height = bar_height + 10
+#     # Target area properties
+#     target_width = hit_dc + difficulty_mod
+#     if target_width + (ceil(target_width * sub_factor) * 2) > bar_length:
+#         target_width = 180
+#     target_x = bar_x + (bar_length - target_width) // 2
+#     target_y = bar_y - 5
+#     target_height = bar_height + 10
 
-    # Sub-target areas properties'
-    sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
-    sub1_x = target_x - sub1_width
-    sub1_y = bar_y - 3
-    sub1_height = bar_height + 6
+#     # Sub-target areas properties'
+#     sub1_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 2
+#     sub1_x = target_x - sub1_width
+#     sub1_y = bar_y - 3
+#     sub1_height = bar_height + 6
     
-    sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
-    sub2_x = target_x + target_width
-    sub2_y = bar_y - 3
-    sub2_height = bar_height + 6
+#     sub2_width = ceil(target_width * sub_factor) if 1 < ceil(target_width * sub_factor) <= (window_width - 10) else 1
+#     sub2_x = target_x + target_width
+#     sub2_y = bar_y - 3
+#     sub2_height = bar_height + 6
 
-    # slider properties
-    slider_width = 2
-    slider_height = 30
-    slider_speed = speed if speed < target_width else target_width // 2
+#     # slider properties
+#     slider_width = 2
+#     slider_height = 30
+#     slider_speed = speed if speed < target_width else target_width // 2
 
-    # Initialize the slider position and direction
-    slider_x = bar_x
-    slider_direction = slider_speed
+#     # Initialize the slider position and direction
+#     slider_x = bar_x
+#     slider_direction = slider_speed
 
-    # Initialize the clock
-    clock = pg.time.Clock()
+#     # Initialize the clock
+#     clock = pg.time.Clock()
 
-    # Main loop
-    running = True
-    while True:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                hit_v = 1000
-                running = False
-                break
-            elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_RETURN:
-                    if target_x <= slider_x <= target_x + target_width:
-                        # Center field
-                        distance = abs(slider_x - (target_x + target_width / 2))
-                        hit_v = round((distance / (target_width / 2)) * player.accuracy)
-                        running = False
-                        break
-                    elif sub1_x <= slider_x < target_x:
-                        # Left subfield
-                        distance = abs(sub1_x + sub1_width - slider_x)
-                        normalized_distance = distance / sub1_width
-                        hit_v = round(player.accuracy + normalized_distance * player.acu)
-                        running = False
-                        break
-                    elif target_x + target_width < slider_x <= sub2_x + sub2_width:
-                        # Right subfield
-                        distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
-                        normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
-                        hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
-                        running = False
-                        break
-                    else:
-                        # Outer field
-                        if slider_x < sub1_x:
-                            # Beyond the left subfield
-                            distance = abs(slider_x - sub1_x)
-                            maxdist = sub1_x - bar_x
-                        else:
-                            # Beyond the right subfield
-                            distance = abs(slider_x - (sub2_x + sub2_width))
-                            maxdist = bar_x + bar_length - (sub2_x + sub2_width)
-                        normalized_distance = min(distance / maxdist, 1)
-                        hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
-                        running = False
-                        break
+#     # Main loop
+#     running = True
+#     while True:
+#         for event in pg.event.get():
+#             if event.type == pg.QUIT:
+#                 hit_v = 1000
+#                 running = False
+#                 break
+#             elif event.type == pg.KEYDOWN:
+#                 if event.key == pg.K_RETURN:
+#                     if target_x <= slider_x <= target_x + target_width:
+#                         # Center field
+#                         distance = abs(slider_x - (target_x + target_width / 2))
+#                         hit_v = round((distance / (target_width / 2)) * player.accuracy)
+#                         running = False
+#                         break
+#                     elif sub1_x <= slider_x < target_x:
+#                         # Left subfield
+#                         distance = abs(sub1_x + sub1_width - slider_x)
+#                         normalized_distance = distance / sub1_width
+#                         hit_v = round(player.accuracy + normalized_distance * player.acu)
+#                         running = False
+#                         break
+#                     elif target_x + target_width < slider_x <= sub2_x + sub2_width:
+#                         # Right subfield
+#                         distance = slider_x - sub2_x  # Calculate distance from the slider to the near edge of sub2
+#                         normalized_distance = distance / sub2_width  # Normalize the distance (0 at the near edge, 1 at the far edge)
+#                         hit_v = round(player.accuracy + (player.accuracy + player.acu - player.accuracy) * normalized_distance)
+#                         running = False
+#                         break
+#                     else:
+#                         # Outer field
+#                         if slider_x < sub1_x:
+#                             # Beyond the left subfield
+#                             distance = abs(slider_x - sub1_x)
+#                             maxdist = sub1_x - bar_x
+#                         else:
+#                             # Beyond the right subfield
+#                             distance = abs(slider_x - (sub2_x + sub2_width))
+#                             maxdist = bar_x + bar_length - (sub2_x + sub2_width)
+#                         normalized_distance = min(distance / maxdist, 1)
+#                         hit_v = round((player.accuracy + player.acu) + normalized_distance * (1000 - (player.accuracy + player.acu)))
+#                         running = False
+#                         break
 
-        # result found; set focus back to console, kill window, return result, do not draw again, do not pass go, do not collect $200.
-        if not running:
-            wg.SetForegroundWindow(chwnd)
-            pg.quit()
-            return hit_v
+#         # result found; set focus back to console, kill window, return result, do not draw again, do not pass go, do not collect $200.
+#         if not running:
+#             wg.SetForegroundWindow(chwnd)
+#             pg.quit()
+#             return hit_v
 
-        # Move the slider
-        slider_x += slider_direction
+#         # Move the slider
+#         slider_x += slider_direction
 
-        # Reverse the direction if the slider reaches the bar ends
-        if slider_x <= bar_x or slider_x + slider_width >= bar_x + bar_length:
-            slider_direction = -slider_direction
+#         # Reverse the direction if the slider reaches the bar ends
+#         if slider_x <= bar_x or slider_x + slider_width >= bar_x + bar_length:
+#             slider_direction = -slider_direction
 
-            # keep track of the number of times this has occured
-            passes += 1
+#             # keep track of the number of times this has occured
+#             passes += 1
         
-            # Update the displayed timer
-            pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
+#             # Update the displayed timer
+#             pg.display.set_caption(f'ATTACK!!! {chances - passes} chances remaining!')
         
-        # Check if the player has run out of chances
-        if passes >= chances:
-            hit_v = 1000
-            running = False
+#         # Check if the player has run out of chances
+#         if passes >= chances:
+#             hit_v = 1000
+#             running = False
 
-        # Clear the window
-        window.fill(PURPLE)
+#         # Clear the window
+#         window.fill(PURPLE)
 
-        # Draw the bar
-        pg.draw.rect(window, RED, (bar_x, bar_y, bar_length, bar_height))
+#         # Draw the bar
+#         pg.draw.rect(window, RED, (bar_x, bar_y, bar_length, bar_height))
         
-        # Draw the sub_target areas
-        pg.draw.rect(window, RED_ORANGE, (sub1_x, sub1_y, sub1_width, sub1_height))
-        pg.draw.rect(window, RED_ORANGE, (sub2_x, sub2_y, sub2_width, sub2_height))
+#         # Draw the sub_target areas
+#         pg.draw.rect(window, RED_ORANGE, (sub1_x, sub1_y, sub1_width, sub1_height))
+#         pg.draw.rect(window, RED_ORANGE, (sub2_x, sub2_y, sub2_width, sub2_height))
 
-        # These bars are just to add a bit more color
-        pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
-        pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
+#         # These bars are just to add a bit more color
+#         pg.draw.rect(window, YELLOW_ORANGE, ((target_x + sub1_x) // 2, sub1_y, (target_width * 2 + sub1_width * 2) // 2, sub1_height))
+#         pg.draw.rect(window, YELLOW, ((target_x + ((target_x + sub1_x) // 2)) // 2, sub1_y, target_width + sub1_width // 2, sub1_height))
 
-        # Draw the target area
-        pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
+#         # Draw the target area
+#         pg.draw.rect(window, GREEN, (target_x, target_y, target_width, target_height))
 
-        # Draw the slider
-        pg.draw.rect(window, BLUE, (slider_x, bar_y - (slider_height - bar_height) // 2, slider_width, slider_height))
+#         # Draw the slider
+#         pg.draw.rect(window, BLUE, (slider_x, bar_y - (slider_height - bar_height) // 2, slider_width, slider_height))
 
-        # Update the display
-        pg.display.flip()
-
-
-        # Set the frame rate to 120 FPS
-        clock.tick(fps)
+#         # Update the display
+#         pg.display.flip()
 
 
-def play_BGM():
-    pg.mixer.music.load('game\_music\mus_date_fight.mp3')
+#         # Set the frame rate to 120 FPS
+#         clock.tick(fps)
 
 
-def basic_player_prompt(*prompts):
-    '''
+# def play_BGM():
+#     pg.mixer.music.load('game\_music\mus_date_fight.mp3')
+
+
+# def basic_player_prompt(*prompts):
+#     '''
     
-    '''
-    input()
+#     '''
+#     input()
 
-    while True:
+#     while True:
         
-        dprint('Select response: ')
+#         dprint('Select response: ')
 
-        for i in range(len(prompts)):
-            dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
+#         for i in range(len(prompts)):
+#             dprint(f'{i + 1}:  << "{prompts[i]}" >>', .008)
 
-        user_in = input('Enter the number: ').strip()
+#         user_in = input('Enter the number: ').strip()
 
-        if user_in == '':
-            user_in = '1'  # Default to the first option
+#         if user_in == '':
+#             user_in = '1'  # Default to the first option
 
-        if user_in.isdigit():
-            user_int = int(user_in)
-            if 1 <= user_int <= len(prompts):
-                return user_int
+#         if user_in.isdigit():
+#             user_int = int(user_in)
+#             if 1 <= user_int <= len(prompts):
+#                 return user_int
 
 # # ----- level up fireworks ------
 
@@ -720,4 +720,60 @@ def basic_player_prompt(*prompts):
 
 ### ------ tests -------
 
-dprint('For tes[w]ting purposes:[2] this is a test!!![w] [s:.1]For testing [s]purposes[w]:[.5] [s:.005]this is a test!!![w] For testing purposes: this is a test!!![p] For testing purposes:[n] this is a test[r]!!!')
+
+
+### --- coding challenge ---
+
+doc = 'https://docs.google.com/document/d/1HMPce4kZ6KVODTiNnquRRiUjpt6-00AiI4LKmO-weYY/edit?usp=sharing'
+
+import requests as r
+import json
+
+LENGTH_OF_UNIMPORTANT_CONTENT = 36
+LENGTH_OF_IMPORTANT_CONTENT = 47
+
+def decode_msg(url:str | None = ''):
+    '''
+    Prints a grid of characters specified by the input data, displaying
+    a graphic of correctly oriented upper case letters. 
+
+    ### Args: 
+    - url (String): a url for the google doc containing input data. Default: ''
+    '''
+    
+    s = r.Session()
+    resp = s.get(url)
+    stuff_maybe = str(resp.content.decode('utf-8'))
+    found_index = stuff_maybe.find("x-coordinate")
+    start = found_index + LENGTH_OF_UNIMPORTANT_CONTENT
+    maybe_now = stuff_maybe[start:start + LENGTH_OF_IMPORTANT_CONTENT]
+    info = maybe_now.split(' ')
+    xs = []
+    ys = []
+    cs = []
+    for i in range(len(info)):
+        if i % 3 == 0:
+            xs.append(info[i])
+        if i % 3 == 1:
+            cs.append(info[i])
+        if i % 3 == 2:
+            ys.append(info[i])
+    template = [(0, 0), (0, 1), (0, 2), (0, 3), (1, 0), (1, 1), (1, 2), (1, 3), (2, 0), (2, 1), (2, 2), (2, 3), (3, 0), (3, 1), (3, 2), (3, 3)]
+    print(f'x: {xs}, y: {ys}, c: {cs};\n {template}')
+    level = 0
+    for i in range(16): # the current problem with this is that the level moves on before it can compare correctly with the rest of the chars in that level.
+        print(f'({xs[0]}, {ys[0]}) ?= ({i % 4}, {level})')
+        if (xs[0], ys[0]) == (str(i % 4), str(level)):
+            print(f'xs[0]: {xs[0]}; ys[0]: {ys[0]}; should == i % 4: {i % 4}; level: {level}.')
+            print(cs[0], end='')
+            cs.remove(cs[0])
+            xs.remove(xs[0])
+            ys.remove(ys[0])
+        else:
+            print(' ', end='')
+        if i % 4 == 3:
+            level += 1
+            print(f'|<<<  this is an end. Moving on to a new level from {level - 1} to {level}: round: {i}')
+    print(f'x: {xs}, y: {ys}, c: {cs};\n {template}')
+
+decode_msg('https://docs.google.com/document/d/1HMPce4kZ6KVODTiNnquRRiUjpt6-00AiI4LKmO-weYY/edit?usp=sharing')

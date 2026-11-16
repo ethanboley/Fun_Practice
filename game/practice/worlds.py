@@ -14,6 +14,19 @@ skills = init_skills()
 allies = init_allies()
 
 
+def ensure_player_attributes(pc):
+    if pc is None or not hasattr(pc, 'name'):
+        return pc
+    if 'world' not in pc.__dict__ or pc.world is None:
+        if getattr(pc, 'progress', 0) >= 33 or str(getattr(pc, 'location', '')).startswith('2-'):
+            pc.world = 2
+        else:
+            pc.world = 1
+    if pc.world == 2 and getattr(pc, 'progress', 0) >= 33:
+        pc.progress = 0
+    return pc
+
+
 class SaveLoad:
     def __init__(self, xp_thresholds) -> None:
         self.name = 'Save/Load'
@@ -92,7 +105,7 @@ class SaveLoad:
 
         try:
             with open(filename, 'rb') as file:
-                return pickle.load(file)
+                return ensure_player_attributes(pickle.load(file))
         except (pickle.UnpicklingError, EOFError, AttributeError):
             dprint('The file was currupted!')
             return True
@@ -136,6 +149,9 @@ class SaveLoad:
                 return choice + '.pkl'
             dprint('That is not one of the listed save files. Try again.')
 
+# -------------------------------------
+# ------------ WORLD 1 ----------------
+# -------------------------------------
 
 class WorldOne:
     def __init__(self, name):
@@ -157,7 +173,7 @@ class WorldOne:
             if uload in ['0','1','','!',')','q','`','y','t','g','h','u','6','7','yes','l','load','?','1: y','1: yes','1:y','sure','s','i would like to load the file thank you','one','uno','e','w','3','load? 1: y']:
                 pc = self.load()
                 if pc != None:
-                    return pc
+                    return ensure_player_attributes(pc)
         dprint('What is your name: ')
         pname = input()
         dprint(f'Is {pname} male or female?')
@@ -180,23 +196,23 @@ class WorldOne:
             pname = input().strip()
             if book == 1:
                 pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
-            if book == 2:
+            elif book == 2:
                 print('In preparation, you need to be leveled properly as follows:')
-                pc = Fighter(pname, pgender, 10, 2, 0, 1, 710, 100, progress=33)
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 710, 100, progress=0, world=2)
                 pc.gain_xp_quietly(3000, self.xp_thresholds)
-            if book == 3:
+            elif book == 3:
                 print('In preparation, you need to be leveled properly as follows:')
-                pc = Fighter(pname, pgender, 10, 2, 0, 1, 720, 100, progress=67)
+                pc = Fighter(pname, pgender, 10, 2, 0, 1, 720, 100, progress=0, world=3)
                 pc.gain_xp_quietly(15000, self.xp_thresholds)
             else:
                 pc = Fighter(pname, pgender, 10000, 5000, 0, 1, 999, 100000)
-            return pc
+            return ensure_player_attributes(pc)
         if pname == 'debug':
             pc = Fighter(pname, pgender, 23, 4, 300, 3, 755, 30, 7)
-            return pc
+            return ensure_player_attributes(pc)
         else:
             pc = Fighter(pname, pgender, 10, 2, 0, 1, 690, 3)
-            return pc
+            return ensure_player_attributes(pc)
 
     def load(self):
         filename = self.save_system.choose_save()
@@ -218,7 +234,7 @@ class WorldOne:
             return None
 
         print(f'Game loaded from {filename}.')
-        return pc
+        return ensure_player_attributes(pc)
 
     def introdction(self):
         if self.pc.xp <= 0:
@@ -262,16 +278,15 @@ class WorldOne:
                     world_options.append(market) if hospital not in world_options else None
                     pass
                 world_options.append(alchemy)
-        if self.pc.progress >= 33:
-            world_options.remove(self.book_one)
-            world_options.insert(0, self.book_two)
-        
         world_options.append(save_load)
         world_options.append(quit_game)
         return world_options
 
     def world_loop(self):
         while True:
+            if getattr(self.pc, 'world', 1) >= 2 or self.pc.progress >= 33:
+                return True
+
             print()
             dprint(f'<<------- {self.name} ------->>',.085)
             input(f'{self.pc.progress}/32 - {self.number}\n')
@@ -288,10 +303,79 @@ class WorldOne:
             if playing is None:
                 playing = True
             if not playing:
-                break
+                return False
+            if self.pc.progress >= 33 or getattr(self.pc, 'world', 1) >= 2:
+                return True
             self.pc.fix_team()
     
     def reset_monsters(self):
         self.mon_list = init_enemies()
         self.world_monsters = [mon for mon in self.mon_list if 1 in mon.world]
 
+
+# -------------------------------------
+# ------------ WORLD 2 ----------------
+# -------------------------------------
+
+class WorldTwo(WorldOne):
+    def __init__(self, name, pc=None, xp_thresholds=None):
+        self.name = name
+        self.number = 2
+        self.mon_list = init_enemies()
+        self.world_monsters = [monster for monster in self.mon_list if 2 in monster.world]
+        self.xp_thresholds = xp_thresholds if xp_thresholds is not None else define_xp_thresholds()
+        self.save_system = SaveLoad(self.xp_thresholds)
+        self.pc = pc if pc is not None else self.create_character()
+        self.pc.world = 2
+        if getattr(self.pc, 'progress', 0) >= 33:
+            self.pc.progress = 0
+        self.book_two = BookTwo(self.pc, self.xp_thresholds)
+        self.world_options = self.update_world_options()
+
+    def update_world_options(self):
+        battle = Battle(self.pc, self.xp_thresholds)
+        gym = Gym(self.pc)
+        save_load = SaveLoad(self.xp_thresholds)
+        quit_game = Quit()
+        alchemy = Alchemy()
+        world_options = []
+
+        world_options.append(self.book_two)
+        if self.pc.progress > 0:
+            world_options.append(battle)
+            if self.pc.level > 2:
+                world_options.append(gym)
+                world_options.append(alchemy)
+        world_options.append(save_load)
+        world_options.append(quit_game)
+        return world_options
+
+    def world_loop(self):
+        while True:
+            if getattr(self.pc, 'world', 2) > 2 or self.pc.progress >= 33:
+                return True
+
+            print()
+            dprint(f'<<------- {self.name} ------->>', .085)
+            input(f'{self.pc.progress}/32 - {self.number}\n')
+
+            self.world_options = self.update_world_options()
+
+            action = get_list_option(self.world_options)
+
+            playing = action.run(self.pc, self, self.xp_thresholds)
+
+            if hasattr(playing, 'title'):
+                self.pc = playing
+                playing = self.pc.is_alive()
+            if playing is None:
+                playing = True
+            if not playing:
+                return False
+            if self.pc.progress >= 33 or getattr(self.pc, 'world', 2) > 2:
+                return True
+            self.pc.fix_team()
+
+    def reset_monsters(self):
+        self.mon_list = init_enemies()
+        self.world_monsters = [mon for mon in self.mon_list if 2 in mon.world]

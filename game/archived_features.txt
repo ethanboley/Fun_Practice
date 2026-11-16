@@ -750,3 +750,552 @@ udomain = input('Choose your Domain \n1: Fighter \n2: Mage \n3: Pugilist\n')
                     dprint(f'{self.active_player.name} failed their escape attempt.')
 
 
+
+
+# ==============================================================================
+# HISTORY OF DPRINT() MODIFICATIONS
+# Extracted from project git history (game/practice/actions.py & game/fun/actions.py)
+# ==============================================================================
+
+-- dprint() [Version 1] - Initial Implementation
+    commit: d4f6a7c (2024-01-02)
+    commit message: Initial commit
+    location: actions.py
+    summary: Initial implementation of character-by-character printing using sys.stdout.write() / sys.stdout.flush(), fixed 0.05s sleep delay, and Enter key skip via msvcrt.
+
+def dprint(text=''):
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(0.05)  # lower value is faster
+        else:
+            sys.stdout.write(char) # really puts in perspective how fast .write() is
+
+        if msvcrt.kbhit():  # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r':  # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write('\n')  # Add a newline when done
+
+-- dprint() [Version 2] - Speed Tuning
+    commit: bff4468 (2024-01-22)
+    commit message: various changes, update to hospital
+    location: actions.py
+    summary: Adjusted default character delay from 0.05s down to 0.035s for faster text rendering (also applied in game/fun in commit 954ee0c).
+
+def dprint(text=''):
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(0.035) # lower value is faster
+        else:
+            sys.stdout.write(char) # really puts in perspective how fast .write() is
+
+        if msvcrt.kbhit():  # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r':  # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write('\n')  # Add a newline when done
+
+-- dprint() [Version 3] - Speed Parameter Added
+    commit: ce735da (2024-05-25)
+    commit message: Added battle.py, minor changes to dprint, fixed Battle.story, Ally class, finished chapter 1 and 2, adjusted life potion
+    location: actions.py
+    summary: Added the `speed=0.035` default parameter so callers can customize text printing speed dynamically per call.
+
+def dprint(text='',speed=0.035):
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(speed) # lower value is faster
+        else:
+            sys.stdout.write(char) # really puts in perspective how fast .write() is
+
+        if msvcrt.kbhit():  # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r':  # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write('\n')  # Add a newline when done
+
+-- dprint() [Version 4] - Type Hints, Docstring, and End Parameter
+    commit: b779593 (2024-10-03)
+    commit message: edits to several key actions.py functions, completely removed domains, removed redundant logic, minor changes to ch17, fixed monster turns, added archived_features.txt
+    location: actions.py
+    summary: Added type annotations, a formal docstring, and the `end:str | None = '\n'` parameter to customize line endings.
+
+def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\n') -> None:
+    """
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+
+    Returns: None
+    """
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(speed) # lower value is faster
+        else:
+            sys.stdout.write(char) # really puts in perspective how fast .write() is
+
+        if msvcrt.kbhit():  # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r':  # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write(end)  # Add the correct end when done
+
+-- dprint() [Version 5] - Code Cleanup
+    commit: 064fe33 (2025-01-15)
+    commit message: Finished book 1; minor adjustemnts to actions; spalls for allies; fixed player.grammer
+    location: actions.py
+    summary: Minor code cleanup: removed inline comment on fast write performance and cleaned up comment whitespace.
+
+def dprint(text:str | None = '', speed:float | None = 0.035, end:str | None = '\n') -> None:
+    """
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+
+    Returns: None
+    """
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(speed) # lower value is faster
+        else:
+            sys.stdout.write(char)
+
+        if msvcrt.kbhit(): # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r': # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write(end) # Add the correct end when done
+
+-- dprint() [Version 6] - Speed Adjustment & Docstring Formatting
+    commit: 781bbe5 (2025-01-22)
+    commit message: code and grammer general clean up
+    location: actions.py
+    summary: Changed default speed from 0.035 to 0.04s; switched docstring delimiter to single triple-quotes.
+
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n') -> None:
+    '''
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+
+    Returns: None
+    '''
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            time.sleep(speed) # lower value is faster
+        else:
+            sys.stdout.write(char)
+
+        if msvcrt.kbhit(): # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r': # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write(end) # Add the correct end when done
+
+-- dprint() [Version 7] - Story Mode Added
+    commit: 894c03f (2025-02-03)
+    commit message: various edits the results of the first full playtest.
+    location: actions.py
+    summary: Added `story:bool | None = False` parameter. When True, forces 0.05s delay and waits for Enter key press via input() at the end.
+
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n', story:bool | None = False) -> None:
+    '''
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+        story (bool | False): story mode or not. 
+
+    Returns: None
+    '''
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            if story:
+                time.sleep(0.045)
+            else:
+                time.sleep(speed)
+        else:
+            sys.stdout.write(char)
+
+        if msvcrt.kbhit(): # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r': # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write(end) # Add the correct end when done
+    if story:
+        input()
+
+-- dprint() [Version 8] - Story Mode Docstring
+    commit: a04be8c (2025-02-08)
+    commit message: first full playtest; balanced gameplay; finished book 2 logic; story dprint; added: mercy rule, alchemy, fix_team; battle item use changes/fixes; fixed training; admin load option at character creation; moving on to book 2.
+    location: actions.py
+    summary: Updated the docstring to formally document the `story` parameter.
+
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n', story:bool | None = False) -> None:
+    '''
+    Writes text to the terminal one character at a time at a specified speed.
+
+    Args:
+        text (str | None): The text to be printed. Defaults to an empty string.
+        speed (float | None): The delay in seconds between characters, defaults to 0.035.
+        end (str | None): The string appended after the text is fully printed. Defaults to a newline.
+        story (bool | False): story mode or not. 
+
+    Returns: None
+    '''
+    skip_slow_display = False
+
+    for char in text:
+        if not skip_slow_display:
+            sys.stdout.write(char)
+            sys.stdout.flush()
+            if story:
+                time.sleep(0.05)
+            else:
+                time.sleep(speed)
+        else:
+            sys.stdout.write(char)
+
+        if msvcrt.kbhit(): # Check if a key is pressed
+            key = msvcrt.getch().decode('utf-8')
+            if key == '\r': # Press Enter to skip
+                skip_slow_display = True
+
+    sys.stdout.write(end) # Add the correct end when done
+    if story:
+        input()
+
+-- dprint() [Version 9] - dprint 4.0 Overhaul
+    commit: b9decaa (2026-10-26)
+    commit message: Ally adjustment adjustment, book 2 definitions, update battle mechanics, dprint 4.0, consolidated main, worm adjustments, grammar additions, update save/load, atw modifications
+    location: actions.py
+    summary: Major rewrite ('dprint 4.0'). Added rich tag support ([#], [w], [s:#], [s], [p], [r], [n]), punctuation pause mapping (stops dict), tokenization, optional 60-character word-wrapping, and dialog tuple configuration.
+
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n',
+           story:bool | None = False, dialog:tuple | None = None, wrap:bool = False) -> None:
+    """
+    Writes text to the terminal one character at a time at a specified
+    speed with dynamic tags
+
+    ### Args:
+        *text* (`str` | `None`): The text to be printed. Defaults to an empty string.
+        *speed* (`float` | `None`): The delay in seconds between characters, defaults to 0.035.
+        *end* (`str` | `None`): The string appended after the text is fully printed. Defaults to a newline.
+        *story* (`bool` | `False`): story mode or not.
+        *dialog* (`tuple` (`mid_text_sleep`, `end_sleep`, `end_str`) | `None`): specific settings for quoting.
+        *wrap* (`bool` | `False`) line wrap at col 60 if True. 
+
+    ### Returns: None
+
+    ### Tags: 
+         - `[#]` wait # seconds
+         - `[w]` wait 1 second
+         - `[s:#]` set speed to # seconds
+         - `[s]` reset speed
+         - `[p]` pause+newline
+         - `[r]` pause
+         - `[n]` newline
+    """
+    # Early exit for empty text
+    if not text: 
+        sys.stdout.write(end)
+        return
+
+    # Text precessing, normalize to unix and replace only single newlines
+    text = text.replace('\r\n', '\n')
+    if wrap: text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+
+    # Dialog setup, pause map adds time value to current_speed
+    stops = {'.':.05, ',':.02, '\n':.0008, '"':.035, '\'':.026, ';':.02, '?':.06,
+             '!':.045, '(':.0005, ')':.005, '*':.0015, '-':.001}
+    mid_text_sleep, end_sleep, dialog_end = dialog if dialog else (0, 0, end)
+    if dialog: end, story = dialog_end, False
+
+    base_speed = current_speed = 0.05 if story else speed
+    skip = False
+
+    # Tokenizer: define what tags look like, split text on them
+    tag_pat = re.compile(r'(\[(?:n|p|r|w|s|s:\d*\.?\d+|\d*\.?\d+)\])', re.IGNORECASE)
+    tokens = []
+    for part in tag_pat.split(text):
+        if not part: continue
+        # if tag, it becomes one token; otherwise, each character becomes its own token.
+        # 'Hi[w]!' becomes: [{'type': 'char', 'val': 'H'}, {'type': 'char', 'val': 'i'}, {'type': 'tag', 'val': '[w]'}, {'type': 'char', 'val': '!'}]
+        tokens += [{'type': 'tag', 'val': part}] if tag_pat.match(part) else [{'type': 'char', 'val': c} for c in part]
+
+    def _wait_enter():
+        while msvcrt.getch() not in (b'\r', b'\n'): pass
+
+    # Word wrap pass: replace text in tokens such that each line wraps at col 60
+    if wrap:
+        col, limit = 0, 60
+        def _next_word_len(i):
+            n = 0
+            for t in tokens[i:]:
+                if t['type'] == 'char' and t['val'] in (' ', '\n'): 
+                    break
+                if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'): 
+                    break
+                if t['type'] == 'char': 
+                    n += 1
+            return n
+        i = 0
+        while i < len(tokens):
+            t = tokens[i]
+            if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'):
+                col = 0
+            elif t['type'] == 'char':
+                c = t['val']
+                if c == '\n': 
+                    col = 0
+                elif c == ' ':
+                    # THE FIX: If we are at the start of a line, delete the space token
+                    if col == 0:
+                        t['val'] = ''
+                    elif col + 1 + _next_word_len(i+1) > limit:
+                        t['val'] = '\n'
+                        col = 0
+                    else:
+                        col += 1
+                elif c == '-':
+                    col += 1
+                    if col + _next_word_len(i+1) > limit:
+                        tokens.insert(i+1, {'type': 'char', 'val': '\n'})
+                else: 
+                    col += 1
+            i += 1
+
+    # Main render loop: process tag behavior, write all else apropriately
+    for tok in tokens:
+        if tok['type'] == 'tag':
+            tag = tok['val'].lower()
+            if   tag == '[n]':
+                sys.stdout.write('\n')
+            elif tag == '[p]':
+                # The `(not skip) and func()` pattern is a short-circuit evaluation,
+                # only calls func() if skip is False
+                (not skip) and _wait_enter()
+                sys.stdout.write('\n')
+            elif tag == '[r]':
+                (not skip) and _wait_enter()
+            elif tag == '[s]':
+                current_speed = base_speed
+            elif tag == '[w]':
+                (not skip) and time.sleep(1.0)
+            elif tag.startswith('[s:'):
+                current_speed = float(tag[3:-1])
+            else:
+                (not skip) and time.sleep(float(tag[1:-1]))
+            continue
+        
+        # write c tokens to the screen
+        c = tok['val']
+        if not c: 
+            continue
+        sys.stdout.write(c); sys.stdout.flush() if not skip else None
+        if not skip:
+            if dialog:
+                time.sleep(mid_text_sleep + stops.get(c, 0))
+            elif c != '\n':
+                time.sleep(current_speed)
+        if msvcrt.kbhit() and msvcrt.getch().decode('utf-8') == '\r':
+            skip = True
+
+    # add proper end chaacter and exit
+    sys.stdout.write(end)
+    if dialog:
+        time.sleep(end_sleep)
+    if story and not skip:
+        _wait_enter()
+        sys.stdout.write('\n')
+
+-- dprint() [Version 10] - Skip Key Raw Byte & Multi-byte Buffer Fix (Current)
+    commit: 6b9d9e1 (2026-11-02)
+    commit message: gamification bugs fixed; dprint modifications
+    location: actions.py
+    summary: Fixed skip key handling: uses raw byte comparisons (b'\r', b'\n') and flushes multi-byte special prefix keys (0x00, 0xe0) to prevent key buffer bleeding and unintended skipping.
+
+def dprint(text:str | None = '', speed:float | None = 0.04, end:str | None = '\n',
+           story:bool | None = False, dialog:tuple | None = None, wrap:bool = False) -> None:
+    """
+    Writes text to the terminal one character at a time at a specified
+    speed with dynamic tags
+
+    ### Args:
+        *text* (`str` | `None`): The text to be printed. Defaults to an empty string.
+        *speed* (`float` | `None`): The delay in seconds between characters, defaults to 0.035.
+        *end* (`str` | `None`): The string appended after the text is fully printed. Defaults to a newline.
+        *story* (`bool` | `False`): story mode or not.
+        *dialog* (`tuple` (`mid_text_sleep`, `end_sleep`, `end_str`) | `None`): specific settings for quoting.
+        *wrap* (`bool` | `False`) line wrap at col 60 if True. 
+
+    ### Returns: None
+
+    ### Tags: 
+         - `[#]` wait # seconds
+         - `[w]` wait 1 second
+         - `[s:#]` set speed to # seconds
+         - `[s]` reset speed
+         - `[p]` pause+newline
+         - `[r]` pause
+         - `[n]` newline
+    """
+    # Early exit for empty text
+    if not text: 
+        sys.stdout.write(end)
+        return
+
+    # Text precessing, normalize to unix and replace only single newlines
+    text = text.replace('\r\n', '\n')
+    if wrap: text = re.sub(r'(?<!\n)\n(?!\n)', ' ', text)
+
+    # Dialog setup, pause map adds time value to current_speed
+    stops = {'.':.05, ',':.02, '\n':.0008, '"':.035, '\'':.026, ';':.02, '?':.06,
+             '!':.045, '(':.0005, ')':.005, '*':.0015, '-':.001}
+    mid_text_sleep, end_sleep, dialog_end = dialog if dialog else (0, 0, end)
+    if dialog: end, story = dialog_end, False
+
+    base_speed = current_speed = 0.05 if story else speed
+    skip = False
+
+    # Tokenizer: define what tags look like, split text on them
+    tag_pat = re.compile(r'(\[(?:n|p|r|w|s|s:\d*\.?\d+|\d*\.?\d+)\])', re.IGNORECASE)
+    tokens = []
+    for part in tag_pat.split(text):
+        if not part: continue
+        # if tag, it becomes one token; otherwise, each character becomes its own token.
+        # 'Hi[w]!' becomes: [{'type': 'char', 'val': 'H'}, {'type': 'char', 'val': 'i'}, {'type': 'tag', 'val': '[w]'}, {'type': 'char', 'val': '!'}]
+        tokens += [{'type': 'tag', 'val': part}] if tag_pat.match(part) else [{'type': 'char', 'val': c} for c in part]
+
+    def _wait_enter():
+        while msvcrt.getch() not in (b'\r', b'\n'): pass
+
+    # Word wrap pass: replace text in tokens such that each line wraps at col 60
+    if wrap:
+        col, limit = 0, 60
+        def _next_word_len(i):
+            n = 0
+            for t in tokens[i:]:
+                if t['type'] == 'char' and t['val'] in (' ', '\n'): 
+                    break
+                if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'): 
+                    break
+                if t['type'] == 'char': 
+                    n += 1
+            return n
+        i = 0
+        while i < len(tokens):
+            t = tokens[i]
+            if t['type'] == 'tag' and t['val'].lower() in ('[n]', '[p]'):
+                col = 0
+            elif t['type'] == 'char':
+                c = t['val']
+                if c == '\n': 
+                    col = 0
+                elif c == ' ':
+                    # THE FIX: If we are at the start of a line, delete the space token
+                    if col == 0:
+                        t['val'] = ''
+                    elif col + 1 + _next_word_len(i+1) > limit:
+                        t['val'] = '\n'
+                        col = 0
+                    else:
+                        col += 1
+                elif c == '-':
+                    col += 1
+                    if col + _next_word_len(i+1) > limit:
+                        tokens.insert(i+1, {'type': 'char', 'val': '\n'})
+                else: 
+                    col += 1
+            i += 1
+
+    # Main render loop: process tag behavior, write all else apropriately
+    for tok in tokens:
+        if tok['type'] == 'tag':
+            tag = tok['val'].lower()
+            if   tag == '[n]':
+                sys.stdout.write('\n')
+            elif tag == '[p]':
+                # The `(not skip) and func()` pattern is a short-circuit evaluation,
+                # only calls func() if skip is False
+                (not skip) and _wait_enter()
+                sys.stdout.write('\n')
+            elif tag == '[r]':
+                (not skip) and _wait_enter()
+            elif tag == '[s]':
+                current_speed = base_speed
+            elif tag == '[w]':
+                (not skip) and time.sleep(1.0)
+            elif tag.startswith('[s:'):
+                current_speed = float(tag[3:-1])
+            else:
+                (not skip) and time.sleep(float(tag[1:-1]))
+            continue
+        
+        # write c tokens to the screen
+        c = tok['val']
+        if not c: 
+            continue
+        sys.stdout.write(c); sys.stdout.flush() if not skip else None
+        if not skip:
+            if dialog:
+                time.sleep(mid_text_sleep + stops.get(c, 0))
+            elif c != '\n':
+                time.sleep(current_speed)
+        ch = msvcrt.getch() if not skip and msvcrt.kbhit() else b'' # b'' fails both following checks (doesn't matter, ch is not used until next iteration)
+        skip |= ch in (b'\r', b'\n') # |= is a bitwise or operator equivalent to skip = skip or ch in (...)
+        ch in (b'\x00', b'\xe0') and msvcrt.kbhit() and msvcrt.getch() # another sort circuit calling getch to clear the 2nd bit if the first 2 are true
+
+    # add proper end chaacter and exit
+    sys.stdout.write(end)
+    if dialog:
+        time.sleep(end_sleep)
+    if story and not skip:
+        _wait_enter()
+        sys.stdout.write('\n')

@@ -191,6 +191,7 @@ def init_items():
     glass_bottle = GlassBottle('glass bottle', 1, 0, 1, 0, 0, True, True, False, True)
     kales_o_bottle = KalesOBottle('kales o bottle', 5, 11, 5, 0, 0, False, True, False, True)
     prostomium = Item('prostomium', 1, 1, 1, 0, 2, False, False, True, False)
+    mundane_organ = Item('mundane organ', 1, 1, 1, 0, 1, False, False, False, False)
     slime_jelly = Item('slime jelly', 1, 1, 0, 0, 1, False, False, True, False)
     mundane_scrap_metal = Item('mundane scrap metal', 1, 1, 0, 0, 0, False, False, False, False)
     little_dagger = LittleDagger('little dagger', 1, 1, 0, 0, 0, False, True, False, False)
@@ -240,7 +241,7 @@ def init_items():
     goblin_cleaver = Weapon('goblin cleaver', 1, 2, 1, 0, 0, False, False, False, 0)
     old_barbarian_sword = Weapon('old barbarian sword', 1, 3, 1, 0, 0, False, False, False, 1)
 
-    items = [col_coin, sludge, 
+    items = [col_coin, sludge, mundane_organ, 
              prostomium, slime_jelly, mundane_scrap_metal, little_dagger, dagger, onix_stone, 
              monster_tooth, glass_bottle, magic_glass, living_wood, simple_fabric,
              aged_teak_log, opal, nepenth_fruit, argiros_sheet, nepenths_ovule, 

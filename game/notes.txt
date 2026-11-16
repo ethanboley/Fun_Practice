@@ -38,8 +38,7 @@ beta 0.2.0
 1.0.0 - 1.999.999
 
 
-commit notes: first full playtest; balanced gameplay; finished book 2 logic; story dprint; added: mercy rule, alchemy, fix_team; battle item use changes/fixes; fixed training; admin load option at character creation.
-
+commit notes: story fixes; world 2 transitions; fixed drops; dprint(history)
 
 
 world ideas: 

@@ -80,7 +80,7 @@ class BookTwo:
     def chapter_end(self, location='2-0', name='continue'):
         self.player.progress += 1
         self.player.hp += (self.player.maxhp - self.player.hp) // 2 if self.player.hp < self.player.maxhp else 0
-        self.player.gain_xp(round(self.player.level * 1.5) + self.player.progress + 5, self.xp_thresholds)
+        self.player.gain_xp(round(self.player.level * 1.5) + self.player.progress + 38, self.xp_thresholds)
         self.player.location = location
         self.name = name
         for ally in self.player.allies:
@@ -110,8 +110,15 @@ class BookTwo:
         while alive:
             if part % 2 == 0:
                 alive = getattr(self, f'passage_{ch_num}_{part}')()
+                if alive is None:
+                    alive = self.player.is_alive()
             else:
-                alive = self.battle.battle(*battles[part // 2])
+                b_args = list(battles[part // 2])
+                if len(b_args) > 1 and not callable(b_args[1]):
+                    p_dlg = getattr(self, f'prefight_{ch_num}_{part}', None)
+                    if p_dlg:
+                        b_args[1] = p_dlg
+                alive = self.battle.battle(*b_args)
             part += 1
             if part == parts:
                 self.chapter_end(location='2-0', name='continue')
@@ -123,23 +130,23 @@ class BookTwo:
         ch_num, part, parts = (00, 0, 13)
         self.adjust_team(to_modify={'Person':True, 'personage_3':True, 'Individual':False, 'sample_desigantion_4':False})
         battles = { # Basically the arguments for battle.battle(), mon_list, dialog, collective and surprise followed by optional boss_dialog
-            0:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, False, ['']),
-            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, ['']),
-            2:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
-            3:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, False, ['']),
-            4:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, True, ['']),
-            5:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False, [''])}
+            0:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', None), False, False, ['']),
+            1:(self.config_monsters({'monster':2}), getattr(self, f'prefight_{ch_num}_{part}', None), True, False, ['']),
+            2:(self.config_monsters({'boss':1}), getattr(self, f'prefight_{ch_num}_{part}', None), True, False, [getattr(self, f'boss_{ch_num}_0')(), getattr(self, f'boss_{ch_num}_1')]), 
+            3:(self.config_monsters({'monster':1}), getattr(self, f'prefight_{ch_num}_{part}', None), False, False, ['']),
+            4:(self.config_monsters({'monster':3}), getattr(self, f'prefight_{ch_num}_{part}', None), False, True, ['']),
+            5:(self.config_monsters({'person':1}), getattr(self, f'prefight_{ch_num}_{part}', None), True, False, [''])}
         return self.chapter_loop(ch_num, part, parts, battles)
 
     # battles can count by 1 starting at 0 and work because the ACTUALL part is floordivided by 2 to find the correct battle args
     '''
 
 
-    def ch0(self): # spring, 69th, 3044, 6th age.
-        ch_num, part, parts = (0, 0, 2)
+    def ch_0(self): # spring, 69th, 3044, 6th age.
+        ch_num, part, parts = (0, 0, 3)
         battles = { # part (battle number):(mon_list, dialog, collective=False, surprise=False, boss_dialog=[''])
             0:(self.config_monsters({'Elond':1}),
-               getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')),
+               getattr(self, f'prefight_{ch_num}_{part}', None),
                False, False)}
         return self.chapter_loop(ch_num, part, parts, battles)
 
@@ -449,16 +456,16 @@ walked. Despite Elond's assurances, you couldn't help remembering how the dwarf
 had acted the day before. Maybe humanity was just naturally nicer than others.
 Only time would tell. And this new journey would give you a LOT of time. 
  '''
-        )
+        , wrap=True)
 
 
-    def ch1(self): # spring, 72nd, 3044, 6th age.
-        ch_num, part, parts = (1, 0, 6)
+    def ch_1(self): # spring, 72nd, 3044, 6th age.
+        ch_num, part, parts = (1, 0, 7)
         self.adjust_team(to_modify={'Kizt':True, '':True, '':True, '':True, '':True, '':True})
         battles = { # part:(mon_list, dialog, collective=False, surprise=False, boss_dialog=[''])
-            0:(self.config_monsters({'bullbous bow':3}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False),
-            1:(self.config_monsters({'letiche':1, 'irrawrtzus':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), True, False),
-            2:(self.config_monsters({'black worm':1}), getattr(self, f'prefight_{ch_num}_{part}', default=dprint(end='')), False, False)}
+            0:(self.config_monsters({'bullbous bow':3}), getattr(self, f'prefight_{ch_num}_{part}', None), True, False),
+            1:(self.config_monsters({'letiche':1, 'irrawrtzus':1}), getattr(self, f'prefight_{ch_num}_{part}', None), True, False),
+            2:(self.config_monsters({'black worm':1}), getattr(self, f'prefight_{ch_num}_{part}', None), False, False)}
         return self.chapter_loop(ch_num, part, parts, battles)
 
     def passage_1_0(self): # what's happened the last 2 days
@@ -899,7 +906,7 @@ snouts of [s:.065]the monsters among [s:.07]friends.[n][w]
         dprint()
 
 
-    def ch19(self): # spring, 72nd, 3044, 6th age.
+    def ch_19(self): # spring, 72nd, 3044, 6th age.
         pass
 
     def passage_19_0(self):
@@ -989,7 +996,7 @@ snouts of [s:.065]the monsters among [s:.07]friends.[n][w]
         dprint()
 
 
-    def ch25(self): # spring, 72nd, 3044, 6th age.
+    def ch_25(self): # spring, 72nd, 3044, 6th age.
         pass
 
     def passage_25_0(self):

@@ -2979,12 +2979,15 @@ All goes black.
         mon_list0 = self.config_monsters({'kobold chief':1, 'ruin kobold trooper':1, 'ruin kobold':1, 'condemned goblin':1})
         mon_list1 = self.config_monsters({'goblin':3})
         mon_list2 = self.config_monsters({'goblin king':1})
+        found_items = copy.deepcopy(self.player.inventory.contents)
+        self.player.inventory.contents.clear()
         self.twenty_one_intro()
         player_lives = self.battle.battle(mon_list=mon_list0, dialog=self.twenty_one_encounter0(), collective=False)
         if player_lives:
             self.twenty_one_victory0()
             player_lives = self.battle.battle(mon_list=mon_list1, dialog=self.twenty_one_encounter1(), collective=False)
             if player_lives:
+                self.player.inventory.contents = found_items
                 alt = self.twenty_one_victory1()
                 if alt != None:
                     return False
@@ -3002,7 +3005,6 @@ All goes black.
             return False
 
     def twenty_one_intro(self): # can you believe it... this is the short one
-        self.player.inventory.contents.clear()
         dprint(
             f'''
 You wake. The first thing you notice are the lights of a strange combination of
@@ -3242,6 +3244,10 @@ You run to and up the stairs towards the nearest exit three at a time and enter
 the hallway. The path before you is clear but that doesn't help, in fact it
 would almost be better at this time to get a feel for directions based on the
 flow of goblin traffic through these now deserted passages.
+Before you make it far, though, you walk past a roon into which you almost miss
+a very familiar looking bag. Remarkably, it sill holds all the contents it did
+before you were captured. You were really back in business now. but the danger
+was only just beginning.
 So, you wend your way blindly, only aware of up and down as the winding,
 twisting, labyrinthine tunnels continue onward. Your best bet, you reason, is
 upwards towards what might be the surface from here. So you naturally stick to
@@ -3313,10 +3319,12 @@ unmistakable grin upon his face.
 "You've caused quite a ruckus, little lum!" says the king in perfect common.
 "There have not been many who have escaped an arena of ours. You must be
 powerful! I desire to see your full strength for myself but unfortunately,
-you're belongings have already been melted down." At this moment the king turns
-to one of the even larger goblins to either side of him and speaks some command
-in gobbldeeguk. The goblin nods and sprints off at top speed while the king
-gets off his throne and speaks again, adressing you.
+you're belongings have already been melted down," unaware that you had managed
+to recover your belongings before they got to them, a side effect of your
+early escape from the arena. At this moment, though, the king turns to one of
+the even larger goblins to either side of him and speaks some command in
+gobbldeeguk. The goblin nods and sprints off at top speed while the king gets
+off his throne and speaks again, adressing you.
 "This does not stay my desire, however," and as he nears the edge of the chasm,
 he hurls a drawn blade across to you. It was a two edged, straight, shorsword
 just like the one you carried before arriving here. Still crude and clearly
@@ -3329,7 +3337,7 @@ begin to panic as gates just like the portcullises in the arena materialize at
 each of the exits.
 '''
         )
-        option = basic_player_prompt(prompts)
+        option = basic_player_prompt(*prompts)
         if option == 1:
             dprint(
                 '''
@@ -5282,7 +5290,7 @@ itself. Each day, all the prisoner children were allowed to go into the more
 open area underneath the stronghold to labor in mining and other tasks for the
 kobolds. Robin shared a cell with a very inteligent and pursuasive eleven year
 old boy called Charlie and together with a few other prisoners managed by day
-five to pursuade the taks masters and relevant the jailers to allow some of
+five to pursuade the task masters and relevant jailers to allow some of
 them to work in construction and even smithing labors which were hitherto kept
 far from prisoners. Over the next week, colaborating now with the entire body
 of prisoners, small metal items had been smuggled into each cell and each were

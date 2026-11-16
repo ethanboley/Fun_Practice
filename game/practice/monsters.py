@@ -613,7 +613,7 @@ class Plant(Enemy):
     def __init__(self, name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac):
         super().__init__(name, malice, hp, atk, xp, level, acu, col, agi, defense, force, world, ac)
         self.possible_drops = [drop for drop in drops if drop.name in
-                               ['living wood', 'aged teak log', 'droplet of villi'
+                               ['living wood', 'aged teak log', 'droplet of villi',
                                 'nawsoth fruit']]
         
     def create_loot_table(self):
@@ -677,11 +677,11 @@ class Beast(Enemy):
         
     def create_loot_table(self):
         drop_list = [] # define returnable list
-        if self.level > 1 and random.randint(0, 10) > self.possible_drops[0].rarity:
+        if len(self.possible_drops) > 0 and self.level > 1 and random.randint(0, 10) > self.possible_drops[0].rarity:
             drop_list.append(self.possible_drops[0])
-            if self.level > 2 and random.randint(0, 10) > self.possible_drops[1].rarity:
+            if len(self.possible_drops) > 1 and self.level > 2 and random.randint(0, 10) > self.possible_drops[1].rarity:
                 drop_list.append(self.possible_drops[1])
-                if self.level > 5 and random.randint(0, 10) > self.possible_drops[2].rarity:
+                if len(self.possible_drops) > 2 and self.level > 5 and random.randint(0, 10) > self.possible_drops[2].rarity:
                     drop_list.append(self.possible_drops[2])
         return drop_list
     
@@ -879,7 +879,7 @@ class Tarusoid(Enemy): # world 2 (cows)
                                []]
         
     def create_loot_table(self):
-        pass
+        return []
     
     def drop(self, player):
         dropses = self.create_loot_table()
@@ -1160,11 +1160,11 @@ def init_enemies():
     treent = Plant('treent', 85, 52, 3, 29, 7, 675, 0, 1445, 12, 0, [1,4], (600, 15, 100, 5))
     ruin_kobold_trooper = Koboldoid('ruin kobold trooper', 30, 45, 6, 31, 7, 850, 5, 750, 1, 0, [1,3], (600, 16, 300, 3))
     skeleton = Undead('skeleton', 100, 60, 4, 33, 8, 700, 1, 950, 0, 0, [1,2,3,4,5,6,7,8,9,10], (500, 10, 150, 6))
-    bark_golem = Plant('bark golem', 95, 66, 4, 36, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
+    bark_golem = Plant('bark golem', 95, 76, 4, 36, 8, 900, 1, 1350, 8, 0, [1], (500, 14, 300, 10))
     flying_kobold = Koboldoid('flying kobold', 30, 40, 6, 39, 8, 500, 4, 450, 0, 10, [1], (850, 13, 300, 2))
-    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 50, 7, 48, 9, 750, 6, 700, 2, 0, [1], (600, 21, 480, 3))
+    ruin_kobold_sentinel = Koboldoid('ruin kobold sentinel', 30, 90, 10, 48, 9, 750, 8, 740, 2, 0, [1], (600, 21, 480, 3))
     # ac: (dist or def, size ratio, actual speed, balance)  (rail_size600px, hit_dc10px, speed480fps, chances10i) # limit ratio 450:95
-    illfang = Illfang('Illfang', 35, 200, 9, 800, 9, 900, 15, 1000, 3, 5, [1], (980, 18, 640, 6))
+    illfang = Illfang('Illfang', 35, 380, 16, 800, 10, 900, 80, 1000, 3, 5, [1], (980, 18, 640, 6))
 
     jackelope = Beast('jackelope', 40, 16, 2, 6, 2, 800, 0, 600, 0, 0, [1], (600, 10, 200, 10))
     borogrove = Beast('borogrove', 90, 17, 1, 10, 3, 700, 1, 1100, 0, 0, [1,2,3], (600, 16, 255, 10))
@@ -1182,7 +1182,7 @@ def init_enemies():
     goblin = Goblinoid('goblin', 35, 41, 5, 24, 6, 700, 8, 950, 1, 0, [1,2,3], (600, 12, 160, 10))
     goblin_king = Goblinoid('goblin king', 40, 55, 6, 44, 8, 880, 0, 990, 2, 0, [1], (500, 13, 180, 5))
     shinigami = Astral('shinigami', 95, 49, 3, 27, 6, 595, 0, 700, 0, 0, [1,6,8,9,10], (995, 12, 205, 2))
-    large_cave_slime = Slime('large cave slime', 100, 26, 3, 36, 8, 670, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
+    large_cave_slime = Slime('large cave slime', 100, 36, 3, 36, 8, 670, 0, 1250, 0, 0, [1,2], (800, 16, 400, 20))
     owlbear = Beast('owlbear', 20, 26, 4, 15, 4, 685, 1, 900, 1, 0, [1,2], (750, 20, 300, 12))
     irrawrtzus = Beastoid('irrawrtzus', 45, 47, 5, 30, 6, 890, 5, 1000, 0, 0, [2,3,4,6], (800, 12, 700, 6))
     letiche = Beast('letiche', 90, 30, 2, 17, 4, 600, 0, 850, 0, 0, [1], (400, 10, 140, 4))
@@ -1212,6 +1212,7 @@ def init_enemies():
     giant_midnight_worm = Worm('giant midnight worm', 80, 54, 1, 19, 4, 550, 0, 880, 60, 0, [1,2], (580, 35, 620, 2))
     giant_purple_worm = Worm('giant purple worm', 85, 54, 1, 19, 4, 550, 0, 860, 92, 0, [1,2], (600, 36, 640, 2))
     giant_wyrm_worm = Enemy('giant wyrm worm', 90, 54, 1, 19, 4, 550, 0, 850, 196, 0, [1,2], (990, 34, 720, 2)) # side boss
+    elond = Humanoid('Elond', 0, 110, 16, 50, 12, 850, 0, 950, 2, 0, [2], (650, 18, 300, 4))
 
 
     mon_list = [test_boss, windworm, brown_worm, slime, refuse, cykloone, frenzy_boar, field_wolf, 
@@ -1224,7 +1225,7 @@ def init_enemies():
                 ruin_kobold_sentinel, illfang, jackelope, borogrove, silver_fish, moamwrath,
                 bryllyg, slythy_tove, borogove, marzeedote, doezeedote, little_amzedivie,
                 kiddleydivie, woodenchew, condemned_goblin, goblin, goblin_king, shinigami,
-                large_cave_slime, owlbear, irrawrtzus, letiche, bullbous_bow]
+                large_cave_slime, owlbear, irrawrtzus, letiche, bullbous_bow, elond]
 
     return mon_list
 
@@ -1247,17 +1248,17 @@ def init_allies(): # designations use snake case and numerals
     deg = Ally('Deg', 5, 34, 7, 990, 765, 0, 0, Skill('triangular', 0, 5, 3, 3, 8))
     virabela  = Ally('Virabela', 5, 30, 10, 1000, 810, 0, 0, SpellAttack('magic arrow', 1, 4, 6, 5, 5, 0))
     polly = Ally('Polly', 4, 28, 5, 900, 800, 0, 0, Skill('streak', 0, 3, 1, 3, 2))
-    rivek = Ally('Rivek', 7, 45, 14, 1005, 795, 10, 2, Skill('vertical arc', 0, 8, 2, 7, 11))
-    outh_gurenge = Ally('Captain Gurenge', 10, 72, 19, 890, 890, 12, 15, Skill('quad pain', 0, 11, 4, 6, 14))
-    robin_1 = Ally('Robin', 9, 54, 18, 1010, 770, 0, 0, Skill('sonic leap', 0, 9, 1, 7, 10), 'robin_1')
-    mickle = Ally('Officer Mickle', 10, 67, 20, 905, 865, 10, 10, Skill('flash forward', 0, 9, 4, 4, 9))
-    reywyn = Ally('Reywyn', 7, 44, 13, 986, 925, 0, 1, Skill('triangular', 0, 5, 3, 5, 8))
-    liliyah_1 = Ally('Liliyah', 7, 50, 15, 830, 810, 0, 0, Skill('parallel sting', 0, 2, 2, 2, 2), 'liliyah_1')
-    dykester = Ally('Dykester', 8, 50, 9, 640, 825, 0, 0, Spall('turquoise blue overdrive', 2, 5, 2, 2, 5))
-    bellman = Ally('Bellman', 8, 52, 17, 950, 710, 12, 0, Skill('negative cycle', 0, 4, 2, 4, 5))
-    ford = Ally('Ford', 8, 52, 17, 950, 710, 0, 12, Skill('loss', 0, 4, 4, 6, 8))
-    huffman = Ally('Huffman', 9, 60, 16, 995, 760, 2, 5, SpellAttack('emerald splash', 1, 9, 9, 5, 6, 0))
-    dagshor = Ally('Dagshor', 9, 64, 20, 1055, 688, 1, 1, Skill('steel press', 0, 8, 4, 4, 5))
+    rivek = Ally('Rivek', 7, 74, 19, 1005, 795, 10, 2, Skill('vertical arc', 0, 8, 2, 7, 11))
+    outh_gurenge = Ally('Captain Gurenge', 10, 132, 24, 890, 890, 12, 15, Skill('quad pain', 0, 11, 4, 6, 14))
+    robin_1 = Ally('Robin', 9, 100, 23, 1010, 770, 0, 0, Skill('sonic leap', 0, 9, 1, 7, 10), 'robin_1')
+    mickle = Ally('Officer Mickle', 10, 111, 25, 905, 865, 10, 10, Skill('flash forward', 0, 9, 4, 4, 9))
+    reywyn = Ally('Reywyn', 7, 73, 17, 986, 925, 0, 1, Skill('triangular', 0, 5, 3, 5, 8))
+    liliyah_1 = Ally('Liliyah', 7, 82, 20, 830, 810, 0, 0, Skill('parallel sting', 0, 2, 2, 2, 2), 'liliyah_1')
+    dykester = Ally('Dykester', 8, 88, 14, 640, 825, 0, 0, Spall('turquoise blue overdrive', 2, 5, 2, 2, 5))
+    bellman = Ally('Bellman', 8, 86, 21, 950, 710, 12, 0, Skill('negative cycle', 0, 4, 2, 4, 5))
+    ford = Ally('Ford', 8, 91, 22, 950, 710, 0, 12, Skill('loss', 0, 4, 4, 6, 8))
+    huffman = Ally('Huffman', 9, 99, 20, 995, 760, 2, 5, SpellAttack('emerald splash', 1, 9, 9, 5, 6, 0))
+    dagshor = Ally('Dagshor', 9, 106, 24, 1055, 688, 1, 1, Skill('steel press', 0, 8, 4, 4, 5))
 
 
     allies = [robin_0,henry,liliyah,tiffey,kajlo_sohler,officer_jerrimathyus,

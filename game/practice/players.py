@@ -7,12 +7,13 @@ from stuffs_that_do import init_spells, weapons
 
 
 class Player:
+    world = 1
     def __init__(self, name, gender, hp, atk, xp, level, accuracy, col,
                  location='1-1', progress=0, asleep=False, poisoned=False,
                  blessed=False, confused=False, frightened=False,
                  enraged=False, focused=False, defended=False,
                  empowered=False, weakened=False, energized=False,
-                 auto_battle=False):
+                 auto_battle=False, world=1):
         self.name = name
         self.gender = gender
         self.maxhp = hp
@@ -24,6 +25,7 @@ class Player:
         self.col = col
         self.location = location # see location dictionary in notes
         self.progress = progress
+        self.world = world
         self.asleep = asleep # skip turn
         self.poisoned = poisoned # -hp over time
         self.blessed = blessed # +hp over time
@@ -112,17 +114,18 @@ class Player:
 
 
 class Fighter(Player):
+    world = 1
     def __init__(self, name, gender, hp, atk, xp, level, accuracy, col,
                  location='1-1', progress=0, asleep=False, poisoned=False,
                  blessed=False, confused=False, frightened=False,
                  enraged=False, focused=False, defended=False,
                  empowered=False, weakened=False, energized=False,
-                 auto_battle=False, title='Fighter', acu=60, agi=999, mag=10,
+                 auto_battle=False, world=1, title='Fighter', acu=60, agi=999, mag=10,
                  maxmag=None, skill_slots=1, known_skills=[], allies=[]):
         super().__init__(name, gender, hp, atk, xp, level, accuracy, col, location,
                          progress, asleep, poisoned, blessed, confused,
                          frightened, enraged, focused, defended, empowered,
-                         weakened, energized, auto_battle)
+                         weakened, energized, auto_battle, world)
         self.title = title
         self.acu = acu
         self.agi = agi
